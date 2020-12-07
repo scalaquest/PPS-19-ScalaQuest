@@ -1,0 +1,12 @@
+/*
+ * This plugin comprehends configuration in common between the 'examples' projects, that are scala
+ * applications, such as escape-room.
+ */
+
+plugins {
+    // Apply the common convention plugin for shared build configuration between library and application projects.
+    id("scalaquest.common-conventions")
+
+    // Apply the application plugin to add support for building a CLI application in Java.
+    application
+}
