@@ -1,10 +1,7 @@
 package io.github.scalaquest.core
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.junit.runner.RunWith
-import org.scalatestplus.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class CoreTest extends AnyWordSpec {
 
   "A Set" when {

@@ -1,10 +1,7 @@
 package io.github.scalaquest.cli
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.junit.runner.RunWith
-import org.scalatestplus.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class CLITest extends AnyWordSpec {
 
   "A Set" when {

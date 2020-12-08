@@ -2,7 +2,7 @@ import de.fayard.refreshVersions.bootstrapRefreshVersionsForBuildSrc
 import de.fayard.refreshVersions.migrateRefreshVersionsIfNeeded
 
 buildscript {
-    // makes the refreshVersions plugin work also for the convention plugins.
+    // makes the refreshVersions plugin work also for the convention plugins
     repositories {
         gradlePluginPortal()
         maven("https://dl.bintray.com/jmfayard/maven")
