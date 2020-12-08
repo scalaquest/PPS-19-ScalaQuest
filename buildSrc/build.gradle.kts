@@ -24,7 +24,7 @@ dependencies {
     // used inside the project convention plugins (i.e. common, examples, libraries)
     implementation("org.danilopianini:git-sensitive-semantic-versioning:_")
     implementation("org.danilopianini:publish-on-central:_")
-    implementation("gradle.plugin.com.github.maiflai:gradle-scalatest:_")
+    implementation("com.github.maiflai:gradle-scalatest:_")
 
     // Makes Detekt configurable
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")
