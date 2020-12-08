@@ -3,16 +3,14 @@
  */
 
 plugins {
-    // Apply the scala Plugin to add support for Scala.
+    // Adds support for Scala
     scala
 
-    // NOTE: external plugin version is specified in implementation dependency artifact of the project's build file.
+    // Support for semantic gis-sensitive semantic versioning
     id("org.danilopianini.git-sensitive-semantic-versioning")
 
-    // todo Maven Central deploy?
-    // `maven-publish`
-    // `signing`
-    // id("org.danilopianini.publish-on-central")
+    // Plugin used to enable ScalaTest inside Gradle
+    id("com.github.maiflai.scalatest")
 }
 
 repositories {
@@ -25,48 +23,13 @@ gitSemVer {
     version = computeGitSemVer()
 }
 
-/*
-// todo Maven Central Deploy configuration?
-publishOnCentral {
-    projectDescription.set("description")
-    projectLongName.set("full project name")
-    licenseName.set("your license") // Defaults to "Apache License, Version 2.0"
-    licenseUrl.set("link to your license") // Defaults to http://www.apache.org/licenses/LICENSE-2.0
-    projectUrl.set("website url")
-    scmConnection.set("git:git@github.com:youruser/yourrepo")
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("library") {
-            from(components["java"])
-        }
-    }
-    repositories {
-        maven {
-            name = "myOrgPrivateRepo"
-            url = uri("build/my-repo")
-        }
-    }
-}
-*/
-
 dependencies {
-    // Use Scala 2.13 library in our project
+    // Enables Scala 2.13 Standard Library inside every subproject
     implementation("org.scala-lang:scala-library:_")
 
-    // Use JUnit Jupiter API for testing.
-    testImplementation("org.junit.jupiter:junit-jupiter-api:_")
-
-    // https://mvnrepository.com/artifact/org.scalatest/scalatest
+    // The ScalaTest framework
     testImplementation("org.scalatest:scalatest_2.13:_")
-    testImplementation("org.scalatestplus:scalatestplus-junit_2.13:1.0.0-M2")
 
-    // Use JUnit Jupiter Engine for testing.
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
-
-tasks.test {
-    // Use junit platform for unit tests.
-    useJUnitPlatform()
+    // dependency required by the Maiflai Scalatest plugin to correctly generate HTML test reports
+    testRuntimeOnly("com.vladsch.flexmark:flexmark-all:_")
 }
