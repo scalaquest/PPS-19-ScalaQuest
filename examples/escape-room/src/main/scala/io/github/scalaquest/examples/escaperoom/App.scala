@@ -1,6 +1,6 @@
 package io.github.scalaquest.examples.escaperoom
 
-trait App
+trait AppObj
 
 // trying to import code from core and cli module,
 // only acceding the core module
