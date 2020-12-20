@@ -12,7 +12,8 @@ jobs:
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Repo checkout
+        uses: actions/checkout@v2
 
       # The project uses java 11 (LTS) with scala 13
       - name: Set up JDK 11
@@ -25,6 +26,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Run tests with Gradle
         run: ./gradlew test
