@@ -20,15 +20,21 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      # Use cache if available
+
+      # Use cache if available for Gradle
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build with Gradle without Tests
+        run: ./gradlew build -x test
+
 
   Test:
     runs-on: ubuntu-latest
@@ -48,8 +54,12 @@ jobs:
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Run tests with Gradle
         run: ./gradlew test
