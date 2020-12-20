@@ -1,10 +1,17 @@
 name: Scala with Gradle CI
 
 on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
   push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  BuildTest:
+  Build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -33,4 +40,4 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build and Test with Gradle
-        run: ./gradlew build --scan
+        run: ./gradlew build
