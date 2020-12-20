@@ -11,6 +11,9 @@ plugins {
 
     // Plugin used to enable ScalaTest inside Gradle
     id("com.github.maiflai.scalatest")
+
+    // A scala linter-formatter
+    id("com.diffplug.spotless")
 }
 
 repositories {
@@ -21,6 +24,14 @@ group = "io.github.scalaquest"
 
 gitSemVer {
     version = computeGitSemVer()
+}
+
+spotless {
+    scala {
+        // by default, all `.scala` and `.sc` files in the java sourcesets will be formatted
+
+        scalafmt() // has its own section below
+    }
 }
 
 dependencies {

@@ -1,2 +1,4 @@
 subprojects {
 }
+
+buildscript { repositories { mavenCentral() }}
