@@ -8,15 +8,15 @@ trait Model {
 
   type I <: Item
 
-  type Effect = S => S
+  type Update = S => S
 
   trait State { self: S =>
-    def game: Game
+    def game: GameState
 
     def messages: Seq[Message]
   }
 
-  trait Game {
+  trait GameState {
     def player: Player
 
     def ended: Boolean
@@ -32,6 +32,6 @@ trait Model {
 
     def name: String
 
-    def use(action: Action): Option[Effect]
+    def use(action: Action): Option[Update]
   }
 }

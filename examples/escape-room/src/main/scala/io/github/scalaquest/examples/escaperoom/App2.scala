@@ -30,7 +30,7 @@ object Model {
   )
 
   val state: SimpleState = SimpleState(
-    game = SimpleGame(
+    game = SimpleGameState(
       player = SimplePlayer(
         bag = Set(),
         location = room1
@@ -40,8 +40,8 @@ object Model {
     messages = Seq(GameStarted)
   )
 
-  def gameLens: Lens[SimpleState, SimpleGame] = GenLens[SimpleState](_.game)
-  def playerLens: Lens[SimpleGame, SimplePlayer] = GenLens[SimpleGame](_.player)
+  def gameLens: Lens[SimpleState, SimpleGameState] = GenLens[SimpleState](_.game)
+  def playerLens: Lens[SimpleGameState, SimplePlayer] = GenLens[SimpleGameState](_.player)
   def locationLens: Lens[SimplePlayer, Room] = GenLens[SimplePlayer](_.location)
   def messagesLens: Lens[SimpleState, Seq[Message]] =
     GenLens[SimpleState](_.messages)

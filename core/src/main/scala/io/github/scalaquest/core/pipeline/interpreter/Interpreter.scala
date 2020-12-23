@@ -4,7 +4,7 @@ import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.resolver.ResolverResult
 
 trait InterpreterResult {
-  def effect: Model#Effect
+  def effect: Model#Update
 }
 
 trait Interpreter[S <: Model#State] {
