@@ -22,8 +22,7 @@ object SQuest {
   def apply[S <: Model#State](
       _pipelineFactory: S => Pipeline[S]
   ): SQuest[S] = new SQuestTemplate[S] {
-    override def pipelineFactory(state: S): Pipeline[S] = _pipelineFactory(
-      state
-    )
+    override def pipelineFactory(state: S): Pipeline[S] =
+      _pipelineFactory(state)
   }
 }

@@ -7,7 +7,6 @@ class CLITest extends AnyWordSpec {
   "A Set" when {
     "empty" should {
       "have size 0" in {
-        case class TestCli() extends CLI
         assert(Set.empty.isEmpty)
       }
 

@@ -38,6 +38,10 @@ dependencies {
     // Enables Scala 2.13 Standard Library inside every subproject
     implementation("org.scala-lang:scala-library:_")
 
+    // Lenses
+    implementation("com.github.julien-truffaut:monocle-core_2.13:2.0.3")
+    implementation("com.github.julien-truffaut:monocle-macro_2.13:2.0.3")
+
     // The ScalaTest framework
     testImplementation("org.scalatest:scalatest_2.13:_")
 

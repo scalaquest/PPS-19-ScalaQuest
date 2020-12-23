@@ -9,5 +9,5 @@ dependencies {
     // todo more module-specific dependencies here
 
     // library for functional IO.
-    implementation("dev.zio:zio_2.13:_")
+    api("dev.zio:zio_2.13:_")
 }

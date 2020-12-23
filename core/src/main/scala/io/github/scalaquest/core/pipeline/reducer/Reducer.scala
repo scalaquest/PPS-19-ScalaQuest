@@ -8,7 +8,7 @@ trait ReducerResult[S <: Model#State] {
 }
 
 trait Reducer[S <: Model#State] {
-    def reduce(interpreterResult: InterpreterResult): ReducerResult[S]
+  def reduce(interpreterResult: InterpreterResult): ReducerResult[S]
 }
 
 object Reducer {
