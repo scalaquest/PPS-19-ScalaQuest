@@ -1,7 +1,7 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.core.model.{Message, Model}
-import io.github.scalaquest.core.{MessagePusher, SQuest}
+import io.github.scalaquest.core.{MessagePusher, Game}
 import zio.console._
 import zio.{UIO, ZIO}
 
@@ -19,7 +19,7 @@ object CLI {
     pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
 
   def startGame[S <: State](
-      game: SQuest[S],
+      game: Game[S],
       pusher: MessagePusher
   )(state: S): ZIO[Console, Exception, Unit] =
     for {
@@ -28,7 +28,7 @@ object CLI {
     } yield ()
 
   def gameLoop[S <: State](
-      game: SQuest[S],
+      game: Game[S],
       pusher: MessagePusher
   )(state: S): ZIO[Console, Exception, Unit] =
     for {
@@ -47,7 +47,7 @@ object CLI {
 
   def apply[S <: State](
       state: S,
-      game: SQuest[S],
+      game: Game[S],
       pusher: MessagePusher
   ): CLI = new CLI {
     override def start: ZIO[Console, Exception, Unit] =

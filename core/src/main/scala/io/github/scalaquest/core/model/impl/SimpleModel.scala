@@ -11,7 +11,7 @@ object SimpleModel extends Model {
   case class SimpleItem(
       name: String
   ) extends Item {
-    override def use(action: Action): Option[Effect] = Some(x => x)
+    override def use(action: Action): Option[Update] = Some(x => x)
   }
 
   case class SimplePlayer(
@@ -19,13 +19,13 @@ object SimpleModel extends Model {
       location: Room
   ) extends Player
 
-  case class SimpleGame(
+  case class SimpleGameState(
       player: SimplePlayer,
       ended: Boolean
-  ) extends Game
+  ) extends GameState
 
   case class SimpleState(
-      game: SimpleGame,
+      game: SimpleGameState,
       messages: Seq[Message]
   ) extends State
 }
