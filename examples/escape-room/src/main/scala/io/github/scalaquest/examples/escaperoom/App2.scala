@@ -1,6 +1,6 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.{MessagePusher, SQuest}
+import io.github.scalaquest.core.{MessagePusher, Game}
 import zio.{ExitCode, URIO}
 import io.github.scalaquest.core.model.impl.SimpleModel._
 import io.github.scalaquest.core.model.{Message, Room, SimpleRoom}
@@ -40,8 +40,10 @@ object Model {
     messages = Seq(GameStarted)
   )
 
-  def gameLens: Lens[SimpleState, SimpleGameState] = GenLens[SimpleState](_.game)
-  def playerLens: Lens[SimpleGameState, SimplePlayer] = GenLens[SimpleGameState](_.player)
+  def gameLens: Lens[SimpleState, SimpleGameState] =
+    GenLens[SimpleState](_.game)
+  def playerLens: Lens[SimpleGameState, SimplePlayer] =
+    GenLens[SimpleGameState](_.player)
   def locationLens: Lens[SimplePlayer, Room] = GenLens[SimplePlayer](_.location)
   def messagesLens: Lens[SimpleState, Seq[Message]] =
     GenLens[SimpleState](_.messages)
@@ -50,7 +52,7 @@ object Model {
   case object WentNorth extends Message
   case object WentSouth extends Message
 
-  def game: SQuest[SimpleState] = new SQuest[SimpleState] {
+  def game: Game[SimpleState] = new Game[SimpleState] {
     override def send(
         input: String
     )(state: SimpleState): Either[String, SimpleState] =
