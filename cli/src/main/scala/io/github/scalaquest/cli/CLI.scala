@@ -13,7 +13,9 @@ object CLI {
 
   type State = Model#State
 
-  def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
+  def printNotifications(
+      pusher: MessagePusher
+  )(messages: Seq[Message]): String =
     pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
 
   def startGame[S <: State](
@@ -33,13 +35,14 @@ object CLI {
       input <- getStrLn
       res <- UIO.succeed((game send input)(state))
       (out, nextState) <- UIO.succeed(res match {
-        case Left(err)      => (err, state)
-        case Right(updated) => (printNotifications(pusher)(updated.messages), updated)
+        case Left(err) => (err, state)
+        case Right(updated) =>
+          (printNotifications(pusher)(updated.messages), updated)
       })
       _ <- putStrLn(out)
-      _ <-
-        if (!nextState.game.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher)
-        else ZIO.unit
+      _ <- if (!nextState.game.ended)
+        UIO.succeed(nextState) flatMap gameLoop(game, pusher)
+      else ZIO.unit
     } yield ()
 
   def apply[S <: State](
