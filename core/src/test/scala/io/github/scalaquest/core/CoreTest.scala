@@ -7,7 +7,6 @@ class CoreTest extends AnyWordSpec {
   "A Set" when {
     "empty" should {
       "have size 0" in {
-        case class TestCore() extends Core
         assert(Set.empty.isEmpty)
       }
 

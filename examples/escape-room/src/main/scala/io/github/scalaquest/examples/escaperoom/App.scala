@@ -8,8 +8,6 @@ trait AppObj
 import io.github.scalaquest.cli._
 import io.github.scalaquest.core._
 
-case class TestImportCLI() extends CLI
-case class TestImportCore() extends Core
 trait EscapeRoom
 
 object App {
