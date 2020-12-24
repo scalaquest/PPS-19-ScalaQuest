@@ -28,9 +28,7 @@ gitSemVer {
 
 spotless {
     scala {
-        // by default, all `.scala` and `.sc` files in the java sourcesets will be formatted
-
-        scalafmt() // has its own section below
+        scalafmt("2.7.5").configFile(rootDir.absolutePath + "/.scalafmt.conf")
     }
 }
 
