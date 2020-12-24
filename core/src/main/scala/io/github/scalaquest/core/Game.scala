@@ -8,21 +8,16 @@ trait Game[S <: Model#State] {
 }
 
 trait GameTemplate[S <: Model#State] extends Game[S] {
-
   def pipelineFactory(state: S): Pipeline[S]
-
-  override def send(input: String)(state: S): Either[String, S] =
-    pipelineFactory(state) run input
+  override def send(input: String)(state: S): Either[String, S] = pipelineFactory(state) run input
 }
 
 trait MessagePusher extends (Seq[Message] => Seq[String])
 
 object Game {
-
-  def apply[S <: Model#State](
-      _pipelineFactory: S => Pipeline[S]
-  ): Game[S] = new GameTemplate[S] {
-    override def pipelineFactory(state: S): Pipeline[S] =
-      _pipelineFactory(state)
-  }
+  def apply[S <: Model#State](_pipelineFactory: S => Pipeline[S]): Game[S] =
+    new GameTemplate[S] {
+      override def pipelineFactory(state: S): Pipeline[S] =
+        _pipelineFactory(state)
+    }
 }
