@@ -14,48 +14,25 @@ object Model {
   case object GameStarted extends Message
   case object TestMessage extends Message
 
-  def room1: Room = SimpleRoom(
-    "room1",
-    () =>
-      Map(
-        NORTH -> room2
-      )
-  )
-  def room2: Room = SimpleRoom(
-    "room2",
-    () =>
-      Map(
-        SOUTH -> room1
-      )
-  )
+  def room1: Room = SimpleRoom("room1", () => Map(NORTH -> room2))
+  def room2: Room = SimpleRoom("room2", () => Map(SOUTH -> room1))
 
   val state: SimpleState = SimpleState(
-    game = SimpleGameState(
-      player = SimplePlayer(
-        bag = Set(),
-        location = room1
-      ),
-      ended = false
-    ),
+    game = SimpleGameState(player = SimplePlayer(bag = Set(), location = room1), ended = false),
     messages = Seq(GameStarted)
   )
 
-  def gameLens: Lens[SimpleState, SimpleGameState] =
-    GenLens[SimpleState](_.game)
-  def playerLens: Lens[SimpleGameState, SimplePlayer] =
-    GenLens[SimpleGameState](_.player)
+  def gameLens: Lens[SimpleState, SimpleGameState] = GenLens[SimpleState](_.game)
+  def playerLens: Lens[SimpleGameState, SimplePlayer] = GenLens[SimpleGameState](_.player)
   def locationLens: Lens[SimplePlayer, Room] = GenLens[SimplePlayer](_.location)
-  def messagesLens: Lens[SimpleState, Seq[Message]] =
-    GenLens[SimpleState](_.messages)
+  def messagesLens: Lens[SimpleState, Seq[Message]] = GenLens[SimpleState](_.messages)
 
   case class Describe(room: Room) extends Message
   case object WentNorth extends Message
   case object WentSouth extends Message
 
   def game: Game[SimpleState] = new Game[SimpleState] {
-    override def send(
-        input: String
-    )(state: SimpleState): Either[String, SimpleState] =
+    override def send(input: String)(state: SimpleState): Either[String, SimpleState] =
       for {
         dir <- input match {
           case "go n" => Right(NORTH)
@@ -63,25 +40,12 @@ object Model {
           case _      => Left("Only NORTH and SOUTH directions supported.")
         }
         s <- state.game.player.location neighbors dir match {
-          case Some(room) =>
-            Right(
-              ((gameLens composeLens playerLens composeLens locationLens) set room)(
-                state
-              )
-            )
-          case _ => Left("There is no such direction.")
+          case Some(room) => Right(((gameLens composeLens playerLens composeLens locationLens) set room)(state))
+          case _          => Left("There is no such direction.")
         }
         m <- dir match {
-          case NORTH =>
-            Right(
-              messagesLens
-                .set(Seq(WentNorth, Describe(s.game.player.location)))(s)
-            )
-          case SOUTH =>
-            Right(
-              messagesLens
-                .set(Seq(WentSouth, Describe(s.game.player.location)))(s)
-            )
+          case NORTH => Right(messagesLens.set(Seq(WentNorth, Describe(s.game.player.location)))(s))
+          case SOUTH => Right(messagesLens.set(Seq(WentSouth, Describe(s.game.player.location)))(s))
         }
       } yield m
   }
@@ -102,9 +66,5 @@ object App2 extends zio.App {
   import Model._
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
-    CLI[SimpleState](
-      state,
-      game,
-      pusher
-    ).start.exitCode
+    CLI[SimpleState](state, game, pusher).start.exitCode
 }
