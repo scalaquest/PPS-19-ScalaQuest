@@ -8,9 +8,7 @@ trait InterpreterResult {
 }
 
 trait Interpreter[S <: Model#State] {
-  def interpret(
-      resolverResult: ResolverResult
-  ): Either[String, InterpreterResult]
+  def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult]
 }
 
 object Interpreter {

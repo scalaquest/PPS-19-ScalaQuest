@@ -11,7 +11,5 @@ import io.github.scalaquest.core._
 trait EscapeRoom
 
 object App {
-  def main(args: Array[String]): Unit = {
-    println("Hello Viroli!")
-  }
+  def main(args: Array[String]): Unit = println("Hello Viroli!")
 }
