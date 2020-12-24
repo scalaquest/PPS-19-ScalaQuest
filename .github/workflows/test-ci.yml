@@ -38,7 +38,7 @@ jobs:
       - name: Check Scala formatting with Spotless
         run: ./gradlew spotlessCheck
 
-  Build:
+  Compile:
     # The matrix runs only if the scala style is correct
     needs: StyleCheck
     runs-on: ${{ matrix.os }}
@@ -71,9 +71,9 @@ jobs:
       - name: Assemble Scala sources with Gradle
         run: ./gradlew assemble
 
-  Tests:
+  Test:
     runs-on: ubuntu-latest
-    needs: [StyleCheck, Build]
+    needs: [StyleCheck, Compile]
 
     steps:
       - name: Checkout repository
@@ -96,5 +96,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Check and tests with Gradle
+      - name: Check and Test with Gradle
         run: ./gradlew check
