@@ -25,7 +25,7 @@ dependencies {
     implementation("org.danilopianini:git-sensitive-semantic-versioning:_")
     implementation("org.danilopianini:publish-on-central:_")
     implementation("com.github.maiflai:gradle-scalatest:_")
-    implementation("com.diffplug.spotless:spotless-plugin-gradle:_")
+    implementation("gradle.plugin.cz.alenkacz:gradle-scalafmt:_")
 
     // Makes Detekt configurable
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")

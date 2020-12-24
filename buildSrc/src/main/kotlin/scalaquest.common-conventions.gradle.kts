@@ -13,7 +13,7 @@ plugins {
     id("com.github.maiflai.scalatest")
 
     // A scala linter-formatter
-    id("com.diffplug.spotless")
+    id("cz.alenkacz.gradle.scalafmt")
 }
 
 repositories {
@@ -26,12 +26,8 @@ gitSemVer {
     version = computeGitSemVer()
 }
 
-spotless {
-    scala {
-        // by default, all `.scala` and `.sc` files in the java sourcesets will be formatted
-
-        scalafmt() // has its own section below
-    }
+scalafmt {
+    configFilePath = rootDir.absolutePath + "/.scalafmt.conf"
 }
 
 dependencies {
