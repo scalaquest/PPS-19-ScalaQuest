@@ -24,17 +24,6 @@ jobs:
         with:
           java-version: 11
 
-      # Use cache if available for Gradle
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Check Scala formatting with Spotless
         run: ./gradlew checkScalafmtAll
 
@@ -57,17 +46,6 @@ jobs:
         with:
           java-version: 11
 
-      # Use cache if available for Gradle
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Assemble Scala sources with Gradle
         run: ./gradlew assemble
 
@@ -84,17 +62,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-
-      # Use cache if available for Gradle
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
 
       - name: Check and Test with Gradle
         run: ./gradlew check
