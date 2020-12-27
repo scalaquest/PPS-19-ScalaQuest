@@ -25,6 +25,6 @@ trait Model {
 
   trait Item { item: I =>
     def name: String
-    def use(action: Action): Option[Update]
+    def use(action: Action, state: S): Option[Update]
   }
 }

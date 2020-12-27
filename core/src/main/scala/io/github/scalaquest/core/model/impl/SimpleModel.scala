@@ -9,7 +9,7 @@ object SimpleModel extends Model {
   override type I = SimpleItem
 
   case class SimpleItem(name: String) extends Item {
-    override def use(action: Action): Option[Update] = Some(x => x)
+    override def use(action: Action, state: S): Option[Update] = ??? //properties.reduce()
   }
 
   case class SimplePlayer(bag: Set[SimpleItem], location: Room) extends Player
