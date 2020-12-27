@@ -24,17 +24,13 @@ object CLI {
   def gameLoop[S <: State](game: Game[S], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
     for {
       input <- getStrLn
-      res <- UIO.succeed((game send input)(state))
+      res   <- UIO.succeed((game send input)(state))
       (out, nextState) <- UIO.succeed(res match {
-        case Left(err) => (err, state)
-        case Right(updated) =>
-          (printNotifications(pusher)(updated.messages), updated)
+        case Left(err)      => (err, state)
+        case Right(updated) => (printNotifications(pusher)(updated.messages), updated)
       })
       _ <- putStrLn(out)
-      _ <-
-        if (!nextState.game.ended)
-          UIO.succeed(nextState) flatMap gameLoop(game, pusher)
-        else ZIO.unit
+      _ <- if (!nextState.game.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher) else ZIO.unit
     } yield ()
 
   def apply[S <: State](state: S, game: Game[S], pusher: MessagePusher): CLI =

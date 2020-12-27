@@ -12,19 +12,20 @@ trait Pipeline[S <: Model#State] {
 }
 
 object Pipeline {
+
   def apply[S <: Model#State](
-      lexer: Lexer,
-      parser: Parser,
-      resolver: Resolver,
-      interpreterFactory: S => Interpreter[S],
-      reducerFactory: S => Reducer[S]
+    lexer: Lexer,
+    parser: Parser,
+    resolver: Resolver,
+    interpreterFactory: S => Interpreter[S],
+    reducerFactory: S => Reducer[S]
   )(state: S): Pipeline[S] =
     (rawSentence: String) =>
       for {
-        lr <- (lexer tokenize rawSentence) toRight "Couldn't understand input."
-        pr <- (parser parse lr) toRight "Couldn't understand input."
-        rr <- resolver resolve pr
-        ir <- interpreterFactory(state) interpret rr
+        lr  <- (lexer tokenize rawSentence) toRight "Couldn't understand input."
+        pr  <- (parser parse lr) toRight "Couldn't understand input."
+        rr  <- resolver resolve pr
+        ir  <- interpreterFactory(state) interpret rr
         rdr <- Right(reducerFactory(state) reduce ir)
       } yield rdr.state
 }
