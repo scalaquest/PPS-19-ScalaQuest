@@ -27,4 +27,5 @@ trait Model {
     def name: String
     def use(action: Action, state: S): Option[Update]
   }
+
 }
