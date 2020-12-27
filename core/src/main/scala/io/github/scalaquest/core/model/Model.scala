@@ -6,7 +6,8 @@ trait Model {
 
   type S <: State
   type I <: Item
-  type Update = S => S
+  type Update   = S => S
+  type Property = PartialFunction[(Action, Item, S), Update]
 
   trait State { self: S =>
     def game: GameState
@@ -25,6 +26,7 @@ trait Model {
 
   trait Item { item: I =>
     def name: String
+    var properties: Set[Property] = Set()
     def use(action: Action, state: S): Option[Update]
   }
 

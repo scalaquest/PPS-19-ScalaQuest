@@ -6,21 +6,18 @@ import io.github.scalaquest.core.model.{Action, Message, Model, Room}
 // Here you can implement new type definitions
 object SimpleModel extends Model {
 
-  override type S = SimpleState
-  override type I = SimpleItem
-  type Property   = PartialFunction[(Action, Item, S), Update]
+  override type S = State
+  override type I = Item
 
-  case class SimpleItem(name: String) extends Item {
-    var properties: Set[Property] = Set()
+  case class SimpleItem(name: String) extends Item with Takeable {
 
     // valutare se l'azione è contenuta nel set delle azioni consentite
     // return il corrispondente update
     override def use(action: Action, state: S): Option[Update] =
       properties.reduce(_ orElse _).lift((action, this, state))
-
   }
 
-  trait Takeable extends SimpleItem {
+  trait Takeable extends Item {
     val isOpen: Boolean = false
 
     val takeObject: Update = state => {
@@ -32,11 +29,11 @@ object SimpleModel extends Model {
       case (Take, _, _) => takeObject // controlla se l'oggetto è nella room
     }
 
-    super.properties = super.properties + checkTakeable
+    properties += checkTakeable
 
   }
 
-  case class SimplePlayer(bag: Set[SimpleItem], location: Room) extends Player
+  case class SimplePlayer(bag: Set[Item], location: Room) extends Player
 
   case class SimpleGameState(player: SimplePlayer, ended: Boolean) extends GameState
 
