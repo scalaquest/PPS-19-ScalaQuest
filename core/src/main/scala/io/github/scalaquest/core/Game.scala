@@ -15,9 +15,9 @@ trait GameTemplate[S <: Model#State] extends Game[S] {
 trait MessagePusher extends (Seq[Message] => Seq[String])
 
 object Game {
+
   def apply[S <: Model#State](_pipelineFactory: S => Pipeline[S]): Game[S] =
     new GameTemplate[S] {
-      override def pipelineFactory(state: S): Pipeline[S] =
-        _pipelineFactory(state)
+      override def pipelineFactory(state: S): Pipeline[S] = _pipelineFactory(state)
     }
 }

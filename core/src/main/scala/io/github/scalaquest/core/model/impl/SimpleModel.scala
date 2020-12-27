@@ -8,24 +8,13 @@ object SimpleModel extends Model {
   override type S = SimpleState
   override type I = SimpleItem
 
-  case class SimpleItem(
-      name: String
-  ) extends Item {
+  case class SimpleItem(name: String) extends Item {
     override def use(action: Action): Option[Update] = Some(x => x)
   }
 
-  case class SimplePlayer(
-      bag: Set[SimpleItem],
-      location: Room
-  ) extends Player
+  case class SimplePlayer(bag: Set[SimpleItem], location: Room) extends Player
 
-  case class SimpleGameState(
-      player: SimplePlayer,
-      ended: Boolean
-  ) extends GameState
+  case class SimpleGameState(player: SimplePlayer, ended: Boolean) extends GameState
 
-  case class SimpleState(
-      game: SimpleGameState,
-      messages: Seq[Message]
-  ) extends State
+  case class SimpleState(game: SimpleGameState, messages: Seq[Message]) extends State
 }
