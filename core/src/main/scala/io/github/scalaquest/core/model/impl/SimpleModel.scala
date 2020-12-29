@@ -14,16 +14,16 @@ object SimpleModel extends Model {
    * starting from an action. It is a Partial function that makes possible to intercept
    * Actions directed to this item, and process them.
    */
-  type Triggers = PartialFunction[(Action, Item, S), Update]
+  type Triggers = PartialFunction[(Action, I, S), Update]
 
   override type S = SimpleState
-  override type I = Item
+  override type I = BehaviorableItem
 
   /**
    * An item that can have one or more behaviors. Conditions are evaluated and the first one matching
    * is executed.
    */
-  trait BehaviorableItem extends I {
+  trait BehaviorableItem extends Item {
     def behaviors: Set[Behavior] = Set()
 
     override def use(action: Action, state: S): Option[Update] =
@@ -39,10 +39,9 @@ object SimpleModel extends Model {
       this.itemsInRooms.collectFirst({ case (room, items) if items.contains(item) => room }).isDefined
   }
 
-  case class SimpleGameState(player: SimplePlayer, ended: Boolean) extends GameState with GameStateUtils {
-    override def rooms: Set[Room]                = ???
-    override def itemsInRooms: Map[Room, Set[I]] = ???
-  }
+  case class SimpleGameState(player: SimplePlayer, ended: Boolean, rooms: Set[Room], itemsInRooms: Map[Room, Set[I]])
+    extends GameState
+    with GameStateUtils {}
 
   case class SimpleState(game: SimpleGameState, messages: Seq[Message]) extends State
 

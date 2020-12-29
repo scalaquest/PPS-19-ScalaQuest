@@ -18,7 +18,12 @@ object Model {
   def room2: Room = SimpleRoom("room2", () => Map(SOUTH -> room1))
 
   val state: SimpleState = SimpleState(
-    game = SimpleGameState(player = SimplePlayer(bag = Set(), location = room1), ended = false),
+    game = SimpleGameState(
+      player = SimplePlayer(bag = Set(), location = room1),
+      ended = false,
+      itemsInRooms = Map(),
+      rooms = Set()
+    ),
     messages = Seq(GameStarted)
   )
 

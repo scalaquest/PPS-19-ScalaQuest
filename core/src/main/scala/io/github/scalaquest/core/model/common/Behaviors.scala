@@ -3,7 +3,8 @@ package io.github.scalaquest.core.model.common
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.{Close, Enter, Open, Take}
 import io.github.scalaquest.core.model.common.Items.Key
-import io.github.scalaquest.core.model.impl.Behavior.{Behavior, ExtraUtils, ComposableBehavior}
+import io.github.scalaquest.core.model.impl.Behavior.{Behavior, ComposableBehavior, ExtraUtils}
+import io.github.scalaquest.core.model.impl.SimpleModel
 import io.github.scalaquest.core.model.impl.SimpleModel.{I, S, Triggers, Update}
 import monocle.Lens
 import monocle.macros.GenLens
@@ -26,8 +27,8 @@ object Behaviors {
     private def take(item: I): Update =
       state => {
         // a way to easily modify the state are lens. Maybe it can be optimized
-        def bagLens: Lens[S, Set[I]]              = GenLens[S](_.game.player.bag)
-        def itemsLens: Lens[S, Map[Room, Set[I]]] = GenLens[S](_.game.itemsInRooms)
+        val bagLens   = GenLens[S](_.game.player.bag)
+        val itemsLens = GenLens[S](_.game.itemsInRooms)
 
         // remove the item from the current room
         val currRoom         = state.game.player.location
@@ -86,8 +87,8 @@ object Behaviors {
 
     private def enterRoom(): Update =
       state => {
-        def currRoomLens: Lens[S, Room] = GenLens[S](_.game.player.location)
-        val updLocState                 = currRoomLens.modify(_ => endRoom)(state)
+        val currRoomLens = GenLens[S](_.game.player.location)
+        val updLocState  = currRoomLens.modify(_ => endRoom)(state)
         applyExtraIfPresent(onEnterExtra)(updLocState)
       }
   }

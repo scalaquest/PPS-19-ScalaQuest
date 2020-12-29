@@ -26,7 +26,7 @@ trait Model {
     def location: Room
   }
 
-  trait Item { item: I =>
+  trait Item { self: I =>
     def name: String
     def use(action: Action, state: S): Option[Update]
   }
