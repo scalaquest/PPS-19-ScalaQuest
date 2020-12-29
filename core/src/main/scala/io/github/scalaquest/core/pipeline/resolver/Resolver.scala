@@ -1,20 +1,19 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.{
+import io.github.scalaquest.core.parsing.{
   Action,
   DitransitiveAction,
   IntransitiveAction,
-  Model,
   TransitiveAction
 }
+import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.parser.{AST, ParserResult}
 
 sealed trait Statement
 
 object Statement {
   final case class Intransitive(action: IntransitiveAction) extends Statement
-  final case class Transitive(action: TransitiveAction, target: Model#Item)
-      extends Statement
+  final case class Transitive(action: TransitiveAction, target: Model#Item) extends Statement
   final case class Ditransitive(
       action: DitransitiveAction,
       target1: Model#Item,

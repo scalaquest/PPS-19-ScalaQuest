@@ -1,5 +1,7 @@
 package io.github.scalaquest.core.model
 
+import io.github.scalaquest.core.parsing.Action
+
 trait Message
 
 trait Model {

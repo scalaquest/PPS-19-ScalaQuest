@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.impl
 
-import io.github.scalaquest.core.model.{Action, Message, Model, Room}
+import io.github.scalaquest.core.parsing.Action
+import io.github.scalaquest.core.model.{Message, Model, Room}
 
 // Here you can implement new type definitions
 object SimpleModel extends Model {
