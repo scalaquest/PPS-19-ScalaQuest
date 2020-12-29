@@ -18,7 +18,7 @@ case class SimpleInterpreter[S <: Model#State](state: S) extends Interpreter[S] 
 
     resolverResult.statement match {
       case Intransitive(action)                   => ???
-      case Transitive(action, target)             => ???
+      case Transitive(action, target)             => ??? //target.use(action, state)
       case Ditransitive(action, target1, target2) => ???
     }
   }

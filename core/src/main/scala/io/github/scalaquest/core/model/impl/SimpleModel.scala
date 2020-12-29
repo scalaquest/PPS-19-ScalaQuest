@@ -1,41 +1,49 @@
 package io.github.scalaquest.core.model.impl
 
-import io.github.scalaquest.core.model.common.Actions._
+import io.github.scalaquest.core.model.impl.Behavior.Behavior
 import io.github.scalaquest.core.model.{Action, Message, Model, Room}
 
-// Here you can implement new type definitions
+/**
+ * SimpleModel is a possible implementation of the model, that takes use of the Behavior mechanism.
+ * Here you can implement new type definitions
+ */
 object SimpleModel extends Model {
 
-  override type S = State
+  /**
+   * Trigger (ex-property) is a proper name, as it is what triggers a reaction,
+   * starting from an action. It is a Partial function that makes possible to intercept
+   * Actions directed to this item, and process them.
+   */
+  type Triggers = PartialFunction[(Action, Item, S), Update]
+
+  override type S = SimpleState
   override type I = Item
 
-  case class SimpleItem(name: String) extends Item with Takeable {
+  /**
+   * An item that can have one or more behaviors. Conditions are evaluated and the first one matching
+   * is executed.
+   */
+  trait BehaviorableItem extends I {
+    def behaviors: Set[Behavior] = Set()
 
-    // valutare se l'azione è contenuta nel set delle azioni consentite
-    // return il corrispondente update
     override def use(action: Action, state: S): Option[Update] =
-      properties.reduce(_ orElse _).lift((action, this, state))
+      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
   }
 
-  trait Takeable extends Item {
-    val isOpen: Boolean = false
+  case class SimplePlayer(bag: Set[I], location: Room) extends Player
 
-    val takeObject: Update = state => {
-      // togli l'oggetto corrente dalla room, mettilo nella bag
-      state
-    }
+  trait GameStateUtils extends GameState {
+    def isInBag(item: I): Boolean = this.player.bag.contains(item)
 
-    val checkTakeable: Property = {
-      case (Take, _, _) => takeObject // controlla se l'oggetto è nella room
-    }
-
-    properties += checkTakeable
-
+    def isInCurrentRoom(item: I): Boolean =
+      this.itemsInRooms.collectFirst({ case (room, items) if items.contains(item) => room }).isDefined
   }
 
-  case class SimplePlayer(bag: Set[Item], location: Room) extends Player
-
-  case class SimpleGameState(player: SimplePlayer, ended: Boolean) extends GameState
+  case class SimpleGameState(player: SimplePlayer, ended: Boolean) extends GameState with GameStateUtils {
+    override def rooms: Set[Room]                = ???
+    override def itemsInRooms: Map[Room, Set[I]] = ???
+  }
 
   case class SimpleState(game: SimpleGameState, messages: Seq[Message]) extends State
+
 }
