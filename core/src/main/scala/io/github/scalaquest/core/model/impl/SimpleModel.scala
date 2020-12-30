@@ -14,7 +14,8 @@ object SimpleModel extends Model {
    * starting from an action. It is a Partial function that makes possible to intercept
    * Actions directed to this item, and process them.
    */
-  type Triggers = PartialFunction[(Action, I, S), Update]
+  type TransitiveTriggers   = PartialFunction[(Action, I, S), Update]
+  type DitransitiveTriggers = PartialFunction[(Action, I, I, S), Update]
 
   override type S = SimpleState
   override type I = BehaviorableItem
@@ -26,8 +27,12 @@ object SimpleModel extends Model {
   trait BehaviorableItem extends Item {
     def behaviors: Set[Behavior] = Set()
 
-    override def use(action: Action, state: S): Option[Update] =
+    override def useTransitive(action: Action, state: S): Option[Update] =
       behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
+
+    override def useDitransitive(action: Action, sideItem: I, state: S): Option[Update] =
+      behaviors.map(_.ditransitiveTriggers).reduce(_ orElse _).lift((action, this, sideItem, state))
+
   }
 
   case class SimplePlayer(bag: Set[I], location: Room) extends Player

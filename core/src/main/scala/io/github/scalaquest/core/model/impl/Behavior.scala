@@ -8,7 +8,8 @@ object Behavior {
    * A sort of plugin that can be added to an item to simulate a specific behaviors.
    */
   trait Behavior {
-    def triggers: Triggers
+    def triggers: TransitiveTriggers               = PartialFunction.empty
+    def ditransitiveTriggers: DitransitiveTriggers = PartialFunction.empty
   }
 
   trait ExtraUtils extends Behavior {
@@ -16,9 +17,13 @@ object Behavior {
   }
 
   trait ComposableBehavior extends Behavior {
-    def otherBehavior: Behavior
-    def baseTrigger: Triggers
+    def superBehavior: Behavior
+    def baseTrigger: TransitiveTriggers                = PartialFunction.empty
+    def baseDitransitiveTriggers: DitransitiveTriggers = PartialFunction.empty
 
-    override def triggers: Triggers = Set(baseTrigger, otherBehavior.triggers).reduce(_ orElse _)
+    override def triggers: TransitiveTriggers = Seq(baseTrigger, superBehavior.triggers).reduce(_ orElse _)
+
+    override def ditransitiveTriggers: DitransitiveTriggers =
+      Seq(baseDitransitiveTriggers, superBehavior.ditransitiveTriggers).reduce(_ orElse _)
   }
 }
