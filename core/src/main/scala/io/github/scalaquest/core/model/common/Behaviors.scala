@@ -4,9 +4,7 @@ import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.{Close, Enter, Open, Take}
 import io.github.scalaquest.core.model.common.Items.Key
 import io.github.scalaquest.core.model.impl.Behavior.{Behavior, ComposableBehavior, ExtraUtils}
-import io.github.scalaquest.core.model.impl.SimpleModel
-import io.github.scalaquest.core.model.impl.SimpleModel.{I, S, Triggers, Update}
-import monocle.Lens
+import io.github.scalaquest.core.model.impl.SimpleModel.{DitransitiveTriggers, I, S, TransitiveTriggers, Update}
 import monocle.macros.GenLens
 
 object Behaviors {
@@ -17,7 +15,7 @@ object Behaviors {
    */
   case class Takeable(onTakeExtra: Option[Update] = None) extends Behavior with ExtraUtils {
 
-    override def triggers: Triggers = {
+    override def triggers: TransitiveTriggers = {
       // controlla se l'oggetto è nella room
       case (Take, item, state) if state.game.isInCurrentRoom(item) && !state.game.isInBag(item) => take(item)
     }
@@ -54,23 +52,26 @@ object Behaviors {
   ) extends Behavior
     with ExtraUtils {
 
-    override def triggers: Triggers = {
+    override def triggers: TransitiveTriggers = {
       case (Open, item, state) if state.game.isInCurrentRoom(item) && hasKeyOrNotNeeded(state) && !isOpen => open()
       case (Close, item, state) if state.game.isInCurrentRoom(item) && hasKeyOrNotNeeded(state) && isOpen => close()
     }
 
-    private def hasKeyOrNotNeeded(state: S): Boolean = needsKey.fold(true)(state.game.isInBag(_))
+    override def ditransitiveTriggers: DitransitiveTriggers = {
+      case (Enter, _, _key, _) if needsKey.contains(_key) && !isOpen => open()
+    }
+
+    def hasKeyOrNotNeeded(state: S): Boolean = needsKey.fold(true)(state.game.isInBag(_))
 
     /**
      * Opens the item and executes eventual extra actions.
      */
-    private def open(): Update = state => { isOpen = true; applyExtraIfPresent(onOpenExtra)(state) }
+    def open(): Update = state => { isOpen = true; applyExtraIfPresent(onOpenExtra)(state) }
 
     /**
      * Closes the item and executes eventual extra actions.
      */
-    private def close(): Update = state => { isOpen = false; applyExtraIfPresent(onCloseExtra)(state) }
-
+    def close(): Update = state => { isOpen = false; applyExtraIfPresent(onCloseExtra)(state) }
   }
 
   /**
@@ -81,16 +82,15 @@ object Behaviors {
     extends ComposableBehavior
     with ExtraUtils {
 
-    override def otherBehavior: Behavior = openable
+    override def superBehavior: Behavior = openable
 
-    override def baseTrigger: Triggers = { case (Enter, _, _) if openable.isOpen => enterRoom() }
+    override def baseTrigger: TransitiveTriggers = { case (Enter, _, _) if openable.isOpen => enterRoom() }
 
-    private def enterRoom(): Update =
+    def enterRoom(): Update =
       state => {
         val currRoomLens = GenLens[S](_.game.player.location)
         val updLocState  = currRoomLens.modify(_ => endRoom)(state)
         applyExtraIfPresent(onEnterExtra)(updLocState)
       }
   }
-
 }
