@@ -28,8 +28,8 @@ trait Model {
 
   trait Item { self: I =>
     def name: String
-    def useTransitive(action: Action, state: S): Option[Update]
-    def useDitransitive(action: Action, sideItem: Item, state: S): Option[Update]
+    def useTransitive(action: Action, state: State): Option[Update]
+    def useDitransitive(action: Action, sideItem: Item, state: State): Option[Update]
   }
 
 }
