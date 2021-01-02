@@ -3,10 +3,11 @@ package io.github.scalaquest.core.model
 trait Message
 
 trait Model {
-
   type S <: State
   type I <: Item
-  type Update = S => S
+
+  type Self   = this.type
+  type Update = Self#S => Self#S
 
   trait State { self: S =>
     def game: GameState
@@ -25,6 +26,12 @@ trait Model {
 
   trait Item { item: I =>
     def name: String
-    def use(action: Action, state: S): Option[Update]
+    def useTransitive[SS <: Model#S, UU <: Model#Update](action: Action, state: SS): Option[UU]
+
+    def useDitransitive[SS <: Model#S, II <: Model#I, UU <: Model#Update](
+      action: Action,
+      sideItem: II,
+      state: SS
+    ): Option[UU]
   }
 }

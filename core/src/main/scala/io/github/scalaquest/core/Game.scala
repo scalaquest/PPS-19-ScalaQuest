@@ -3,21 +3,21 @@ package io.github.scalaquest.core
 import io.github.scalaquest.core.model.{Message, Model}
 import io.github.scalaquest.core.pipeline.Pipeline
 
-trait Game[S <: Model#State] {
-  def send(input: String)(state: S): Either[String, S]
+trait Game[M <: Model] {
+  def send(input: String)(state: M#S): Either[String, M#S]
 }
 
-trait GameTemplate[S <: Model#State] extends Game[S] {
-  def pipelineFactory(state: S): Pipeline[S]
-  override def send(input: String)(state: S): Either[String, S] = pipelineFactory(state) run input
+trait GameTemplate[M <: Model] extends Game[M] {
+  def pipelineFactory(state: M#S): Pipeline[M]
+  override def send(input: String)(state: M#S): Either[String, M#S] = pipelineFactory(state) run input
 }
 
 trait MessagePusher extends (Seq[Message] => Seq[String])
 
 object Game {
 
-  def apply[S <: Model#State](_pipelineFactory: S => Pipeline[S]): Game[S] =
-    new GameTemplate[S] {
-      override def pipelineFactory(state: S): Pipeline[S] = _pipelineFactory(state)
+  def apply[M <: Model](_pipelineFactory: M#S => Pipeline[M]): Game[M] =
+    new GameTemplate[M] {
+      override def pipelineFactory(state: M#S): Pipeline[M] = _pipelineFactory(state)
     }
 }
