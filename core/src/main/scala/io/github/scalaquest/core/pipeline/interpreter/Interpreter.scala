@@ -9,31 +9,31 @@ trait Interpreter[M <: Model] {
 }
 
 trait InterpreterResult[M <: Model] {
-  def update: M#Update
+  def reaction: M#Reaction
 }
 
 abstract class TypedInterpreter[M <: Model](val model: M) {
-  type Update = model.Update
-  type S      = model.S
-  type I      = model.I
+  type Reaction = model.Reaction
+  type S        = model.S
+  type I        = model.I
 
-  case class SimpleInterpreterResult(update: Update) extends InterpreterResult[M]
+  case class SimpleInterpreterResult(reaction: Reaction) extends InterpreterResult[M]
 
   object InterpreterResult {
-    def apply(update: Update): InterpreterResult[M] = SimpleInterpreterResult(update)
+    def apply(reaction: Reaction): InterpreterResult[M] = SimpleInterpreterResult(reaction)
   }
 
   case class SimpleInterpreter(state: S) extends Interpreter[M] {
-    private val useIntransitive: Option[Update] = ???
+    private val useIntransitive: Option[Reaction] = ???
 
     override def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[M]] = {
-      val eventualUpdate: Either[String, Update] = resolverResult.statement match {
+      val eventualReaction: Either[String, Reaction] = resolverResult.statement match {
         case Intransitive(action) =>
           useIntransitive toRight
             s"Could not recognize ${action.name}"
 
         case Transitive(action, item) =>
-          val aa: Option[Update] = item.useTransitive[S, Update](action, state: S)
+          val aa: Option[Reaction] = item.useTransitive[S, Reaction](action, state: S)
           aa.toRight(s"Could not recognize ${action.name} on ${item.name}")
 
         case Ditransitive(action, mainItem, sideItem) =>
@@ -41,7 +41,7 @@ abstract class TypedInterpreter[M <: Model](val model: M) {
             s"Could not recognize ${action.name} on ${mainItem.name} with ${sideItem.name}"
       }
 
-      eventualUpdate.map(InterpreterResult(_))
+      eventualReaction.map(InterpreterResult(_))
     }
   }
 }

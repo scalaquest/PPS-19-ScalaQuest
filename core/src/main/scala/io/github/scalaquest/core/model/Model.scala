@@ -6,8 +6,8 @@ trait Model {
   type S <: State
   type I <: Item
 
-  type Self   = this.type
-  type Update = Self#S => Self#S
+  type Self     = this.type
+  type Reaction = Self#S => Self#S
 
   trait State { self: S =>
     def game: GameState
@@ -26,12 +26,12 @@ trait Model {
 
   trait Item { item: I =>
     def name: String
-    def useTransitive[SS <: Model#S, UU <: Model#Update](action: Action, state: SS): Option[UU]
+    def useTransitive[SS <: Model#S, RR <: Model#Reaction](action: Action, state: SS): Option[RR]
 
-    def useDitransitive[SS <: Model#S, II <: Model#I, UU <: Model#Update](
+    def useDitransitive[SS <: Model#S, II <: Model#I, RR <: Model#Reaction](
       action: Action,
       sideItem: II,
       state: SS
-    ): Option[UU]
+    ): Option[RR]
   }
 }
