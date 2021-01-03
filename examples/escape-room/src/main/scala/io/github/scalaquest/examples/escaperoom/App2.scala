@@ -1,7 +1,8 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.{MessagePusher, Game}
+import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
+import io.github.scalaquest.core.model.impl.SimpleModel
 import io.github.scalaquest.core.model.impl.SimpleModel._
 import io.github.scalaquest.core.model.{Message, Room, SimpleRoom}
 import io.github.scalaquest.cli.CLI
@@ -17,6 +18,8 @@ object Model {
   def room1: Room = SimpleRoom("room1", () => Map(NORTH -> room2))
   def room2: Room = SimpleRoom("room2", () => Map(SOUTH -> room1))
 
+  val model: SimpleModel.type = SimpleModel
+
   val state: SimpleState = SimpleState(
     game = SimpleGameState(player = SimplePlayer(bag = Set(), location = room1), ended = false),
     messages = Seq(GameStarted)
@@ -31,8 +34,8 @@ object Model {
   case object WentNorth           extends Message
   case object WentSouth           extends Message
 
-  def game: Game[SimpleState] =
-    new Game[SimpleState] {
+  def game: Game[SimpleModel.type] =
+    new Game(model) {
 
       override def send(input: String)(state: SimpleState): Either[String, SimpleState] =
         for {
@@ -65,5 +68,8 @@ object Model {
 
 object App2 extends zio.App {
   import Model._
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = CLI[SimpleState](state, game, pusher).start.exitCode
+  implicit val model: SimpleModel.type = SimpleModel
+
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
+    CLI.fromModel[SimpleModel.type].build(state, game, pusher).start.exitCode
 }
