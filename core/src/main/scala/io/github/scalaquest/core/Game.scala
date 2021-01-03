@@ -1,23 +1,31 @@
 package io.github.scalaquest.core
 
 import io.github.scalaquest.core.model.{Message, Model}
-import io.github.scalaquest.core.pipeline.Pipeline
+import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 
-trait Game[S <: Model#State] {
-  def send(input: String)(state: S): Either[String, S]
-}
+abstract class Game[M <: Model](val model: M) {
 
-trait GameTemplate[S <: Model#State] extends Game[S] {
-  def pipelineFactory(state: S): Pipeline[S]
-  override def send(input: String)(state: S): Either[String, S] = pipelineFactory(state) run input
+  def send(input: String)(state: model.S): Either[String, model.S]
 }
 
 trait MessagePusher extends (Seq[Message] => Seq[String])
 
 object Game {
 
-  def apply[S <: Model#State](_pipelineFactory: S => Pipeline[S]): Game[S] =
-    new GameTemplate[S] {
-      override def pipelineFactory(state: S): Pipeline[S] = _pipelineFactory(state)
+  class GameFromModel[M <: Model](val model: M) {
+
+    abstract class GameWithPipeline extends Game[model.type](model) {
+
+      def pipelineFactory: PipelineBuilder[model.S, model.type]
+
+      override def send(input: String)(state: model.S): Either[String, model.S] = pipelineFactory(state) run input
     }
+
+    def withPipelineBuilder(pipelineBuilder: PipelineBuilder[model.S, model.type]): Game[model.type] =
+      new GameWithPipeline {
+        override def pipelineFactory: PipelineBuilder[model.S, model.type] = pipelineBuilder
+      }
+  }
+
+  def fromModel[M <: Model](implicit model: M): GameFromModel[M] = new GameFromModel(model)
 }
