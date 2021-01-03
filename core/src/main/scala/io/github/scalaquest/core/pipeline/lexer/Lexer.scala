@@ -23,10 +23,8 @@ trait LexerResult {
   def tokens: Seq[Token]
 }
 
-/** @inheritdoc */
 case class SimpleLexerResult(tokens: Seq[Token]) extends LexerResult
 
-/** @inheritdoc */
 case object SimpleLexer extends Lexer {
 
   override def tokenize(rawSentence: String): LexerResult =
