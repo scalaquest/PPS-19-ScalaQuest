@@ -16,16 +16,16 @@ object CLI {
   class CLIFromModel[M <: Model](val model: M) {
     type S = model.S
 
-    def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
+    private def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
       pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
 
-    def startGame(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
+    private def startGame(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
       for {
         _ <- putStrLn(printNotifications(pusher)(state.messages))
         _ <- gameLoop(game, pusher)(state)
       } yield ()
 
-    def gameLoop(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
+    private def gameLoop(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
       for {
         input <- getStrLn
         res   <- UIO.succeed((game send input)(state))
