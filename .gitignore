@@ -207,4 +207,8 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+# Metals and bloop
+.metals
+.bloop
+
 # End of https://www.toptal.com/developers/gitignore/api/scala,java,intellij+all,gradle,macos,windows,linux

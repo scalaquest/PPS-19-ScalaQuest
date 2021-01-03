@@ -1,32 +1,24 @@
 package io.github.scalaquest.core.model.impl
 
-import io.github.scalaquest.core.parsing.Action
-import io.github.scalaquest.core.model.{Message, Model, Room}
+import io.github.scalaquest.core.model.{Action, Message, Model, Room}
 
-// Here you can implement new type definitions
 object SimpleModel extends Model {
-
   override type S = SimpleState
   override type I = SimpleItem
 
-  case class SimpleItem(
-      name: String
-  ) extends Item {
-    override def use(action: Action): Option[Update] = Some(x => x)
+  trait SimpleItem extends Item {
+    override def useTransitive[SS <: Model#S, UU <: Model#Update](action: Action, state: SS): Option[UU] = None
+
+    override def useDitransitive[SS <: Model#S, II <: Model#I, UU <: Model#Update](
+      action: Action,
+      sideItem: II,
+      state: SS
+    ): Option[UU] = None
   }
 
-  case class SimplePlayer(
-      bag: Set[SimpleItem],
-      location: Room
-  ) extends Player
+  case class SimplePlayer(bag: Set[SimpleItem], location: Room) extends Player
 
-  case class SimpleGameState(
-      player: SimplePlayer,
-      ended: Boolean
-  ) extends GameState
+  case class SimpleGameState(player: SimplePlayer, ended: Boolean) extends GameState
 
-  case class SimpleState(
-      game: SimpleGameState,
-      messages: Seq[Message]
-  ) extends State
+  case class SimpleState(game: SimpleGameState, messages: Seq[Message]) extends State
 }

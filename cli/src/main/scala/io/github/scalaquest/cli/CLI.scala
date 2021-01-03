@@ -11,46 +11,35 @@ trait CLI {
 
 object CLI {
 
-  type State = Model#State
+  def fromModel[M <: Model](implicit model: M) = new CLIFromModel[M](model)
 
-  def printNotifications(
-      pusher: MessagePusher
-  )(messages: Seq[Message]): String =
-    pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
+  class CLIFromModel[M <: Model](val model: M) {
+    type S = model.S
 
-  def startGame[S <: State](
-      game: Game[S],
-      pusher: MessagePusher
-  )(state: S): ZIO[Console, Exception, Unit] =
-    for {
-      _ <- putStrLn(printNotifications(pusher)(state.messages))
-      _ <- gameLoop(game, pusher)(state)
-    } yield ()
+    private def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
+      pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
 
-  def gameLoop[S <: State](
-      game: Game[S],
-      pusher: MessagePusher
-  )(state: S): ZIO[Console, Exception, Unit] =
-    for {
-      input <- getStrLn
-      res <- UIO.succeed((game send input)(state))
-      (out, nextState) <- UIO.succeed(res match {
-        case Left(err) => (err, state)
-        case Right(updated) =>
-          (printNotifications(pusher)(updated.messages), updated)
-      })
-      _ <- putStrLn(out)
-      _ <- if (!nextState.game.ended)
-        UIO.succeed(nextState) flatMap gameLoop(game, pusher)
-      else ZIO.unit
-    } yield ()
+    private def gameLoop(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
+      for {
+        input <- getStrLn
+        res   <- UIO.succeed((game send input)(state))
+        (out, nextState) <- UIO.succeed(res match {
+          case Left(err)      => (err, state)
+          case Right(updated) => (printNotifications(pusher)(updated.messages), updated)
+        })
+        _ <- putStrLn(out)
+        _ <- if (!nextState.game.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher) else ZIO.unit
+      } yield ()
 
-  def apply[S <: State](
-      state: S,
-      game: Game[S],
-      pusher: MessagePusher
-  ): CLI = new CLI {
-    override def start: ZIO[Console, Exception, Unit] =
-      startGame(game, pusher)(state)
+    def build(state: S, game: Game[model.type], pusher: MessagePusher): CLI =
+      new CLI() {
+
+        override def start: ZIO[Console, Exception, Unit] =
+          for {
+            _ <- putStrLn(printNotifications(pusher)(state.messages))
+            _ <- gameLoop(game, pusher)(state)
+          } yield ()
+      }
   }
+
 }

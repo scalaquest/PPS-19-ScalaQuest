@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.parsing
 
+import io.github.scalaquest.core.model.{Action, Actions}
 import io.github.scalaquest.core.model.impl.SimpleModel.SimpleItem
 import io.github.scalaquest.core.parsing.codegen.{Atom, Clause, Term}
 
@@ -24,11 +25,12 @@ object Verb {
 
   def betaReduce(functor: String, variablesNum: Int): Term = {
     @tailrec
-    def go(variables: List[Variable], term: Term): Term = variables match {
-      case h :: t => go(t, h ^: term)
-      case Nil    => term
-    }
-    val f = CompoundBuilder(functor)
+    def go(variables: List[Variable], term: Term): Term =
+      variables match {
+        case h :: t => go(t, h ^: term)
+        case Nil    => term
+      }
+    val f         = CompoundBuilder(functor)
     val variables = ('A' to 'Z' map (_.toString) map Variable take variablesNum).toList
     val right = variables match {
       case h :: Nil => f(h)
@@ -43,7 +45,7 @@ object Verb {
 
   val iv = CompoundBuilder("iv")
   val tv = CompoundBuilder("tv")
-  val v = CompoundBuilder("v")
+  val v  = CompoundBuilder("v")
 
   case class Intransitive(name: String, action: Action) extends Verb {
     override def clause: Clause = iv(atom) --> tokens
@@ -63,6 +65,8 @@ object Example extends App {
   // Stanze
   // ...
 
+  import io.github.scalaquest.core.model.impl.SimpleModel.SimpleItem
+
   // Verbi
   val generator = GrammarGenerator(
     Verb.Transitive("use", Actions.Use),
@@ -72,8 +76,12 @@ object Example extends App {
     Verb.Intransitive("look around", Actions.Inspect),
     Verb.Ditransitive("give", Actions.Give)
   ) compose ItemGenerator(
-    SimpleItem("apple"),
-    SimpleItem("key")
+    new SimpleItem {
+      override def name: String = "apple"
+    },
+    new SimpleItem {
+      override def name: String = "key"
+    }
   )
 
   println(generator.generate)
