@@ -7,13 +7,13 @@ object SimpleModel extends Model {
   override type I = SimpleItem
 
   trait SimpleItem extends Item {
-    override def useTransitive[SS <: Model#S, UU <: Model#Update](action: Action, state: SS): Option[UU] = None
+    override def useTransitive[SS <: Model#S, RR <: Model#Reaction](action: Action, state: SS): Option[RR] = None
 
-    override def useDitransitive[SS <: Model#S, II <: Model#I, UU <: Model#Update](
+    override def useDitransitive[SS <: Model#S, II <: Model#I, RR <: Model#Reaction](
       action: Action,
       sideItem: II,
       state: SS
-    ): Option[UU] = None
+    ): Option[RR] = None
   }
 
   case class SimplePlayer(bag: Set[SimpleItem], location: Room) extends Player
