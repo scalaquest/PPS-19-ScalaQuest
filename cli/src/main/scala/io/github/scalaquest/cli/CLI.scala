@@ -19,12 +19,6 @@ object CLI {
     private def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
       pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
 
-    private def startGame(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
-      for {
-        _ <- putStrLn(printNotifications(pusher)(state.messages))
-        _ <- gameLoop(game, pusher)(state)
-      } yield ()
-
     private def gameLoop(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
       for {
         input <- getStrLn
