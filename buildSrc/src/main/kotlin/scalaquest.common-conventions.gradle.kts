@@ -20,6 +20,11 @@ repositories {
     jcenter()
 }
 
+
+tasks.withType<ScalaCompile> {
+    scalaCompileOptions.additionalParameters = listOf("-feature", "-language:implicitConversions")
+}
+
 group = "io.github.scalaquest"
 
 gitSemVer {
