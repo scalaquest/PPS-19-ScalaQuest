@@ -5,10 +5,11 @@ import io.github.scalaquest.core.pipeline.lexer.Lexer.Token
 /** A lexer that accepts finite sequence of characters and cannot fail. */
 trait Lexer {
 
-  /** Performs the lexical analysis on a sequence of tokens.
-    * @param rawSentence the input finite sequence of characters
-    * @return the result of the lexical analysis operation
-    */
+  /**
+   * Performs the lexical analysis on a sequence of tokens.
+   * @param rawSentence the input finite sequence of characters
+   * @return the result of the lexical analysis operation
+   */
   def tokenize(rawSentence: String): LexerResult
 }
 

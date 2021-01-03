@@ -6,9 +6,10 @@ import io.github.scalaquest.core.parsing.codegen.ListP
 trait Generator { self =>
   def generate: String
 
-  def compose(other: Generator): Generator = new Generator {
-    override def generate: String = self.generate + "\n" + other.generate
-  }
+  def compose(other: Generator): Generator =
+    new Generator {
+      override def generate: String = self.generate + "\n" + other.generate
+    }
 }
 
 case class GrammarGenerator(verbs: Verb*) extends Generator {
@@ -21,8 +22,9 @@ case class ItemGenerator(items: Model#Item*) extends Generator {
 
   def np: CompoundBuilder = CompoundBuilder("np")
 
-  override def generate: String = items
-    .map(i => np(i.name) --> ListP(i.name))
-    .map(_.generate)
-    .mkString("\n")
+  override def generate: String =
+    items
+      .map(i => np(i.name) --> ListP(i.name))
+      .map(_.generate)
+      .mkString("\n")
 }

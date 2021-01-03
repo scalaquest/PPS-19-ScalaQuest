@@ -134,8 +134,8 @@ class PrologTest extends AnyWordSpec {
     }
 
     "allow the usage of infix operators on variables" in {
-      val X = Variable("X")
-      val Y = Variable("Y")
+      val X    = Variable("X")
+      val Y    = Variable("Y")
       val term = X ^: Y ^: hello(Y, X)
 
       assert(

@@ -23,8 +23,7 @@ case class Variable(name: String) extends Term {
 }
 
 case class Compound(functor: Atom, arg1: Term, args: Seq[Term] = Seq()) extends Term {
-  override def generate: String =
-    s"${functor.generate}(${(arg1 +: args).map(_.generate).mkString(",")})"
+  override def generate: String = s"${functor.generate}(${(arg1 +: args).map(_.generate).mkString(",")})"
 }
 
 case class ListP(terms: Term*) extends Term {
@@ -53,9 +52,9 @@ object ops extends App {
     def apply(arg: Term, args: Term*): Compound = Compound(functor, arg, args)
   }
 
-  implicit def stringToAtom(name: String): Atom = Atom(name)
-  implicit def intToNumber(n: Int): Number = Number(n)
-  implicit def termToFact(term: Term): Fact = Fact(term)
+  implicit def stringToAtom(name: String): Atom  = Atom(name)
+  implicit def intToNumber(n: Int): Number       = Number(n)
+  implicit def termToFact(term: Term): Fact      = Fact(term)
   implicit def seqToListP(seq: Seq[Term]): ListP = ListP(seq: _*)
 
 }
