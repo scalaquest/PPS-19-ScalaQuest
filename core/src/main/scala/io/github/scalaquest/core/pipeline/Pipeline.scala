@@ -21,7 +21,7 @@ object Pipeline {
   )(state: S): Pipeline[S] =
     (rawSentence: String) =>
       for {
-        lr <- (lexer tokenize rawSentence) toRight "Couldn't understand input."
+        lr <- Right(lexer tokenize rawSentence)
         pr <- (parser parse lr) toRight "Couldn't understand input."
         rr <- resolver resolve pr
         ir <- interpreterFactory(state) interpret rr

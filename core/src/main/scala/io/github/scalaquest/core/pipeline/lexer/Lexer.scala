@@ -1,17 +1,22 @@
 package io.github.scalaquest.core.pipeline.lexer
 
-trait Token {
-  def content: String
-}
+import io.github.scalaquest.core.pipeline.lexer.Lexer.Token
 
 trait LexerResult {
   def tokens: Seq[Token]
 }
 
 trait Lexer {
-  def tokenize(rawSentence: String): Option[LexerResult]
+  def tokenize(rawSentence: String): LexerResult
 }
 
-//case object SimpleLexer extends Lexer {
-//  override def tokenize(rawSentence: String): Some[LexerResult] = Some((rawSentence split " ").toSeq))
-//}
+object Lexer {
+  type Token = String
+}
+
+case class SimpleLexerResult(tokens: Seq[Token]) extends LexerResult
+
+case object SimpleLexer extends Lexer {
+  override def tokenize(rawSentence: String): LexerResult =
+    SimpleLexerResult((rawSentence.toLowerCase split " ").filter(_ != "").toSeq)
+}
