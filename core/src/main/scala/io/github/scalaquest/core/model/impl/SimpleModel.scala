@@ -9,16 +9,20 @@ import io.github.scalaquest.core.model.{Action, Message, Model, Room}
  */
 object SimpleModel extends Model {
 
+  override type S = SimpleState
+  override type I = BehaviorableItem
+
+  //override type Reaction = Self#SimpleState => Self#SimpleState
+
   /**
    * Trigger (ex-property) is a proper name, as it is what triggers a reaction,
    * starting from an action. It is a Partial function that makes possible to intercept
    * Actions directed to this item, and process them.
    */
-  type TransitiveTriggers   = PartialFunction[(Action, I, S), Reaction]
-  type DitransitiveTriggers = PartialFunction[(Action, I, I, S), Reaction]
+  type TransitiveTriggers = PartialFunction[(Action, BehaviorableItem, SimpleState), SimpleState => SimpleState]
 
-  override type S = SimpleState
-  override type I = BehaviorableItem
+  type DitransitiveTriggers =
+    PartialFunction[(Action, BehaviorableItem, BehaviorableItem, SimpleState), SimpleState => SimpleState]
 
   /**
    * An item that can have one or more behaviors. Conditions are evaluated and the first one matching
@@ -27,15 +31,34 @@ object SimpleModel extends Model {
   trait BehaviorableItem extends Item {
     def behaviors: Set[Behavior] = Set()
 
-    override def useTransitive[SS <: Model#S, RR <: Model#Reaction](action: Action, state: SS): Option[RR] =
-      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
+    /*override def useTransitive[SS <: S](
+      action: Action,
+      state: SS
+    ): Option[state.Reaction] = behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
 
-    override def useDitransitive[SS <: Model#S, II <: Model#I, RR <: Model#Reaction](
+    override def useDitransitive[SS <: S, II <: I](
       action: Action,
       sideItem: II,
       state: SS
-    ): Option[RR] = behaviors.map(_.ditransitiveTriggers).reduce(_ orElse _).lift((action, this, sideItem, state))
+    ): Option[state.Reaction] =
+      behaviors.map(_.ditransitiveTriggers).reduce(_ orElse _).lift((action, this, sideItem, state))
 
+     */ /*
+    override def useTransitive2[SS <: S](
+      action: Action,
+      state: SS
+    ): Unit = ???
+
+     */
+    //override def useTransitive[SS <: Model#S](action: Action, state: SS): Option[state.Reaction] = ???
+
+    //override def useTransitive3(action: Action, state: SimpleState): Option[state.Reaction] =
+    //  behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
+    //override def useTransitive3(action: Action, state: SimpleState): Option[state.Reaction] = ???
+    // override def useTransitive4(action: Action, state: M#S): Option[M#Reaction] = ???
+    override val model: SimpleModel.Self = SimpleModel
+
+    override def useTransitive4(action: Action, state: model.S): Option[model.Reaction] = ???
   }
 
   case class SimplePlayer(bag: Set[BehaviorableItem], location: Room) extends Player

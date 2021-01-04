@@ -13,7 +13,9 @@ object Behavior {
   }
 
   trait ExtraUtils extends Behavior {
-    protected def applyExtraIfPresent(extra: Option[Update])(state: S): S = extra.fold(state)(_(state))
+
+    protected def applyExtraIfPresent(extra: Option[SimpleState => SimpleState])(state: SimpleState): SimpleState =
+      extra.fold(state)(_(state))
   }
 
   trait ComposableBehavior extends Behavior {

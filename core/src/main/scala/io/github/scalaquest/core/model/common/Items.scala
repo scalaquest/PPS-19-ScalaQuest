@@ -3,7 +3,7 @@ package io.github.scalaquest.core.model.common
 import io.github.scalaquest.core.model.Direction.Direction
 import io.github.scalaquest.core.model.common.Behaviors.{Openable, RoomLink, Takeable}
 import io.github.scalaquest.core.model.impl.Behavior.Behavior
-import io.github.scalaquest.core.model.impl.SimpleModel.{BehaviorableItem, Update}
+import io.github.scalaquest.core.model.impl.SimpleModel.{BehaviorableItem}
 import io.github.scalaquest.core.model.Room
 
 object Items {

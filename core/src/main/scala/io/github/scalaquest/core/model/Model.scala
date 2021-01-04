@@ -29,12 +29,21 @@ trait Model {
 
   trait Item { item: I =>
     def name: String
-    def useTransitive[SS <: Model#S, RR <: Model#Reaction](action: Action, state: SS): Option[RR]
 
-    def useDitransitive[SS <: Model#S, II <: Model#I, RR <: Model#Reaction](
+    val model: Self
+
+    //def useTransitive[SS <: Model#S](action: Action, state: SS): Option[state.Reaction]
+
+    //def useTransitive2[SS <: Model#S](action: Action, state: SS): Unit
+
+    //  def useTransitive3(action: Action, state: model.S): Option[state.Reaction]
+    def useTransitive4(action: Action, state: model.S): Option[model.Reaction]
+    /*def useDitransitive[SS <: Model#S, II <: Model#I](
       action: Action,
       sideItem: II,
       state: SS
-    ): Option[RR]
+    ): Option[state.Reaction]
+
+     */
   }
 }

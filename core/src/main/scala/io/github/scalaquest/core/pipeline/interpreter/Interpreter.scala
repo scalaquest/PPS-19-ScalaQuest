@@ -33,12 +33,13 @@ abstract class TypedInterpreter[M <: Model](val model: M) {
             s"Could not recognize ${action.name}"
 
         case Transitive(action, item) =>
-          val aa: Option[Reaction] = item.useTransitive[S, Reaction](action, state: S)
-          aa.toRight(s"Could not recognize ${action.name} on ${item.name}")
+          item.useTransitive4[model.type](action, state).toRight(s"Could not recognize ${action.name} on ${item.name}")
 
+        /*
         case Ditransitive(action, mainItem, sideItem) =>
           mainItem.useDitransitive(action, sideItem, state) toRight
             s"Could not recognize ${action.name} on ${mainItem.name} with ${sideItem.name}"
+         */
       }
 
       eventualReaction.map(InterpreterResult(_))
