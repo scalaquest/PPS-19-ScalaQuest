@@ -4,12 +4,7 @@ import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.{Close, Enter, Open, Take}
 import io.github.scalaquest.core.model.common.Items.Key
 import io.github.scalaquest.core.model.impl.Behavior.{Behavior, ComposableBehavior, ExtraUtils}
-import io.github.scalaquest.core.model.impl.SimpleModel.{
-  BehaviorableItem,
-  DitransitiveTriggers,
-  SimpleState,
-  TransitiveTriggers
-}
+import io.github.scalaquest.core.model.impl.SimpleModel.{DitransitiveTriggers, TransitiveTriggers, Reaction, I, S}
 import monocle.macros.GenLens
 
 object Behaviors {
@@ -18,7 +13,7 @@ object Behaviors {
    * The behavior of an Item that could be put into the bag.
    * @param onTakeExtra a Reaction to be possibly chained to the basic take Reaction.
    */
-  case class Takeable(onTakeExtra: Option[SimpleState => SimpleState] = None) extends Behavior with ExtraUtils {
+  case class Takeable(onTakeExtra: Option[Reaction] = None) extends Behavior with ExtraUtils {
 
     override def triggers: TransitiveTriggers = {
       // controlla se l'oggetto è nella room
@@ -27,16 +22,16 @@ object Behaviors {
 
     // The standard take reaction is to remove the item from the current room, and put it into the bag.
     // executes also onTakeExtra, if available
-    private def take(item: BehaviorableItem): SimpleState => SimpleState =
+    private def take(item: I): Reaction =
       state => {
         // a way to easily modify the state are lens. Maybe it can be optimized
-        val bagLens   = GenLens[SimpleState](_.game.player.bag)
-        val itemsLens = GenLens[SimpleState](_.game.itemsInRooms)
+        val bagLens   = GenLens[S](_.game.player.bag)
+        val itemsLens = GenLens[S](_.game.itemsInRooms)
 
         // remove the item from the current room
         val currRoom = state.game.player.location
         val currRoomItemsUpd =
-          itemsLens.get(state).get(currRoom).fold(Set[BehaviorableItem]())(crItems => crItems + item)
+          itemsLens.get(state).get(currRoom).fold(Set[I]())(crItems => crItems + item)
         val stateWithoutItem = itemsLens.modify(_ + (currRoom -> currRoomItemsUpd))(state)
 
         // put the item into the bag
@@ -53,8 +48,8 @@ object Behaviors {
   case class Openable(
     var isOpen: Boolean = false,
     needsKey: Option[Key] = None,
-    onOpenExtra: Option[SimpleState => SimpleState] = None,
-    onCloseExtra: Option[SimpleState => SimpleState] = None
+    onOpenExtra: Option[Reaction] = None,
+    onCloseExtra: Option[Reaction] = None
   ) extends Behavior
     with ExtraUtils {
 
@@ -67,24 +62,24 @@ object Behaviors {
       case (Enter, _, _key, _) if needsKey.contains(_key) && !isOpen => open()
     }
 
-    def hasKeyOrNotNeeded(state: SimpleState): Boolean = needsKey.fold(true)(state.game.isInBag(_))
+    def hasKeyOrNotNeeded(state: S): Boolean = needsKey.fold(true)(state.game.isInBag(_))
 
     /**
      * Opens the item and executes eventual extra actions.
      */
-    def open(): SimpleState => SimpleState = state => { isOpen = true; applyExtraIfPresent(onOpenExtra)(state) }
+    def open(): Reaction = state => { isOpen = true; applyExtraIfPresent(onOpenExtra)(state) }
 
     /**
      * Closes the item and executes eventual extra actions.
      */
-    def close(): SimpleState => SimpleState = state => { isOpen = false; applyExtraIfPresent(onCloseExtra)(state) }
+    def close(): Reaction = state => { isOpen = false; applyExtraIfPresent(onCloseExtra)(state) }
   }
 
   /**
    * The behavior of a door, for example: with transitive action Enter, it moves the player into
    * another room.
    */
-  case class RoomLink(endRoom: Room, openable: Openable, onEnterExtra: Option[SimpleState => SimpleState] = None)
+  case class RoomLink(endRoom: Room, openable: Openable, onEnterExtra: Option[Reaction] = None)
     extends ComposableBehavior
     with ExtraUtils {
 
@@ -92,9 +87,9 @@ object Behaviors {
 
     override def baseTrigger: TransitiveTriggers = { case (Enter, _, _) if openable.isOpen => enterRoom() }
 
-    def enterRoom(): SimpleState => SimpleState =
+    def enterRoom(): Reaction =
       state => {
-        val currRoomLens = GenLens[SimpleState](_.game.player.location)
+        val currRoomLens = GenLens[S](_.game.player.location)
         val updLocState  = currRoomLens.modify(_ => endRoom)(state)
         applyExtraIfPresent(onEnterExtra)(updLocState)
       }

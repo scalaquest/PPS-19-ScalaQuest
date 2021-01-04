@@ -31,15 +31,22 @@ abstract class TypedInterpreter[M <: Model](val model: M) {
         case Intransitive(action) =>
           useIntransitive toRight
             s"Could not recognize ${action.name}"
-
-        case Transitive(action, item) =>
-          item.useTransitive4[model.type](action, state).toRight(s"Could not recognize ${action.name} on ${item.name}")
-
         /*
+        case Transitive(action, item) =>
+          item.useTransitive(action, state) toRight
+            s"Could not recognize ${action.name} on ${item.name}"
+
         case Ditransitive(action, mainItem, sideItem) =>
           mainItem.useDitransitive(action, sideItem, state) toRight
             s"Could not recognize ${action.name} on ${mainItem.name} with ${sideItem.name}"
          */
+
+        //// fixme experiments
+
+        case Transitive(action, item) =>
+          item.useTransitive4[model.type](action, state).toRight(s"Could not recognize ${action.name} on ${item.name}")
+
+        //// fixme end of experiments
       }
 
       eventualReaction.map(InterpreterResult(_))

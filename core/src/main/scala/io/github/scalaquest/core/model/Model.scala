@@ -30,6 +30,13 @@ trait Model {
   trait Item { item: I =>
     def name: String
 
+    /*
+    def useTransitive[SS <: S](action: Action, state: SS): Option[Reaction]
+    def useDitransitive[SS <: S, II <: I](action: Action, sideItem: II, state: SS): Option[Reaction]
+     */
+
+    ////// fixme experiments
+
     val model: Self
 
     //def useTransitive[SS <: Model#S](action: Action, state: SS): Option[state.Reaction]
@@ -45,5 +52,7 @@ trait Model {
     ): Option[state.Reaction]
 
      */
+
+    ////// fixme end of experiments
   }
 }
