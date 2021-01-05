@@ -46,7 +46,7 @@ case class DCGRule(left: Term, right: Term) extends Clause {
   override def generate: String = s"${left.generate} --> ${right.generate}."
 }
 
-object ops extends App {
+object ops {
 
   case class CompoundBuilder(functor: Atom) {
     def apply(arg: Term, args: Term*): Compound = Compound(functor, arg, args)
