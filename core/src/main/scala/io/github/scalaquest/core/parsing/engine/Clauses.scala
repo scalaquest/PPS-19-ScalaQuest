@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.parsing.codegen
+package io.github.scalaquest.core.parsing.engine
 
 sealed trait Clause {
   def generate: String

@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.parsing.codegen
+package io.github.scalaquest.core.parsing.engine
 
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -83,7 +83,7 @@ class PrologTest extends AnyWordSpec {
   }
 
   "Compound builder" should {
-    import io.github.scalaquest.core.parsing.codegen.ops.CompoundBuilder
+    import io.github.scalaquest.core.parsing.engine.ops.CompoundBuilder
     val hello = CompoundBuilder(Atom("hello"))
 
     "allow for the creation of a compound term" in {
@@ -103,7 +103,7 @@ class PrologTest extends AnyWordSpec {
   }
 
   "Implicit operators" should {
-    import io.github.scalaquest.core.parsing.codegen.ops._
+    import io.github.scalaquest.core.parsing.engine.ops._
     val hello = CompoundBuilder(Atom("hello"))
     "allow the usage of strings as atoms" in {
       assert(hello("world") == Compound(Atom("hello"), Atom("world")))
