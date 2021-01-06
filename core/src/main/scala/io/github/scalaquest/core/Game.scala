@@ -1,5 +1,6 @@
 package io.github.scalaquest.core
 
+import io.github.scalaquest.core.model.impl.SimpleModel
 import io.github.scalaquest.core.model.{Message, Model}
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 
@@ -28,4 +29,11 @@ object Game {
   }
 
   def fromModel[M <: Model](implicit model: M): GameFromModel[M] = new GameFromModel(model)
+}
+
+object a {
+  implicit val model: SimpleModel.type                      = SimpleModel
+  val pipelineBuilder: PipelineBuilder[model.S, model.type] = ???
+
+  val game: Game[model.type] = Game fromModel model withPipelineBuilder pipelineBuilder
 }

@@ -14,7 +14,7 @@ abstract class Pipeline[M <: Model](val model: M) {
 
 object Pipeline {
 
-  type PipelineBuilder[-S <: Model#State, M <: Model] = S => Pipeline[M]
+  type PipelineBuilder[S <: Model#State, M <: Model] = S => Pipeline[M]
 
   def fromModel[M <: Model](implicit model: M) = new PipelineFromModel[M](model)
 }
@@ -25,8 +25,8 @@ class PipelineFromModel[M <: Model](val model: M) {
     lexer: Lexer,
     parser: Parser,
     resolver: Resolver,
-    interpreterFactory: model.S => Interpreter[model.type],
-    reducerFactory: model.S => Reducer[model.type]
+    interpreterFactory: model.S => Interpreter[model.type, model.Reaction],
+    reducerFactory: model.S => Reducer[model.S]
   )(state: model.S): Pipeline[model.type] =
     new Pipeline[model.type](model) {
 

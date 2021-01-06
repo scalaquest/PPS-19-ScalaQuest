@@ -3,14 +3,14 @@ package io.github.scalaquest.core.pipeline.reducer
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.interpreter.InterpreterResult
 
-trait ReducerResult[M <: Model] {
-  def state: M#S
+trait ReducerResult[S <: Model#State] {
+  def state: S
 }
 
-trait Reducer[M <: Model] {
-  def reduce(interpreterResult: InterpreterResult[M]): ReducerResult[M]
+trait Reducer[S <: Model#State] {
+  def reduce[R](interpreterResult: InterpreterResult[R]): ReducerResult[S]
 }
 
 object Reducer {
-  def apply[M <: Model](state: M#S): Reducer[M] = ???
+  def apply[M <: Model](implicit model: M): Reducer[model.S] = ???
 }

@@ -22,10 +22,10 @@ object Items {
   // implementation: this a fragment of the 'storyteller' part, to put into the example
   val kitchen: Room = Room("kitchen", () => Map[Direction, Room]())
 
-  val cup: GenericItem = GenericItem("cup", Set(Takeable()))
-  val kitchenKey: Key  = Key("kitchen's key")
-  val door: Door       = Door("kitchen's door", RoomLink(kitchen, Openable(needsKey = Some(kitchenKey))))
+//  val cup: GenericItem = GenericItem("cup", Set(Takeable()))
+  val kitchenKey: Key = Key("kitchen's key")
+  val door: Door      = Door("kitchen's door", RoomLink(kitchen, Openable(needsKey = Some(kitchenKey))))
 
-  val treasure: GenericItem =
-    GenericItem("treasure", Set(Openable(needsKey = Some(kitchenKey), onOpenExtra = Some(state => state))))
+//  val treasure: GenericItem =
+//    GenericItem("treasure", Set(Openable(needsKey = Some(kitchenKey), onOpenExtra = Some(state => state))))
 }

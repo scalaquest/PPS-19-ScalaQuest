@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.impl
 
 import io.github.scalaquest.core.model.impl.Behavior.Behavior
-import io.github.scalaquest.core.model.{Action, Message, Model, Room}
+import io.github.scalaquest.core.model.{Action, GameState, Message, Model, Player, Room}
 
 /**
  * SimpleModel is a possible implementation of the model, that takes use of the Behavior mechanism.
@@ -27,46 +27,11 @@ object SimpleModel extends Model {
   trait BehaviorableItem extends Item {
     def behaviors: Set[Behavior] = Set()
 
-    /*
-    override def useTransitive[SS <: S](action: Action, state: SS): Option[Reaction] =
+    override def useTransitive(action: Action, state: S): Option[Reaction] =
       behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
 
-    override def useDitransitive[SS <: S, II <: I](action: Action, sideItem: II, state: SS): Option[Reaction] =
+    override def useDitransitive(action: Action, state: S, sideItem: I): Option[Reaction] =
       behaviors.map(_.ditransitiveTriggers).reduce(_ orElse _).lift((action, this, sideItem, state))
-     */
-
-    /*override def useTransitive[SS <: S](
-      action: Action,
-      state: SS
-    ): Option[state.Reaction] = behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
-
-    override def useDitransitive[SS <: S, II <: I](
-      action: Action,
-      sideItem: II,
-      state: SS
-    ): Option[state.Reaction] =
-      behaviors.map(_.ditransitiveTriggers).reduce(_ orElse _).lift((action, this, sideItem, state))
-
-     */
-
-    ////// fixme experiments
-
-    /*
-    override def useTransitive2[SS <: S](
-      action: Action,
-      state: SS
-    ): Unit = ???
-
-     */
-    //override def useTransitive[SS <: Model#S](action: Action, state: SS): Option[state.Reaction] = ???
-
-    //override def useTransitive3(action: Action, state: SimpleState): Option[state.Reaction] =
-    //  behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
-    //override def useTransitive3(action: Action, state: SimpleState): Option[state.Reaction] = ???
-    // override def useTransitive4(action: Action, state: M#S): Option[M#Reaction] = ???
-    override val model: SimpleModel.Self = SimpleModel
-
-    override def useTransitive4(action: Action, state: model.S): Option[model.Reaction] = ???
 
     ////// fixme end of experiments
   }
@@ -74,15 +39,15 @@ object SimpleModel extends Model {
   case class SimpleState(game: SimpleGameState, messages: Seq[Message]) extends State
 
   case class SimpleGameState(player: SimplePlayer, ended: Boolean, rooms: Set[Room], itemsInRooms: Map[Room, Set[I]])
-    extends GameState
+    extends GameState[I]
     with GameStateUtils
 
-  trait GameStateUtils extends GameState {
+  trait GameStateUtils extends GameState[I] {
     def isInBag(item: I): Boolean = this.player.bag.contains(item)
 
     def isInCurrentRoom(item: I): Boolean =
       this.itemsInRooms.collectFirst({ case (room, items) if items.contains(item) => room }).isDefined
   }
 
-  case class SimplePlayer(bag: Set[I], location: Room) extends Player
+  case class SimplePlayer(bag: Set[I], location: Room) extends Player[I]
 }

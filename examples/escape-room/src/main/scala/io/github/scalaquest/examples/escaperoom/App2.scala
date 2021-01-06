@@ -76,5 +76,5 @@ object App2 extends zio.App {
   implicit val model: SimpleModel.type = SimpleModel
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
-    CLI.fromModel[SimpleModel.type].build(state, game, pusher).start.exitCode
+    CLI.fromModel(model).build(state, game, pusher).start.exitCode
 }
