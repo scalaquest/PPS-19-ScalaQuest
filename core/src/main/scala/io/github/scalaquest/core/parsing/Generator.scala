@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.parsing
 
 import io.github.scalaquest.core.model.Model
-import io.github.scalaquest.core.parsing.codegen.ListP
+import io.github.scalaquest.core.parsing.engine.ListP
 
 trait Generator { self =>
   def generate: String
@@ -18,7 +18,7 @@ case class GrammarGenerator(verbs: Verb*) extends Generator {
 
 case class ItemGenerator(items: Model#Item*) extends Generator {
 
-  import io.github.scalaquest.core.parsing.codegen.ops._
+  import io.github.scalaquest.core.parsing.engine.ops._
 
   def np: CompoundBuilder = CompoundBuilder("np")
 

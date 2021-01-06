@@ -1,8 +1,7 @@
 package io.github.scalaquest.core.parsing
 
 import io.github.scalaquest.core.model.{Action, Actions}
-import io.github.scalaquest.core.model.impl.SimpleModel.SimpleItem
-import io.github.scalaquest.core.parsing.codegen.{Atom, Clause, Term}
+import io.github.scalaquest.core.parsing.engine.{Atom, Clause, Term, Variable}
 
 import scala.annotation.tailrec
 
@@ -20,8 +19,8 @@ sealed trait Verb {
 }
 
 object Verb {
-  import io.github.scalaquest.core.parsing.codegen._
-  import io.github.scalaquest.core.parsing.codegen.ops._
+  import io.github.scalaquest.core.parsing.engine._
+  import io.github.scalaquest.core.parsing.engine.ops._
 
   def betaReduce(functor: String, variablesNum: Int): Term = {
     @tailrec
