@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import alice.tuprolog.Prolog
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 sealed trait AST
@@ -28,5 +29,7 @@ trait Parser {
 }
 
 class PrologParser extends Parser {
+
+  val prolog: Prolog                                                 = new Prolog()
   override def parse(lexerResult: LexerResult): Option[ParserResult] = ???
 }
