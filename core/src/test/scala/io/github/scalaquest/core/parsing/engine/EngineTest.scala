@@ -6,6 +6,13 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class EngineTest extends AnyWordSpec {
 
+  val people = Seq(
+    "alessio",
+    "boris",
+    "claudio",
+    "daria"
+  )
+
   val theory = new Theory("""
                |male(alessio).
                |male(boris).
@@ -30,12 +37,7 @@ class EngineTest extends AnyWordSpec {
       "return them as a sequence" in {
         val term = Compound(Atom("human"), Variable("X"))
         val res  = engine.query(term)
-        forAll(res.zip(Seq(
-          "alessio",
-          "boris",
-          "claudio",
-          "daria"
-        ))) { case (sol, name) =>
+        forAll(res.zip(people)) { case (sol, name) =>
           assert(sol.body == term.copy(arg1 = Atom(name)))
         }
       }
@@ -44,12 +46,7 @@ class EngineTest extends AnyWordSpec {
       "resolve variables with their values" in {
         val term = Compound(Atom("human"), Variable("X"))
         val res  = engine.query(term)
-        forAll(res.zip(Seq(
-          "alessio",
-          "boris",
-          "claudio",
-          "daria"
-        ))) { case (sol, name) =>
+        forAll(res.zip(people)) { case (sol, name) =>
           assert(sol.getVariable(Variable("X")).contains(Atom(name)))
         }
       }
