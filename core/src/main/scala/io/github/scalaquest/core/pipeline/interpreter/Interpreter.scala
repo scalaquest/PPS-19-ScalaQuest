@@ -43,33 +43,30 @@ object Interpreter {
     case class SimpleInterpreter(state: S) extends Interpreter[model.type, model.Reaction] {
       private val useIntransitive: Option[Reaction] = ???
 
-      val itemRetriever: ItemRetriever = ItemRetriever(model)
+      val itemRetriever: ItemRetriever[I] = ???
 
       override def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[model.Reaction]] = {
         val eventualReaction: Either[String, Reaction] = resolverResult.statement match {
           case Statement.Intransitive(action) =>
             useIntransitive toRight
               s"Could not recognize ${action.name}"
-          //// fixme experiments
 
           case Statement.Transitive(action, itemRetriever(item)) =>
-            val s0: model.S = state
-            val i: model.I  = item
+            item.useTransitive(action, state) toRight s"Couldn't recognize ${action.name} on ${item.name}"
 
-            val transitiveResult = i.useTransitive(action, state)
-            //          val i2: model.I = model.getItem(new ItemRef {})
-            //          item.useTransitive(action, state)
-            //          val res: Option[model.Reaction] = item.useTransitive5(action, state)
-            Left("no")
-
-          //// fixme end of experiments
+          case Statement.Ditransitive(action, itemRetriever(directObj), itemRetriever(indirectObj)) =>
+            directObj.useDitransitive(
+              action,
+              state,
+              indirectObj
+            ) toRight s"Couldn't recognize ${action.name} on ${directObj.name} and ${indirectObj.name}"
         }
 
         eventualReaction.map(InterpreterResult(model).build(_))
       }
     }
 
-    (s: model.S) => SimpleInterpreter(s)
+    SimpleInterpreter(_)
 
   }
 
