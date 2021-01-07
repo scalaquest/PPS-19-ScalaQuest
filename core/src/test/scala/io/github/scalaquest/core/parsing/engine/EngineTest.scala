@@ -39,6 +39,8 @@ class EngineTest extends AnyWordSpec {
           assert(sol.body == term.copy(arg1 = Atom(name)))
         }
       }
+    }
+    "provided any query" should {
       "resolve variables with their values" in {
         val term = Compound(Atom("human"), Variable("X"))
         val res  = engine.query(term)
@@ -51,7 +53,7 @@ class EngineTest extends AnyWordSpec {
           assert(sol.getVariable(Variable("X")).contains(Atom(name)))
         }
       }
-      "resolve empty for unknown variables" in {
+      "resolve unknown variables with empty" in {
         val term = Compound(Atom("human"), Variable("X"))
         val res  = engine.query(term)
         assert(res.nonEmpty)
