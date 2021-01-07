@@ -43,6 +43,8 @@ object Interpreter {
     case class SimpleInterpreter(state: S) extends Interpreter[model.type, model.Reaction] {
       private val useIntransitive: Option[Reaction] = ???
 
+      // The interpreter should know the Map[ItemRef, I] in order to create a retriever
+      // or should be passed the itemRetriever directly.
       val itemRetriever: ItemRetriever[I] = ???
 
       override def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[model.Reaction]] = {
