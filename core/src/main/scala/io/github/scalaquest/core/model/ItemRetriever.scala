@@ -1,7 +1,5 @@
 package io.github.scalaquest.core.model
 
-import io.github.scalaquest.core.model.impl.SimpleModel
-
 trait ItemRef
 
 trait ItemRetriever[I] {
