@@ -22,5 +22,7 @@ object ItemRetriever {
    * val itemRetriever = ItemRetriever[model.type].fromMap(items)
    */
   def apply[M <: Model](implicit model: M): ItemRetrieverBuilder[model.I] =
-    (items: Map[ItemRef, model.I]) => (ref: ItemRef) => items get ref
+    new ItemRetrieverBuilder[model.I] {
+      override def fromMap(items: Map[ItemRef, model.I]): ItemRetriever[model.I] = (ref: ItemRef) => items get ref
+    }
 }
