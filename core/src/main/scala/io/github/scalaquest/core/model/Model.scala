@@ -1,19 +1,7 @@
 package io.github.scalaquest.core.model
 
-trait Message
-
-trait GameState[I] {
-  def player: Player[I]
-  def ended: Boolean
-
-  def rooms: Set[Room]
-  def itemsInRooms: Map[Room, Set[I]]
-}
-
-trait Player[I] {
-  def bag: Set[I]
-  def location: Room
-}
+import io.github.scalaquest.core.model.common.{CommonBehaviors, CommonBehaviorsAndItems}
+import io.github.scalaquest.core.model.default.BehaviorableModel
 
 trait Model {
   type S <: State
@@ -33,42 +21,6 @@ trait Model {
   }
 }
 
-trait BehaviorableModel extends Model {
-  override type I = BehaviorableItem
-
-  type TransitiveTriggers   = PartialFunction[(Action, I, S), Reaction]
-  type DitransitiveTriggers = PartialFunction[(Action, I, I, S), Reaction]
-
-  trait Behavior {
-    def triggers: TransitiveTriggers               = PartialFunction.empty
-    def ditransitiveTriggers: DitransitiveTriggers = PartialFunction.empty
-  }
-
-  trait BehaviorableItem extends Item {
-    def behaviors: Set[Behavior] = Set()
-
-    override def useTransitive(action: Action, state: S): Option[Reaction] =
-      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, state))
-
-    override def useDitransitive(action: Action, state: S, sideItem: I): Option[Reaction] =
-      behaviors.map(_.ditransitiveTriggers).reduce(_ orElse _).lift((action, this, sideItem, state))
-
-  }
-}
-
-trait HasItems extends Model { self: BehaviorableModel =>
-
-  object items {
-    case class Key(name: String, override val behaviors: Set[Behavior] = Set()) extends BehaviorableItem
-
-    case class Door(name: String) extends BehaviorableItem {
-      override def behaviors = Set()
-    }
-
-    case class GenericItem(name: String, override val behaviors: Set[Behavior] = Set()) extends BehaviorableItem
-  }
-}
-
 trait AdvancedState extends Model {
 
   override type S = ConcreteIntermediateState
@@ -80,11 +32,10 @@ trait AdvancedState extends Model {
   }
 }
 
-object ConcreteModel extends BehaviorableModel with HasItems with AdvancedState
+object ConcreteModel extends BehaviorableModel with CommonBehaviorsAndItems with AdvancedState
 
 object main {
 
-  import ConcreteModel.items
-  items.Key("ciao")
+  import ConcreteModel._
 
 }
