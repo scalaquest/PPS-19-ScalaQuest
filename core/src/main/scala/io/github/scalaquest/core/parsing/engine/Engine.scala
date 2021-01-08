@@ -5,12 +5,13 @@ import alice.tuprolog.{
   NoSolutionException,
   SolveInfo,
   Struct,
-  Theory,
   UnknownVarException,
   Var,
   Prolog => TuProlog,
-  Term => TuPrologTerm
+  Term => TuPrologTerm,
+  Theory => TuPrologTheory
 }
+import io.github.scalaquest.core.parsing.engine.Theory.Theory
 
 trait Solution {
   def body: Term
@@ -18,7 +19,7 @@ trait Solution {
 }
 
 trait Engine {
-  def query(term: Term): Seq[Solution]
+  def solve(term: Term): Seq[Solution]
 }
 
 object Engine {
@@ -49,30 +50,31 @@ object Engine {
   /*
    * Notice this will fail if called with a Struct with no arguments.
    */
-  private def buildCompound(struct: Struct): Compound = {
+  private def buildCompound(struct: Struct): Compound =
     getArgs(struct).toList match {
       case h :: t =>
         Compound(Atom(struct.getName), h, t)
     }
-  }
 
   /*
-   * Notice this will fail if not called with an Integer, but for now we don't
+   * Notice this might fail if not called with an Integer, but for now we don't
    * use any other Number implementation
    */
   private def buildNumber(number: tuprolog.Number): Number = Number(number.intValue)
 
-  private def createTuProlog(theory: Theory, libraries: Seq[Library]): TuProlog = {
+  private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
     val prolog = new TuProlog
     prolog.setTheory(theory)
     libraries.foreach(l => prolog.loadLibrary(l.ref))
     prolog
   }
 
-  def apply(theory: Theory, libraries: Seq[Library] = Seq()): Engine = PrologEngine(createTuProlog(theory, libraries))
+  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
+    PrologEngine(createTuProlog(theory.toTuProlog, libraries))
+
 }
 
-case class SolutionImpl(solveInfo: SolveInfo) extends Solution {
+case class SimpleSolution(solveInfo: SolveInfo) extends Solution {
   import Engine.EnhancedTuPrologTerm
 
   override def body: Term = solveInfo.getSolution.toTerm
@@ -94,15 +96,15 @@ case class PrologEngine(prolog: TuProlog) extends Engine {
     def go(info: SolveInfo): LazyList[SolveInfo] = {
       val current =
         if (info.isSuccess) LazyList(info)
-        else LazyList()
-      lazy val next = if (prolog.hasOpenAlternatives) go(prolog.solveNext()) else LazyList()
+        else LazyList.empty
+      lazy val next = if (prolog.hasOpenAlternatives) go(prolog.solveNext()) else LazyList.empty
       current #::: next
     }
 
     go(prolog.solve(goal))
   }
 
-  override def query(term: Term): Seq[Solution] = {
-    exploreSolutions(term.toTuPrologTerm).map(SolutionImpl)
+  override def solve(term: Term): Seq[Solution] = {
+    exploreSolutions(term.toTuPrologTerm).map(SimpleSolution)
   }
 }

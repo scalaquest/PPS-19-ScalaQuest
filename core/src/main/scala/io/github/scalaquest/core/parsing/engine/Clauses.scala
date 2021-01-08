@@ -5,7 +5,7 @@ sealed trait Clause {
 }
 
 sealed trait Term extends Clause {
-  protected def infixOp(op: String)(left: Term): Compound = Compound(Atom(op), left, Seq(this))
+  protected def infixOp(op: String)(left: Term): Compound = Compound(Atom(op), left, List(this))
 
   def ^:(left: Term): Compound = infixOp("^")(left)
 }
@@ -22,7 +22,7 @@ case class Variable(name: String) extends Term {
   override def generate: String = name
 }
 
-case class Compound(functor: Atom, arg1: Term, args: Seq[Term] = Seq()) extends Term {
+case class Compound(functor: Atom, arg1: Term, args: List[Term] = List()) extends Term {
   override def generate: String = s"${functor.generate}(${(arg1 +: args).map(_.generate).mkString(",")})"
 }
 
@@ -49,7 +49,7 @@ case class DCGRule(left: Term, right: Term) extends Clause {
 object ops {
 
   case class CompoundBuilder(functor: Atom) {
-    def apply(arg: Term, args: Term*): Compound = Compound(functor, arg, args)
+    def apply(arg: Term, args: Term*): Compound = Compound(functor, arg, args.toList)
   }
 
   implicit def stringToAtom(name: String): Atom  = Atom(name)

@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.parsing.engine
 
-import alice.tuprolog.Theory
+import alice.tuprolog.{Theory => TuPrologTheory}
 import org.scalatest.Inspectors._
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -13,7 +13,7 @@ class EngineTest extends AnyWordSpec {
     "daria"
   )
 
-  val theory = new Theory("""
+  val theory = Theory("""
                |male(alessio).
                |male(boris).
                |male(claudio).
@@ -28,7 +28,7 @@ class EngineTest extends AnyWordSpec {
     "provided a query with a single result" should {
       "return it as a unary sequence" in {
         val term = Compound(Atom("male"), Atom("boris"))
-        val res  = engine.query(term)
+        val res  = engine.solve(term)
         assert(res.size == 1)
         assert(res.head.body == term)
       }
@@ -36,7 +36,7 @@ class EngineTest extends AnyWordSpec {
     "provided a query with multiple results" should {
       "return them as a sequence" in {
         val term = Compound(Atom("human"), Variable("X"))
-        val res  = engine.query(term)
+        val res  = engine.solve(term)
         forAll(res.zip(people)) { case (sol, name) =>
           assert(sol.body == term.copy(arg1 = Atom(name)))
         }
@@ -45,16 +45,18 @@ class EngineTest extends AnyWordSpec {
     "provided any query" should {
       "resolve variables with their values" in {
         val term = Compound(Atom("human"), Variable("X"))
-        val res  = engine.query(term)
+        val res  = engine.solve(term)
         forAll(res.zip(people)) { case (sol, name) =>
           assert(sol.getVariable(Variable("X")).contains(Atom(name)))
         }
       }
       "resolve unknown variables with empty" in {
         val term = Compound(Atom("human"), Variable("X"))
-        val res  = engine.query(term)
+        val res  = engine.solve(term)
         assert(res.nonEmpty)
-        assert(res.flatMap(_.getVariable(Variable("Y"))).isEmpty)
+        forAll(res) { sol =>
+          assert(sol.getVariable(Variable("Y")).isEmpty)
+        }
       }
     }
   }
@@ -71,6 +73,7 @@ class EngineTest extends AnyWordSpec {
     "passed a tuProlog compound" should {
       "convert it to a Compound" in {
         val compound = alice.tuprolog.Term.createTerm("hello(world)")
+        assert(compound.isCompound)
         assert(compound.toTerm == Compound(Atom("hello"), Atom("world")))
       }
     }

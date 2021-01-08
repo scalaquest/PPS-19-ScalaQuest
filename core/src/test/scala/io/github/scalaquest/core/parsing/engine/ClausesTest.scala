@@ -2,7 +2,7 @@ package io.github.scalaquest.core.parsing.engine
 
 import org.scalatest.wordspec.AnyWordSpec
 
-class PrologTest extends AnyWordSpec {
+class ClausesTest extends AnyWordSpec {
 
   "An atom" should {
     "generate its content" in {
@@ -27,13 +27,13 @@ class PrologTest extends AnyWordSpec {
 
   "A compound term" should {
     "generate functor and an argument surrounded by parenthesis" in {
-      val compound = Compound(Atom("hello"), Atom("world"), Seq())
+      val compound = Compound(Atom("hello"), Atom("world"), List())
       assert(compound.generate == "hello(world)")
     }
 
     "separate its arguments using commas" in {
       val compound =
-        Compound(Atom("hello"), Atom("darkness"), Seq(Atom("my"), Atom("old"), Atom("friend")))
+        Compound(Atom("hello"), Atom("darkness"), List(Atom("my"), Atom("old"), Atom("friend")))
       assert(compound.generate == "hello(darkness,my,old,friend)")
     }
   }
@@ -97,7 +97,7 @@ class PrologTest extends AnyWordSpec {
           Atom("my"),
           Atom("old"),
           Atom("friend")
-        ) == Compound(Atom("hello"), Atom("darkness"), Seq(Atom("my"), Atom("old"), Atom("friend")))
+        ) == Compound(Atom("hello"), Atom("darkness"), List(Atom("my"), Atom("old"), Atom("friend")))
       )
     }
   }
@@ -128,7 +128,7 @@ class PrologTest extends AnyWordSpec {
         ("a" ^: "b" ^: "c") == Compound(
           Atom("^"),
           Atom("a"),
-          Seq(Compound(Atom("^"), Atom("b"), Seq(Atom("c"))))
+          List(Compound(Atom("^"), Atom("b"), List(Atom("c"))))
         )
       )
     }
@@ -142,11 +142,11 @@ class PrologTest extends AnyWordSpec {
         term == Compound(
           Atom("^"),
           Variable("X"),
-          Seq(
+          List(
             Compound(
               Atom("^"),
               Variable("Y"),
-              Seq(Compound(Atom("hello"), Variable("Y"), Seq(Variable("X"))))
+              List(Compound(Atom("hello"), Variable("Y"), List(Variable("X"))))
             )
           )
         )
