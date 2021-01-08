@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.pipeline.parser
 
-import alice.tuprolog.Prolog
+import io.github.scalaquest.core.parsing.engine.Theory.Theory
+import io.github.scalaquest.core.parsing.engine.{Atom, Compound, DCGLibrary, Engine, Library, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 sealed trait AST
@@ -28,8 +29,41 @@ trait Parser {
   def parse(lexerResult: LexerResult): Option[ParserResult]
 }
 
-class PrologParser extends Parser {
+object Parser {
+  def apply(theory: Theory, libraries: Set[Library] = Set()): Parser = new PrologParser(theory, libraries)
 
-  val prolog: Prolog                                                 = new Prolog()
-  override def parse(lexerResult: LexerResult): Option[ParserResult] = ???
+  class PrologParser(val theory: Theory, val libraries: Set[Library]) extends Parser {
+
+    val engine: Engine = Engine(
+      theory,
+      Set(DCGLibrary)
+    )
+
+    object variables {
+      import io.github.scalaquest.core.parsing.engine.ops._
+      val X      = Variable("X")
+      val i      = CompoundBuilder("i")
+      val phrase = CompoundBuilder("phrase")
+    }
+
+    override def parse(lexerResult: LexerResult): Option[ParserResult] = {
+      import io.github.scalaquest.core.parsing.engine.ops.seqToListP
+      import variables._
+      val tokens = lexerResult.tokens.map(Atom)
+      val query  = phrase(i(X), tokens)
+
+      engine.solve(query)
+        .headOption
+        .flatMap(_.getVariable(X))
+        .flatMap {
+          case Compound(Atom(verb), Atom(subject), Nil) =>
+            Some(AST.Intransitive(verb, subject))
+          case Compound(Atom(verb), Atom(subject), Atom(obj) :: Nil) =>
+            Some(AST.Transitive(verb, subject, obj))
+          case Compound(Atom(verb), Atom(subject), Atom(directObj) :: Atom(indirectObj) :: Nil) =>
+            Some(AST.Ditransitive(verb, subject, directObj, indirectObj))
+          case _ => None
+        }.map(SimpleParserResult)
+    }
+  }
 }

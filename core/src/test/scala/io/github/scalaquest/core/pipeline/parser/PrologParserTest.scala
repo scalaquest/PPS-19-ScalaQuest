@@ -1,10 +1,29 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Theory}
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexerResult
+import io.github.scalaquest.core.pipeline.parser.Parser.PrologParser
 import org.scalatest.wordspec.AnyWordSpec
 
+import scala.io.Source
+
 class PrologParserTest extends AnyWordSpec {
-  val parser: Parser = new PrologParser
+
+  val source = Source.fromResource("base.pl").mkString +
+    """
+      |
+      |name(key) --> [key].
+      |name(door) --> [door].
+      |name(apple) --> [apple].
+      |name(bag) --> [bag].
+      |
+      |iv(X^inspect(X)) --> [inspect].
+      |tv(X^Y^take(Y,X)) --> [take].
+      |tv(X^Y^pick_up(Y,X)) --> [pick,up].
+      |v(3/with, Z^Y^X^open(X,Y,Z)) --> [open].
+      |v(3/in, Z^Y^X^put(X,Y,Z)) --> [put].
+      |""".stripMargin
+  val parser: Parser = Parser(Theory(source), Set(DCGLibrary))
 
   "A parser" when {
     "provided an empty sequence of tokens" should {
@@ -18,7 +37,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("inspect")))
             .map(_.tree)
-            .contains(AST.Intransitive("you", "inspect"))
+            .contains(AST.Intransitive("inspect", "you"))
         )
       }
     }
