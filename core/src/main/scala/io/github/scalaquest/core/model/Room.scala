@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.model.Direction.Direction
+import io.github.scalaquest.core.model.default.DefaultRoom
 
 object Direction extends Enumeration {
   type Direction = Value
@@ -13,11 +14,6 @@ trait Room {
   def neighbors(direction: Direction): Option[Room]
 }
 
-case class SimpleRoom(name: String, _neighbors: () => Map[Direction, Room]) extends Room {
-  override def describe: String                              = s"inspect: ${name}"
-  override def neighbors(direction: Direction): Option[Room] = _neighbors() get direction
-}
-
 object Room {
-  def apply(name: String, neighbors: () => Map[Direction, Room]): Room = SimpleRoom(name, neighbors)
+  def apply(name: String, neighbors: () => Map[Direction, Room]): Room = DefaultRoom(name, neighbors)
 }

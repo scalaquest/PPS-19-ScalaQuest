@@ -1,8 +1,5 @@
 package io.github.scalaquest.core.model
 
-import io.github.scalaquest.core.model.common.{CommonBehaviors, CommonBehaviorsAndItems}
-import io.github.scalaquest.core.model.default.BehaviorableModel
-
 trait Model {
   type S <: State
   type I <: Item
@@ -21,21 +18,9 @@ trait Model {
   }
 }
 
-trait AdvancedState extends Model {
+object ExampleUsage {
+  import io.github.scalaquest.core.model.default.DefaultModel._
 
-  override type S = ConcreteIntermediateState
-
-  case class ConcreteIntermediateState() extends State {
-    override def game: GameState[I] = ???
-
-    override def messages: Seq[Message] = ???
-  }
-}
-
-object ConcreteModel extends BehaviorableModel with CommonBehaviorsAndItems with AdvancedState
-
-object main {
-
-  import ConcreteModel._
-
+  // istanziare un modello (concreto), modellare storia
+  DefaultCommonItems.Key("key")
 }

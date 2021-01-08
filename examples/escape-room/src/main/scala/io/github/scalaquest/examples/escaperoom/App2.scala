@@ -2,8 +2,10 @@ package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
-import io.github.scalaquest.core.model.{ConcreteModel, Message, Room, SimpleRoom}
+import io.github.scalaquest.core.model.{Message, Room}
 import io.github.scalaquest.cli.CLI
+import io.github.scalaquest.core.model.default.{DefaultModel, DefaultRoom}
+import io.github.scalaquest.core.model.default.DefaultModel.{DefaultGameState, DefaultPlayer, DefaultState}
 import monocle.Lens
 import monocle.macros.GenLens
 
@@ -13,26 +15,26 @@ object Model {
   case object GameStarted extends Message
   case object TestMessage extends Message
 
-  def room1: Room = SimpleRoom("room1", () => Map(NORTH -> room2))
-  def room2: Room = SimpleRoom("room2", () => Map(SOUTH -> room1))
+  def room1: Room = DefaultRoom("room1", () => Map(NORTH -> room2))
+  def room2: Room = DefaultRoom("room2", () => Map(SOUTH -> room1))
 
-  val model: ConcreteModel.type = ConcreteModel
+  val model: DefaultModel.type = DefaultModel
 
-  val state: ConcreteModel.ConcreteIntermediateState = ???
-  /*
-  def gameLens: Lens[SimpleState, SimpleGameState]    = GenLens[SimpleState](_.game)
-  def playerLens: Lens[SimpleGameState, SimplePlayer] = GenLens[SimpleGameState](_.player)
-  def locationLens: Lens[SimplePlayer, Room]          = GenLens[SimplePlayer](_.location)
-  def messagesLens: Lens[SimpleState, Seq[Message]]   = GenLens[SimpleState](_.messages)
+  val state: DefaultState = ???
+
+  def gameLens: Lens[DefaultState, DefaultGameState]    = GenLens[DefaultState](_.game)
+  def playerLens: Lens[DefaultGameState, DefaultPlayer] = GenLens[DefaultGameState](_.player)
+  def locationLens: Lens[DefaultPlayer, Room]           = GenLens[DefaultPlayer](_.location)
+  def messagesLens: Lens[DefaultState, Seq[Message]]    = GenLens[DefaultState](_.messages)
 
   case class Describe(room: Room) extends Message
   case object WentNorth           extends Message
   case object WentSouth           extends Message
 
-  def game: Game[SimpleModel.type] =
+  def game: Game[DefaultModel.type] =
     new Game(model) {
 
-      override def send(input: String)(state: SimpleState): Either[String, SimpleState] =
+      override def send(input: String)(state: DefaultState): Either[String, DefaultState] =
         for {
           dir <- input match {
             case "go n" => Right(NORTH)
@@ -63,9 +65,9 @@ object Model {
 
 object App2 extends zio.App {
   import Model._
-  implicit val model: SimpleModel.type = SimpleModel
+  implicit val model: DefaultModel.type = DefaultModel
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
     CLI.fromModel(model).build(state, game, pusher).start.exitCode
-   */
+
 }
