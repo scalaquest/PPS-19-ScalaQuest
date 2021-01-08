@@ -22,7 +22,13 @@ trait Model {
 
 object ExampleUsage {
   import io.github.scalaquest.core.model.default.DefaultModel._
+  import io.github.scalaquest.core.model.Direction.Direction
 
-  // istanziare un modello (concreto), modellare storia
-  DefaultCommonItems.Key("key")
+  // implementation: this a fragment of the 'storyteller' part, to put into the example
+  val kitchen: Room = Room("kitchen", () => Map[Direction, Room]())
+
+  val cup: GenericItem = GenericItem("cup", Set(Takeable()))
+
+  val kitchenKey: Key = Key("kitchen's key")
+  val door: Door      = Door("kitchen's door", RoomLink(kitchen, Openable(requiredKey = Some(kitchenKey))))
 }

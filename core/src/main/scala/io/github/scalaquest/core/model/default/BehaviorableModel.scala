@@ -45,7 +45,7 @@ abstract class BehaviorableModel extends Model {
    * A subtype of Behavior, that adds the possibility to compose multiple behaviors into a sigle one,
    * using a hierarchical fashion (father-son behavior).
    */
-  abstract class ComposedBehavior extends Behavior {
+  trait Composable extends Behavior {
 
     /**
      * The father behavior, i.e. the one that can be seen by the child behavior.

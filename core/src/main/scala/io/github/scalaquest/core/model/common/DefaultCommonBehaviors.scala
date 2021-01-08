@@ -21,10 +21,10 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
    * The behavior of an Item that could be put into the bag.
    * @param onTakeExtra a Reaction to be possibly chained to the basic take Reaction.
    */
-  case class Takeable(onTakeExtra: Option[Reaction] = None)(
+  case class Takeable(onTakeExtra: Option[Reaction] = None)(implicit
     bagLens: Lens[S, Set[I]],
     itemsLens: Lens[S, Map[Room, Set[I]]]
-  ) extends Behavior
+  ) extends CommonBehaviors.Takeable
     with ExtraUtils {
 
     override def triggers: Triggers = {
@@ -58,20 +58,20 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
     requiredKey: Option[CommonItems.Key] = None,
     onOpenExtra: Option[Reaction] = None,
     onCloseExtra: Option[Reaction] = None
-  ) extends Behavior
+  ) extends CommonBehaviors.Openable
     with ExtraUtils {
 
     override def triggers: Triggers = {
       case (Open, item, None, state) if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state) && !isOpen =>
         open()
-      case (Open, item, Some(key: CommonItems.Key), state)
+      case (Open, item, Some(key), state)
           if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state, Some(key)) && !isOpen =>
         open()
       case (Close, item, None, state) if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state) && isOpen =>
         close()
     }
 
-    def canBeOpened(state: S, usedKey: Option[CommonItems.Key] = None): Boolean = {
+    def canBeOpened(state: S, usedKey: Option[I] = None): Boolean = {
       usedKey match {
         case Some(key) => requiredKey.contains(key)
         case None      => requiredKey.fold(true)(StateUtils.isInBag(_)(state))
@@ -98,8 +98,9 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
     openable: Openable,
     onEnterExtra: Option[Reaction] = None
   )(
-    currRoomLens: Lens[S, Room]
-  ) extends ComposedBehavior
+    implicit currRoomLens: Lens[S, Room]
+  ) extends CommonBehaviors.RoomLink
+    with Composable
     with ExtraUtils {
 
     override def superBehavior: Behavior = openable
