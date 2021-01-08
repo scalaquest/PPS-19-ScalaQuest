@@ -2,6 +2,10 @@ package io.github.scalaquest.core.model.default
 
 import io.github.scalaquest.core.model.{GameState, Message, Model, Player, Room}
 
+/**
+ * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the State into
+ * the model.
+ */
 trait DefaultState extends Model {
 
   override type S = DefaultState

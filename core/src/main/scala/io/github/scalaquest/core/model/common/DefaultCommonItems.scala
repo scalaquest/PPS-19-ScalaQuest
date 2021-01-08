@@ -2,6 +2,9 @@ package io.github.scalaquest.core.model.common
 
 import io.github.scalaquest.core.model.default.BehaviorableModel
 
+/**
+ * This is a mixable part of the model, that adds some implemented common items to the model.
+ */
 trait DefaultCommonItems extends BehaviorableModel with CommonBehaviors with CommonItems {
 
   object DefaultCommonItems {

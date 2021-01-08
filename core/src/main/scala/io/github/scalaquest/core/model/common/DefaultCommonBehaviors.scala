@@ -5,6 +5,9 @@ import io.github.scalaquest.core.model.common.Actions.{Close, Enter, Open, Take}
 import io.github.scalaquest.core.model.default.BehaviorableModel
 import monocle.Lens
 
+/**
+ * This is a mixable part of the model, that adds some implemented common behaviors to the model.
+ */
 trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with CommonItems {
 
   private object StateUtils {
@@ -24,9 +27,9 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
   ) extends Behavior
     with ExtraUtils {
 
-    override def triggers: TransitiveTriggers = {
+    override def triggers: Triggers = {
       // controlla se l'oggetto è nella room
-      case (Take, item, state) if StateUtils.isInCurrentRoom(item)(state) => take(item)
+      case (Take, item, None, state) if StateUtils.isInCurrentRoom(item)(state) => take(item)
     }
 
     // The standard take reaction is to remove the item from the current room, and put it into the bag.
@@ -52,24 +55,28 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
    */
   case class Openable(
     var isOpen: Boolean = false,
-    needsKey: Option[CommonItems.Key] = None,
+    requiredKey: Option[CommonItems.Key] = None,
     onOpenExtra: Option[Reaction] = None,
     onCloseExtra: Option[Reaction] = None
   ) extends Behavior
     with ExtraUtils {
 
-    override def triggers: TransitiveTriggers = {
-      case (Open, item, state) if StateUtils.isInCurrentRoom(item)(state) && hasKeyOrNotNeeded(state) && !isOpen =>
+    override def triggers: Triggers = {
+      case (Open, item, None, state) if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state) && !isOpen =>
         open()
-      case (Close, item, state) if StateUtils.isInCurrentRoom(item)(state) && hasKeyOrNotNeeded(state) && isOpen =>
+      case (Open, item, Some(key: CommonItems.Key), state)
+          if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state, Some(key)) && !isOpen =>
+        open()
+      case (Close, item, None, state) if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state) && isOpen =>
         close()
     }
 
-    override def ditransitiveTriggers: DitransitiveTriggers = {
-      case (Enter, _, _key, _) if needsKey.contains(_key) && !isOpen => open()
+    def canBeOpened(state: S, usedKey: Option[CommonItems.Key] = None): Boolean = {
+      usedKey match {
+        case Some(key) => requiredKey.contains(key)
+        case None      => requiredKey.fold(true)(StateUtils.isInBag(_)(state))
+      }
     }
-
-    def hasKeyOrNotNeeded(state: S): Boolean = needsKey.fold(true)(StateUtils.isInBag(_)(state))
 
     /**
      * Opens the item and executes eventual extra actions.
@@ -86,17 +93,19 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
    * The behavior of a door, for example: with transitive action Enter, it moves the player into
    * another room.
    */
-  case class RoomLink(endRoom: Room, openable: Openable, onEnterExtra: Option[Reaction] = None)(currRoomLens: Lens[
-    S,
-    Room
-  ])
-    extends ComposableBehavior
+  case class RoomLink(
+    endRoom: Room,
+    openable: Openable,
+    onEnterExtra: Option[Reaction] = None
+  )(
+    currRoomLens: Lens[S, Room]
+  ) extends ComposedBehavior
     with ExtraUtils {
 
     override def superBehavior: Behavior = openable
 
-    override def baseTrigger: TransitiveTriggers = {
-      case (Enter, _, _) if openable.isOpen => enterRoom()
+    override def baseTrigger: Triggers = {
+      case (Enter, _, None, _) if openable.isOpen => enterRoom()
     }
 
     def enterRoom(): Reaction =
