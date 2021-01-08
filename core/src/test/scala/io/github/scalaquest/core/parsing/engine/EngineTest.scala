@@ -1,6 +1,5 @@
 package io.github.scalaquest.core.parsing.engine
 
-import alice.tuprolog.{Theory => TuPrologTheory}
 import org.scalatest.Inspectors._
 import org.scalatest.wordspec.AnyWordSpec
 
