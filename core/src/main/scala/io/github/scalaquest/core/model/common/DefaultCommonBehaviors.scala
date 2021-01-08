@@ -10,10 +10,13 @@ import monocle.Lens
  */
 trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with CommonItems {
 
-  private object StateUtils {
-    def isInBag(item: I)(state: S): Boolean = state.game.player.bag.contains(item)
+  /**
+   * Adds some utilities to perform different checks into the state object.
+   */
+  implicit class StateUtils(state: S) {
+    def isInBag(item: I): Boolean = state.game.player.bag.contains(item)
 
-    def isInCurrentRoom(item: I)(state: S): Boolean =
+    def isInCurrentRoom(item: I): Boolean =
       state.game.itemsInRooms.collectFirst({ case (room, items) if items.contains(item) => room }).isDefined
   }
 
@@ -29,7 +32,7 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
 
     override def triggers: Triggers = {
       // controlla se l'oggetto è nella room
-      case (Take, item, None, state) if StateUtils.isInCurrentRoom(item)(state) => take(item)
+      case (Take, item, None, state) if state.isInCurrentRoom(item) => take(item)
     }
 
     // The standard take reaction is to remove the item from the current room, and put it into the bag.
@@ -62,19 +65,18 @@ trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with
     with ExtraUtils {
 
     override def triggers: Triggers = {
-      case (Open, item, None, state) if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state) && !isOpen =>
+      case (Open, item, None, state) if state.isInCurrentRoom(item) && canBeOpened(state) && !isOpen =>
         open()
-      case (Open, item, Some(key), state)
-          if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state, Some(key)) && !isOpen =>
+      case (Open, item, Some(key), state) if state.isInCurrentRoom(item) && canBeOpened(state, Some(key)) && !isOpen =>
         open()
-      case (Close, item, None, state) if StateUtils.isInCurrentRoom(item)(state) && canBeOpened(state) && isOpen =>
+      case (Close, item, None, state) if state.isInCurrentRoom(item) && canBeOpened(state) && isOpen =>
         close()
     }
 
     def canBeOpened(state: S, usedKey: Option[I] = None): Boolean = {
       usedKey match {
         case Some(key) => requiredKey.contains(key)
-        case None      => requiredKey.fold(true)(StateUtils.isInBag(_)(state))
+        case None      => requiredKey.fold(true)(state.isInBag(_))
       }
     }
 
