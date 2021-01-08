@@ -2,9 +2,7 @@ package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
-import io.github.scalaquest.core.model.impl.SimpleModel
-import io.github.scalaquest.core.model.impl.SimpleModel._
-import io.github.scalaquest.core.model.{Message, Room, SimpleRoom}
+import io.github.scalaquest.core.model.{ConcreteModel, Message, Room, SimpleRoom}
 import io.github.scalaquest.cli.CLI
 import monocle.Lens
 import monocle.macros.GenLens
@@ -18,18 +16,10 @@ object Model {
   def room1: Room = SimpleRoom("room1", () => Map(NORTH -> room2))
   def room2: Room = SimpleRoom("room2", () => Map(SOUTH -> room1))
 
-  val model: SimpleModel.type = SimpleModel
+  val model: ConcreteModel.type = ConcreteModel
 
-  val state: SimpleState = SimpleState(
-    game = SimpleGameState(
-      player = SimplePlayer(bag = Set(), location = room1),
-      ended = false,
-      itemsInRooms = Map(),
-      rooms = Set()
-    ),
-    messages = Seq(GameStarted)
-  )
-
+  val state: ConcreteModel.ConcreteIntermediateState = ???
+  /*
   def gameLens: Lens[SimpleState, SimpleGameState]    = GenLens[SimpleState](_.game)
   def playerLens: Lens[SimpleGameState, SimplePlayer] = GenLens[SimpleGameState](_.player)
   def locationLens: Lens[SimplePlayer, Room]          = GenLens[SimplePlayer](_.location)
@@ -77,4 +67,5 @@ object App2 extends zio.App {
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
     CLI.fromModel(model).build(state, game, pusher).start.exitCode
+   */
 }
