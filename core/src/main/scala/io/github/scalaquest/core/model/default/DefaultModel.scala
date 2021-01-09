@@ -14,8 +14,7 @@ import monocle.macros.GenLens
  * lens.
  */
 object DefaultModel extends BehaviorableModel with DefaultCommonBehaviors with DefaultCommonItems with DefaultState {
-  implicit val bagLens: Lens[S, Set[I]]              = GenLens[S](_.game.player.bag)
-  implicit val itemsLens: Lens[S, Map[Room, Set[I]]] = GenLens[S](_.game.itemsInRooms)
-  implicit val currRoomLens: Lens[S, Room]           = GenLens[S](_.game.player.location)
-
+  override implicit def bagLens: Lens[S, Set[I]]              = GenLens[S](_.game.player.bag)
+  override implicit def itemsLens: Lens[S, Map[Room, Set[I]]] = GenLens[S](_.game.itemsInRooms)
+  override implicit def currRoomLens: Lens[S, Room]           = GenLens[S](_.game.player.location)
 }

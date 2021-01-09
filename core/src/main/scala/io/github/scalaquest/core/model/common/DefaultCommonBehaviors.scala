@@ -10,6 +10,10 @@ import monocle.Lens
  */
 trait DefaultCommonBehaviors extends BehaviorableModel with CommonBehaviors with CommonItems {
 
+  implicit def bagLens: Lens[S, Set[I]]
+  implicit def itemsLens: Lens[S, Map[Room, Set[I]]]
+  implicit def currRoomLens: Lens[S, Room]
+
   /**
    * Adds some utilities to perform different checks into the state object.
    */
