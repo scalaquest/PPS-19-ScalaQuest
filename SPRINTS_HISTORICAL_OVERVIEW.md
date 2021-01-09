@@ -31,8 +31,16 @@ Roles:
 Useful links:
 - [(Issue) Change Effect keyword to StateUpdate?](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/8)
 - [(Issue) Spotless problems](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/13)
-- [(Issue) Deepen model component](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/7)
-- [(Issue) Deepen parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
+- [(Issue) Deepen model, interpreter and resolver component](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/7)
+- [(Issue) Deepen Prolog engine, parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
 - [(Issue) Sprint overview document](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/19)
 
-## Sprint 2 (to define)
+## Sprint 2 (3rd January - 9th January)
+
+In the second Sprint we basically continued the work started in the first one, divided in teams. Tasks regarding model and Prolog engine are two of the most funding part of the project, and as such they deserve particular attention.
+In particular, we have carried on various meeting to take some decisions about how to use the model in a more functional way, as described in the linked issue.
+
+Useful links:
+- [(Issue) Rename Update into Reaction](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/17)
+- [(Issue) Deepen model, interpreter and resolver component](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/7)
+- [(Issue) Deepen Prolog engine, parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
