@@ -19,7 +19,7 @@ trait Model {
 }
 
 object ExampleUsage {
-  import io.github.scalaquest.core.model.default.DefaultModel._
+  import io.github.scalaquest.core.model.std.StdModel._
   import io.github.scalaquest.core.model.Direction.Direction
 
   // implementation: this a fragment of the 'storyteller' part, to put into the example

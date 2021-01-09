@@ -1,9 +1,9 @@
-package io.github.scalaquest.core.model.common.behaviors.impl
+package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.common.Actions.{Close, Open}
-import io.github.scalaquest.core.model.common.behaviors.DefaultCommonBehaviorsBase
+import io.github.scalaquest.core.model.common.behaviors.StdCommonBehaviorsBase
 
-trait Openable extends DefaultCommonBehaviorsBase {
+trait Openable extends StdCommonBehaviorsBase {
 
   /**
    * The behavior of an object that can be opened and closed.

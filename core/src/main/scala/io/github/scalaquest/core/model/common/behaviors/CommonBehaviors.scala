@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.common.behaviors
 
-import io.github.scalaquest.core.model.default.BehaviorableModel
+import io.github.scalaquest.core.model.std.BehaviorableModel
 
 /**
  * This is a mixable part of the model, that adds some traits associated to common

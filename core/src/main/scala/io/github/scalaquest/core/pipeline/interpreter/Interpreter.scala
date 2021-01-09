@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.model.default.DefaultModel
+import io.github.scalaquest.core.model.std.StdModel
 import io.github.scalaquest.core.model.{ItemRetriever, Model}
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
@@ -25,9 +25,9 @@ object InterpreterResult {
 }
 
 object IntperpreterTest {
-  implicit val model: DefaultModel.type      = DefaultModel
+  implicit val model: StdModel.type          = StdModel
   implicit val reaction: model.Reaction      = ???
-  val res: InterpreterResult[model.Reaction] = InterpreterResult[DefaultModel.type] build reaction
+  val res: InterpreterResult[model.Reaction] = InterpreterResult[StdModel.type] build reaction
 }
 
 object Interpreter {

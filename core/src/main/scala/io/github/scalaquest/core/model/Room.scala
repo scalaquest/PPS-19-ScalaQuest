@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.model.Direction.Direction
-import io.github.scalaquest.core.model.default.DefaultRoom
+import io.github.scalaquest.core.model.std.StdRoom
 
 object Direction extends Enumeration {
   type Direction = Value
@@ -15,5 +15,5 @@ trait Room {
 }
 
 object Room {
-  def apply(name: String, neighbors: () => Map[Direction, Room]): Room = DefaultRoom(name, neighbors)
+  def apply(name: String, neighbors: () => Map[Direction, Room]): Room = StdRoom(name, neighbors)
 }

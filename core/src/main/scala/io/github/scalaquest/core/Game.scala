@@ -1,6 +1,6 @@
 package io.github.scalaquest.core
 
-import io.github.scalaquest.core.model.default.DefaultModel
+import io.github.scalaquest.core.model.std.StdModel
 import io.github.scalaquest.core.model.{Message, Model}
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 
@@ -32,7 +32,7 @@ object Game {
 }
 
 object ExampleUsage {
-  implicit val model: DefaultModel.type                     = DefaultModel
+  implicit val model: StdModel.type                         = StdModel
   val pipelineBuilder: PipelineBuilder[model.S, model.type] = ???
 
   val game: Game[model.type] = Game fromModel model withPipelineBuilder pipelineBuilder

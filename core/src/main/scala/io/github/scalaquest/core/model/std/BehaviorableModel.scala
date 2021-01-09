@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.default
+package io.github.scalaquest.core.model.std
 
 import io.github.scalaquest.core.model.{Action, Model}
 

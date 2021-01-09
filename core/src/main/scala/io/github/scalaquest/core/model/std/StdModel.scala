@@ -1,8 +1,8 @@
-package io.github.scalaquest.core.model.default
+package io.github.scalaquest.core.model.std
 
 import io.github.scalaquest.core.model.Room
-import io.github.scalaquest.core.model.common.behaviors.DefaultCommonBehaviors
-import io.github.scalaquest.core.model.common.items.DefaultCommonItems
+import io.github.scalaquest.core.model.common.behaviors.StdCommonBehaviors
+import io.github.scalaquest.core.model.common.items.StdCommonItems
 import monocle.Lens
 import monocle.macros.GenLens
 
@@ -14,7 +14,7 @@ import monocle.macros.GenLens
  * As common behaviors needs some Lens to be passed in, to regenerate the State, this Model also implements the required
  * lens.
  */
-object DefaultModel extends BehaviorableModel with DefaultCommonBehaviors with DefaultCommonItems with DefaultState {
+object StdModel extends BehaviorableModel with StdCommonBehaviors with StdCommonItems with StdState {
   override implicit def bagLens: Lens[S, Set[I]]              = GenLens[S](_.game.player.bag)
   override implicit def itemsLens: Lens[S, Map[Room, Set[I]]] = GenLens[S](_.game.itemsInRooms)
   override implicit def currRoomLens: Lens[S, Room]           = GenLens[S](_.game.player.location)

@@ -1,11 +1,11 @@
-package io.github.scalaquest.core.model.common.behaviors.impl
+package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.Enter
-import io.github.scalaquest.core.model.common.behaviors.DefaultCommonBehaviorsBase
+import io.github.scalaquest.core.model.common.behaviors.StdCommonBehaviorsBase
 import monocle.Lens
 
-trait RoomLink extends DefaultCommonBehaviorsBase {
+trait RoomLink extends StdCommonBehaviorsBase {
 
   /**
    * The behavior of a door, for example: with transitive action Enter, it moves the player into

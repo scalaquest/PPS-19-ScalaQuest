@@ -2,10 +2,10 @@ package io.github.scalaquest.core.model.common.behaviors
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.items.CommonItems
-import io.github.scalaquest.core.model.default.BehaviorableModel
+import io.github.scalaquest.core.model.std.BehaviorableModel
 import monocle.Lens
 
-trait DefaultCommonBehaviorsBase extends BehaviorableModel with CommonBehaviors with CommonItems {
+trait StdCommonBehaviorsBase extends BehaviorableModel with CommonBehaviors with CommonItems {
 
   implicit def bagLens: Lens[S, Set[I]]
   implicit def itemsLens: Lens[S, Map[Room, Set[I]]]

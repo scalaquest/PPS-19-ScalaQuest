@@ -1,11 +1,11 @@
-package io.github.scalaquest.core.model.common.behaviors.impl
+package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.Take
-import io.github.scalaquest.core.model.common.behaviors.DefaultCommonBehaviorsBase
+import io.github.scalaquest.core.model.common.behaviors.StdCommonBehaviorsBase
 import monocle.Lens
 
-trait Takeable extends DefaultCommonBehaviorsBase {
+trait Takeable extends StdCommonBehaviorsBase {
 
   /**
    * The behavior of an Item that could be put into the bag.
