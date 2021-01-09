@@ -1,8 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
-import io.github.scalaquest.core.parsing.engine
-import io.github.scalaquest.core.parsing.engine.Theory.Theory
-import io.github.scalaquest.core.parsing.engine.{Atom, Compound, DCGLibrary, Engine, Library, ListP, Variable}
+import io.github.scalaquest.core.parsing.engine.{Atom, Compound, Engine, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 sealed trait AST
@@ -31,25 +29,22 @@ trait Parser {
 }
 
 object Parser {
-  def apply(theory: Theory, libraries: Set[Library] = Set()): Parser = new PrologParser(theory, libraries)
+  def apply(engine: Engine): Parser = new SimplePrologParser(engine)
 
-  class PrologParser(val theory: Theory, val libraries: Set[Library]) extends Parser {
+  abstract class PrologParser extends Parser {
 
-    val engine: Engine = Engine(
-      theory,
-      Set(DCGLibrary)
-    )
+    def engine: Engine
 
-    object variables {
-      import io.github.scalaquest.core.parsing.engine.ops._
+    object dsl {
+      import io.github.scalaquest.core.parsing.engine.dsl._
       val X      = Variable("X")
       val i      = CompoundBuilder("i")
       val phrase = CompoundBuilder("phrase")
     }
 
     override def parse(lexerResult: LexerResult): Option[ParserResult] = {
-      import io.github.scalaquest.core.parsing.engine.ops.seqToListP
-      import variables._
+      import io.github.scalaquest.core.parsing.engine.dsl.seqToListP
+      import dsl._
       val tokens = lexerResult.tokens.map(Atom)
       val query  = phrase(i(X), tokens)
 
@@ -68,4 +63,6 @@ object Parser {
       } yield SimpleParserResult(ast)
     }
   }
+
+  class SimplePrologParser(val engine: Engine) extends PrologParser
 }

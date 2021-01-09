@@ -18,7 +18,7 @@ case class GrammarGenerator(verbs: Verb*) extends Generator {
 
 case class ItemGenerator(items: Model#Item*) extends Generator {
 
-  import io.github.scalaquest.core.parsing.engine.ops._
+  import io.github.scalaquest.core.parsing.engine.dsl._
 
   def np: CompoundBuilder = CompoundBuilder("np")
 

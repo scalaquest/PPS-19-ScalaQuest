@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
-import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Theory}
+import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexerResult
 import io.github.scalaquest.core.pipeline.parser.Parser.PrologParser
 import org.scalatest.wordspec.AnyWordSpec
@@ -23,7 +23,7 @@ class PrologParserTest extends AnyWordSpec {
       |v(3/with, Z^Y^X^open(X,Y,Z)) --> [open].
       |v(3/in, Z^Y^X^put(X,Y,Z)) --> [put].
       |""".stripMargin
-  val parser: Parser = Parser(Theory(source), Set(DCGLibrary))
+  val parser: Parser = Parser(Engine(Theory(source), Set(DCGLibrary)))
 
   "A parser" when {
     "provided an empty sequence of tokens" should {
