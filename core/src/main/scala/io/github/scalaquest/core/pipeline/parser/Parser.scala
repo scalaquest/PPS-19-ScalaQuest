@@ -1,7 +1,8 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.parsing.engine
 import io.github.scalaquest.core.parsing.engine.Theory.Theory
-import io.github.scalaquest.core.parsing.engine.{Atom, Compound, DCGLibrary, Engine, Library, Variable}
+import io.github.scalaquest.core.parsing.engine.{Atom, Compound, DCGLibrary, Engine, Library, ListP, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 sealed trait AST
@@ -52,10 +53,10 @@ object Parser {
       val tokens = lexerResult.tokens.map(Atom)
       val query  = phrase(i(X), tokens)
 
-      engine.solve(query)
-        .headOption
-        .flatMap(_.getVariable(X))
-        .flatMap {
+      for {
+        r <- engine.solve(query).headOption
+        x <- r.getVariable(X)
+        ast <- x match {
           case Compound(Atom(verb), Atom(subject), Nil) =>
             Some(AST.Intransitive(verb, subject))
           case Compound(Atom(verb), Atom(subject), Atom(obj) :: Nil) =>
@@ -63,7 +64,8 @@ object Parser {
           case Compound(Atom(verb), Atom(subject), Atom(directObj) :: Atom(indirectObj) :: Nil) =>
             Some(AST.Ditransitive(verb, subject, directObj, indirectObj))
           case _ => None
-        }.map(SimpleParserResult)
+        }
+      } yield SimpleParserResult(ast)
     }
   }
 }
