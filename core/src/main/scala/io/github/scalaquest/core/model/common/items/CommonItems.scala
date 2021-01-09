@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.common
+package io.github.scalaquest.core.model.common.items
 
 import io.github.scalaquest.core.model.default.BehaviorableModel
 

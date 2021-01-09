@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.common
+package io.github.scalaquest.core.model.common.behaviors
 
 import io.github.scalaquest.core.model.default.BehaviorableModel
 
@@ -10,7 +10,10 @@ trait CommonBehaviors extends BehaviorableModel {
 
   object CommonBehaviors {
     trait Takeable extends Behavior
-    trait Openable extends Behavior
+
+    trait Openable extends Behavior {
+      def isOpen: Boolean
+    }
     trait RoomLink extends Behavior
   }
 }

@@ -1,7 +1,8 @@
 package io.github.scalaquest.core.model.default
 
 import io.github.scalaquest.core.model.Room
-import io.github.scalaquest.core.model.common.{DefaultCommonBehaviors, DefaultCommonItems}
+import io.github.scalaquest.core.model.common.behaviors.DefaultCommonBehaviors
+import io.github.scalaquest.core.model.common.items.DefaultCommonItems
 import monocle.Lens
 import monocle.macros.GenLens
 
