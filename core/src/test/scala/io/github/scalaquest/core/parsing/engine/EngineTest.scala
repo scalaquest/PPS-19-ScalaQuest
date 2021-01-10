@@ -3,6 +3,8 @@ package io.github.scalaquest.core.parsing.engine
 import org.scalatest.Inspectors._
 import org.scalatest.wordspec.AnyWordSpec
 
+import scala.io.Source
+
 class EngineTest extends AnyWordSpec {
 
   val people = Seq(
@@ -24,6 +26,19 @@ class EngineTest extends AnyWordSpec {
   val engine: Engine = Engine(theory)
 
   "The engine" when {
+    "provided a theory" should {
+      "accept if it's correct" in {
+        val theory = Source.fromResource("base.pl").mkString
+        Engine(Theory(theory))
+        succeed
+      }
+      "throw if it has syntax errors" in {
+        assertThrows[alice.tuprolog.InvalidTheoryException] {
+          val theory = "some invalid theory"
+          Engine(Theory(theory))
+        }
+      }
+    }
     "provided a query with a single result" should {
       "return it as a unary sequence" in {
         val term = Compound(Atom("male"), Atom("boris"))
