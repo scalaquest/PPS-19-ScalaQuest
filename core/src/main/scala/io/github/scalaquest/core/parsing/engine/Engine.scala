@@ -62,6 +62,9 @@ object Engine {
    */
   private def buildNumber(number: tuprolog.Number): Number = Number(number.intValue)
 
+  /*
+   * Notice this might throw if called with an invalid theory
+   */
   private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
     val prolog = new TuProlog
     prolog.setTheory(theory)
