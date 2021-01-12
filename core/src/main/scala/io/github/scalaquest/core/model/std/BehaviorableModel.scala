@@ -18,11 +18,8 @@ abstract class BehaviorableModel extends Model {
   abstract class BehaviorableItem extends Item {
     def behaviors: Set[Behavior] = Set()
 
-    override def useTransitive(action: Action, state: S): Option[Reaction] =
-      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, None, state))
-
-    override def useDitransitive(action: Action, state: S, sideItem: I): Option[Reaction] =
-      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, Some(sideItem), state))
+    override def use(action: Action, state: S, maybeSideItem: Option[I]): Option[Reaction] =
+      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, maybeSideItem, state))
   }
 
   /*

@@ -13,8 +13,7 @@ trait Model {
 
   trait Item { item: I =>
     def name: String
-    def useTransitive(action: Action, state: S): Option[Reaction]
-    def useDitransitive(action: Action, state: S, sideItem: I): Option[Reaction]
+    def use(action: Action, state: S, sideItem: Option[I] = None): Option[Reaction]
   }
 }
 

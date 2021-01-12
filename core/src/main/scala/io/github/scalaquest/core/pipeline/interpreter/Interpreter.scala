@@ -54,13 +54,13 @@ object Interpreter {
               s"Could not recognize ${action.name}"
 
           case Statement.Transitive(action, itemRetriever(item)) =>
-            item.useTransitive(action, state) toRight s"Couldn't recognize ${action.name} on ${item.name}"
+            item.use(action, state) toRight s"Couldn't recognize ${action.name} on ${item.name}"
 
           case Statement.Ditransitive(action, itemRetriever(directObj), itemRetriever(indirectObj)) =>
-            directObj.useDitransitive(
+            directObj.use(
               action,
               state,
-              indirectObj
+              Some(indirectObj)
             ) toRight s"Couldn't recognize ${action.name} on ${directObj.name} and ${indirectObj.name}"
         }
 
