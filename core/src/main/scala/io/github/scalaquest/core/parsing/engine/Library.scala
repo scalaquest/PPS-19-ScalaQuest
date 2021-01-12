@@ -3,10 +3,15 @@ package io.github.scalaquest.core.parsing.engine
 import alice.tuprolog.{Library => TuPrologLibrary}
 import alice.tuprolog.lib.{DCGLibrary => TuPrologDCGLibrary}
 
-sealed trait Library {
-  def ref: TuPrologLibrary
+/** Representation of a Prolog library */
+sealed trait BaseLibrary
+
+/** A tuProlog enabled library */
+trait TuProlog { self: BaseLibrary =>
+  def toTuProlog: TuPrologLibrary
 }
 
-case object DCGLibrary extends Library {
-  override def ref: TuPrologLibrary = new TuPrologDCGLibrary
+/** Declarative Clause Grammar library */
+case object DCGLibrary extends BaseLibrary with TuProlog {
+  override def toTuProlog: TuPrologLibrary = new TuPrologDCGLibrary
 }
