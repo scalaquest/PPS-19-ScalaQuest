@@ -6,7 +6,7 @@ import io.github.scalaquest.core.model.common.items.{CommonItems, StdCommonItems
  * The trait makes possible to mix into the [[StdCommonItems]] the standard implementation of
  * [[CommonItems.CommonItems.Key]].
  */
-private[behaviors] trait Key extends StdCommonItemsBase {
+trait Key extends StdCommonItemsBase {
 
   /**
    * Standard implementation of the common Key item.

@@ -9,7 +9,7 @@ import monocle.Lens
  * The trait makes possible to mix into the [[StdCommonBehaviors]] the standard implementation of
  * [[CommonBehaviors.CommonBehaviors.RoomLink]].
  */
-private[behaviors] trait RoomLink extends StdCommonBehaviorsBase {
+trait RoomLink extends StdCommonBehaviorsBase {
 
   /**
    * Standard implementation of the [[CommonBehaviors.RoomLink]].

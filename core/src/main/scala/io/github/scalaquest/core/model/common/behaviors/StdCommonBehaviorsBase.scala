@@ -10,7 +10,7 @@ import monocle.Lens
  * Base trait for the implementation of the [[BehaviorableModel.Behavior]]s included into [[CommonBehaviors.CommonBehaviors]], provided by
  * default by ScalaQuest Core.
  */
-private[behaviors] trait StdCommonBehaviorsBase extends BehaviorableModel with CommonBehaviors with CommonItems {
+trait StdCommonBehaviorsBase extends BehaviorableModel with CommonBehaviors with CommonItems {
 
   /**
    * A [[Lens]] used by the implementation to access the bag of the user.

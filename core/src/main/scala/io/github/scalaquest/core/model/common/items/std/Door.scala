@@ -8,7 +8,7 @@ import io.github.scalaquest.core.model.common.items.CommonItems
  * The trait makes possible to mix into the [[StdCommonItems]] the standard implementation of
  * [[CommonItems.CommonItems.Door]].
  */
-private[behaviors] trait Door extends StdCommonItemsBase {
+trait Door extends StdCommonItemsBase {
 
   /**
    * Standard implementation of the common Door item.
