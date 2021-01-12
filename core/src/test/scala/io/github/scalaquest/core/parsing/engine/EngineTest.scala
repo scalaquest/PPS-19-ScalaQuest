@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.parsing.engine
 
+import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 import org.scalatest.Inspectors._
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -32,8 +33,8 @@ class EngineTest extends AnyWordSpec {
         Engine(Theory(theory))
         succeed
       }
-      "throw if it has syntax errors" in {
-        assertThrows[alice.tuprolog.InvalidTheoryException] {
+      "throw if it is invalid" in {
+        assertThrows[InvalidTheoryException] {
           val theory = "some invalid theory"
           Engine(Theory(theory))
         }

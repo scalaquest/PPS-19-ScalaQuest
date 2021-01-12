@@ -12,6 +12,7 @@ import alice.tuprolog.{
   Theory => TuPrologTheory
 }
 import io.github.scalaquest.core.parsing.engine.Theory.Theory
+import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 
 trait Solution {
   def body: Term
@@ -67,7 +68,11 @@ object Engine {
    */
   private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
     val prolog = new TuProlog
-    prolog.setTheory(theory)
+    try {
+      prolog.setTheory(theory)
+    } catch {
+      case e: alice.tuprolog.InvalidTheoryException => throw InvalidTheoryException(e)
+    }
     libraries.foreach(l => prolog.loadLibrary(l.ref))
     prolog
   }

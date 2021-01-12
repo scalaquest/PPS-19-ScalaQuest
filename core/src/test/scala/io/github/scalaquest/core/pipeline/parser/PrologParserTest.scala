@@ -2,7 +2,6 @@ package io.github.scalaquest.core.pipeline.parser
 
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexerResult
-import io.github.scalaquest.core.pipeline.parser.Parser.PrologParser
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.io.Source
@@ -37,7 +36,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("inspect")))
             .map(_.tree)
-            .contains(AST.Intransitive("inspect", "you"))
+            .contains(AbstractSyntaxTree.Intransitive("inspect", "you"))
         )
       }
     }
@@ -47,7 +46,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("take", "the", "key")))
             .map(_.tree)
-            .contains(AST.Transitive("take", "you", "key"))
+            .contains(AbstractSyntaxTree.Transitive("take", "you", "key"))
         )
       }
       "recognize phrasal verbs and escape space with underscore" in {
@@ -55,7 +54,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("pick", "up", "the", "key")))
             .map(_.tree)
-            .contains(AST.Transitive("pick_up", "you", "key"))
+            .contains(AbstractSyntaxTree.Transitive("pick_up", "you", "key"))
         )
       }
     }
@@ -65,7 +64,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("open", "the", "door", "with", "the", "key")))
             .map(_.tree)
-            .contains(AST.Ditransitive("open", "you", "door", "key"))
+            .contains(AbstractSyntaxTree.Ditransitive("open", "you", "door", "key"))
         )
       }
       "distinguish between direct and indirect objects" in {
@@ -73,7 +72,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("put", "the", "apple", "in", "the", "bag")))
             .map(_.tree)
-            .contains(AST.Ditransitive("put", "you", "apple", "bag"))
+            .contains(AbstractSyntaxTree.Ditransitive("put", "you", "apple", "bag"))
         )
       }
     }
