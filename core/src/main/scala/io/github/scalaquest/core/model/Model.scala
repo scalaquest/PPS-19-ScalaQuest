@@ -28,5 +28,5 @@ object ExampleUsage {
   val cup: GenericItem = GenericItem("cup", Set(Takeable()))
 
   val kitchenKey: Key = Key("kitchen's key")
-  val door: Door      = Door("kitchen's door", RoomLink(kitchen, Openable(requiredKey = Some(kitchenKey))))
+  val door: Door      = Door("kitchen's door", RoomLink(kitchen, Some(Openable(requiredKey = Some(kitchenKey)))))
 }

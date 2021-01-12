@@ -48,10 +48,10 @@ abstract class BehaviorableModel extends Model {
   trait Composable extends Behavior {
 
     /**
-     * The father behavior, i.e. the one that can be seen by the child behavior.
-     * @return The father behavior.
+     * The father behavior triggers.
+     * @return The father behavior triggers.
      */
-    def superBehavior: Behavior
+    def superTriggers: Triggers
 
     /**
      * This should be overrode with all the triggers originating from the child behavior. Those will be
@@ -59,7 +59,7 @@ abstract class BehaviorableModel extends Model {
      * some of the triggers of the father; this is a wanted feature.
      * @return The triggers of the child behavior.
      */
-    def baseTrigger: Triggers = PartialFunction.empty
+    def baseTriggers: Triggers = PartialFunction.empty
 
     /**
      * This function returns all the trigger of the composed behavior, by combining them in a single
@@ -67,14 +67,6 @@ abstract class BehaviorableModel extends Model {
      * triggers of the father; this is a wanted feature.
      * @return The combined triggers.
      */
-    final override def triggers: Triggers = Seq(baseTrigger, superBehavior.triggers).reduce(_ orElse _)
-  }
-
-  /**
-   * A mixin for the Behavior, that adds to it some utilities to handle extra reactions, i.e. additional
-   * reactions to be combined to the default ones.
-   */
-  trait ExtraUtils extends Behavior {
-    protected def applyExtraIfPresent(extra: Option[Reaction])(state: S): S = extra.fold(state)(_(state))
+    final override def triggers: Triggers = Seq(baseTriggers, superTriggers).reduce(_ orElse _)
   }
 }
