@@ -19,4 +19,8 @@ object Actions {
   case object Enter extends Action {
     override val name: String = "enter"
   }
+
+  case object Eat extends Action {
+    override val name: String = "eat"
+  }
 }
