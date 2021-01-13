@@ -132,7 +132,7 @@ object clause {
     case class CompoundBuilder(functor: Atom) {
 
       /**
-       * This method allows to simulate the Prolog compound term declaration.
+       * Allows to simulate the Prolog compound term declaration.
        * @param arg the first mandatory term
        * @param args the other optional terms
        * @return a [[Compound]] which has `functor` as functor and the arguments
@@ -141,9 +141,16 @@ object clause {
       def apply(arg: Term, args: Term*): Compound = Compound(functor, arg, args.toList)
     }
 
-    implicit def stringToAtom(name: String): Atom  = Atom(name)
-    implicit def intToNumber(n: Int): Number       = Number(n)
-    implicit def termToFact(term: Term): Fact      = Fact(term)
+    /** Enables the implicit conversion from `String` to `Atom` */
+    implicit def stringToAtom(name: String): Atom = Atom(name)
+
+    /** Enables the implicit conversion from `Int` to `Number` */
+    implicit def intToNumber(n: Int): Number = Number(n)
+
+    /** Enables the implicit conversion from `Term` to `Fact` */
+    implicit def termToFact(term: Term): Fact = Fact(term)
+
+    /** Enables the implicit conversion fron `Seq[Term]` to `ListP` */
     implicit def seqToListP(seq: Seq[Term]): ListP = ListP(seq: _*)
 
   }

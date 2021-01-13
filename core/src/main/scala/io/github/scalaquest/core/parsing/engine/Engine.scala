@@ -77,7 +77,7 @@ object Engine {
   }
 
   def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
-    PrologEngine(createTuProlog(theory.toTuProlog, libraries))
+    TuPrologEngine(createTuProlog(theory.toTuProlog, libraries))
 
 }
 
@@ -96,7 +96,7 @@ case class SimpleSolution(solveInfo: SolveInfo) extends Solution {
   }
 }
 
-case class PrologEngine(prolog: TuProlog) extends Engine {
+case class TuPrologEngine(prolog: TuProlog) extends Engine {
   import Engine.EnhancedTerm
 
   private def exploreSolutions(goal: TuPrologTerm): Seq[SolveInfo] = {

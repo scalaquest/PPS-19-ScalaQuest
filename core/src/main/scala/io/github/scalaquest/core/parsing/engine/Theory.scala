@@ -14,7 +14,8 @@ trait TuPrologConverter { self: BaseTheory =>
 
 object Theory {
 
+  /** Creates a theory with the provided source code. */
   def apply(source: String): Theory = new SimpleTheory(source) with TuPrologConverter
 
-  class SimpleTheory(val source: String) extends BaseTheory
+  private class SimpleTheory(val source: String) extends BaseTheory
 }
