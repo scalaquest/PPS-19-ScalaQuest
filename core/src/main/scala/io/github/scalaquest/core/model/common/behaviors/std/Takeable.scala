@@ -39,7 +39,7 @@ trait Takeable extends StdCommonBehaviorsBase {
       state => {
         // remove the item from the current room
         val currRoom         = state.game.player.location
-        val currRoomItemsUpd = itemsLens.get(state).get(currRoom).fold(Set[I]())(crItems => crItems + item)
+        val currRoomItemsUpd = itemsLens.get(state).get(currRoom).fold(Set[I]())(_ - item)
         val stateWithoutItem = itemsLens.modify(_ + (currRoom -> currRoomItemsUpd))(state)
 
         // put the item into the bag
