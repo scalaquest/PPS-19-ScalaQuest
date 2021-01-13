@@ -4,7 +4,7 @@ import alice.tuprolog.{Library => TuPrologLibrary}
 import alice.tuprolog.lib.{DCGLibrary => TuPrologDCGLibrary}
 
 /** Representation of a Prolog library */
-sealed trait BaseLibrary
+abstract class BaseLibrary
 
 /** A tuProlog enabled library */
 trait TuProlog { self: BaseLibrary =>

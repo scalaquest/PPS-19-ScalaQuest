@@ -6,23 +6,23 @@ import io.github.scalaquest.core.pipeline.lexer.LexerResult
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
 
 /**
- * A [[Parser]] implementation that takes advantage of an [[Engine]] in order
+ * A [[Parser]] implementation that takes advantage of an [[io.github.scalaquest.core.parsing.engine.Engine]] in order
  * to perform the syntactical analysis.
  */
 abstract class PrologParser extends Parser {
 
-  /** The [[Engine]] used. */
+  /** The [[io.github.scalaquest.core.parsing.engine.Engine]] used. */
   protected def engine: Engine
 
   object dsl {
-    import io.github.scalaquest.core.parsing.engine.dsl._
+    import io.github.scalaquest.core.parsing.engine.clause.dsl._
     val X      = Variable("X")
     val i      = CompoundBuilder("i")
     val phrase = CompoundBuilder("phrase")
   }
 
   override def parse(lexerResult: LexerResult): Option[ParserResult] = {
-    import io.github.scalaquest.core.parsing.engine.dsl.seqToListP
+    import io.github.scalaquest.core.parsing.engine.clause.dsl.seqToListP
     import dsl._
     val tokens = lexerResult.tokens.map(Atom)
     val query  = phrase(i(X), tokens)

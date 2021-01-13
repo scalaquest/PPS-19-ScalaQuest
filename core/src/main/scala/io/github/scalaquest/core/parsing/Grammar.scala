@@ -20,7 +20,7 @@ sealed trait Verb {
 
 object Verb {
   import io.github.scalaquest.core.parsing.engine._
-  import io.github.scalaquest.core.parsing.engine.dsl._
+  import io.github.scalaquest.core.parsing.engine.clause.dsl._
 
   def betaReduce(functor: String, variablesNum: Int): Term = {
     @tailrec

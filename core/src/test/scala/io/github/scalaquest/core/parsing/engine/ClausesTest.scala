@@ -83,7 +83,7 @@ class ClausesTest extends AnyWordSpec {
   }
 
   "Compound builder" should {
-    import io.github.scalaquest.core.parsing.engine.dsl.CompoundBuilder
+    import io.github.scalaquest.core.parsing.engine.clause.dsl.CompoundBuilder
     val hello = CompoundBuilder(Atom("hello"))
 
     "allow for the creation of a compound term" in {
@@ -103,7 +103,7 @@ class ClausesTest extends AnyWordSpec {
   }
 
   "Implicit operators" should {
-    import io.github.scalaquest.core.parsing.engine.dsl._
+    import io.github.scalaquest.core.parsing.engine.clause.dsl._
     val hello = CompoundBuilder(Atom("hello"))
     "allow the usage of strings as atoms" in {
       assert(hello("world") == Compound(Atom("hello"), Atom("world")))

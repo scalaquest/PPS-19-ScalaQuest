@@ -1,18 +1,12 @@
 package io.github.scalaquest.core.parsing.engine.exceptions
 
-trait InvalidTheoryException extends Throwable {
-
-  def line: Int
-
-  def pos: Int
-}
+/**
+ * An exception that is thrown if an [[io.github.scalaquest.core.parsing.engine.Engine]]
+ * was provided an invalid theory.
+ */
+case class InvalidTheoryException(line: Int, pos: Int) extends Throwable
 
 object InvalidTheoryException {
 
-  def apply(e: alice.tuprolog.InvalidTheoryException): InvalidTheoryException =
-    new InvalidTheoryException() {
-      override def line: Int = e.line
-
-      override def pos: Int = e.pos
-    }
+  def apply(e: alice.tuprolog.InvalidTheoryException): InvalidTheoryException = InvalidTheoryException(e.line, e.pos)
 }
