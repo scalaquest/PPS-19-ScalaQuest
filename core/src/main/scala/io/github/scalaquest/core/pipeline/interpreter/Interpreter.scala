@@ -42,7 +42,7 @@ object Interpreter {
             ) toRight s"Couldn't recognize ${action.name} on ${directObj.name} and ${indirectObj.name}"
         }
 
-        eventualReaction.map(InterpreterResult.builder(model).build(_))
+        eventualReaction.map(InterpreterResult(model)(_))
       }
     }
 
@@ -55,7 +55,7 @@ object IntperpreterTest {
   implicit val model: StdModel.type     = StdModel
   implicit val reaction: model.Reaction = ???
 
-  val res: InterpreterResult[model.Reaction] = InterpreterResult(reaction)
+  val res: InterpreterResult[model.Reaction] = InterpreterResult(model)(reaction)
 }
 //
 //object useInterpreter {

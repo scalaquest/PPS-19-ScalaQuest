@@ -8,17 +8,8 @@ trait ReducerResult[S] {
 
 object ReducerResult {
 
-  trait ReducerResultBuilder[S] {
-    def build(a: S): ReducerResult[S]
-  }
-
-  def builder[M <: Model](implicit model: M): ReducerResultBuilder[model.S] = {
+  def apply[M <: Model](model: M)(state: model.S): ReducerResult[model.S] = {
     case class SimpleReducerResult(state: model.S) extends ReducerResult[model.S]
-    SimpleReducerResult(_)
-  }
-
-  def apply[M <: Model, S](state: S)(implicit model: M): ReducerResult[S] = {
-    case class SimpleReducerResult(state: S) extends ReducerResult[S]
     SimpleReducerResult(state)
   }
 }
