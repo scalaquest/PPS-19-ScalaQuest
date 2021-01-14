@@ -10,14 +10,14 @@ trait StdState extends Model {
 
   override type S = StdState
 
-  case class StdState(game: StdGameState = ???, messages: Seq[Message] = ???) extends State
+  case class StdState(game: StdGameState, messages: Seq[Message]) extends State
 
   case class StdGameState(
-    player: StdPlayer = ???,
-    ended: Boolean = ???,
-    rooms: Set[Room] = ???,
-    itemsInRooms: Map[Room, Set[I]] = ???
+    player: StdPlayer,
+    ended: Boolean,
+    rooms: Set[Room],
+    itemsInRooms: Map[Room, Set[I]]
   ) extends GameState[I]
 
-  case class StdPlayer(bag: Set[I] = ???, location: Room = ???) extends Player[I]
+  case class StdPlayer(bag: Set[I], location: Room) extends Player[I]
 }

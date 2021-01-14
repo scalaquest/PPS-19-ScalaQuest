@@ -16,7 +16,7 @@ abstract class BehaviorableModel extends Model {
    * by exploring the available triggers, obtained by the item's Behaviors.
    */
   abstract class BehaviorableItem extends Item {
-    def behaviors: Set[Behavior] = Set()
+    def behaviors: Seq[Behavior] = Seq()
 
     override def use(action: Action, state: S, maybeSideItem: Option[I]): Option[Reaction] =
       behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, maybeSideItem, state))

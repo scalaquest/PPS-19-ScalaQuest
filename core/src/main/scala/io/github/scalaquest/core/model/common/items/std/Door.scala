@@ -13,8 +13,8 @@ trait Door extends StdCommonItemsBase {
   /**
    * Standard implementation of the common Door item.
    */
-  case class Door(name: String, doorBehavior: CommonBehaviors.RoomLink, additionalBehaviors: Set[Behavior] = Set())
+  case class Door(name: String, doorBehavior: CommonBehaviors.RoomLink, additionalBehaviors: Behavior*)
     extends CommonItems.Door {
-    override def behaviors: Set[Behavior] = additionalBehaviors + doorBehavior
+    override def behaviors: Seq[Behavior] = doorBehavior +: additionalBehaviors
   }
 }
