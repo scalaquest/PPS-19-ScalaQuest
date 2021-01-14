@@ -1,14 +1,14 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.{Action, ItemRef, Model}
+import io.github.scalaquest.core.model.{Action, ItemRef}
 import io.github.scalaquest.core.pipeline.parser.{AST, ParserResult}
 
 sealed trait Statement
 
 object Statement {
-  final case class Intransitive(action: Action)                                     extends Statement
-  final case class Transitive(action: Action, target: ItemRef)                      extends Statement
-  final case class Ditransitive(action: Action, target1: ItemRef, target2: ItemRef) extends Statement
+  final case class Intransitive(action: Action)                                           extends Statement
+  final case class Transitive(action: Action, obj: ItemRef)                               extends Statement
+  final case class Ditransitive(action: Action, directObj: ItemRef, indirectObj: ItemRef) extends Statement
 }
 
 trait ResolverResult {
@@ -25,42 +25,45 @@ trait Resolver {
   def resolve(parserResult: ParserResult): Either[String, ResolverResult]
 }
 
-//case class SimpleResolver(actions: Set[Action], items: Set[Model#I]) extends Resolver {
-//
-//  override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
-//    val statement = parserResult.tree match {
-//      case AST.Intransitive(verb, _) =>
-//        for {
-//          action <- retrieveAction(verb)
-//        } yield Statement.Intransitive(action)
-//
-//      case AST.Transitive(verb, _, complement) =>
-//        for {
-//          action   <- retrieveAction(verb)
-//          mainItem <- retrieveItem(complement)
-//        } yield Statement.Transitive(action, mainItem)
-//
-//      case AST.Ditransitive(verb, _, mainComplement, sideComplement) =>
-//        for {
-//          action   <- retrieveAction(verb)
-//          mainItem <- retrieveItem(mainComplement)
-//          sideItem <- retrieveItem(sideComplement)
-//        } yield Statement.Ditransitive(action, mainItem, sideItem)
-//
-//      case _ => Left("The statement is wrong.")
-//    }
-//
-//    statement.map(ResolverResult(_))
-//  }
-//
-//  def retrieveItem(name: String): Either[String, Model#I] =
-//    items collectFirst { case item if item.name == name => item } toRight s"Couldn't understand $name"
-//
-//  def retrieveAction(verb: String): Either[String, Action] =
-//    actions collectFirst { case action if action.name == verb => action } toRight s"Couldn't understand $verb."
-//}
-
 object Resolver {
-//  def apply(actions: Set[Action], items: Set[Model#I]): Resolver = SimpleResolver(actions, items)
-  def apply(actions: Set[Action], items: Set[Model#I]): Resolver = ???
+
+  def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
+
+    case class SimpleResolver(actions: Map[String, Action], items: Map[String, ItemRef]) extends Resolver {
+
+      override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
+        val statement = parserResult.tree match {
+          case AST.Intransitive(verb, _) =>
+            for {
+              action <- retrieveAction(verb)
+            } yield Statement.Intransitive(action)
+
+          case AST.Transitive(verb, _, obj) =>
+            for {
+              action  <- retrieveAction(verb)
+              itemRef <- retrieveItem(obj)
+            } yield Statement.Transitive(action, itemRef)
+
+          case AST.Ditransitive(verb, _, directObj, indirectObj) =>
+            for {
+              action          <- retrieveAction(verb)
+              directItemRef   <- retrieveItem(directObj)
+              indirectItemRef <- retrieveItem(indirectObj)
+            } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
+
+          case _ => Left("The statement is wrong.")
+        }
+
+        statement.map(ResolverResult(_))
+      }
+
+      def retrieveItem(name: String): Either[String, ItemRef] = {
+        items get name toRight s"Couldn't understand $name"
+      }
+
+      def retrieveAction(verb: String): Either[String, Action] = actions get verb toRight s"Couldn't understand $verb."
+    }
+
+    SimpleResolver(actions, items)
+  }
 }
