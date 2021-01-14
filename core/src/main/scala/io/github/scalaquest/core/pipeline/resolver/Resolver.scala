@@ -3,24 +3,6 @@ package io.github.scalaquest.core.pipeline.resolver
 import io.github.scalaquest.core.model.{Action, ItemRef}
 import io.github.scalaquest.core.pipeline.parser.{AST, ParserResult}
 
-sealed trait Statement
-
-object Statement {
-  final case class Intransitive(action: Action)                                           extends Statement
-  final case class Transitive(action: Action, obj: ItemRef)                               extends Statement
-  final case class Ditransitive(action: Action, directObj: ItemRef, indirectObj: ItemRef) extends Statement
-}
-
-trait ResolverResult {
-  def statement: Statement
-}
-
-case class SimpleResolverResult(statement: Statement) extends ResolverResult
-
-object ResolverResult {
-  def apply(statement: Statement): ResolverResult = SimpleResolverResult(statement)
-}
-
 trait Resolver {
   def resolve(parserResult: ParserResult): Either[String, ResolverResult]
 }
