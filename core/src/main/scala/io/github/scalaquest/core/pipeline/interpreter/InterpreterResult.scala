@@ -12,8 +12,13 @@ object InterpreterResult {
     def build(a: R): InterpreterResult[R]
   }
 
-  def apply[M <: Model](implicit model: M): InterpreterResultBuilder[model.Reaction] = {
+  def builder[M <: Model](implicit model: M): InterpreterResultBuilder[model.Reaction] = {
     case class SimpleInterpreterResult(reaction: model.Reaction) extends InterpreterResult[model.Reaction]
     SimpleInterpreterResult(_)
+  }
+
+  def apply[R](reaction: R): InterpreterResult[R] = {
+    case class SimpleInterpreterResult(reaction: R) extends InterpreterResult[R]
+    SimpleInterpreterResult(reaction)
   }
 }

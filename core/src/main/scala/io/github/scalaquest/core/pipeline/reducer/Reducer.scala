@@ -14,7 +14,7 @@ object Reducer {
 
     case class SimpleReducer(state: model.S) extends Reducer[model.type, model.S, model.Reaction] {
       override def reduce(interpreterResult: InterpreterResult[model.Reaction]): ReducerResult[model.S] = {
-        ReducerResult(model) build interpreterResult.reaction(state)
+        ReducerResult.builder(model).build(interpreterResult.reaction(state))
       }
     }
 

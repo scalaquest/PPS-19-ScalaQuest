@@ -12,8 +12,13 @@ object ReducerResult {
     def build(a: S): ReducerResult[S]
   }
 
-  def apply[M <: Model](implicit model: M): ReducerResultBuilder[model.S] = {
+  def builder[M <: Model](implicit model: M): ReducerResultBuilder[model.S] = {
     case class SimpleReducerResult(state: model.S) extends ReducerResult[model.S]
     SimpleReducerResult(_)
+  }
+
+  def apply[M <: Model, S](state: S)(implicit model: M): ReducerResult[S] = {
+    case class SimpleReducerResult(state: S) extends ReducerResult[S]
+    SimpleReducerResult(state)
   }
 }
