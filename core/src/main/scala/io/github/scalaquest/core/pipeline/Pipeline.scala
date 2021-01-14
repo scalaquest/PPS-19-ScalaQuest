@@ -26,7 +26,7 @@ class PipelineFromModel[M <: Model](val model: M) {
     parser: Parser,
     resolver: Resolver,
     interpreterFactory: model.S => Interpreter[model.type, model.Reaction],
-    reducerFactory: model.S => Reducer[model.S]
+    reducerFactory: model.S => Reducer[model.type, model.S, model.Reaction]
   )(state: model.S): Pipeline[model.type] =
     new Pipeline[model.type](model) {
 
