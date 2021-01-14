@@ -8,28 +8,6 @@ trait Interpreter[M <: Model, R] {
   def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[R]]
 }
 
-trait InterpreterResult[R] {
-  def reaction: R
-}
-
-object InterpreterResult {
-
-  trait InterpreterResultBuilder[R] {
-    def build(a: R): InterpreterResult[R]
-  }
-
-  def apply[M <: Model](implicit model: M): InterpreterResultBuilder[model.Reaction] = {
-    case class SimpleInterpreterResult(reaction: model.Reaction) extends InterpreterResult[model.Reaction]
-    SimpleInterpreterResult(_)
-  }
-}
-
-object IntperpreterTest {
-  implicit val model: StdModel.type          = StdModel
-  implicit val reaction: model.Reaction      = ???
-  val res: InterpreterResult[model.Reaction] = InterpreterResult[StdModel.type] build reaction
-}
-
 object Interpreter {
 
   type InterpreterBuilder[S, M <: Model, R] = S => Interpreter[M, R]
@@ -68,10 +46,15 @@ object Interpreter {
       }
     }
 
-    SimpleInterpreter(_)
-
+    SimpleInterpreter
   }
 
+}
+
+object IntperpreterTest {
+  implicit val model: StdModel.type          = StdModel
+  implicit val reaction: model.Reaction      = ???
+  val res: InterpreterResult[model.Reaction] = InterpreterResult[StdModel.type] build reaction
 }
 //
 //object useInterpreter {
