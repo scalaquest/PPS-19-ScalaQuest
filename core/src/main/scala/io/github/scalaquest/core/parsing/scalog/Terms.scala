@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.parsing.scalog
 
-/** A Prolog term. */
+/** A Prolog data object. */
 sealed trait Term extends CodeGen {
 
   /**
