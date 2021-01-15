@@ -57,15 +57,27 @@ class ClausesTest extends AnyWordSpec {
       assert(Fact(Compound(Atom("hello"), Atom("world"))).generate == "hello(world).")
     }
 
+    "be able to create a rule" in {
+      val rule = Fact(Compound(Atom("hello"), Atom("world"))) :- Atom("something")
+      assert(rule == Rule(Compound(Atom("hello"), Atom("world")), Atom("something")))
+    }
+
     "be able to create a DCG rule" in {
-      val dcgRule = (Fact(Compound(Atom("hello"), Atom("world"))) --> Atom("something"))
-      assert(dcgRule.getClass == classOf[DCGRule])
+      val dcgRule = Fact(Compound(Atom("hello"), Atom("world"))) --> Atom("something")
+      assert(dcgRule == DCGRule(Compound(Atom("hello"), Atom("world")), Atom("something")))
+    }
+  }
+
+  "A rule" should {
+    "generate its left member and its right member" in {
+      val rule = Fact(Compound(Atom("hello"), Atom("world"))) :- Atom("something")
+      assert(rule.generate == "hello(world) :- something.")
     }
   }
 
   "A DCG rule" should {
     "generate its left member and its right member" in {
-      val dcgRule = Fact(Compound(Atom("hello"), Atom("world"))) --> Atom("something")
+      val dcgRule = DCGRule(Compound(Atom("hello"), Atom("world")), Atom("something"))
       assert(dcgRule.generate == "hello(world) --> something.")
     }
   }

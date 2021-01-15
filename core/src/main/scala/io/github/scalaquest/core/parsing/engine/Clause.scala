@@ -64,14 +64,14 @@ case class Fact(body: Term) extends Clause {
    */
   def -->(right: Term): DCGRule = DCGRule(body, right)
 
-//  def :-(right: Term): Rule = Rule(body, right)
+  def :-(right: Term): Rule = Rule(body, right)
 
   override def generate: String = s"${body.generate}."
 }
 
-//case class Rule(head: Term, body: Term) extends Clause {
-//  override def generate: String = s"${head.generate} :- ${body.generate}."
-//}
+case class Rule(head: Term, body: Term) extends Clause {
+  override def generate: String = s"${head.generate} :- ${body.generate}."
+}
 
 /**
  * A declarative clause grammar rule.
