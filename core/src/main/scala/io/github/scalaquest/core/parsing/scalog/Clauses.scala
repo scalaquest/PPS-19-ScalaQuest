@@ -1,0 +1,65 @@
+package io.github.scalaquest.core.parsing.scalog
+
+/** Unit of information ending with the full-stop. */
+sealed trait Clause extends CodeGen
+
+/** A special case of clause with empty body. */
+case class Fact(head: Term) extends Clause {
+
+  /**
+   * Allows the creation of a [[DCGRule]].
+   * @param right the right side of the operation
+   * @return the resulting DCG rule.
+   */
+  def -->(right: Term): DCGRule = DCGRule(head, right)
+
+  /**
+   * Allows the creation of a [[Rule]].
+   * @param right the right side of the operation
+   * @return the resulting rule.
+   */
+  def :-(right: Term): Rule = Rule(head, right)
+
+  override def generate: String = s"${head.generate}."
+}
+
+/**
+ * A horn clause. It is read `head` is true if `body` is true.
+ *
+ * @param head the left term
+ * @param body the right term
+ *
+ * ==Overview==
+ * The following example:
+ * {{{
+ *   Rule(Compound(Atom("hello"), Atom("world")), Atom("hello")).generate
+ * }}}
+ *
+ * Should result in the following Prolog clause being printed:
+ * {{{
+ *   hello(world) :- hello.
+ * }}}
+ */
+case class Rule(head: Term, body: Term) extends Clause {
+  override def generate: String = s"${head.generate} :- ${body.generate}."
+}
+
+/**
+ * A definite clause grammar rule.
+ * @param left the left term
+ * @param right the right term
+ *
+ * ==Overview==
+ * The following example:
+ * {{{
+ *   DCGRule(Compound(Atom("hello"), Atom("world")), ListP(Atom("hello"), Atom("world"))).generate
+ * }}}
+ *
+ * Should result in the following Prolog clause being printed:
+ * {{{
+ *   hello(world) --> ["hello","world"].
+ * }}}
+ */
+case class DCGRule(left: Term, right: Term) extends Clause {
+  override def generate: String = s"${left.generate} --> ${right.generate}."
+}

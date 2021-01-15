@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.parsing
 
 import io.github.scalaquest.core.model.{Action, Actions}
-import io.github.scalaquest.core.parsing.scalog.{Atom, Clause, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog.{Atom, CodeGen, Term, Variable}
 
 import scala.annotation.tailrec
 
@@ -11,7 +11,7 @@ sealed trait Verb {
 
   def action: Action
 
-  def clause: Clause
+  def clause: CodeGen
 
   def atom: Atom = Atom(name.replace(" ", "_"))
 
@@ -47,15 +47,15 @@ object Verb {
   val v  = CompoundBuilder("v")
 
   case class Intransitive(name: String, action: Action) extends Verb {
-    override def clause: Clause = iv(atom) --> tokens
+    override def clause: CodeGen = iv(atom) --> tokens
   }
 
   case class Transitive(name: String, action: Action) extends Verb {
-    override def clause: Clause = tv(atom.name betaReduce 2) --> tokens
+    override def clause: CodeGen = tv(atom.name betaReduce 2) --> tokens
   }
 
   case class Ditransitive(name: String, action: Action) extends Verb {
-    override def clause: Clause = v("3/to", atom.name betaReduce 3) --> tokens
+    override def clause: CodeGen = v("3/to", atom.name betaReduce 3) --> tokens
   }
 }
 
