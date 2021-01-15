@@ -1,15 +1,32 @@
 package io.github.scalaquest.core.model.std
 
-class StdModelTest {
-  import io.github.scalaquest.core.model.std.StdModel._
-  import io.github.scalaquest.core.model._
-  import io.github.scalaquest.core.model.Direction.Direction
+import org.scalatest.wordspec.AnyWordSpec
 
-  // implementation: this a fragment of the 'storyteller' part, to put into the example
-  val kitchen: Room = Room("kitchen", () => Map[Direction, Room]())
+class StdModelTest extends AnyWordSpec {
+  "The StdModel" should {
 
-  val cup: GenericItem = GenericItem("cup", Takeable())
+    "expose commonBehaviors interfaces" in {
+      assertCompiles("StdModel.CommonBehaviors")
+      assertCompiles("val takeable = new StdModel.CommonBehaviors.Takeable {}")
+    }
 
-  val kitchenKey: Key = Key("kitchen's key")
-  val door: Door      = Door("kitchen's door", RoomLink(kitchen, Some(Openable(requiredKey = Some(kitchenKey)))))
+    "expose CommonBehaviors implementations" in {
+      assertCompiles("StdModel.Openable()")
+      assertCompiles("StdModel.Takeable()")
+    }
+
+    "expose commonItems interfaces" in {
+      assertCompiles("StdModel.CommonItems")
+      assertCompiles("case class ItemX(name: String) extends StdModel.CommonItems.GenericItem")
+    }
+
+    "expose CommonItems implementations" in {
+      assertCompiles("val item = StdModel.GenericItem(\"item\")")
+      assertCompiles("val key = StdModel.Key(\"key\")")
+    }
+
+    "expose the standard state implementation" in {
+      assertCompiles("val state = StdModel.StdState")
+    }
+  }
 }
