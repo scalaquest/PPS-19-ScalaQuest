@@ -8,9 +8,11 @@ trait Reducer[M <: Model, S, R] {
 }
 
 object Reducer {
-  type ReducerBuilder[M <: Model, S, R] = S => Reducer[M, S, R]
+  type Builder[M <: Model, S, R] = S => Reducer[M, S, R]
 
-  def apply[M <: Model](implicit model: M): ReducerBuilder[model.type, model.S, model.Reaction] = {
+  def builder[M <: Model](implicit model: M): Builder[model.type, model.S, model.Reaction] = apply(model)(_)
+
+  def apply[M <: Model](model: M)(state: model.S): Reducer[model.type, model.S, model.Reaction] = {
 
     case class SimpleReducer(state: model.S) extends Reducer[model.type, model.S, model.Reaction] {
       override def reduce(interpreterResult: InterpreterResult[model.Reaction]): ReducerResult[model.S] = {
@@ -18,6 +20,6 @@ object Reducer {
       }
     }
 
-    SimpleReducer
+    SimpleReducer(state)
   }
 }

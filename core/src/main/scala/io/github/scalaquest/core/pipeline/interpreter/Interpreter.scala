@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
 import io.github.scalaquest.core.model.std.StdModel
-import io.github.scalaquest.core.model.{ItemRetriever, Model}
+import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
 trait Interpreter[M <: Model, R] {
@@ -10,26 +10,27 @@ trait Interpreter[M <: Model, R] {
 
 object Interpreter {
 
-  type InterpreterBuilder[S, M <: Model, R] = S => Interpreter[M, R]
+  type Builder[M <: Model, S, R] = S => Interpreter[M, R]
 
-  def apply[M <: Model](implicit model: M): InterpreterBuilder[model.S, model.type, model.Reaction] = {
+  def builder[M <: Model](model: M)(itemDict: Map[ItemRef, model.I]): Builder[model.type, model.S, model.Reaction] =
+    apply(model)(_, itemDict)
 
-    type S        = model.S
-    type I        = model.I
-    type Reaction = model.Reaction
+  def apply[M <: Model](model: M)(
+    state: model.S,
+    itemDict: Map[ItemRef, model.I]
+  ): Interpreter[model.type, model.Reaction] = {
 
-    case class SimpleInterpreter(state: S) extends Interpreter[model.type, model.Reaction] {
-      private val useIntransitive: Option[Reaction] = ???
+    case class SimpleInterpreter(state: model.S) extends Interpreter[model.type, model.Reaction] {
+      private val useIntransitive: Option[model.Reaction] = ???
 
       // The interpreter should know the Map[ItemRef, I] in order to create a retriever
       // or should be passed the itemRetriever directly.
-      val itemRetriever: ItemRetriever[I] = ???
+      val itemRetriever: ItemRetriever[model.I] = ItemRetriever(model)(itemDict)
 
       override def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[model.Reaction]] = {
-        val eventualReaction: Either[String, Reaction] = resolverResult.statement match {
+        val eventualReaction: Either[String, model.Reaction] = resolverResult.statement match {
           case Statement.Intransitive(action) =>
-            useIntransitive toRight
-              s"Could not recognize ${action.name}"
+            useIntransitive toRight s"Could not recognize ${action.name}"
 
           case Statement.Transitive(action, itemRetriever(item)) =>
             item.use(action, state) toRight s"Couldn't recognize ${action.name} on ${item.name}"
@@ -46,7 +47,7 @@ object Interpreter {
       }
     }
 
-    SimpleInterpreter
+    SimpleInterpreter(state)
   }
 
 }
