@@ -1,12 +1,14 @@
-package io.github.scalaquest.core.parsing.engine
+package io.github.scalaquest.core.parsing.engine.tuprolog
 
 import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
+import io.github.scalaquest.core.parsing.engine._
+import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Variable}
 import org.scalatest.Inspectors._
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.io.Source
 
-class EngineTest extends AnyWordSpec {
+class TuPrologEngineTest extends AnyWordSpec {
 
   val people = Seq(
     "alessio",
@@ -24,19 +26,19 @@ class EngineTest extends AnyWordSpec {
                |human(X) :- female(X).
                |""".stripMargin)
 
-  val engine: Engine = Engine(theory)
+  val engine: Engine = TuPrologEngine(theory)
 
   "The engine" when {
     "provided a theory" should {
       "accept if it's correct" in {
         val theory = Source.fromResource("base.pl").mkString
-        Engine(Theory(theory))
+        TuPrologEngine(Theory(theory))
         succeed
       }
       "throw if it is invalid" in {
         assertThrows[InvalidTheoryException] {
           val theory = "some invalid theory"
-          Engine(Theory(theory))
+          TuPrologEngine(Theory(theory))
         }
       }
     }
@@ -77,7 +79,7 @@ class EngineTest extends AnyWordSpec {
   }
 
   "Implicit tuProlog terms conversion" when {
-    import Engine.EnhancedTuPrologTerm
+    import implicits.EnhancedTuPrologTerm
     "passed a tuProlog atom" should {
       "convert it to an Atom" in {
         val atom = alice.tuprolog.Term.createTerm("hello")
@@ -101,7 +103,7 @@ class EngineTest extends AnyWordSpec {
   }
 
   "Implicit term conversion" when {
-    import Engine.EnhancedTerm
+    import implicits.EnhancedTerm
     "provided an Atom" should {
       "create a tuProlog atom" in {
         val atom = Atom("hello")
