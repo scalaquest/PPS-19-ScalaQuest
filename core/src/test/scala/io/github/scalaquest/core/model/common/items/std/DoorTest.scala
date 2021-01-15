@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.common.items.std
 
 import io.github.scalaquest.core.model.Direction.Direction
 import io.github.scalaquest.core.model.Room
-import io.github.scalaquest.core.model.std.StdModel._
+import io.github.scalaquest.core.model.std.StdModel.{RoomLink, Openable, Eatable, Takeable, Door}
 import org.scalatest.wordspec.AnyWordSpec
 
 class DoorTest extends AnyWordSpec {

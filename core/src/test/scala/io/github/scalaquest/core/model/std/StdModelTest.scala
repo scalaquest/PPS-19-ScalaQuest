@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.std
 
-class StdModel {
+class StdModelTest {
   import io.github.scalaquest.core.model.std.StdModel._
   import io.github.scalaquest.core.model._
   import io.github.scalaquest.core.model.Direction.Direction
