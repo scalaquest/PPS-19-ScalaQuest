@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.common.Actions.Eat
 
-import io.github.scalaquest.core.model.std.StdModel.{GenericItem, StdState, Takeable, bagLens, Eatable, itemsLens}
+import io.github.scalaquest.core.model.std.StdModel.{GenericItem, StdState, bagLens, Eatable, itemsLens}
 import org.scalatest.wordspec.AnyWordSpec
 
 class EatableTest extends AnyWordSpec {
