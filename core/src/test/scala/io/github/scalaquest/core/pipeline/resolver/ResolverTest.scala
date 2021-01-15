@@ -103,6 +103,22 @@ class ResolverTest extends AnyWordSpec {
 
         }
       }
+
+      "parser result is type unknown" should {
+        "fail" in {
+          val parserResult = new ParserResult() {
+            override def tree: AST = null
+          }
+          val statement = for {
+            resolverResult <- resolver resolve parserResult
+          } yield resolverResult.statement
+          assert(
+            statement.left.getOrElse("non-left") == "The statement is wrong.",
+            "parser result is non empty but it should be"
+          )
+
+        }
+      }
     }
   }
 
