@@ -12,7 +12,6 @@ sealed trait Term extends Clause {
 
   /**
    * Template method for all infix operators.
-   *
    * @note All operators that use this method should be right associative.
    */
   protected def infixOp(op: String)(left: Term): Compound = Compound(Atom(op), left, List(this))
@@ -80,7 +79,8 @@ case class Fact(body: Term) extends Clause {
  * @param head the left term
  * @param body the right term
  *
- * Example:
+ * ==Overview==
+ * The following example:
  * {{{
  *   Rule(Compound(Atom("hello"), Atom("world")), Atom("hello")).generate
  * }}}
@@ -99,7 +99,8 @@ case class Rule(head: Term, body: Term) extends Clause {
  * @param left the left term
  * @param right the right term
  *
- * Example:
+ * ==Overview==
+ * The following example:
  * {{{
  *   DCGRule(Compound(Atom("hello"), Atom("world")), ListP(Atom("hello"), Atom("world"))).generate
  * }}}

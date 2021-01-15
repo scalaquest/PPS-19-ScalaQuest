@@ -9,7 +9,7 @@ import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
  */
 trait Solution {
 
-  /** Returns the solution as a [[Term]]. */
+  /** Returns the computed solution. */
   def body: Term
 
   /**

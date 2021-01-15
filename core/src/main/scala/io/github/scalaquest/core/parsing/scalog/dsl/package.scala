@@ -4,7 +4,9 @@ package io.github.scalaquest.core.parsing.scalog
  * This package includes some facility methods in order to create terms in a
  * Prolog-like syntax.
  *
- * Example:
+ * ==Overview==
+ * If you include implicit conversions and [[dsl.CompoundBuilder]] you can
+ * create terms as in this example:
  * {{{
  *   val hello = CompoundBuilder("hello")
  *   val X = Variable("X")
@@ -16,7 +18,7 @@ package io.github.scalaquest.core.parsing.scalog
  *   hello(X) --> ["hello", X].
  * }}}
  */
-object dsl {
+package object dsl {
 
   /**
    * A `CompoundBuilder` allows the generation of compound terms using a
