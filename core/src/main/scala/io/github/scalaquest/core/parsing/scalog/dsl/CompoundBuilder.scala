@@ -8,7 +8,8 @@ import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
  *
  * @param functor the atom used as a functor by the generated compound terms
  *
- *  Example:
+ * ==Overview==
+ *  For example if you run this code:
  *  {{{
  *    val hello = CompoundBuilder(Atom("hello"))
  *    (hello(Atom("darkness"), Atom("my"), Atom("old"), Atom("friend"))).generate
