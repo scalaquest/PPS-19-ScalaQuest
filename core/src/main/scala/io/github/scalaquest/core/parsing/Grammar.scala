@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.parsing
 
 import io.github.scalaquest.core.model.{Action, Actions}
-import io.github.scalaquest.core.parsing.engine.{Atom, Clause, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog.{Atom, Clause, Term, Variable}
 
 import scala.annotation.tailrec
 
@@ -20,7 +20,7 @@ sealed trait Verb {
 
 object Verb {
   import io.github.scalaquest.core.parsing.engine._
-  import io.github.scalaquest.core.parsing.engine.clause.dsl._
+  import io.github.scalaquest.core.parsing.scalog.dsl._
 
   def betaReduce(functor: String, variablesNum: Int): Term = {
     @tailrec

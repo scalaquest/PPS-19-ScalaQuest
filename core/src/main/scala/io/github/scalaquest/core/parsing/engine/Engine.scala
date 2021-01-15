@@ -1,117 +1,58 @@
 package io.github.scalaquest.core.parsing.engine
 
-import alice.tuprolog
-import alice.tuprolog.{
-  NoSolutionException,
-  SolveInfo,
-  Struct,
-  UnknownVarException,
-  Var,
-  Prolog => TuProlog,
-  Term => TuPrologTerm,
-  Theory => TuPrologTheory
-}
-import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
+import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine
+import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
 
+/**
+ * A data structure that contains the result of a Prolog query being evaluated
+ * as true.
+ */
 trait Solution {
+
+  /** Returns the solution as a [[Term]]. */
   def body: Term
+
+  /**
+   * Allows to retrieve the value of a given variable in the substitution.
+   * @param variable the variable to look for
+   * @return optionally, the value of the variable in the substitution.
+   */
   def getVariable(variable: Variable): Option[Term]
 }
 
+/**
+ * A generic Prolog engine. It allows to execute queries and collect the results.
+ *
+ * Example:
+ * {{{
+ *   val theory = Theory(
+ *     "hello(mario)." +
+ *     "hello(luigi)." +
+ *     "hello(peach)." +
+ *     "hello(daisy)."
+ *   )
+ *
+ *   val characters = for {
+ *     s <- Engine(theory).solve(Compound(Atom("hello"), Variable("X")))
+ *     x <- s.getVariable(Variable("X"))
+ *   } yield x
+ *
+ *   assert(characters == Seq("mario", "luigi", "peach", "daisy")) // true
+ * }}}
+ */
 trait Engine {
+
+  /**
+   * Allows to query the engine for a term, it will return a sequence of
+   * solutions being evaluated as true.
+   * @param term the argument of the query
+   * @return the sequence of positive solutions.
+   */
   def solve(term: Term): Seq[Solution]
 }
 
 object Engine {
 
-  implicit class EnhancedTerm(term: Term) {
-    def toTuPrologTerm: TuPrologTerm = TuPrologTerm.createTerm(term.generate)
-  }
-
-  implicit class EnhancedTuPrologTerm(tuPrologTerm: TuPrologTerm) {
-
-    def toTerm: Term =
-      tuPrologTerm match {
-        case number: tuprolog.Number => buildNumber(number)
-        case struct: Struct => struct match {
-            case s if s.isCompound => buildCompound(s)
-            case a                 => Atom(a.getName)
-          }
-        case _var: Var => Variable(_var.getName)
-      }
-  }
-
-  private def getArgs(struct: Struct): Seq[Term] = {
-    (0 until struct.getArity)
-      .map(i => struct.getTerm(i))
-      .map(_.toTerm)
-  }
-
-  /*
-   * Notice this will fail if called with a Struct with no arguments.
-   */
-  private def buildCompound(struct: Struct): Compound =
-    getArgs(struct).toList match {
-      case h :: t =>
-        Compound(Atom(struct.getName), h, t)
-    }
-
-  /*
-   * Notice this might fail if not called with an Integer, but for now we don't
-   * use any other Number implementation
-   */
-  private def buildNumber(number: tuprolog.Number): Number = Number(number.intValue)
-
-  /*
-   * Notice this might throw if called with an invalid theory
-   */
-  private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
-    val prolog = new TuProlog
-    try {
-      prolog.setTheory(theory)
-    } catch {
-      case e: alice.tuprolog.InvalidTheoryException => throw InvalidTheoryException(e)
-    }
-    libraries.foreach(l => prolog.loadLibrary(l.toTuProlog))
-    prolog
-  }
-
-  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
-    TuPrologEngine(createTuProlog(theory.toTuProlog, libraries))
-
-}
-
-case class SimpleSolution(solveInfo: SolveInfo) extends Solution {
-  import Engine.EnhancedTuPrologTerm
-
-  override def body: Term = solveInfo.getSolution.toTerm
-
-  override def getVariable(variable: Variable): Option[Term] = {
-    try {
-      Some(solveInfo.getTerm(variable.name).toTerm)
-    } catch {
-      case _: UnknownVarException => None
-      case _: NoSolutionException => None
-    }
-  }
-}
-
-case class TuPrologEngine(prolog: TuProlog) extends Engine {
-  import Engine.EnhancedTerm
-
-  private def exploreSolutions(goal: TuPrologTerm): Seq[SolveInfo] = {
-    def go(info: SolveInfo): LazyList[SolveInfo] = {
-      val current =
-        if (info.isSuccess) LazyList(info)
-        else LazyList.empty
-      lazy val next = if (prolog.hasOpenAlternatives) go(prolog.solveNext()) else LazyList.empty
-      current #::: next
-    }
-
-    go(prolog.solve(goal))
-  }
-
-  override def solve(term: Term): Seq[Solution] = {
-    exploreSolutions(term.toTuPrologTerm).map(SimpleSolution)
-  }
+  /** Creates an [[Engine]] with the provided theory and libraries. */
+  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine = TuPrologEngine(theory, libraries)
 }

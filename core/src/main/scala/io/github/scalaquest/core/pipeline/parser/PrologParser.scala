@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.pipeline.parser
 
-import io.github.scalaquest.core.parsing.engine.{Atom, Compound, Engine, Variable}
+import io.github.scalaquest.core.parsing.engine.Engine
+import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
@@ -15,14 +16,14 @@ abstract class PrologParser extends Parser {
   protected def engine: Engine
 
   object dsl {
-    import io.github.scalaquest.core.parsing.engine.clause.dsl._
+    import io.github.scalaquest.core.parsing.scalog.dsl._
     val X      = Variable("X")
     val i      = CompoundBuilder("i")
     val phrase = CompoundBuilder("phrase")
   }
 
   override def parse(lexerResult: LexerResult): Option[ParserResult] = {
-    import io.github.scalaquest.core.parsing.engine.clause.dsl.seqToListP
+    import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
     import dsl._
     val tokens = lexerResult.tokens.map(Atom)
     val query  = phrase(i(X), tokens)

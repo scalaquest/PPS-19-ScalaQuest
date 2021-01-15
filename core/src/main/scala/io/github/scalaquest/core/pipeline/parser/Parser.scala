@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
-import io.github.scalaquest.core.parsing.engine.{Atom, Compound, Engine, Variable}
+import io.github.scalaquest.core.parsing.engine.Engine
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 /**
