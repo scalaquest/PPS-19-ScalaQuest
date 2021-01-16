@@ -18,10 +18,13 @@ object Game {
 
       def pipelineFactory: PipelineBuilder[model.S, model.type]
 
-      override def send(input: String)(state: model.S): Either[String, model.S] = pipelineFactory(state) run input
+      override def send(input: String)(state: model.S): Either[String, model.S] =
+        pipelineFactory(state) run input
     }
 
-    def withPipelineBuilder(pipelineBuilder: PipelineBuilder[model.S, model.type]): Game[model.type] =
+    def withPipelineBuilder(
+      pipelineBuilder: PipelineBuilder[model.S, model.type]
+    ): Game[model.type] =
       new GameWithPipeline {
         override def pipelineFactory: PipelineBuilder[model.S, model.type] = pipelineBuilder
       }

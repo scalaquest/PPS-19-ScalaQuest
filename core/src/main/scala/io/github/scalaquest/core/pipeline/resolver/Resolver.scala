@@ -6,10 +6,11 @@ import io.github.scalaquest.core.pipeline.parser.ParserResult
 sealed trait Statement
 
 object Statement {
+  final case class Intransitive(action: Action)                          extends Statement
+  final case class Transitive[II <: Model#I](action: Action, target: II) extends Statement
 
-  final case class Intransitive(action: Action)                                          extends Statement
-  final case class Transitive[II <: Model#I](action: Action, target: II)                 extends Statement
-  final case class Ditransitive[II <: Model#I](action: Action, target1: II, target2: II) extends Statement
+  final case class Ditransitive[II <: Model#I](action: Action, target1: II, target2: II)
+    extends Statement
 }
 
 trait ResolverResult {
