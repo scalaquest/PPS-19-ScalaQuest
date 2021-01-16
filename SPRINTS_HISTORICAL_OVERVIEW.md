@@ -44,3 +44,14 @@ Useful links:
 - [(Issue) Rename Update into Reaction](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/17)
 - [(Issue) Deepen model, interpreter and resolver component](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/7)
 - [(Issue) Deepen Prolog engine, parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
+
+
+## Sprint 3 (10th January - 16th January)
+
+In the third Sprint we basically continued the work started in the previous, divided in teams. Tasks regarding model and Prolog engine are two of the most funding part of the project, and as such they deserve particular attention.
+In addition, some minor tasks have been resolved in common meetings.
+
+Useful links:
+- [(Issue) Deepen model, interpreter and resolver component](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/7)
+- [(Issue) Deepen Prolog engine, parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
+- [(Issue) Improve Scaladoc format rules](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/29)
