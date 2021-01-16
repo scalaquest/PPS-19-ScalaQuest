@@ -2,7 +2,11 @@ package io.github.scalaquest.core.pipeline.interpreter
 
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.resolver.ResolverResult
-import io.github.scalaquest.core.pipeline.resolver.Statement.{Ditransitive, Intransitive, Transitive}
+import io.github.scalaquest.core.pipeline.resolver.Statement.{
+  Ditransitive,
+  Intransitive,
+  Transitive
+}
 
 trait Interpreter[M <: Model] {
   def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[M]]
