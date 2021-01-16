@@ -48,7 +48,7 @@ Useful links:
 
 ## Sprint 3 (10th January - 16th January)
 
-In the third Sprint we basically continued the work started in the previous, divided in teams. Tasks regarding model and Prolog engine are two of the most funding part of the project, and as such they deserve particular attention.
+In the third Sprint we basically continued the work started in the previous, divided in teams. Tasks about Model and Engine basic structure are basically finished. We handled merge conflicts about the two parts during the Sprint Review.
 In addition, some minor tasks have been resolved in common meetings.
 
 Useful links:
