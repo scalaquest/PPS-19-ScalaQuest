@@ -22,8 +22,9 @@ object Game {
         pipelineFactory(state) run input
     }
 
-    def withPipelineBuilder(pipelineBuilder: PipelineBuilder[model.S, model.type])
-      : Game[model.type] =
+    def withPipelineBuilder(
+      pipelineBuilder: PipelineBuilder[model.S, model.type]
+    ): Game[model.type] =
       new GameWithPipeline {
         override def pipelineFactory: PipelineBuilder[model.S, model.type] = pipelineBuilder
       }
