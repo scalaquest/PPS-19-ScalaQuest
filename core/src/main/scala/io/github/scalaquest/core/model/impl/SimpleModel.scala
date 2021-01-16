@@ -7,7 +7,11 @@ object SimpleModel extends Model {
   override type I = SimpleItem
 
   trait SimpleItem extends Item {
-    override def useTransitive[SS <: Model#S, RR <: Model#Reaction](action: Action, state: SS): Option[RR] = None
+
+    override def useTransitive[SS <: Model#S, RR <: Model#Reaction](
+      action: Action,
+      state: SS
+    ): Option[RR] = None
 
     override def useDitransitive[SS <: Model#S, II <: Model#I, RR <: Model#Reaction](
       action: Action,
