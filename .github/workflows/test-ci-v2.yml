@@ -82,8 +82,8 @@ jobs:
           ${{ github.workspace }}/build
           ${{ github.workspace }}/buildSrc
          # ${{ github.workspace }}/cli
-         # ${{ github.workspace }}/core
-        #  ${{ github.workspace }}/examples
+          ${{ github.workspace }}/core
+          ${{ github.workspace }}/examples
 
 
 
