@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - feature/gradle-build-sharing
+      - feature/new-gradle-build
   pull_request:
     branches:
       - main
