@@ -1,0 +1,172 @@
+name: Scala with Gradle CI
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+      - feature/gradle-build-sharing
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  StyleCheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+          # The project uses java 11 (LTS) with scala 2.13
+          #- name: Set up JDK 11
+          #uses: actions/setup-java@v1
+          #with:
+          #java-version: 11
+
+          # Use cache if available for Gradle
+          #- name: Cache Gradle packages
+          #uses: actions/cache@v2
+          #with:
+          #path: |
+          #~/.gradle/caches
+          #~/.gradle/wrapper
+          #key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          #restore-keys: |
+        #${{ runner.os }}-gradle-
+
+        #- name: Check Scala formatting with Spotless
+        #run: ./gradlew spotlessCheck
+
+  Compile:
+    # The matrix runs only if the scala style is correct
+    needs: StyleCheck
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        #os: [ ubuntu-latest, macOS-latest, windows-latest ]
+        os: [ ubuntu-latest ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # The project uses java 11 (LTS) with scala 2.13
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # Use cache if available for Gradle
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Assemble Scala sources with Gradle
+        run: ./gradlew assemble
+          #- name: Publish ${{ runner.os }} build artifact
+          #if: ${{ runner.os }} == "Linux"
+          #uses: actions/upload-artifact@v2
+          #with:
+          #name: ${{ runner.os }}-builds
+          #path: |
+          #buildSrc/build/
+          #cli/build/
+          #core/build/
+        #examples/escape-room/build/
+
+      - name: Upload ${{ runner.os }} buildSrc/build artifact
+        if: ${{ runner.os }} == "Linux"
+        uses: actions/upload-artifact@v2
+        with:
+          name: buildSrc-build
+          path: buildSrc/build
+
+
+      - name: Upload ${{ runner.os }} cli/build artifact
+        if: ${{ runner.os }} == "Linux"
+        uses: actions/upload-artifact@v2
+        with:
+          name: cli-build
+          path: cli/build
+
+      - name: Upload ${{ runner.os }} core/build artifact
+        if: ${{ runner.os }} == "Linux"
+        uses: actions/upload-artifact@v2
+        with:
+          name: core-build
+          path: core/build
+
+
+      - name: Upload ${{ runner.os }} examples/escape-room/build artifact
+        if: ${{ runner.os }} == "Linux"
+        uses: actions/upload-artifact@v2
+        with:
+          name:  examples-escape-room-build
+          path:  examples/escape-room/build
+
+
+
+  Test:
+    runs-on: ubuntu-latest
+    needs: [StyleCheck, Compile]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # The project uses java 11 (LTS) with scala 2.13
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # Use cache if available for Gradle
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Download buildSrc/build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: buildSrc-build
+          path: ${{ github.workspace }}/buildSrc/build
+
+      - name: Download cli/build  artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: cli-build
+          path: ${{ github.workspace }}/cli/build
+
+      - name: Download core/build  artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: core-build
+          path: ${{ github.workspace }}/core/build
+
+      - name: Download examples/escape-room/build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: examples-escape-room-build
+          path: ${{ github.workspace }}/examples/escape-room/build
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: ${{ github.workspace }}
+
+      - name: Check and Test with Gradle
+        run: ./gradlew check
