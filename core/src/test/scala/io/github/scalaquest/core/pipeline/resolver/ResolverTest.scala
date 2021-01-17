@@ -33,7 +33,7 @@ class ResolverTest extends AnyWordSpec {
         override def tree: AST = AST.Intransitive("open", "you")
       }
 
-      val maybeStatement = resolver.resolve(parserResult).map(x => x.statement)
+      val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Intransitive Statement" in {
         for { _ <- maybeStatement.left } yield fail("Resolver has not produced any statement")
@@ -54,7 +54,7 @@ class ResolverTest extends AnyWordSpec {
       val parserResult = new ParserResult() {
         override def tree: AST = AST.Transitive("take", "you", "apple")
       }
-      val maybeStatement = resolver.resolve(parserResult).map(x => x.statement)
+      val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Transitive Statement" in {
         for { _ <- maybeStatement.left } yield fail("Resolver has not produced any statement")
@@ -75,7 +75,7 @@ class ResolverTest extends AnyWordSpec {
       val parserResult = new ParserResult() {
         override def tree: AST = AST.Ditransitive("open", "you", "door", "key")
       }
-      val maybeStatement = resolver.resolve(parserResult).map(x => x.statement)
+      val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Ditransitive Statement" in {
         for { _ <- maybeStatement.left } yield fail("Resolver has not produced any statement")
@@ -99,7 +99,7 @@ class ResolverTest extends AnyWordSpec {
           override def tree: AST = null
         }
 
-        val maybeStatement = resolver.resolve(parserResult).map(x => x.statement)
+        val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
         maybeStatement.fold(
           left => assert(left == "The statement is wrong.", "The left description is invalid."),
