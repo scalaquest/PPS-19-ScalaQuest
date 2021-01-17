@@ -42,12 +42,15 @@ object Model {
             case _      => Left("Only NORTH and SOUTH directions supported.")
           }
           s <- state.game.player.location neighbors dir match {
-            case Some(room) => Right(((gameLens composeLens playerLens composeLens locationLens) set room)(state))
-            case _          => Left("There is no such direction.")
+            case Some(room) =>
+              Right(((gameLens composeLens playerLens composeLens locationLens) set room)(state))
+            case _ => Left("There is no such direction.")
           }
           m <- dir match {
-            case NORTH => Right(messagesLens.set(Seq(WentNorth, Describe(s.game.player.location)))(s))
-            case SOUTH => Right(messagesLens.set(Seq(WentSouth, Describe(s.game.player.location)))(s))
+            case NORTH =>
+              Right(messagesLens.set(Seq(WentNorth, Describe(s.game.player.location)))(s))
+            case SOUTH =>
+              Right(messagesLens.set(Seq(WentSouth, Describe(s.game.player.location)))(s))
           }
         } yield m
     }

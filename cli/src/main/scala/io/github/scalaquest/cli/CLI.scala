@@ -19,7 +19,10 @@ object CLI {
     private def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
       pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
 
-    private def gameLoop(game: Game[model.type], pusher: MessagePusher)(state: S): ZIO[Console, Exception, Unit] =
+    private def gameLoop(
+      game: Game[model.type],
+      pusher: MessagePusher
+    )(state: S): ZIO[Console, Exception, Unit] =
       for {
         input <- getStrLn
         res   <- UIO.succeed((game send input)(state))
@@ -28,7 +31,9 @@ object CLI {
           case Right(updated) => (printNotifications(pusher)(updated.messages), updated)
         })
         _ <- putStrLn(out)
-        _ <- if (!nextState.game.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher) else ZIO.unit
+        _ <-
+          if (!nextState.game.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher)
+          else ZIO.unit
       } yield ()
 
     def build(state: S, game: Game[model.type], pusher: MessagePusher): CLI =
