@@ -1,3 +1,78 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-class InterpreterTest {}
+import io.github.scalaquest.core.TestsUtils.{
+  appleItemRef,
+  doorItemRef,
+  key,
+  keyItemRef,
+  refItemDictionary,
+  roomLinkDoor,
+  simpleState,
+  startRoom,
+  takeableApple
+}
+import io.github.scalaquest.core.model.common.Actions.{Open, Take}
+import io.github.scalaquest.core.model.std.StdModel
+import io.github.scalaquest.core.model.std.StdModel.itemsLens
+import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
+import org.scalatest.wordspec.AnyWordSpec
+
+class InterpreterTest extends AnyWordSpec {
+  "An Interpreter" when {
+    val interpreter = Interpreter(StdModel)(simpleState, refItemDictionary)
+
+    /*
+    // todo finish intransitive implementation
+    "given an Intransitive Statement" should {
+      val resolverResult = ResolverResult(Statement.Intransitive(Open))
+
+      "return the right Reaction" in {
+         checkResult(interpreter, resolverResult, maybeExpReaction)
+      }
+    }
+     */
+
+    "given a Transitive Statement" should {
+      val resolverResult   = ResolverResult(Statement.Transitive(Take, appleItemRef))
+      val stateItemInRoom  = itemsLens.modify(_ + (startRoom -> Set(takeableApple)))(simpleState)
+      val maybeExpReaction = takeableApple.use(Take, stateItemInRoom, None)
+
+      "return the right Reaction" in {
+        checkResult(interpreter, resolverResult, maybeExpReaction)
+      }
+    }
+
+    "given a Ditransitive Statement" should {
+      val resolverResult   = ResolverResult(Statement.Ditransitive(Open, doorItemRef, keyItemRef))
+      val stateItemInRoom  = itemsLens.modify(_ + (startRoom -> Set(roomLinkDoor, key)))(simpleState)
+      val maybeExpReaction = roomLinkDoor.use(Open, stateItemInRoom, Some(key))
+
+      "return the right Reaction" in {
+        checkResult(interpreter, resolverResult, maybeExpReaction)
+      }
+    }
+  }
+
+  def checkResult(
+    interpreter: Interpreter[StdModel.type, StdModel.Reaction],
+    resolverResult: ResolverResult,
+    maybeExpReaction: Option[StdModel.Reaction]
+  ): Unit = {
+    for {
+      interprResult <- interpreter.interpret(resolverResult)
+      foundReaction <- Right(interprResult.reaction)
+      expctReaction <- maybeExpReaction toRight fail("Test implementation error")
+    } yield assert(foundReaction == expctReaction, "The reaction was not the expected one.")
+  }
+
+  "An interpreterBuilder" should {
+    import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
+    "be of the right type" in {
+      val builder = Interpreter.builder(StdModel)(refItemDictionary)
+      builder shouldBe a[Interpreter.Builder[_, _, _]]
+
+      val interpreter = builder(simpleState)
+      interpreter shouldBe a[Interpreter[_, _]]
+    }
+  }
+}

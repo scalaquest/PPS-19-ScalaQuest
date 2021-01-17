@@ -22,7 +22,7 @@ object Interpreter {
   ): Interpreter[model.type, model.Reaction] = {
 
     case class SimpleInterpreter(state: model.S) extends Interpreter[model.type, model.Reaction] {
-      private val useIntransitive: Option[model.Reaction] = ???
+      private val useIntransitive: Option[model.Reaction] = None
 
       // The interpreter should know the Map[ItemRef, I] in order to create a retriever
       // or should be passed the itemRetriever directly.
