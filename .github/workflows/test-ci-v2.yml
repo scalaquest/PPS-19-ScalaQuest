@@ -72,46 +72,14 @@ jobs:
 
       - name: Assemble Scala sources with Gradle
         run: ./gradlew assemble
-          #- name: Publish ${{ runner.os }} build artifact
-          #if: ${{ runner.os }} == "Linux"
-          #uses: actions/upload-artifact@v2
-          #with:
-          #name: ${{ runner.os }}-builds
-          #path: |
-          #buildSrc/build/
-          #cli/build/
-          #core/build/
-        #examples/escape-room/build/
 
-      - name: Upload ${{ runner.os }} buildSrc/build artifact
+      - name: Publish ${{ runner.os }} workspace
         if: ${{ runner.os }} == "Linux"
         uses: actions/upload-artifact@v2
         with:
-          name: buildSrc-build
-          path: buildSrc/build
+         name: ${{ runner.os }}-workspace
+         path: ${{ github.workspace }}
 
-
-      - name: Upload ${{ runner.os }} cli/build artifact
-        if: ${{ runner.os }} == "Linux"
-        uses: actions/upload-artifact@v2
-        with:
-          name: cli-build
-          path: cli/build
-
-      - name: Upload ${{ runner.os }} core/build artifact
-        if: ${{ runner.os }} == "Linux"
-        uses: actions/upload-artifact@v2
-        with:
-          name: core-build
-          path: core/build
-
-
-      - name: Upload ${{ runner.os }} examples/escape-room/build artifact
-        if: ${{ runner.os }} == "Linux"
-        uses: actions/upload-artifact@v2
-        with:
-          name:  examples-escape-room-build
-          path:  examples/escape-room/build
 
 
 
@@ -140,29 +108,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Download buildSrc/build artifacts
+      - name: Download workspace
         uses: actions/download-artifact@v2
         with:
-          name: buildSrc-build
-          path: ${{ github.workspace }}/buildSrc/build
+          name: Linux-workspace
+          path: ${{ github.workspace }}
 
-      - name: Download cli/build  artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: cli-build
-          path: ${{ github.workspace }}/cli/build
 
-      - name: Download core/build  artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: core-build
-          path: ${{ github.workspace }}/core/build
-
-      - name: Download examples/escape-room/build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: examples-escape-room-build
-          path: ${{ github.workspace }}/examples/escape-room/build
 
       - name: Display structure of downloaded files
         run: ls -R
