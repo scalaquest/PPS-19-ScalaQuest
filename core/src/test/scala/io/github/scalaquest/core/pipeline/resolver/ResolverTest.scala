@@ -1,30 +1,18 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.Action
-import io.github.scalaquest.core.model.common.Actions
+import io.github.scalaquest.core.TestsUtils.{
+  actionsMap,
+  itemsMap,
+  appleItemRef,
+  doorItemRef,
+  keyItemRef
+}
 import io.github.scalaquest.core.model.common.Actions.{Open, Take}
-import io.github.scalaquest.core.pipeline.interpreter.ItemRef
 import io.github.scalaquest.core.pipeline.parser.{AST, ParserResult}
 import org.scalatest.wordspec.AnyWordSpec
 
 class ResolverTest extends AnyWordSpec {
   "A Resolver" when {
-    val actionsMap = Map[String, Action](
-      "take"  -> Actions.Take,
-      "bring" -> Actions.Take,
-      "open"  -> Actions.Open
-    )
-
-    val appleItemRef = new ItemRef {}
-    val keyItemRef   = new ItemRef {}
-    val doorItemRef  = new ItemRef {}
-    val itemsMap = Map[String, ItemRef](
-      "apple"     -> appleItemRef,
-      "red apple" -> appleItemRef,
-      "door"      -> doorItemRef,
-      "key"       -> keyItemRef
-    )
-
     val resolver = Resolver(actionsMap, itemsMap)
 
     "receives an Intransitive AST" should {

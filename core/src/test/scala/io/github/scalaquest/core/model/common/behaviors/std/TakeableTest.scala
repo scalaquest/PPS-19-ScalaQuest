@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
+import io.github.scalaquest.core.TestsUtils.{startRoom, simpleState}
 import io.github.scalaquest.core.model.common.Actions.Take
 import io.github.scalaquest.core.model.std.StdModel.{
   GenericItem,
@@ -13,13 +14,13 @@ import org.scalatest.wordspec.AnyWordSpec
 class TakeableTest extends AnyWordSpec {
   "A Takeable behavior" when {
     val takeable = Takeable()
-    val room     = BehaviorsTestsUtils.startRoom
+    val room     = startRoom
 
     "applied to an item" when {
       val item = GenericItem("takeableItem", takeable)
       val stateItemInRoom =
-        itemsLens.modify(_ + (room -> Set(item)))(BehaviorsTestsUtils.simpleState)
-      val stateItemNotInRoom: StdState = BehaviorsTestsUtils.simpleState
+        itemsLens.modify(_ + (room -> Set(item)))(simpleState)
+      val stateItemNotInRoom: StdState = simpleState
 
       "the user says 'take the item'" should {
         "let the item disappear from the current room" in {
@@ -31,6 +32,7 @@ class TakeableTest extends AnyWordSpec {
             )
           } yield assert(!currRoomItems.contains(item), "The item is into the room yet")
         }
+
         "appear into the bag" in {
           for {
             react    <- item.use(Take, stateItemInRoom, None) toRight fail("Reaction not generated")

@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.std
 
-import io.github.scalaquest.core.model.common.behaviors.std.BehaviorsTestsUtils.startRoom
+import io.github.scalaquest.core.TestsUtils.startRoom
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.std.StdModel.{StdGameState, StdPlayer, StdState}
 

@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
+import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
 import io.github.scalaquest.core.model.common.Actions.Open
 import io.github.scalaquest.core.model.std.StdModel.{
   GenericItem,
@@ -13,11 +14,10 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class OpenableTest extends AnyWordSpec {
   "An Openable behavior" when {
-    val simpleState: StdState = BehaviorsTestsUtils.simpleState
 
     val targetOpenable: StdState => Option[Openable] = state => {
       for {
-        itemsInLoc <- state.game.itemsInRooms.get(BehaviorsTestsUtils.startRoom)
+        itemsInLoc <- state.game.itemsInRooms.get(startRoom)
         openable   <- itemsInLoc.collectFirst({ case GenericItem(_, openable: Openable) => openable })
       } yield openable
     }
@@ -30,7 +30,7 @@ class OpenableTest extends AnyWordSpec {
       val copyWKeyAndPortal = Function.chain(
         Seq(
           bagLens.modify(_ + targetKey),
-          itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetItem)))
+          itemsLens.modify(_ + (startRoom -> Set(targetItem)))
         )
       )
       val stateWKeyAndItem: StdState = copyWKeyAndPortal(simpleState)
@@ -58,7 +58,7 @@ class OpenableTest extends AnyWordSpec {
       val openable   = Openable()
       val targetItem = GenericItem("openable", openable)
       val stateWPort: StdState =
-        itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetItem)))(simpleState)
+        itemsLens.modify(_ + (startRoom -> Set(targetItem)))(simpleState)
 
       "the user says 'open the item'" should {
         "open without Key" in {

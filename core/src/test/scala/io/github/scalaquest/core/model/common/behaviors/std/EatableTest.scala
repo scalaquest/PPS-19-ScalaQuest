@@ -1,12 +1,12 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
+import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
 import io.github.scalaquest.core.model.common.Actions.Eat
-
 import io.github.scalaquest.core.model.std.StdModel.{
+  Eatable,
   GenericItem,
   StdState,
   bagLens,
-  Eatable,
   itemsLens
 }
 import org.scalatest.wordspec.AnyWordSpec
@@ -14,14 +14,14 @@ import org.scalatest.wordspec.AnyWordSpec
 class EatableTest extends AnyWordSpec {
   "A Eatable behavior" when {
     val eatable = Eatable()
-    val room    = BehaviorsTestsUtils.startRoom
+    val room    = startRoom
 
     "applied to an item" when {
       val item = GenericItem("eatableItem", eatable)
       val stateItemInRoom =
-        itemsLens.modify(_ + (room -> Set(item)))(BehaviorsTestsUtils.simpleState)
-      val stateItemInBag        = bagLens.modify(_ + item)(BehaviorsTestsUtils.simpleState)
-      val stateNoItem: StdState = BehaviorsTestsUtils.simpleState
+        itemsLens.modify(_ + (room -> Set(item)))(simpleState)
+      val stateItemInBag        = bagLens.modify(_ + item)(simpleState)
+      val stateNoItem: StdState = simpleState
 
       "the user says 'eat the item'" should {
         "let the item disappear if it is in the current room" in {
