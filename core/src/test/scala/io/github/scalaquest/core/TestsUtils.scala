@@ -3,16 +3,17 @@ package io.github.scalaquest.core
 import io.github.scalaquest.core.model.Direction.Direction
 import io.github.scalaquest.core.model.common.Actions
 import io.github.scalaquest.core.model.{Action, Room}
-import io.github.scalaquest.core.model.std.StdModel
 import io.github.scalaquest.core.model.std.StdModel.{
   BehaviorableItem,
+  Takeable,
   Door,
   GenericItem,
   Key,
+  Openable,
+  RoomLink,
   StdGameState,
   StdPlayer,
-  StdState,
-  RoomLink
+  StdState
 }
 import io.github.scalaquest.core.pipeline.interpreter.ItemRef
 import monocle.Lens
@@ -50,13 +51,15 @@ object TestsUtils {
     "key"       -> keyItemRef
   )
 
-  val apple: GenericItem = GenericItem("Apple")
-  val key: Key           = Key("Key")
-  val door: Door         = Door("Door", RoomLink(startRoom))
+  val takeableApple: GenericItem = GenericItem("Apple", Takeable())
+  val key: Key                   = Key("Key")
+
+  val roomLinkDoor: Door =
+    Door("Door", RoomLink(startRoom, Some(Openable(requiredKey = Some(key)))))
 
   val refItemDictionary: Map[ItemRef, BehaviorableItem] = Map(
-    appleItemRef -> apple,
+    appleItemRef -> takeableApple,
     keyItemRef   -> key,
-    doorItemRef  -> door
+    doorItemRef  -> roomLinkDoor
   )
 }

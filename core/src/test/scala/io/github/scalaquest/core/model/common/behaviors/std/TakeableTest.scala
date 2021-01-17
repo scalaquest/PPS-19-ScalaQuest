@@ -14,12 +14,11 @@ import org.scalatest.wordspec.AnyWordSpec
 class TakeableTest extends AnyWordSpec {
   "A Takeable behavior" when {
     val takeable = Takeable()
-    val room     = startRoom
 
     "applied to an item" when {
       val item = GenericItem("takeableItem", takeable)
       val stateItemInRoom =
-        itemsLens.modify(_ + (room -> Set(item)))(simpleState)
+        itemsLens.modify(_ + (startRoom -> Set(item)))(simpleState)
       val stateItemNotInRoom: StdState = simpleState
 
       "the user says 'take the item'" should {
@@ -27,7 +26,7 @@ class TakeableTest extends AnyWordSpec {
           for {
             react    <- item.use(Take, stateItemInRoom, None) toRight fail("Reaction not generated")
             modState <- Right(react(stateItemInRoom))
-            currRoomItems <- modState.game.itemsInRooms.get(room) toRight fail(
+            currRoomItems <- modState.game.itemsInRooms.get(startRoom) toRight fail(
               "Error into the test implementation"
             )
           } yield assert(!currRoomItems.contains(item), "The item is into the room yet")
