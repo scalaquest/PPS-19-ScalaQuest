@@ -53,8 +53,6 @@ object Interpreter {
         eventualReaction.map(InterpreterResult(model)(_))
       }
     }
-
     SimpleInterpreter(state)
   }
-
 }
