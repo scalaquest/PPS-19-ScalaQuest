@@ -58,19 +58,3 @@ object Interpreter {
   }
 
 }
-
-object IntperpreterTest {
-  implicit val model: StdModel.type     = StdModel
-  implicit val reaction: model.Reaction = ???
-
-  val res: InterpreterResult[model.Reaction] = InterpreterResult(model)(reaction)
-}
-//
-//object useInterpreter {
-//  implicit val model: SimpleModel.type                       = SimpleModel
-//  val interpreterBuilder: model.S => Interpreter[model.type] = TypedInterpreter2[model.type]
-//  val state: model.S                                         = ???
-//  val rr: ResolverResult                                     = ???
-//  val ir: Either[String, InterpreterResult[model.Reaction]]  = interpreterBuilder(state).interpret(rr)
-//  ir map (_.reaction(model)(state))
-//}
