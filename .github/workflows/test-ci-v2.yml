@@ -78,7 +78,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
          name: ${{ runner.os }}-workspace
-         path: ${{ github.workspace }}
+         path: |
+          ${{ github.workspace }}/build
+          ${{ github.workspace }}/buildSrc
+          ${{ github.workspace }}/cli
+          ${{ github.workspace }}/core
+          ${{ github.workspace }}/examples
 
 
 
