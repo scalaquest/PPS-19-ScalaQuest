@@ -82,7 +82,7 @@ jobs:
           ${{ github.workspace }}/build
           ${{ github.workspace }}/buildSrc
           ${{ github.workspace }}/core
-          ${{ github.workspace }}/examples
+        #  ${{ github.workspace }}/examples
         # ${{ github.workspace }}/cli
 
 
