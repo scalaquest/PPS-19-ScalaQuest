@@ -7,36 +7,25 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ItemRetrieverTest extends AnyWordSpec {
 
-  "An ItemRetriever have a dictionary and" when {
-    val itemRefRight: ItemRef = new ItemRef {}
-    // val itemRefWrong: ItemRef                = new ItemRef {}
-    val item                                 = GenericItem("genericItem")
-    val dictionary: Map[ItemRef, StdModel.I] = Map(itemRefRight -> item)
+  "An ItemRetriever built from a dictionary" should {
 
-    case class SimpleItemRetriever(itemsDict: Map[ItemRef, StdModel.I]) extends ItemRetriever[StdModel.I] {
-      override def unapply(ref: ItemRef): Option[StdModel.I] = itemsDict get ref
+    val targetRef     = new ItemRef {}
+    val targetItem    = GenericItem("target")
+    val dictionary    = Map(targetRef -> targetItem)
+    val itemRetriever = ItemRetriever(StdModel)(dictionary)
+
+    "retrieve an Item given its ItemRef" in {
+      targetRef match {
+        case itemRetriever(item) if item == targetItem => succeed
+        case _                                         => fail("The returned item is not the expected one")
+      }
     }
 
-    val itemRetriever = SimpleItemRetriever(dictionary)
-    "receive an ItemRef" should {
-      "find a match from ItemRef to the specific Item" in {
-        assert(
-          itemRetriever match {
-            case SimpleItemRetriever(_) => true
-            case _                      => false
-          },
-          "The itemRef not refer to the item"
-        )
+    "not match given a missing ItemRef" in {
+      new ItemRef {} match {
+        case itemRetriever(_) => fail("The ItemRef match something unexpected")
+        case _                => succeed
       }
-      /*"not find a match from ItemRef to an Item if doesn't exist" in {
-        assert(
-          itemRetriever match {
-            case SimpleItemRetriever(item) if ()=> false
-            case _                      => true
-          },
-          "The itemRef take an item"
-        )
-      }*/
     }
   }
 }
