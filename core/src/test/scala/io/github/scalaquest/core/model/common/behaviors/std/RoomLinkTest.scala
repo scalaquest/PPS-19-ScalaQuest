@@ -3,14 +3,23 @@ package io.github.scalaquest.core.model.common.behaviors.std
 import io.github.scalaquest.core.model.Direction.Direction
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.{Enter, Open}
-import io.github.scalaquest.core.model.std.StdModel.{Door, Key, Openable, RoomLink, StdState, bagLens, itemsLens}
+import io.github.scalaquest.core.model.std.StdModel.{
+  Door,
+  Key,
+  Openable,
+  RoomLink,
+  StdState,
+  bagLens,
+  itemsLens
+}
 import org.scalatest.wordspec.AnyWordSpec
 
 class RoomLinkTest extends AnyWordSpec {
 
   "A RoomLinkBehavior" when {
-    val targetRoom: Room      = Room("targetRoom", () => Map[Direction, Room]())
-    val simpleState: StdState = BehaviorsTestsUtils.roomsLens.modify(_ + targetRoom)(BehaviorsTestsUtils.simpleState)
+    val targetRoom: Room = Room("targetRoom", () => Map[Direction, Room]())
+    val simpleState: StdState =
+      BehaviorsTestsUtils.roomsLens.modify(_ + targetRoom)(BehaviorsTestsUtils.simpleState)
 
     "the item has not an openable behavior" when {
       val roomLink     = RoomLink(targetRoom)
@@ -22,9 +31,14 @@ class RoomLinkTest extends AnyWordSpec {
 
         "move the player in the designed room" in {
           for {
-            react    <- targetPortal.use(Enter, stateWPort, None) toRight fail("Reaction not generated")
+            react <- targetPortal.use(Enter, stateWPort, None) toRight fail(
+              "Reaction not generated"
+            )
             modState <- Right(react(stateWPort))
-          } yield assert(modState.game.player.location == targetRoom, "The player is not in the right location")
+          } yield assert(
+            modState.game.player.location == targetRoom,
+            "The player is not in the right location"
+          )
         }
       }
     }
@@ -39,9 +53,14 @@ class RoomLinkTest extends AnyWordSpec {
 
         "move the player in the designed room" in {
           for {
-            react    <- targetPortal.use(Enter, stateWOpenPort, None) toRight fail("Reaction not generated")
+            react <- targetPortal.use(Enter, stateWOpenPort, None) toRight fail(
+              "Reaction not generated"
+            )
             modState <- Right(react(stateWOpenPort))
-          } yield assert(modState.game.player.location == targetRoom, "The player is not in the right location")
+          } yield assert(
+            modState.game.player.location == targetRoom,
+            "The player is not in the right location"
+          )
         }
       }
     }
@@ -53,7 +72,10 @@ class RoomLinkTest extends AnyWordSpec {
         itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetPortal)))(simpleState)
       "the user says 'enter the item'" should {
         "not move the player in the designed room" in {
-          assert(targetPortal.use(Enter, stateWClosedPort, None).isEmpty, "A reaction has been generated")
+          assert(
+            targetPortal.use(Enter, stateWClosedPort, None).isEmpty,
+            "A reaction has been generated"
+          )
         }
       }
     }

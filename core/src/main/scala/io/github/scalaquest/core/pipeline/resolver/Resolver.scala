@@ -12,7 +12,8 @@ object Resolver {
 
   def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
 
-    case class SimpleResolver(actions: Map[String, Action], items: Map[String, ItemRef]) extends Resolver {
+    case class SimpleResolver(actions: Map[String, Action], items: Map[String, ItemRef])
+      extends Resolver {
 
       override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
         for {
@@ -44,7 +45,8 @@ object Resolver {
         items get name toRight s"Couldn't understand $name"
       }
 
-      def retrieveAction(verb: String): Either[String, Action] = actions get verb toRight s"Couldn't understand $verb."
+      def retrieveAction(verb: String): Either[String, Action] =
+        actions get verb toRight s"Couldn't understand $verb."
     }
 
     SimpleResolver(actions, items)

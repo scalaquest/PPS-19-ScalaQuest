@@ -14,10 +14,16 @@ class DoorTest extends AnyWordSpec {
 
     "instantiated" should {
       "take a RoomLink Behavior and save it as the first behavior" in {
-        assert(door.behaviors.head == door.doorBehavior, "the roomLink is not in the first position.")
+        assert(
+          door.behaviors.head == door.doorBehavior,
+          "the roomLink is not in the first position."
+        )
       }
       "take additional behaviors as subsequent to the door behavior" in {
-        assert(door.behaviors.tail == additionalBehaviors, "the additional behaviors are not in the right place.")
+        assert(
+          door.behaviors.tail == additionalBehaviors,
+          "the additional behaviors are not in the right place."
+        )
       }
     }
   }

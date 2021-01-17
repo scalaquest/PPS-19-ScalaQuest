@@ -15,7 +15,8 @@ object ItemRetriever {
   def builder[M <: Model](implicit model: M): Builder[model.type, model.I] = apply(model)(_)
 
   def apply[M <: Model](model: M)(itemsDict: Map[ItemRef, model.I]): ItemRetriever[model.I] = {
-    case class SimpleItemRetriever(itemsDict: Map[ItemRef, model.I]) extends ItemRetriever[model.I] {
+    case class SimpleItemRetriever(itemsDict: Map[ItemRef, model.I])
+      extends ItemRetriever[model.I] {
       override def unapply(ref: ItemRef): Option[model.I] = itemsDict get ref
     }
     SimpleItemRetriever(itemsDict)

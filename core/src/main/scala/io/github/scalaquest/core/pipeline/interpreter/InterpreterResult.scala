@@ -9,7 +9,8 @@ trait InterpreterResult[R] {
 object InterpreterResult {
 
   def apply[M <: Model](model: M)(reaction: model.Reaction): InterpreterResult[model.Reaction] = {
-    case class SimpleInterpreterResult(reaction: model.Reaction) extends InterpreterResult[model.Reaction]
+    case class SimpleInterpreterResult(reaction: model.Reaction)
+      extends InterpreterResult[model.Reaction]
     SimpleInterpreterResult(reaction)
   }
 }

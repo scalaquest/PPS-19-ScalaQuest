@@ -2,7 +2,11 @@ package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.Take
-import io.github.scalaquest.core.model.common.behaviors.{CommonBehaviors, StdCommonBehaviors, StdCommonBehaviorsBase}
+import io.github.scalaquest.core.model.common.behaviors.{
+  CommonBehaviors,
+  StdCommonBehaviors,
+  StdCommonBehaviorsBase
+}
 import monocle.Lens
 
 /**
@@ -15,8 +19,9 @@ trait Takeable extends StdCommonBehaviorsBase {
    * Standard implementation of the [[CommonBehaviors.Takeable]].
    *
    * The behavior of an Item that could be put into the Bag of the player from the current room.
-   * @param onTakeExtra Reaction to be executed into the State when taken, after the standard Reaction.
-   *                    It can be omitted.
+   * @param onTakeExtra
+   *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
+   *   omitted.
    */
   case class Takeable(onTakeExtra: Option[Reaction] = None)(implicit
     bagLens: Lens[S, Set[I]],
@@ -29,11 +34,13 @@ trait Takeable extends StdCommonBehaviorsBase {
     }
 
     /**
-     * Creates a Reaction that removes the item from the current room, put it into the bag, executes the
-     * eventual extra reaction.
-     * @param item The item to be taken.
-     * @return A Reaction that removes the item from the current room, put it into the bag, executes the
-     * eventual extra reaction.
+     * Creates a Reaction that removes the item from the current room, put it into the bag, executes
+     * the eventual extra reaction.
+     * @param item
+     *   The item to be taken.
+     * @return
+     *   A Reaction that removes the item from the current room, put it into the bag, executes the
+     *   eventual extra reaction.
      */
     private def take(item: I): Reaction =
       state => {

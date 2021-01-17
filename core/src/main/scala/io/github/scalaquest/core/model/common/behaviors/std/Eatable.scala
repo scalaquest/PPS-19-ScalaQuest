@@ -11,7 +11,8 @@ trait Eatable extends StdCommonBehaviorsBase {
    * Standard implementation of the [[CommonBehaviors.Eatable]]
    *
    * The behavior that the item could be eaten if is present in the bag or in the room
-   * @param onEatExtra extra [[Reaction]] that happen if the item is eaten.
+   * @param onEatExtra
+   *   extra [[Reaction]] that happen if the item is eaten.
    */
   case class Eatable(onEatExtra: Option[Reaction] = None)(implicit
     bagLens: Lens[S, Set[I]],
@@ -20,7 +21,8 @@ trait Eatable extends StdCommonBehaviorsBase {
 
     override def triggers: Triggers = {
       // "Eat the item"
-      case (Eat, item, None, state) if state.isInCurrentRoom(item) || state.isInBag(item) => eat(item)
+      case (Eat, item, None, state) if state.isInCurrentRoom(item) || state.isInBag(item) =>
+        eat(item)
     }
 
     private def eat(item: I): Reaction =

@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.common.behaviors.CommonBehaviors
 
 /**
  * When mixed into a [[Model]], it integrates into it the interfaces for some commonly used
- * [[BehaviorableModel.Item]]s. These should be implemented to be used.
+ * [[BehaviorableModel.Item]] s. These should be implemented to be used.
  */
 trait CommonItems extends BehaviorableModel {
 
@@ -15,18 +15,19 @@ trait CommonItems extends BehaviorableModel {
   object CommonItems {
 
     /**
-     * A [[BehaviorableItem]] that should work as a link between two different [[Room]]s.
+     * A [[BehaviorableItem]] that should work as a link between two different [[Room]] s.
      */
     trait Door extends BehaviorableItem
 
     /**
-     * A [[BehaviorableItem]] that should be used to open/close items with a [[CommonBehaviors.CommonBehaviors.Openable]]
-     * behavior.
+     * A [[BehaviorableItem]] that should be used to open/close items with a
+     * [[CommonBehaviors.CommonBehaviors.Openable]] behavior.
      */
     trait Key extends BehaviorableItem
 
     /**
-     * A standard [[BehaviorableItem]], completely and freely configurable, without a specific category.
+     * A standard [[BehaviorableItem]], completely and freely configurable, without a specific
+     * category.
      */
     trait GenericItem extends BehaviorableItem
   }

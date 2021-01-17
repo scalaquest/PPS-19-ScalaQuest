@@ -2,7 +2,12 @@ package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Direction.Direction
 import io.github.scalaquest.core.model.Room
-import io.github.scalaquest.core.model.std.StdModel.{BehaviorableItem, StdGameState, StdPlayer, StdState}
+import io.github.scalaquest.core.model.std.StdModel.{
+  BehaviorableItem,
+  StdGameState,
+  StdPlayer,
+  StdState
+}
 import monocle.Lens
 import monocle.macros.GenLens
 

@@ -1,7 +1,14 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.common.Actions.Open
-import io.github.scalaquest.core.model.std.StdModel.{GenericItem, Key, Openable, StdState, bagLens, itemsLens}
+import io.github.scalaquest.core.model.std.StdModel.{
+  GenericItem,
+  Key,
+  Openable,
+  StdState,
+  bagLens,
+  itemsLens
+}
 import org.scalatest.wordspec.AnyWordSpec
 
 class OpenableTest extends AnyWordSpec {
@@ -20,17 +27,21 @@ class OpenableTest extends AnyWordSpec {
       val openable   = Openable(requiredKey = Some(targetKey))
       val targetItem = GenericItem("openable", openable)
 
-      val copyWKeyAndPortal = Function.chain(Seq(
-        bagLens.modify(_ + targetKey),
-        itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetItem)))
-      ))
+      val copyWKeyAndPortal = Function.chain(
+        Seq(
+          bagLens.modify(_ + targetKey),
+          itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetItem)))
+        )
+      )
       val stateWKeyAndItem: StdState = copyWKeyAndPortal(simpleState)
 
       "the user says 'open the item'" should {
 
         "let the item open only with the right Key" in {
           for {
-            react    <- targetItem.use(Open, stateWKeyAndItem, Some(targetKey)) toRight fail("Reaction not generated")
+            react <- targetItem.use(Open, stateWKeyAndItem, Some(targetKey)) toRight fail(
+              "Reaction not generated"
+            )
             modState <- Right(react(stateWKeyAndItem))
             openable <- targetOpenable(modState) toRight fail("Error into the test implementation")
           } yield assert(openable.isOpen, "The item is not in open state")
@@ -44,9 +55,10 @@ class OpenableTest extends AnyWordSpec {
     }
 
     "a key is not required" when {
-      val openable             = Openable()
-      val targetItem           = GenericItem("openable", openable)
-      val stateWPort: StdState = itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetItem)))(simpleState)
+      val openable   = Openable()
+      val targetItem = GenericItem("openable", openable)
+      val stateWPort: StdState =
+        itemsLens.modify(_ + (BehaviorsTestsUtils.startRoom -> Set(targetItem)))(simpleState)
 
       "the user says 'open the item'" should {
         "open without Key" in {
