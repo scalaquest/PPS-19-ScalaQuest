@@ -4,7 +4,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.std.StdModel.{Eatable, Key, Openable, Takeable, GenericItem}
 
 class KeyTest extends AnyWordSpec {
-  "A GenericItem" when {
+  "A Key" when {
     val behaviors = Seq(Takeable(), Eatable())
     val key       = Key("key", behaviors.head, behaviors(1))
 
