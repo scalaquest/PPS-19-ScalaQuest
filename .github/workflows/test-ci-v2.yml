@@ -89,7 +89,7 @@ jobs:
         run: ./gradlew assemble
 
       - name: Publish ${{ runner.os }} workspace
-        if: !contains(runner.os,"Linux")
+        if: contains(runner.os,"Linux") == false
         uses: actions/upload-artifact@v2
         with:
          name: ${{ runner.os }}-workspace
