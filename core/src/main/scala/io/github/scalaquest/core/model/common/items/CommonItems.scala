@@ -29,5 +29,10 @@ trait CommonItems extends BehaviorableModel {
      * category.
      */
     trait GenericItem extends BehaviorableItem
+
+    /**
+     * A [[BehaviorableItem]] that have the [[CommonBehaviors.CommonBehaviors.Eatable]].
+     */
+    trait Food extends BehaviorableItem
   }
 }
