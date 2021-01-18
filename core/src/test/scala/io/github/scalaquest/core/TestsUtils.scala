@@ -2,10 +2,9 @@ package io.github.scalaquest.core
 
 import io.github.scalaquest.core.model.Direction.Direction
 import io.github.scalaquest.core.model.common.Actions
-import io.github.scalaquest.core.model.{Action, Room}
+import io.github.scalaquest.core.model.{Action, Direction, Room}
 import io.github.scalaquest.core.model.std.StdModel.{
   BehaviorableItem,
-  Takeable,
   Door,
   GenericItem,
   Key,
@@ -13,21 +12,25 @@ import io.github.scalaquest.core.model.std.StdModel.{
   RoomLink,
   StdGameState,
   StdPlayer,
-  StdState
+  StdState,
+  Takeable
 }
 import io.github.scalaquest.core.pipeline.interpreter.ItemRef
 import monocle.Lens
 import monocle.macros.GenLens
 
 object TestsUtils {
-  val startRoom: Room = Room("startRoom", () => Map[Direction, Room]())
+  val startRoom: Room = Room("startRoom", () => Map[Direction, Room](Direction.NORTH -> targetRoom))
+
+  val targetRoom: Room =
+    Room("targetRoom", () => Map[Direction, Room](Direction.SOUTH -> startRoom))
 
   val simpleState: StdState = StdState(
     game = StdGameState(
       player = StdPlayer(bag = Set(), location = startRoom),
       ended = false,
-      rooms = Set(startRoom),
-      itemsInRooms = Map(startRoom -> Set())
+      rooms = Set(startRoom, targetRoom),
+      itemsInRooms = Map(startRoom -> Set(), targetRoom -> Set())
     ),
     messages = Seq()
   )

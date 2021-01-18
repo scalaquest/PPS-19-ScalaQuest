@@ -1,6 +1,5 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.model.std.StdModel
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
@@ -13,16 +12,17 @@ object Interpreter {
   type Builder[M <: Model, S, R] = S => Interpreter[M, R]
 
   def builder[M <: Model](model: M)(
-    itemDict: Map[ItemRef, model.I]
-  ): Builder[model.type, model.S, model.Reaction] = apply(model)(_, itemDict)
+    itemDict: Map[ItemRef, model.I],
+    ground: model.G
+  ): Builder[model.type, model.S, model.Reaction] = apply(model)(_, itemDict, ground)
 
   def apply[M <: Model](model: M)(
     state: model.S,
-    itemDict: Map[ItemRef, model.I]
+    itemDict: Map[ItemRef, model.I],
+    ground: model.G
   ): Interpreter[model.type, model.Reaction] = {
 
     case class SimpleInterpreter(state: model.S) extends Interpreter[model.type, model.Reaction] {
-      private val useIntransitive: Option[model.Reaction] = None
 
       // The interpreter should know the Map[ItemRef, I] in order to create a retriever
       // or should be passed the itemRetriever directly.
@@ -33,7 +33,7 @@ object Interpreter {
       ): Either[String, InterpreterResult[model.Reaction]] = {
         val eventualReaction: Either[String, model.Reaction] = resolverResult.statement match {
           case Statement.Intransitive(action) =>
-            useIntransitive toRight s"Could not recognize ${action.name}"
+            ground.use(action, state) toRight s"Could not recognize ${action.name}"
 
           case Statement.Transitive(action, itemRetriever(item)) =>
             item.use(action, state) toRight s"Couldn't recognize ${action.name} on ${item.name}"

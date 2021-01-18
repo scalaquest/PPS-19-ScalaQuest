@@ -11,26 +11,24 @@ import io.github.scalaquest.core.TestsUtils.{
   startRoom,
   takeableApple
 }
-import io.github.scalaquest.core.model.common.Actions.{Open, Take}
+import io.github.scalaquest.core.model.common.Actions.{GoNorth, Open, Take}
 import io.github.scalaquest.core.model.std.StdModel
-import io.github.scalaquest.core.model.std.StdModel.itemsLens
+import io.github.scalaquest.core.model.std.StdModel.{StdGround, itemsLens}
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 import org.scalatest.wordspec.AnyWordSpec
 
 class InterpreterTest extends AnyWordSpec {
   "An Interpreter" when {
-    val interpreter = Interpreter(StdModel)(simpleState, refItemDictionary)
+    val interpreter = Interpreter(StdModel)(simpleState, refItemDictionary, StdGround)
 
-    /*
-    // todo finish intransitive implementation
     "given an Intransitive Statement" should {
-      val resolverResult = ResolverResult(Statement.Intransitive(Open))
+      val resolverResult   = ResolverResult(Statement.Intransitive(GoNorth))
+      val maybeExpReaction = StdGround.use(GoNorth, simpleState)
 
       "return the right Reaction" in {
-         checkResult(interpreter, resolverResult, maybeExpReaction)
+        checkResult(interpreter, resolverResult, maybeExpReaction)
       }
     }
-     */
 
     "given a Transitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Transitive(Take, appleItemRef))
@@ -59,10 +57,15 @@ class InterpreterTest extends AnyWordSpec {
     maybeExpReaction: Option[StdModel.Reaction]
   ): Unit = {
     for {
-      interprResult <- interpreter.interpret(resolverResult)
-      foundReaction <- Right(interprResult.reaction)
-      expctReaction <- maybeExpReaction toRight fail("Test implementation error")
-    } yield assert(foundReaction == expctReaction, "The reaction was not the expected one.")
+      interprResult  <- interpreter.interpret(resolverResult)
+      toTestReaction <- Right(interprResult.reaction)
+      expctReaction  <- maybeExpReaction toRight fail("Test implementation error")
+      toTestState    <- Right(toTestReaction(simpleState))
+      expctState     <- Right(expctReaction(simpleState))
+    } yield assert(
+      toTestState == expctState,
+      "The result of the reaction application is not the expected one."
+    )
   }
 
   "An interpreterBuilder" should {

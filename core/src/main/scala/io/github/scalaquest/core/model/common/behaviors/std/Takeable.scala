@@ -2,18 +2,15 @@ package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.Take
-import io.github.scalaquest.core.model.common.behaviors.{
-  CommonBehaviors,
-  StdCommonBehaviors,
-  StdCommonBehaviorsBase
-}
+import io.github.scalaquest.core.model.common.CommonBase
+import io.github.scalaquest.core.model.common.behaviors.{CommonBehaviors, StdCommonBehaviors}
 import monocle.Lens
 
 /**
  * The trait makes possible to mix into the [[StdCommonBehaviors]] the standard implementation of
  * [[CommonBehaviors.CommonBehaviors.Takeable]].
  */
-trait Takeable extends StdCommonBehaviorsBase {
+trait Takeable extends CommonBase {
 
   /**
    * Standard implementation of the [[CommonBehaviors.Takeable]].
