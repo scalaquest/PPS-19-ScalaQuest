@@ -40,7 +40,6 @@ jobs:
         run: ./gradlew spotlessCheck
 
       - name: Publish Linux workspace
-
         uses: actions/upload-artifact@v2
         with:
          name: Linux-workspace
@@ -79,21 +78,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Download ${{ runner.os }} workspace
+        if: ${{ runner.os == "Linux" }}
+        uses: actions/download-artifact@v2
+        with:
+         name: ${{ runner.os }}-workspace
+         path: ${{ github.workspace }}
+
       - name: Assemble Scala sources with Gradle
         run: ./gradlew assemble
 
       - name: Publish ${{ runner.os }} workspace
-        if: ${{ runner.os }} != "Linux"
+        if: ${{ runner.os != "Linux" }}
         uses: actions/upload-artifact@v2
         with:
          name: ${{ runner.os }}-workspace
          path: |
           ${{ github.workspace }}/build
           ${{ github.workspace }}/buildSrc
-
-
-
-
 
   Test:
     runs-on: ${{ matrix.os }}
@@ -134,9 +136,9 @@ jobs:
 
 
 
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: ${{ github.workspace }}
+      #- name: Display structure of downloaded files
+        #run: ls -R
+        #working-directory: ${{ github.workspace }}
 
       - name: Check and Test with Gradle
         run: ./gradlew check
