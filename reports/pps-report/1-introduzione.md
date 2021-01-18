@@ -6,4 +6,4 @@ numbersections: true
 ---
 # Titolo
 
-## Sezione    #sec:prima-sezione
+## Sezione    {#sec:prima-sezione}
