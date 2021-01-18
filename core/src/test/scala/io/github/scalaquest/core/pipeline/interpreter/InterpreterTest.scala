@@ -71,7 +71,7 @@ class InterpreterTest extends AnyWordSpec {
   "An interpreterBuilder" should {
     import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
     "be of the right type" in {
-      val builder = Interpreter.builder(StdModel)(refItemDictionary)
+      val builder = Interpreter.builder(StdModel)(refItemDictionary, StdGround)
       builder shouldBe a[Interpreter.Builder[_, _, _]]
 
       val interpreter = builder(simpleState)
