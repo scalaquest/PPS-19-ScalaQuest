@@ -28,6 +28,5 @@ class NavigationTest extends AnyWordSpec {
         }
       }
     }
-
   }
 }
