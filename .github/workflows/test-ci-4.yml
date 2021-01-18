@@ -1,0 +1,39 @@
+name: Style check with Gradle CI
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - '!main'   # excludes main
+  pull_request:
+    branches:
+      - '!main'   # excludes main
+
+jobs:
+  StyleCheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+        # The project uses java 11 (LTS) with scala 2.13
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+          # Use cache if available for Gradle
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Check Scala formatting with Spotless
+        run: ./gradlew spotlessCheck
