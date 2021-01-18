@@ -39,13 +39,13 @@ jobs:
       - name: Check Scala formatting with Spotless
         run: ./gradlew spotlessCheck
 
-      - name: Publish Linux workspace
-        uses: actions/upload-artifact@v2
-        with:
-         name: Linux-workspace
-         path: |
-          ${{ github.workspace }}/build
-          ${{ github.workspace }}/buildSrc
+      #- name: Publish Linux workspace
+        #uses: actions/upload-artifact@v2
+        #with:
+         #name: Linux-workspace
+         #path: |
+          #${{ github.workspace }}/build
+          #${{ github.workspace }}/buildSrc
 
   Compile:
     # The matrix runs only if the scala style is correct
@@ -78,18 +78,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Download ${{ runner.os }} workspace
-        if: "contains(runner.os,'Linux')"
-        uses: actions/download-artifact@v2
-        with:
-         name: ${{ runner.os }}-workspace
-         path: ${{ github.workspace }}
+      #- name: Download ${{ runner.os }} workspace
+        #if: "contains(runner.os,'Linux')"
+        #uses: actions/download-artifact@v2
+        #with:
+         #name: ${{ runner.os }}-workspace
+         #path: ${{ github.workspace }}
 
       - name: Assemble Scala sources with Gradle
         run: ./gradlew assemble
 
       - name: Publish ${{ runner.os }} workspace
-        if: "!contains(runner.os,'Linux')"
+        #if: "!contains(runner.os,'Linux')"
         uses: actions/upload-artifact@v2
         with:
          name: ${{ runner.os }}-workspace
