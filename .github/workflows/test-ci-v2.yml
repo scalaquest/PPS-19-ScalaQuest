@@ -79,7 +79,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Download ${{ runner.os }} workspace
-        if: ${{ runner.os }} == "Linux"
+        if: contains(runner.os,"Linux")
         uses: actions/download-artifact@v2
         with:
          name: ${{ runner.os }}-workspace
@@ -89,7 +89,7 @@ jobs:
         run: ./gradlew assemble
 
       - name: Publish ${{ runner.os }} workspace
-        if: ${{ runner.os }} != "Linux"
+        if: !contains(runner.os,"Linux")
         uses: actions/upload-artifact@v2
         with:
          name: ${{ runner.os }}-workspace
