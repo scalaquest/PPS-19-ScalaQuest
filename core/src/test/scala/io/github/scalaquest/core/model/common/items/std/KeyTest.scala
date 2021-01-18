@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.common.items.std
 
+import io.github.scalaquest.core.model.std.StdModel.{Eatable, Key, Openable, Takeable}
 import org.scalatest.wordspec.AnyWordSpec
-import io.github.scalaquest.core.model.std.StdModel.{Eatable, Key, Openable, Takeable, GenericItem}
 
 class KeyTest extends AnyWordSpec {
   "A Key" when {

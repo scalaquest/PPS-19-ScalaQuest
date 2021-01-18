@@ -2,7 +2,6 @@ package io.github.scalaquest.core.model.common.items
 
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.std.BehaviorableModel
-import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.behaviors.CommonBehaviors
 
 /**

@@ -1,8 +1,10 @@
 package io.github.scalaquest.core.model.common.items.std
 
-import io.github.scalaquest.core.model.common.items.StdCommonItemsBase
-import io.github.scalaquest.core.model.common.items.StdCommonItems
-import io.github.scalaquest.core.model.common.items.CommonItems
+import io.github.scalaquest.core.model.common.items.{
+  StdCommonItemsBase,
+  StdCommonItems,
+  CommonItems
+}
 
 /**
  * The trait makes possible to mix into the [[StdCommonItems]] the standard implementation of
