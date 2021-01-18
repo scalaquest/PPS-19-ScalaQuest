@@ -126,10 +126,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Download ${{ os.runner }} workspace
+      - name: Download ${{ runner.os }} workspace
         uses: actions/download-artifact@v2
         with:
-          name: ${{ os.runner }}-workspace
+          name: ${{ runner.os }}-workspace
           path: ${{ github.workspace }}
 
 
