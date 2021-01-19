@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.common.Actions.Open
 import io.github.scalaquest.core.model.std.StdModel.{
   GenericItem,
@@ -23,9 +24,9 @@ class OpenableTest extends AnyWordSpec {
     }
 
     "a key is required" when {
-      val targetKey  = Key("targetKey")
+      val targetKey  = Key(new ItemRef {})
       val openable   = Openable(requiredKey = Some(targetKey))
-      val targetItem = GenericItem("openable", openable)
+      val targetItem = GenericItem(new ItemRef {}, openable)
 
       val copyWKeyAndPortal = Function.chain(
         Seq(
@@ -49,14 +50,14 @@ class OpenableTest extends AnyWordSpec {
 
         "not open without the right Key" in {
           assert(targetItem.use(Open, stateWKeyAndItem, None).isEmpty)
-          assert(targetItem.use(Open, stateWKeyAndItem, Some(Key("Wrong key"))).isEmpty)
+          assert(targetItem.use(Open, stateWKeyAndItem, Some(Key(new ItemRef {}))).isEmpty)
         }
       }
     }
 
     "a key is not required" when {
       val openable   = Openable()
-      val targetItem = GenericItem("openable", openable)
+      val targetItem = GenericItem(new ItemRef {}, openable)
       val stateWPort: StdState =
         itemsLens.modify(_ + (startRoom -> Set(targetItem)))(simpleState)
 
@@ -70,7 +71,7 @@ class OpenableTest extends AnyWordSpec {
 
         }
         "not open with any Key" in {
-          assert(targetItem.use(Open, stateWPort, Some(Key("A key"))).isEmpty)
+          assert(targetItem.use(Open, stateWPort, Some(Key(new ItemRef {}))).isEmpty)
         }
       }
     }

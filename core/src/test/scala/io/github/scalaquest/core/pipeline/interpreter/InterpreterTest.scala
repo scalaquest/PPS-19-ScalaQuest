@@ -6,10 +6,10 @@ import io.github.scalaquest.core.TestsUtils.{
   key,
   keyItemRef,
   refItemDictionary,
-  roomLinkDoor,
+  door,
   simpleState,
   startRoom,
-  takeableApple
+  apple
 }
 import io.github.scalaquest.core.model.common.Actions.{GoNorth, Open, Take}
 import io.github.scalaquest.core.model.std.StdModel
@@ -32,8 +32,8 @@ class InterpreterTest extends AnyWordSpec {
 
     "given a Transitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Transitive(Take, appleItemRef))
-      val stateItemInRoom  = itemsLens.modify(_ + (startRoom -> Set(takeableApple)))(simpleState)
-      val maybeExpReaction = takeableApple.use(Take, stateItemInRoom, None)
+      val stateItemInRoom  = itemsLens.modify(_ + (startRoom -> Set(apple)))(simpleState)
+      val maybeExpReaction = apple.use(Take, stateItemInRoom, None)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -42,8 +42,8 @@ class InterpreterTest extends AnyWordSpec {
 
     "given a Ditransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Ditransitive(Open, doorItemRef, keyItemRef))
-      val stateItemInRoom  = itemsLens.modify(_ + (startRoom -> Set(roomLinkDoor, key)))(simpleState)
-      val maybeExpReaction = roomLinkDoor.use(Open, stateItemInRoom, Some(key))
+      val stateItemInRoom  = itemsLens.modify(_ + (startRoom -> Set(door, key)))(simpleState)
+      val maybeExpReaction = door.use(Open, stateItemInRoom, Some(key))
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)

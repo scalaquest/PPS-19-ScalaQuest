@@ -1,7 +1,6 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.Action
-import io.github.scalaquest.core.pipeline.interpreter.ItemRef
+import io.github.scalaquest.core.model.{Action, ItemRef}
 
 sealed trait Statement
 

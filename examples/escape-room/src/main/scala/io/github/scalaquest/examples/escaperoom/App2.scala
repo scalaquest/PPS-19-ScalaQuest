@@ -58,11 +58,10 @@ object Model {
   def pusher: MessagePusher =
     (notifications: Seq[Message]) =>
       notifications map {
-        case GameStarted    => "Game started!"
-        case Describe(room) => room.describe
-        case WentNorth      => "Moved north"
-        case WentSouth      => "Moved south"
-        case _              => "Generic notification"
+        case GameStarted => "Game started!"
+        case WentNorth   => "Moved north"
+        case WentSouth   => "Moved south"
+        case _           => "Generic notification"
       }
 }
 

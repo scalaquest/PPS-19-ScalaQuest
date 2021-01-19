@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.model.{ItemRef, ItemRetriever, Model}
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
 trait Interpreter[M <: Model, R] {
@@ -36,7 +36,7 @@ object Interpreter {
             ground.use(action, state) toRight s"Could not recognize ${action.name}"
 
           case Statement.Transitive(action, itemRetriever(item)) =>
-            item.use(action, state) toRight s"Couldn't recognize ${action.name} on ${item.name}"
+            item.use(action, state) toRight s"Couldn't recognize ${action.name} on ${item.itemRef}"
 
           case Statement.Ditransitive(
                 action,
@@ -47,7 +47,7 @@ object Interpreter {
               action,
               state,
               Some(indirectObj)
-            ) toRight s"Couldn't recognize ${action.name} on ${directObj.name} and ${indirectObj.name}"
+            ) toRight s"Couldn't recognize ${action.name} on ${directObj.itemRef} and ${indirectObj.itemRef}"
         }
 
         eventualReaction.map(InterpreterResult(model)(_))

@@ -54,5 +54,7 @@ trait RoomLink extends CommonBase {
         val updLocState = currRoomLens.modify(_ => endRoom)(state)
         updLocState.applyReactionIfPresent(onEnterExtra)
       }
+
+    override def isAccessible: Boolean = openable.fold(true)(_.isOpen)
   }
 }

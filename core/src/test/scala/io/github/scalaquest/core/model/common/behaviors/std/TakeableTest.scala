@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
-import io.github.scalaquest.core.TestsUtils.{startRoom, simpleState}
+import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.common.Actions.Take
 import io.github.scalaquest.core.model.std.StdModel.{
   GenericItem,
@@ -16,7 +17,7 @@ class TakeableTest extends AnyWordSpec {
     val takeable = Takeable()
 
     "applied to an item" when {
-      val item = GenericItem("takeableItem", takeable)
+      val item = GenericItem(new ItemRef {}, takeable)
       val stateItemInRoom =
         itemsLens.modify(_ + (startRoom -> Set(item)))(simpleState)
       val stateItemNotInRoom: StdState = simpleState
