@@ -2,18 +2,15 @@ package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.Enter
-import io.github.scalaquest.core.model.common.behaviors.{
-  CommonBehaviors,
-  StdCommonBehaviors,
-  StdCommonBehaviorsBase
-}
+import io.github.scalaquest.core.model.common.CommonBase
+import io.github.scalaquest.core.model.common.behaviors.{CommonBehaviors, StdCommonBehaviors}
 import monocle.Lens
 
 /**
  * The trait makes possible to mix into the [[StdCommonBehaviors]] the standard implementation of
  * [[CommonBehaviors.CommonBehaviors.RoomLink]].
  */
-trait RoomLink extends StdCommonBehaviorsBase {
+trait RoomLink extends CommonBase {
 
   /**
    * Standard implementation of the [[CommonBehaviors.RoomLink]].
@@ -57,5 +54,7 @@ trait RoomLink extends StdCommonBehaviorsBase {
         val updLocState = currRoomLens.modify(_ => endRoom)(state)
         updLocState.applyReactionIfPresent(onEnterExtra)
       }
+
+    override def isAccessible: Boolean = openable.fold(true)(_.isOpen)
   }
 }

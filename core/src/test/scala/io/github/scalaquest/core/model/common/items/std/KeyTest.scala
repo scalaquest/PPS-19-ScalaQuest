@@ -1,12 +1,13 @@
 package io.github.scalaquest.core.model.common.items.std
 
-import io.github.scalaquest.core.model.std.StdModel.{Eatable, Key, Openable, Takeable}
+import io.github.scalaquest.core.model.ItemRef
 import org.scalatest.wordspec.AnyWordSpec
+import io.github.scalaquest.core.model.std.StdModel.{Eatable, GenericItem, Key, Openable, Takeable}
 
 class KeyTest extends AnyWordSpec {
   "A Key" when {
     val behaviors = Seq(Takeable(), Eatable())
-    val key       = Key("key", behaviors.head, behaviors(1))
+    val key       = Key(new ItemRef {}, behaviors.head, behaviors(1))
 
     "instantiated" should {
       "take whatever number of behaviors" in {

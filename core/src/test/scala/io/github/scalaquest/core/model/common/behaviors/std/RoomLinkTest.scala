@@ -1,8 +1,7 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, roomsLens}
-import io.github.scalaquest.core.model.Direction.Direction
-import io.github.scalaquest.core.model.Room
+import io.github.scalaquest.core.TestsUtils.{roomsLens, simpleState, startRoom, targetRoom}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.common.Actions.Enter
 import io.github.scalaquest.core.model.std.StdModel.{Door, Openable, RoomLink, StdState, itemsLens}
 import org.scalatest.wordspec.AnyWordSpec
@@ -10,13 +9,12 @@ import org.scalatest.wordspec.AnyWordSpec
 class RoomLinkTest extends AnyWordSpec {
 
   "A RoomLinkBehavior" when {
-    val targetRoom: Room = Room("targetRoom", () => Map[Direction, Room]())
     val stateWithRoom: StdState =
       roomsLens.modify(_ + targetRoom)(simpleState)
 
     "the item has not an openable behavior" when {
       val roomLink     = RoomLink(targetRoom)
-      val targetPortal = Door("roomLink", roomLink)
+      val targetPortal = Door(new ItemRef {}, roomLink)
       val stateWPort: StdState =
         itemsLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
 
@@ -38,7 +36,7 @@ class RoomLinkTest extends AnyWordSpec {
 
     "the item is open" when {
       val roomLink     = RoomLink(targetRoom, Some(Openable(_isOpen = true)))
-      val targetPortal = Door("roomLink", roomLink)
+      val targetPortal = Door(new ItemRef {}, roomLink)
       val stateWOpenPort: StdState =
         itemsLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
 
@@ -60,7 +58,7 @@ class RoomLinkTest extends AnyWordSpec {
 
     "the item is closed" when {
       val roomLink     = RoomLink(targetRoom, Some(Openable()))
-      val targetPortal = Door("roomLink", roomLink)
+      val targetPortal = Door(new ItemRef {}, roomLink)
       val stateWClosedPort: StdState =
         itemsLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
       "the user says 'enter the item'" should {

@@ -34,7 +34,9 @@ trait CommonBehaviors extends BehaviorableModel {
      * [[Room]]. Conceptually, an [[Item]] that exposes a [[RoomLink]] behavior could also be
      * [[Openable]].
      */
-    abstract class RoomLink extends Behavior
+    abstract class RoomLink extends Behavior {
+      def isAccessible: Boolean
+    }
 
     /**
      * A [[Behavior]] associated to an [[Item]] that can be eaten. When item is eaten shouldn't be

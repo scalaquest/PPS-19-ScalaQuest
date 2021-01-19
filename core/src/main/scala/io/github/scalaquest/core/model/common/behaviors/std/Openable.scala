@@ -1,17 +1,14 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.common.Actions.{Close, Open}
-import io.github.scalaquest.core.model.common.behaviors.{
-  CommonBehaviors,
-  StdCommonBehaviors,
-  StdCommonBehaviorsBase
-}
+import io.github.scalaquest.core.model.common.CommonBase
+import io.github.scalaquest.core.model.common.behaviors.{CommonBehaviors, StdCommonBehaviors}
 
 /**
  * The trait makes possible to mix into the [[StdCommonBehaviors]] the standard implementation of
  * [[CommonBehaviors.CommonBehaviors.Openable]].
  */
-trait Openable extends StdCommonBehaviorsBase {
+trait Openable extends CommonBase {
 
   /**
    * Standard implementation of the common Openable behavior.

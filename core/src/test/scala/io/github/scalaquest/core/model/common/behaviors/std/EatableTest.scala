@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.common.Actions.Eat
 import io.github.scalaquest.core.model.std.StdModel.{
   Eatable,
@@ -17,7 +18,7 @@ class EatableTest extends AnyWordSpec {
     val room    = startRoom
 
     "applied to an item" when {
-      val item = GenericItem("eatableItem", eatable)
+      val item = GenericItem(new ItemRef {}, eatable)
       val stateItemInRoom =
         itemsLens.modify(_ + (room -> Set(item)))(simpleState)
       val stateItemInBag        = bagLens.modify(_ + item)(simpleState)

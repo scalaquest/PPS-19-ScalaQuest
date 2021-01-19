@@ -70,4 +70,19 @@ abstract class BehaviorableModel extends Model {
      */
     final override def triggers: Triggers = Seq(baseTriggers, superTriggers).reduce(_ orElse _)
   }
+
+  override type G = BehaviorableGround
+
+  abstract class BehaviorableGround extends Ground {
+    def behaviors: Seq[GroundBehavior] = Seq()
+
+    override def use(action: Action, state: S): Option[Reaction] =
+      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, state))
+  }
+
+  type GroundTriggers = PartialFunction[(Action, S), Reaction]
+
+  abstract class GroundBehavior {
+    def triggers: GroundTriggers = PartialFunction.empty
+  }
 }

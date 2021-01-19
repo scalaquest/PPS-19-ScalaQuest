@@ -2,10 +2,10 @@ package io.github.scalaquest.core.model.common.behaviors.std
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.common.Actions.Eat
-import io.github.scalaquest.core.model.common.behaviors.StdCommonBehaviorsBase
+import io.github.scalaquest.core.model.common.CommonBase
 import monocle.Lens
 
-trait Eatable extends StdCommonBehaviorsBase {
+trait Eatable extends CommonBase {
 
   /**
    * Standard implementation of the [[CommonBehaviors.Eatable]]

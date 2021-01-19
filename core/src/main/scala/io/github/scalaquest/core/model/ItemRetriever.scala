@@ -1,6 +1,4 @@
-package io.github.scalaquest.core.pipeline.interpreter
-
-import io.github.scalaquest.core.model.Model
+package io.github.scalaquest.core.model
 
 trait ItemRef
 

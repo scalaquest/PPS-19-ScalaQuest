@@ -16,7 +16,9 @@ trait CommonItems extends BehaviorableModel {
     /**
      * A [[BehaviorableItem]] that should work as a link between two different [[Room]] s.
      */
-    trait Door extends BehaviorableItem
+    trait Door extends BehaviorableItem {
+      def isAccessible: Boolean
+    }
 
     /**
      * A [[BehaviorableItem]] that should be used to open/close items with a
