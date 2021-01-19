@@ -60,7 +60,8 @@ object TestsUtils {
       player = StdPlayer(bag = Set(), location = startRoom),
       ended = false,
       rooms = Set(startRoom, targetRoom),
-      itemsInRooms = Map(startRoom -> Set(), targetRoom -> Set())
+      itemsInRooms = Map(startRoom -> Set(), targetRoom -> Set()),
+      Set()
     ),
     messages = Seq()
   )
