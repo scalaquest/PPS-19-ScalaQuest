@@ -15,7 +15,7 @@ trait Generator { self =>
 case class GrammarGenerator(verbs: Verb*) extends Generator {
   override def generate: String = verbs.map(_.clause.generate).mkString("\n")
 }
-
+/*
 case class ItemGenerator(items: Model#Item*) extends Generator {
 
   import io.github.scalaquest.core.parsing.scalog.dsl._
@@ -28,3 +28,4 @@ case class ItemGenerator(items: Model#Item*) extends Generator {
       .map(_.generate)
       .mkString("\n")
 }
+ */

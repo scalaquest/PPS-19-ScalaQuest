@@ -1,51 +1,58 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.model.Model
-import io.github.scalaquest.core.pipeline.resolver.ResolverResult
-import io.github.scalaquest.core.pipeline.resolver.Statement.{
-  Ditransitive,
-  Intransitive,
-  Transitive
+import io.github.scalaquest.core.model.{ItemRef, ItemRetriever, Model}
+import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
+
+trait Interpreter[M <: Model, R] {
+  def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[R]]
 }
 
-trait Interpreter[M <: Model] {
-  def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[M]]
-}
+object Interpreter {
 
-trait InterpreterResult[M <: Model] {
-  def reaction: M#Reaction
-}
+  type Builder[M <: Model, S, R] = S => Interpreter[M, R]
 
-abstract class TypedInterpreter[M <: Model](val model: M) {
-  type Reaction = model.Reaction
-  type S        = model.S
-  type I        = model.I
+  def builder[M <: Model](model: M)(
+    itemDict: Map[ItemRef, model.I],
+    ground: model.G
+  ): Builder[model.type, model.S, model.Reaction] = apply(model)(_, itemDict, ground)
 
-  case class SimpleInterpreterResult(reaction: Reaction) extends InterpreterResult[M]
+  def apply[M <: Model](model: M)(
+    state: model.S,
+    itemDict: Map[ItemRef, model.I],
+    ground: model.G
+  ): Interpreter[model.type, model.Reaction] = {
 
-  object InterpreterResult {
-    def apply(reaction: Reaction): InterpreterResult[M] = SimpleInterpreterResult(reaction)
-  }
+    case class SimpleInterpreter(state: model.S) extends Interpreter[model.type, model.Reaction] {
 
-  case class SimpleInterpreter(state: S) extends Interpreter[M] {
-    private val useIntransitive: Option[Reaction] = ???
+      // The interpreter should know the Map[ItemRef, I] in order to create a retriever
+      // or should be passed the itemRetriever directly.
+      val itemRetriever: ItemRetriever[model.I] = ItemRetriever(model)(itemDict)
 
-    override def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[M]] = {
-      val eventualReaction: Either[String, Reaction] = resolverResult.statement match {
-        case Intransitive(action) =>
-          useIntransitive toRight
-            s"Could not recognize ${action.name}"
+      override def interpret(
+        resolverResult: ResolverResult
+      ): Either[String, InterpreterResult[model.Reaction]] = {
+        val eventualReaction: Either[String, model.Reaction] = resolverResult.statement match {
+          case Statement.Intransitive(action) =>
+            ground.use(action, state) toRight s"Could not recognize action"
 
-        case Transitive(action, item) =>
-          val aa: Option[Reaction] = item.useTransitive[S, Reaction](action, state: S)
-          aa.toRight(s"Could not recognize ${action.name} on ${item.name}")
+          case Statement.Transitive(action, itemRetriever(item)) =>
+            item.use(action, state) toRight s"Couldn't recognize action on the given item"
 
-        case Ditransitive(action, mainItem, sideItem) =>
-          mainItem.useDitransitive(action, sideItem, state) toRight
-            s"Could not recognize ${action.name} on ${mainItem.name} with ${sideItem.name}"
+          case Statement.Ditransitive(
+                action,
+                itemRetriever(directObj),
+                itemRetriever(indirectObj)
+              ) =>
+            directObj.use(
+              action,
+              state,
+              Some(indirectObj)
+            ) toRight s"Couldn't recognize action on the given item with the other item"
+        }
+
+        eventualReaction.map(InterpreterResult(model)(_))
       }
-
-      eventualReaction.map(InterpreterResult(_))
     }
+    SimpleInterpreter(state)
   }
 }
