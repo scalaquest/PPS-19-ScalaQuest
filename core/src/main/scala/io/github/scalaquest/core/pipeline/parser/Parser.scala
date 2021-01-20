@@ -1,23 +1,36 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.parsing.engine.Engine
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
-sealed trait AST
-
-object AST {
-  // https://it.wikipedia.org/wiki/Verbo_ditransitivo
-  // Transitive("get", "you", "key")
-  final case class Intransitive(verb: String, subject: String)               extends AST
-  final case class Transitive(verb: String, subject: String, target: String) extends AST
-
-  final case class Ditransitive(verb: String, subject: String, target1: String, target2: String)
-    extends AST
-}
-
-trait ParserResult {
-  def tree: AST
-}
-
+/**
+ * A parser that takes a sequence of Tokens and optionally returns an abstract syntax tree.
+ */
 trait Parser {
+
+  /**
+   * Performs the syntactic analysis on a sequence of tokens.
+   *
+   * @param lexerResult
+   *   the input finite sequence of tokens
+   * @return
+   *   optionally the result of the syntactic analysis
+   */
   def parse(lexerResult: LexerResult): Option[ParserResult]
+}
+
+/** Result of the syntactic analysis operation. */
+trait ParserResult {
+
+  /** The abstract syntax tree obtained. */
+  def tree: AbstractSyntaxTree
+}
+
+/** Factory for creating [[Parser]]. */
+object Parser {
+
+  /** Allows to create a [[Parser]] using an [[Engine]]. */
+  def apply(engine: Engine): Parser = SimplePrologParser(engine)
+
+  case class SimplePrologParser(engine: Engine) extends PrologParser
 }

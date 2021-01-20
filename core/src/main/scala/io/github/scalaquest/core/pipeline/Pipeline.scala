@@ -32,7 +32,7 @@ class PipelineFromModel[M <: Model](val model: M) {
 
       override def run(rawSentence: String): Either[String, model.S] =
         for {
-          lr  <- (lexer tokenize rawSentence) toRight "Couldn't understand input."
+          lr  <- Right(lexer tokenize rawSentence)
           pr  <- (parser parse lr) toRight "Couldn't understand input."
           rr  <- resolver resolve pr
           ir  <- interpreterFactory(state) interpret rr

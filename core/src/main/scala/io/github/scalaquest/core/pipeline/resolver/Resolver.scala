@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.pipeline.resolver
 
 import io.github.scalaquest.core.model.{Action, Model}
-import io.github.scalaquest.core.pipeline.parser.{AST, ParserResult}
+import io.github.scalaquest.core.pipeline.parser.ParserResult
 
 sealed trait Statement
 
