@@ -5,8 +5,10 @@ trait Lexer {
 
   /**
    * Performs the lexical analysis on a sequence of characters.
-   * @param rawSentence the input finite sequence of characters
-   * @return the result of the lexical analysis operation
+   * @param rawSentence
+   *   the input finite sequence of characters
+   * @return
+   *   the result of the lexical analysis operation
    */
   def tokenize(rawSentence: String): LexerResult
 }

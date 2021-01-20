@@ -1,12 +1,10 @@
 package io.github.scalaquest.core.parsing.scalog
 
 /**
- * This package includes some facility methods in order to create terms in a
- * Prolog-like syntax.
+ * This package includes some facility methods in order to create terms in a Prolog-like syntax.
  *
- * ==Overview==
- * If you include implicit conversions and [[dsl.CompoundBuilder]] you can
- * create terms as in this example:
+ * If you include implicit conversions and [[dsl.CompoundBuilder]] you can create terms as in this
+ * example:
  * {{{
  *   val hello = CompoundBuilder("hello")
  *   val X = Variable("X")

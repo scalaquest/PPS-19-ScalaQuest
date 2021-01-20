@@ -109,7 +109,11 @@ class ClausesTest extends AnyWordSpec {
           Atom("my"),
           Atom("old"),
           Atom("friend")
-        ) == Compound(Atom("hello"), Atom("darkness"), List(Atom("my"), Atom("old"), Atom("friend")))
+        ) == Compound(
+          Atom("hello"),
+          Atom("darkness"),
+          List(Atom("my"), Atom("old"), Atom("friend"))
+        )
       )
     }
   }

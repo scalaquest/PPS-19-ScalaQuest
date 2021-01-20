@@ -1,7 +1,14 @@
 package io.github.scalaquest.core.parsing.engine.tuprolog
 
 import alice.tuprolog
-import alice.tuprolog.{SolveInfo, Struct, Var, Prolog => TuProlog, Term => TuPrologTerm, Theory => TuPrologTheory}
+import alice.tuprolog.{
+  SolveInfo,
+  Struct,
+  Var,
+  Prolog => TuProlog,
+  Term => TuPrologTerm,
+  Theory => TuPrologTheory
+}
 import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
 import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
@@ -10,7 +17,8 @@ import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Term, V
 
 /**
  * Engine implementation that uses a tuProlog engine under the hood.
- * @note this implementation computes solutions in a lazy way
+ * @note
+ *   this implementation computes solutions in a lazy way
  */
 private class TuPrologEngine(prolog: TuProlog) extends Engine {
   import implicits._
@@ -27,16 +35,17 @@ private class TuPrologEngine(prolog: TuProlog) extends Engine {
     go(prolog.solve(goal))
   }
 
-  override def solve(term: Term): Seq[Solution] = exploreSolutions(term.toTuPrologTerm).map(TuPrologSolution)
+  override def solve(term: Term): Seq[Solution] =
+    exploreSolutions(term.toTuPrologTerm).map(TuPrologSolution)
 }
 
 object TuPrologEngine {
   import implicits._
 
   /**
-   * Creates an [[Engine]] with the provided theory and libraries using
-   * tuProlog under the hood.
-   * @note this implementation computes solutions lazily.
+   * Creates an [[Engine]] with the provided theory and libraries using tuProlog under the hood.
+   * @note
+   *   this implementation computes solutions lazily.
    */
   def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
     new TuPrologEngine(createTuProlog(theory.toTuProlog, libraries))
@@ -48,7 +57,8 @@ object TuPrologEngine {
   }
 
   /**
-   * @note this will fail if called with a Struct with no arguments.
+   * @note
+   *   this will fail if called with a Struct with no arguments.
    */
   private[tuprolog] def buildCompound(struct: Struct): Compound =
     getArgs(struct).toList match {
@@ -57,13 +67,16 @@ object TuPrologEngine {
     }
 
   /**
-   * @note this might fail if not called with an Integer, but for now we don't
-   * use any other Number implementation
+   * @note
+   *   this might fail if not called with an Integer, but for now we don't use any other Number
+   *   implementation
    */
-  private[tuprolog] def buildNumber(number: tuprolog.Number): scalog.Number = Number(number.intValue)
+  private[tuprolog] def buildNumber(number: tuprolog.Number): scalog.Number =
+    Number(number.intValue)
 
   /**
-   * @note this might throw if called with an invalid theory
+   * @note
+   *   this might throw if called with an invalid theory
    */
   private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
     val prolog = new TuProlog
@@ -88,7 +101,8 @@ private[tuprolog] object implicits {
     def toTerm: Term =
       tuPrologTerm match {
         case number: tuprolog.Number => buildNumber(number)
-        case struct: Struct => struct match {
+        case struct: Struct =>
+          struct match {
             case s if s.isCompound => buildCompound(s)
             case a                 => Atom(a.getName)
           }

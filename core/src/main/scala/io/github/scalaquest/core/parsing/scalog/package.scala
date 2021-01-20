@@ -1,16 +1,11 @@
 package io.github.scalaquest.core.parsing
 
-import scalog._
-
 /**
- * This package provides data structures to manage the manipulation of simple
- * Prolog programs. It allows to create terms such as atoms, numbers or
- * compound terms. Those structures are provided with methods that enable the
- * combination of terms to form rules or definite clause grammar rules.
+ * This package provides data structures to manage the manipulation of simple Prolog programs. It
+ * allows to create terms such as atoms, numbers or compound terms. Those structures are provided
+ * with methods that enable the combination of terms to form rules or definite clause grammar rules.
  *
- * ==Overview==
- * A simple [[Term]] can be created by using one of its constructor, such as
- * [[Atom]].
+ * A simple [[Term]] can be created by using one of its constructor, such as [[Atom]].
  * {{{
  *   val hello = Atom("hello")
  * }}}

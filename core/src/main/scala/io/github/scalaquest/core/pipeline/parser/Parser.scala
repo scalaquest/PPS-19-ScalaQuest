@@ -29,7 +29,7 @@ trait ParserResult {
 /** Factory for creating [[Parser]]. */
 object Parser {
 
-  /** Allows to create a [[Parser]] from an [[Engine]]. */
+  /** Allows to create a [[Parser]] using an [[Engine]]. */
   def apply(engine: Engine): Parser = SimplePrologParser(engine)
 
   case class SimplePrologParser(engine: Engine) extends PrologParser

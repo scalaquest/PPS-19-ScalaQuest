@@ -119,7 +119,11 @@ class TuPrologEngineTest extends AnyWordSpec {
     "provided a Compound" should {
       "create a tuProlog compound" in {
         val compound = Compound(Atom("hello"), Atom("world"))
-        assert(compound.toTuPrologTerm.isEqual(new alice.tuprolog.Struct("hello", new alice.tuprolog.Struct("world"))))
+        assert(
+          compound.toTuPrologTerm.isEqual(
+            new alice.tuprolog.Struct("hello", new alice.tuprolog.Struct("world"))
+          )
+        )
       }
     }
   }

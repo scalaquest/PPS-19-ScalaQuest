@@ -7,8 +7,8 @@ import io.github.scalaquest.core.pipeline.lexer.LexerResult
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
 
 /**
- * A [[Parser]] implementation that takes advantage of an [[io.github.scalaquest.core.parsing.engine.Engine]] in order
- * to perform the syntactical analysis.
+ * A [[Parser]] implementation that takes advantage of an
+ * [[io.github.scalaquest.core.parsing.engine.Engine]] in order to perform the syntactical analysis.
  */
 abstract class PrologParser extends Parser {
 

@@ -8,15 +8,19 @@ case class Fact(head: Term) extends Clause {
 
   /**
    * Allows the creation of a [[DCGRule]].
-   * @param right the right side of the operation
-   * @return the resulting DCG rule.
+   * @param right
+   *   the right side of the operation
+   * @return
+   *   the resulting DCG rule.
    */
   def -->(right: Term): DCGRule = DCGRule(head, right)
 
   /**
    * Allows the creation of a [[Rule]].
-   * @param right the right side of the operation
-   * @return the resulting rule.
+   * @param right
+   *   the right side of the operation
+   * @return
+   *   the resulting rule.
    */
   def :-(right: Term): Rule = Rule(head, right)
 
@@ -26,10 +30,6 @@ case class Fact(head: Term) extends Clause {
 /**
  * A horn clause. It is read `head` is true if `body` is true.
  *
- * @param head the left term
- * @param body the right term
- *
- * ==Overview==
  * The following example:
  * {{{
  *   Rule(Compound(Atom("hello"), Atom("world")), Atom("hello")).generate
@@ -39,6 +39,11 @@ case class Fact(head: Term) extends Clause {
  * {{{
  *   hello(world) :- hello.
  * }}}
+ *
+ * @param head
+ *   the left term
+ * @param body
+ *   the right term
  */
 case class Rule(head: Term, body: Term) extends Clause {
   override def generate: String = s"${head.generate} :- ${body.generate}."
@@ -46,10 +51,7 @@ case class Rule(head: Term, body: Term) extends Clause {
 
 /**
  * A definite clause grammar rule.
- * @param left the left term
- * @param right the right term
  *
- * ==Overview==
  * The following example:
  * {{{
  *   DCGRule(Compound(Atom("hello"), Atom("world")), ListP(Atom("hello"), Atom("world"))).generate
@@ -59,6 +61,11 @@ case class Rule(head: Term, body: Term) extends Clause {
  * {{{
  *   hello(world) --> ["hello","world"].
  * }}}
+ *
+ * @param left
+ *   the left term
+ * @param right
+ *   the right term
  */
 case class DCGRule(left: Term, right: Term) extends Clause {
   override def generate: String = s"${left.generate} --> ${right.generate}."
