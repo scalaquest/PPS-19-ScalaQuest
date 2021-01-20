@@ -5,14 +5,19 @@ import io.github.scalaquest.core.model.common.Actions.Eat
 import io.github.scalaquest.core.model.common.CommonBase
 import monocle.Lens
 
+/**
+ * The trait makes possible to mix into StdCommonBehaviors the standard implementation of Eatable.
+ */
 trait Eatable extends CommonBase {
 
   /**
-   * Standard implementation of the [[CommonBehaviors.Eatable]]
+   * Standard implementation of the Eatable behavior.
    *
-   * The behavior that the item could be eaten if is present in the bag or in the room
+   * This is a behavior associated to an Item that can be eaten, if present in the bag or in the
+   * room.
    * @param onEatExtra
-   *   extra [[Reaction]] that happen if the item is eaten.
+   *   Reaction to be executed when the item has been successfully eaten, after the standard
+   *   [[Reaction]]. It can be omitted.
    */
   case class Eatable(onEatExtra: Option[Reaction] = None)(implicit
     bagLens: Lens[S, Set[I]],
@@ -28,7 +33,7 @@ trait Eatable extends CommonBase {
     private def eat(item: I): Reaction =
       state => {
 
-        // remove the item if is in the current room
+        // remove the item if it is in the current room
         val currRoom         = state.game.player.location
         val currRoomItemsUpd = itemsLens.get(state).get(currRoom).fold(Set[I]())(_ - item)
         val stateWithoutItem = itemsLens.modify(_ + (currRoom -> currRoomItemsUpd))(state)

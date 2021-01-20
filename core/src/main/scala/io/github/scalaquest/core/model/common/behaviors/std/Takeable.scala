@@ -13,7 +13,7 @@ import monocle.Lens
 trait Takeable extends CommonBase {
 
   /**
-   * Standard implementation of the [[CommonBehaviors.Takeable]].
+   * Standard implementation of the Takeable.
    *
    * The behavior of an Item that could be put into the Bag of the player from the current room.
    * @param onTakeExtra
@@ -31,7 +31,7 @@ trait Takeable extends CommonBase {
     }
 
     /**
-     * Creates a Reaction that removes the item from the current room, put it into the bag, executes
+     * Returns a Reaction that removes the item from the current room, put it into the bag, executes
      * the eventual extra reaction.
      * @param item
      *   The item to be taken.

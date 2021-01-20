@@ -7,13 +7,12 @@ import io.github.scalaquest.core.model.common.behaviors.{CommonBehaviors, StdCom
 import monocle.Lens
 
 /**
- * The trait makes possible to mix into the [[StdCommonBehaviors]] the standard implementation of
- * [[CommonBehaviors.CommonBehaviors.RoomLink]].
+ * The trait makes possible to mix into StdCommonBehaviors the standard implementation of RoomLink.
  */
 trait RoomLink extends CommonBase {
 
   /**
-   * Standard implementation of the [[CommonBehaviors.RoomLink]].
+   * Standard implementation of the RoomLink.
    *
    * This is a behavior associated to an item that is a link between two rooms (a door, for
    * instance), and that could be opened to pass into it. The user can "Enter" into it, resulting
