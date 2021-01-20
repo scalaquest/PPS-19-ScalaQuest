@@ -46,13 +46,10 @@ jobs:
 
     - name: Spotless check
       if: ${{ runner.os }} == 'Linux' #run it on the entire matrix would be overkill
-
       run: ./gradlew spotlessCheck
 
     - name: Gradle assemble
-
       run: ./gradlew assemble
 
     - name: Gradle check
-
       run: ./gradlew check
