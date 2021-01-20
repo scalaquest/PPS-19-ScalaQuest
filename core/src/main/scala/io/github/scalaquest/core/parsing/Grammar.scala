@@ -58,7 +58,7 @@ object Verb {
     override def clause: CodeGen = v("3/to", atom.name betaReduce 3) --> tokens
   }
 }
-
+/*
 object Example extends App {
 
   // Stanze
@@ -86,3 +86,4 @@ object Example extends App {
   println(generator.generate)
 
 }
+ */

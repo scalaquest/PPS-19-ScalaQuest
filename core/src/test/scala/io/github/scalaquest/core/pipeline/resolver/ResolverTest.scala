@@ -2,13 +2,13 @@ package io.github.scalaquest.core.pipeline.resolver
 
 import io.github.scalaquest.core.TestsUtils.{
   actionsMap,
-  itemsMap,
   appleItemRef,
   doorItemRef,
+  itemsMap,
   keyItemRef
 }
 import io.github.scalaquest.core.model.common.Actions.{Open, Take}
-import io.github.scalaquest.core.pipeline.parser.{AST, ParserResult}
+import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, SimpleParserResult}
 import org.scalatest.wordspec.AnyWordSpec
 
 class ResolverTest extends AnyWordSpec {
@@ -16,11 +16,7 @@ class ResolverTest extends AnyWordSpec {
     val resolver = Resolver(actionsMap, itemsMap)
 
     "receives an Intransitive AST" should {
-      // fixme to adjust after team 1 merging
-      val parserResult = new ParserResult() {
-        override def tree: AST = AST.Intransitive("open", "you")
-      }
-
+      val parserResult   = SimpleParserResult(AbstractSyntaxTree.Intransitive("open", "you"))
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Intransitive Statement" in {
@@ -38,10 +34,7 @@ class ResolverTest extends AnyWordSpec {
     }
 
     "receives an Transitive AST" should {
-      // fixme to adjust after team 1 merging
-      val parserResult = new ParserResult() {
-        override def tree: AST = AST.Transitive("take", "you", "apple")
-      }
+      val parserResult   = SimpleParserResult(AbstractSyntaxTree.Transitive("take", "you", "apple"))
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Transitive Statement" in {
@@ -59,10 +52,8 @@ class ResolverTest extends AnyWordSpec {
     }
 
     "receives a Ditransitive AST" should {
-      // fixme to adjust after team 1 merging
-      val parserResult = new ParserResult() {
-        override def tree: AST = AST.Ditransitive("open", "you", "door", "key")
-      }
+      val parserResult =
+        SimpleParserResult(AbstractSyntaxTree.Ditransitive("open", "you", "door", "key"))
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Ditransitive Statement" in {
@@ -81,12 +72,8 @@ class ResolverTest extends AnyWordSpec {
     }
 
     "receives an invalid AST" should {
-      // fixme to adjust after team 1 merging
       "produce a Left with a description of what went wrong" in {
-        val parserResult = new ParserResult() {
-          override def tree: AST = null
-        }
-
+        val parserResult   = SimpleParserResult(null)
         val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
         maybeStatement.fold(
@@ -96,5 +83,4 @@ class ResolverTest extends AnyWordSpec {
       }
     }
   }
-
 }
