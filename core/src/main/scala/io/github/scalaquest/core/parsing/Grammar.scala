@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.parsing
 
-import io.github.scalaquest.core.model.{Action, Actions}
+import io.github.scalaquest.core.model.Action
 import io.github.scalaquest.core.parsing.scalog.{Atom, CodeGen, Term, Variable}
 
 import scala.annotation.tailrec

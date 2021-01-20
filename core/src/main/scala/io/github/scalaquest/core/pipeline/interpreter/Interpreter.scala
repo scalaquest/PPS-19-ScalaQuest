@@ -33,10 +33,10 @@ object Interpreter {
       ): Either[String, InterpreterResult[model.Reaction]] = {
         val eventualReaction: Either[String, model.Reaction] = resolverResult.statement match {
           case Statement.Intransitive(action) =>
-            ground.use(action, state) toRight s"Could not recognize ${action.name}"
+            ground.use(action, state) toRight s"Could not recognize action"
 
           case Statement.Transitive(action, itemRetriever(item)) =>
-            item.use(action, state) toRight s"Couldn't recognize ${action.name} on ${item.itemRef}"
+            item.use(action, state) toRight s"Couldn't recognize action on the given item"
 
           case Statement.Ditransitive(
                 action,
@@ -47,7 +47,7 @@ object Interpreter {
               action,
               state,
               Some(indirectObj)
-            ) toRight s"Couldn't recognize ${action.name} on ${directObj.itemRef} and ${indirectObj.itemRef}"
+            ) toRight s"Couldn't recognize action on the given item with the other item"
         }
 
         eventualReaction.map(InterpreterResult(model)(_))

@@ -1,17 +1,18 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
 import io.github.scalaquest.core.TestsUtils.{
+  apple,
   appleItemRef,
+  door,
   doorItemRef,
   key,
   keyItemRef,
   refItemDictionary,
-  door,
   simpleState,
-  startRoom,
-  apple
+  startRoom
 }
-import io.github.scalaquest.core.model.common.Actions.{GoNorth, Open, Take}
+import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.common.Actions.{Go, Open, Take}
 import io.github.scalaquest.core.model.std.StdModel
 import io.github.scalaquest.core.model.std.StdModel.{StdGround, itemsLens}
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
@@ -22,8 +23,8 @@ class InterpreterTest extends AnyWordSpec {
     val interpreter = Interpreter(StdModel)(simpleState, refItemDictionary, StdGround)
 
     "given an Intransitive Statement" should {
-      val resolverResult   = ResolverResult(Statement.Intransitive(GoNorth))
-      val maybeExpReaction = StdGround.use(GoNorth, simpleState)
+      val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.NORTH)))
+      val maybeExpReaction = StdGround.use(Go(Direction.NORTH), simpleState)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
