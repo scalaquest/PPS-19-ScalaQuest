@@ -12,7 +12,6 @@ on:
       - main
 
 jobs:
-
  Routine:
 
   runs-on: ${{ matrix.os }}
