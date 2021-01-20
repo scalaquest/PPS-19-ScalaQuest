@@ -14,7 +14,7 @@ abstract class Pipeline[M <: Model](val model: M) {
 
 object Pipeline {
 
-  type PipelineBuilder[-S <: Model#State, M <: Model] = S => Pipeline[M]
+  type PipelineBuilder[S <: Model#State, M <: Model] = S => Pipeline[M]
 
   def fromModel[M <: Model](implicit model: M) = new PipelineFromModel[M](model)
 }
@@ -25,18 +25,18 @@ class PipelineFromModel[M <: Model](val model: M) {
     lexer: Lexer,
     parser: Parser,
     resolver: Resolver,
-    interpreterFactory: model.S => Interpreter[model.type],
-    reducerFactory: model.S => Reducer[model.type]
+    interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
+    reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
   )(state: model.S): Pipeline[model.type] =
     new Pipeline[model.type](model) {
 
       override def run(rawSentence: String): Either[String, model.S] =
         for {
-          lr  <- (lexer tokenize rawSentence) toRight "Couldn't understand input."
+          lr  <- Right(lexer tokenize rawSentence)
           pr  <- (parser parse lr) toRight "Couldn't understand input."
           rr  <- resolver resolve pr
-          ir  <- interpreterFactory(state) interpret rr
-          rdr <- Right(reducerFactory(state) reduce ir)
+          ir  <- interpreterBuilder(state) interpret rr
+          rdr <- Right(reducerBuilder(state) reduce ir)
         } yield rdr.state
     }
 }

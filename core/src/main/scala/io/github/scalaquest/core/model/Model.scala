@@ -1,37 +1,26 @@
 package io.github.scalaquest.core.model
 
-trait Message
-
 trait Model {
   type S <: State
   type I <: Item
+  type G <: Ground
 
-  type Self     = this.type
-  type Reaction = Self#S => Self#S
+  type Reaction = S => S
 
   trait State { self: S =>
-    def game: GameState
+    def game: GameState[I]
     def messages: Seq[Message]
-  }
-
-  trait GameState {
-    def player: Player
-    def ended: Boolean
-  }
-
-  trait Player {
-    def bag: Set[I]
-    def location: Room
+    def extractRefs: Map[ItemRef, I]
   }
 
   trait Item { item: I =>
-    def name: String
-    def useTransitive[SS <: Model#S, RR <: Model#Reaction](action: Action, state: SS): Option[RR]
+    def use(action: Action, state: S, sideItem: Option[I] = None): Option[Reaction]
 
-    def useDitransitive[SS <: Model#S, II <: Model#I, RR <: Model#Reaction](
-      action: Action,
-      sideItem: II,
-      state: SS
-    ): Option[RR]
+    def itemRef: ItemRef
+    override def hashCode(): Int = itemRef.hashCode()
+  }
+
+  trait Ground { ground: G =>
+    def use(action: Action, state: S): Option[Reaction]
   }
 }
