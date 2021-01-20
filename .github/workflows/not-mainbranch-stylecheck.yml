@@ -18,6 +18,7 @@ on:
 
 jobs:
   StyleCheck:
+    if: contains(github.event.head_commit.message, '[style]')
     runs-on: ubuntu-latest
 
     steps:
@@ -45,9 +46,8 @@ jobs:
         run: ./gradlew spotlessCheck
 
   Assemble:
-    if: startsWith(github.event.head_commit.message, 'asm:')
-    needs:
-      - StyleCheck
+    if: contains(github.event.head_commit.message, '[asm]')
+
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
