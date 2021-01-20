@@ -2,7 +2,7 @@ name: Style check with Gradle CI
 
 on:
   # Trigger the workflow on push or pull request,
-  # but only for the main branch
+  # but except for the main branch
   push:
     branches:
       - '*'         # matches every branch that doesn't contain a '/'

@@ -1,5 +1,6 @@
 name: Scala with Gradle CI
-#this solution uses matrix for both actions but without artifacts
+
+#this solution uses matrix for both actions but with artifacts
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -19,26 +20,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-        # The project uses java 11 (LTS) with scala 2.13
+          # The project uses java 11 (LTS) with scala 2.13
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+         java-version: 11
 
           # Use cache if available for Gradle
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
           path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
+           ~/.gradle/caches
+           ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+           ${{ runner.os }}-gradle-
 
       - name: Check Scala formatting with Spotless
         run: ./gradlew spotlessCheck
-
 
 
   Compile:
@@ -77,16 +77,20 @@ jobs:
       - name: Assemble Scala sources with Gradle
         run: ./gradlew assemble
 
-
+      - name: Publish ${{ runner.os }} workspace
+        uses: actions/upload-artifact@v2
+        with:
+         name: ${{ runner.os }}-workspace
+         path: |
+          ${{ github.workspace }}/build
+          ${{ github.workspace }}/buildSrc
 
   Test:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
-      matrix:
-        os: [ ubuntu-latest, macOS-latest, windows-latest ]
-        #os: [ ubuntu-latest ]
-    #runs-on: ubuntu-latest
+     fail-fast: true
+     matrix:
+      os: [ ubuntu-latest, macOS-latest, windows-latest ]
     needs: [StyleCheck, Compile]
 
     steps:
@@ -110,7 +114,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-
+      - name: Download ${{ runner.os }} workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ runner.os }}-workspace
+          path: ${{ github.workspace }}
 
       - name: Check and Test with Gradle
         run: ./gradlew check
