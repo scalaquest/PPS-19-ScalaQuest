@@ -7,6 +7,10 @@ import io.github.scalaquest.core.model.common.items.CommonItems
 import io.github.scalaquest.core.model.std.BehaviorableModel
 import monocle.Lens
 
+/**
+ * A base trait used to implement all the StdCommon* mixins. Integrates some additional
+ * functionalities for state inspection and re-generation, by the use of [[monocle.Lens]].
+ */
 trait CommonBase
   extends BehaviorableModel
   with CommonGroundBehaviors

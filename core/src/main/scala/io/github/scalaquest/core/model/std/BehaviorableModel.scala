@@ -73,6 +73,11 @@ abstract class BehaviorableModel extends Model {
 
   override type G = BehaviorableGround
 
+  /**
+   * A Ground implementation capable to process GroundBehaviors to react to specific actions. This
+   * is the standard mechanism to handle Intransitive actions, but of course any other mechanism
+   * could be implemented.
+   */
   abstract class BehaviorableGround extends Ground {
     def behaviors: Seq[GroundBehavior] = Seq()
 
@@ -80,8 +85,18 @@ abstract class BehaviorableModel extends Model {
       behaviors.map(_.triggers).reduce(_ orElse _).lift((action, state))
   }
 
+  /**
+   * The equivalent of the item's Triggers, declined to the Ground object. The behavioral model is
+   * based into the trigger construct. A 'GroundTriggers' type is a partial function, that makes
+   * possible to react to specific combinations action-state, responding with a Reaction. All
+   * triggers associated to the Ground are combined in a single match case.
+   */
   type GroundTriggers = PartialFunction[(Action, S), Reaction]
 
+  /**
+   * Makes the Ground subject of specific Reactions, when some Actions occurs. The only requirement
+   * is to expose some GroundTriggers, as a partial function.
+   */
   abstract class GroundBehavior {
     def triggers: GroundTriggers = PartialFunction.empty
   }

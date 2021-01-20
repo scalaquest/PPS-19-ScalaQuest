@@ -6,7 +6,7 @@ import io.github.scalaquest.core.model.Room
 
 /**
  * When mixed into a [[Model]], it integrates into it the interfaces for some commonly used
- * [[BehaviorableModel.Behavior]] s. These should be implemented to be used.
+ * Behaviors. These should be implemented to be used.
  */
 trait CommonBehaviors extends BehaviorableModel {
 

@@ -3,8 +3,10 @@ package io.github.scalaquest.core.model.common
 import io.github.scalaquest.core.model.Action
 import io.github.scalaquest.core.model.Direction.Direction
 
+/**
+ * Object containing some commonly used verbs.
+ */
 object Actions {
-
   case object Take                    extends Action
   case object Open                    extends Action
   case object Close                   extends Action
