@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - feature/new-gradle-build #to be removed
   pull_request:
     branches:
       - main
