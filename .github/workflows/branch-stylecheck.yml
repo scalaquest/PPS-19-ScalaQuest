@@ -1,4 +1,4 @@
-name: Gradle CI on feature branch
+name: Gradle CI stylecheck/assemble on branch
 
 # Triggered when code is pushed to any branch in a repository
 on: push
