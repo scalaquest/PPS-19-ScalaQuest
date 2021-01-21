@@ -13,7 +13,7 @@ trait Model {
    * [[Message]] s, that is a representation of the output to render to the user at the end of the
    * pipeline round.
    */
-  trait State { self: S =>
+  abstract class State { self: S =>
 
     /**
      * The state of the game, in a vision scoped to the [[Player]] capabilities.
@@ -42,7 +42,7 @@ trait Model {
   /**
    * Represents a single object against which the [[Player]] can interact.
    */
-  trait Item { item: I =>
+  abstract class Item { item: I =>
 
     /**
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
@@ -75,7 +75,7 @@ trait Model {
     def use(action: Action, state: S, sideItem: Option[I] = None): Option[Reaction]
   }
 
-  trait Ground { ground: G =>
+  abstract class Ground { ground: G =>
     def use(action: Action, state: S): Option[Reaction]
   }
 }

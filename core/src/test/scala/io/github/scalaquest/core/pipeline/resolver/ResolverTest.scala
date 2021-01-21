@@ -7,7 +7,7 @@ import io.github.scalaquest.core.TestsUtils.{
   itemsMap,
   keyItemRef
 }
-import io.github.scalaquest.core.model.common.Actions.{Open, Take}
+import io.github.scalaquest.core.model.Action.Common.{Open, Take}
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, SimpleParserResult}
 import org.scalatest.wordspec.AnyWordSpec
 

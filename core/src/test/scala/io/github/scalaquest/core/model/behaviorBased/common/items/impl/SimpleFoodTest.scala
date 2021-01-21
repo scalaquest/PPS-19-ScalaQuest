@@ -1,13 +1,13 @@
-package io.github.scalaquest.core.model.common.items.std
+package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
 import io.github.scalaquest.core.model.ItemRef
 import org.scalatest.wordspec.AnyWordSpec
-import io.github.scalaquest.core.model.std.StdModel.{Eatable, Food}
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{SimpleEatable, SimpleFood}
 
-class FoodTest extends AnyWordSpec {
+class SimpleFoodTest extends AnyWordSpec {
   "A Food is an item that" when {
-    val eatableBehaviour = Eatable()
-    val food             = Food(new ItemRef {}, eatableBehaviour)
+    val eatableBehaviour = SimpleEatable()
+    val food             = SimpleFood(new ItemRef {}, eatableBehaviour)
 
     "instantiated" should {
       "have the eatable item" in {

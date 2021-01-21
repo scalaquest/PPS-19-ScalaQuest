@@ -1,36 +1,39 @@
 package io.github.scalaquest.core
 
-import io.github.scalaquest.core.model.Direction.Direction
-import io.github.scalaquest.core.model.common.Actions
-import io.github.scalaquest.core.model.{Action, Direction, ItemRef, Room}
-import io.github.scalaquest.core.model.std.StdModel.{
-  BehaviorableItem,
+import io.github.scalaquest.core.model.Action.Common.{Open, Take}
+import io.github.scalaquest.core.model.Room.Direction
+import io.github.scalaquest.core.model.{Action, ItemRef, Room}
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
+  BehaviorBasedItem,
   Door,
   GenericItem,
+  SimpleGenericItem,
   Key,
   Openable,
+  SimpleOpenable,
   RoomLink,
-  StdGameState,
-  StdPlayer,
-  StdState,
-  Takeable
+  SimpleRoomLink,
+  SimpleMatchState,
+  SimplePlayer,
+  SimpleDoor,
+  SimpleState,
+  SimpleTakeable,
+  SimpleKey
 }
 import monocle.Lens
 import monocle.macros.GenLens
 
 object TestsUtils {
-  val startRoom: Room = Room("startRoom", () => Map[Direction, Room](Direction.NORTH -> targetRoom))
+  val startRoom: Room = Room("startRoom", () => Map[Direction, Room](Direction.North -> targetRoom))
 
   val targetRoom: Room =
-    Room("targetRoom", () => Map[Direction, Room](Direction.SOUTH -> startRoom))
+    Room("targetRoom", () => Map[Direction, Room](Direction.South -> startRoom))
 
   val actionsMap: Map[String, Action] = Map[String, Action](
-    "take"  -> Actions.Take,
-    "bring" -> Actions.Take,
-    "open"  -> Actions.Open
+    "take"  -> Take,
+    "bring" -> Take,
+    "open"  -> Open
   )
-
-  val roomsLens: Lens[StdState, Set[Room]] = GenLens[StdState](_.game.rooms)
 
   val appleItemRef: ItemRef = new ItemRef {}
   val keyItemRef: ItemRef   = new ItemRef {}
@@ -43,24 +46,26 @@ object TestsUtils {
     "key"       -> keyItemRef
   )
 
-  val apple: GenericItem = GenericItem(appleItemRef, Takeable())
-  val key: Key           = Key(keyItemRef)
+  val apple: GenericItem = SimpleGenericItem(appleItemRef, SimpleTakeable())
+  val key: Key           = SimpleKey(keyItemRef)
 
   val door: Door =
-    Door(doorItemRef, RoomLink(targetRoom, Some(Openable(requiredKey = Some(key)))))
+    SimpleDoor(
+      doorItemRef,
+      SimpleRoomLink(targetRoom, Some(SimpleOpenable(requiredKey = Some(key))))
+    )
 
-  val refItemDictionary: Map[ItemRef, BehaviorableItem] = Map(
+  val refItemDictionary: Map[ItemRef, BehaviorBasedItem] = Map(
     appleItemRef -> apple,
     keyItemRef   -> key,
     doorItemRef  -> door
   )
 
-  val simpleState: StdState = StdState(
-    game = StdGameState(
-      player = StdPlayer(bag = Set(), location = startRoom),
+  val simpleState: SimpleState = SimpleState(
+    matchState = SimpleMatchState(
+      player = SimplePlayer(bag = Set(), location = startRoom),
       ended = false,
-      rooms = Set(startRoom, targetRoom),
-      itemsInRooms = Map(startRoom -> Set(), targetRoom -> Set()),
+      geography = Map(startRoom -> Set(), targetRoom -> Set()),
       Set()
     ),
     messages = Seq()

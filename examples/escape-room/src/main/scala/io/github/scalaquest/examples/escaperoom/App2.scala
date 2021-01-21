@@ -4,45 +4,45 @@ import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
 import io.github.scalaquest.core.model.{Message, Room}
 import io.github.scalaquest.cli.CLI
-import io.github.scalaquest.core.model.behaviorBased.impl.StdModel.{
-  StdMatchState,
-  StdPlayer,
-  StdState
+import io.github.scalaquest.core.model.Room.Direction
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
+  SimpleMatchState,
+  SimplePlayer,
+  SimpleState
 }
-import io.github.scalaquest.core.model.behaviorBased.impl.StdModel
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import monocle.Lens
 import monocle.macros.GenLens
 
 object Model {
 
-  import io.github.scalaquest.core.model.Direction._
   case object GameStarted extends Message
   case object TestMessage extends Message
 
-  def room1: Room = StdRoom("room1", () => Map(NORTH -> room2))
-  def room2: Room = StdRoom("room2", () => Map(SOUTH -> room1))
+  def room1: Room = Room("room1", () => Map(Direction.North -> room2))
+  def room2: Room = Room("room2", () => Map(Direction.South -> room1))
 
-  val model: StdModel.type = StdModel
+  val model: SimpleModel.type = SimpleModel
 
-  val state: StdState = ???
+  val state: SimpleState = ???
 
-  def gameLens: Lens[StdState, StdMatchState]    = GenLens[StdState](_.matchState)
-  def playerLens: Lens[StdMatchState, StdPlayer] = GenLens[StdMatchState](_.player)
-  def locationLens: Lens[StdPlayer, Room]        = GenLens[StdPlayer](_.location)
-  def messagesLens: Lens[StdState, Seq[Message]] = GenLens[StdState](_.messages)
+  def gameLens: Lens[SimpleState, SimpleMatchState]    = GenLens[SimpleState](_.matchState)
+  def playerLens: Lens[SimpleMatchState, SimplePlayer] = GenLens[SimpleMatchState](_.player)
+  def locationLens: Lens[SimplePlayer, Room]           = GenLens[SimplePlayer](_.location)
+  def messagesLens: Lens[SimpleState, Seq[Message]]    = GenLens[SimpleState](_.messages)
 
   case class Describe(room: Room) extends Message
   case object WentNorth           extends Message
   case object WentSouth           extends Message
 
-  def game: Game[StdModel.type] =
+  def game: Game[SimpleModel.type] =
     new Game(model) {
 
-      override def send(input: String)(state: StdState): Either[String, StdState] =
+      override def send(input: String)(state: SimpleState): Either[String, SimpleState] =
         for {
           dir <- input match {
-            case "go n" => Right(NORTH)
-            case "go s" => Right(SOUTH)
+            case "go n" => Right(Direction.North)
+            case "go s" => Right(Direction.South)
             case _      => Left("Only NORTH and SOUTH directions supported.")
           }
           s <- state.matchState.player.location neighbors dir match {
@@ -51,10 +51,11 @@ object Model {
             case _ => Left("There is no such direction.")
           }
           m <- dir match {
-            case NORTH =>
+            case Direction.North =>
               Right(messagesLens.set(Seq(WentNorth, Describe(s.matchState.player.location)))(s))
-            case SOUTH =>
+            case Direction.South =>
               Right(messagesLens.set(Seq(WentSouth, Describe(s.matchState.player.location)))(s))
+            case _ => Left("There is no such direction.")
           }
         } yield m
     }
@@ -71,7 +72,7 @@ object Model {
 
 object App2 extends zio.App {
   import Model._
-  implicit val model: StdModel.type = StdModel
+  implicit val model: SimpleModel.type = SimpleModel
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
     CLI.fromModel(model).build(state, game, pusher).start.exitCode

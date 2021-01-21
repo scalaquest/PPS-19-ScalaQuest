@@ -1,17 +1,23 @@
-package io.github.scalaquest.core.model.common.items.std
+package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.Direction.Direction
+import io.github.scalaquest.core.model.Room.Direction
 import io.github.scalaquest.core.model.{ItemRef, Room}
-import io.github.scalaquest.core.model.std.StdModel.{Door, Eatable, Openable, RoomLink, Takeable}
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
+  SimpleDoor,
+  SimpleEatable,
+  SimpleOpenable,
+  SimpleRoomLink,
+  SimpleTakeable
+}
 import org.scalatest.wordspec.AnyWordSpec
 
-class DoorTest extends AnyWordSpec {
+class SimpleDoorTest extends AnyWordSpec {
   "A Door" when {
     val room: Room          = Room("room", () => Map[Direction, Room]())
-    val roomLinkBehavior    = RoomLink(room, Some(Openable()))
-    val additionalBehaviors = Seq(Takeable(), Eatable())
+    val roomLinkBehavior    = SimpleRoomLink(room, Some(SimpleOpenable()))
+    val additionalBehaviors = Seq(SimpleTakeable(), SimpleEatable())
     val door =
-      Door(new ItemRef {}, roomLinkBehavior, additionalBehaviors.head, additionalBehaviors(1))
+      SimpleDoor(new ItemRef {}, roomLinkBehavior, additionalBehaviors.head, additionalBehaviors(1))
 
     "instantiated" should {
       "take a RoomLink Behavior and save it as the first behavior" in {
