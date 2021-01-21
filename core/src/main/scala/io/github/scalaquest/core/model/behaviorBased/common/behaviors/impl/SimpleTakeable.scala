@@ -5,15 +5,15 @@ import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.behaviors.{
   CommonBehaviors,
-  CommonBehaviorsImpl
+  SimpleCommonBehaviors
 }
 import monocle.Lens
 
 /**
- * The trait makes possible to mix into the [[CommonBehaviorsImpl]] the standard implementation of
- * [[CommonBehaviors.CommonBehaviors.Takeable]].
+ * The trait makes possible to mix into the [[SimpleCommonBehaviors]] the standard implementation of
+ * [[CommonBehaviors.Takeable]].
  */
-trait Takeable extends CommonBase {
+trait SimpleTakeable extends CommonBase {
 
   /**
    * Standard implementation of the Takeable.
@@ -23,10 +23,10 @@ trait Takeable extends CommonBase {
    *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
    *   omitted.
    */
-  case class Takeable(onTakeExtra: Option[Reaction] = None)(implicit
+  case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit
     bagLens: Lens[S, Set[I]],
     itemsLens: Lens[S, Map[Room, Set[I]]]
-  ) extends CommonBehaviors.Takeable {
+  ) extends Takeable {
 
     override def triggers: ItemTriggers = {
       // "Take the item"

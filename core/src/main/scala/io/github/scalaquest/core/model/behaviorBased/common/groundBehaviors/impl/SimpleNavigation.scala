@@ -9,7 +9,7 @@ import monocle.Lens
  * The trait makes possible to mix into StdCommonGroundBehaviors the standard implementation of
  * Navigation.
  */
-trait Navigation extends CommonBase {
+trait SimpleNavigation extends CommonBase {
 
   /**
    * Standard implementation of the Navigation GroundBehavior.
@@ -17,9 +17,9 @@ trait Navigation extends CommonBase {
    *   Reaction to be executed when the player successfully navigate in a new Room, using navigation
    *   Actions after the standard [[Reaction]]. It can be omitted.
    */
-  case class Navigation(onNavigateExtra: Option[Reaction] = None)(implicit
+  case class SimpleNavigation(onNavigateExtra: Option[Reaction] = None)(implicit
     currRoomLens: Lens[S, Room]
-  ) extends CommonGroundBehaviors.Navigation {
+  ) extends Navigation {
 
     override def triggers: GroundTriggers = {
       // "go <direction>"

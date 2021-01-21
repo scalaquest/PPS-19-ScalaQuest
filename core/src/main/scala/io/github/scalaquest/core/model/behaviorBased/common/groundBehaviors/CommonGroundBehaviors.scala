@@ -9,17 +9,14 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
  */
 trait CommonGroundBehaviors extends BehaviorBasedModel {
 
-  object CommonGroundBehaviors {
+  /**
+   * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
+   */
+  abstract class Navigation extends GroundBehavior
 
-    /**
-     * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
-     */
-    abstract class Navigation extends GroundBehavior
-
-    /**
-     * A [[GroundBehavior]] that enables the possibility to know the items present into the current
-     * Room.
-     */
-    abstract class Inspect extends GroundBehavior
-  }
+  /**
+   * A [[GroundBehavior]] that enables the possibility to know the items present into the current
+   * Room.
+   */
+  abstract class Inspect extends GroundBehavior
 }

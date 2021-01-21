@@ -17,9 +17,9 @@ trait CommonBase
   with CommonItems
   with CommonBehaviors {
 
-  implicit def bagLens: Lens[S, Set[I]]
-  implicit def itemsLens: Lens[S, Map[Room, Set[I]]]
-  implicit def currRoomLens: Lens[S, Room]
+  implicit def playerBagLens: Lens[S, Set[I]]
+  implicit def geographyLens: Lens[S, Map[Room, Set[I]]]
+  implicit def playerLocationLens: Lens[S, Room]
 
   implicit class StateUtils(state: S) {
     def rooms: Set[Room] = state.matchState.geography.keySet

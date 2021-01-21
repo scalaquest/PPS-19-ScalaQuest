@@ -2,8 +2,8 @@ package io.github.scalaquest.core.model.behaviorBased.impl
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.common.behaviors.CommonBehaviorsImpl
-import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItemsImpl
+import io.github.scalaquest.core.model.behaviorBased.common.behaviors.SimpleCommonBehaviors
+import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
 import monocle.Lens
 import monocle.macros.GenLens
 
@@ -15,14 +15,15 @@ import monocle.macros.GenLens
  * As common behaviors needs some Lens to be passed in, to regenerate the State, this Model also
  * implements the required lens.
  */
-object StdModel
+object SimpleModel
   extends BehaviorBasedModel
-  with CommonBehaviorsImpl
-  with CommonItemsImpl
-  with StdState
-  with StdGround {
-  override implicit def bagLens: Lens[S, Set[I]] = GenLens[S](_.matchState.player.bag)
+  with SimpleCommonBehaviors
+  with SimpleCommonItems
+  with SimpleState
+  with SimpleGround {
+  override implicit def playerBagLens: Lens[S, Set[I]] = GenLens[S](_.matchState.player.bag)
 
-  override implicit def itemsLens: Lens[S, Map[Room, Set[I]]] = GenLens[S](_.matchState.geography)
-  override implicit def currRoomLens: Lens[S, Room]           = GenLens[S](_.matchState.player.location)
+  override implicit def geographyLens: Lens[S, Map[Room, Set[I]]] =
+    GenLens[S](_.matchState.geography)
+  override implicit def playerLocationLens: Lens[S, Room] = GenLens[S](_.matchState.player.location)
 }

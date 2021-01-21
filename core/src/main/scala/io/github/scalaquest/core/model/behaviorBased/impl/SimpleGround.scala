@@ -3,15 +3,15 @@ package io.github.scalaquest.core.model.behaviorBased.impl
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.{
   CommonGroundBehaviors,
-  CommonGroundBehaviorsImpl
+  SimpleCommonGroundBehaviors
 }
 
-trait StdGround
+trait SimpleGround
   extends BehaviorBasedModel
   with CommonGroundBehaviors
-  with CommonGroundBehaviorsImpl {
+  with SimpleCommonGroundBehaviors {
 
   case object StdGround extends BehaviorBasedGround {
-    override val behaviors: Seq[GroundBehavior] = Seq(Navigation())
+    override val behaviors: Seq[GroundBehavior] = Seq(SimpleNavigation())
   }
 }

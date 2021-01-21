@@ -8,7 +8,7 @@ import monocle.Lens
 /**
  * The trait makes possible to mix into StdCommonBehaviors the standard implementation of Eatable.
  */
-trait Eatable extends CommonBase {
+trait SimpleEatable extends CommonBase {
 
   /**
    * Standard implementation of the Eatable behavior.
@@ -19,10 +19,10 @@ trait Eatable extends CommonBase {
    *   Reaction to be executed when the item has been successfully eaten, after the standard
    *   [[Reaction]]. It can be omitted.
    */
-  case class Eatable(onEatExtra: Option[Reaction] = None)(implicit
+  case class SimpleEatable(onEatExtra: Option[Reaction] = None)(implicit
     bagLens: Lens[S, Set[I]],
     itemsLens: Lens[S, Map[Room, Set[I]]]
-  ) extends CommonBehaviors.Eatable {
+  ) extends Eatable {
 
     override def triggers: ItemTriggers = {
       // "Eat the item"

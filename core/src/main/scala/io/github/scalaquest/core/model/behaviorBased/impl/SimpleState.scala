@@ -6,11 +6,11 @@ import io.github.scalaquest.core.model.{MatchState, ItemRef, Message, Model, Pla
  * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the
  * State into the model.
  */
-trait StdState extends Model {
+trait SimpleState extends Model {
 
-  override type S = StdState
+  override type S = SimpleState
 
-  case class StdState(matchState: StdMatchState, messages: Seq[Message]) extends State {
+  case class SimpleState(matchState: SimpleMatchState, messages: Seq[Message]) extends State {
 
     override def extractRefs: Map[ItemRef, I] = {
       val allItems =
@@ -19,13 +19,12 @@ trait StdState extends Model {
     }
   }
 
-  case class StdMatchState(
-    player: StdPlayer,
+  case class SimpleMatchState(
+    player: SimplePlayer,
     ended: Boolean,
-    rooms: Set[Room],
     geography: Map[Room, Set[I]],
     hiddenItems: Set[I]
   ) extends MatchState[I]
 
-  case class StdPlayer(bag: Set[I], location: Room) extends Player[I]
+  case class SimplePlayer(bag: Set[I], location: Room) extends Player[I]
 }

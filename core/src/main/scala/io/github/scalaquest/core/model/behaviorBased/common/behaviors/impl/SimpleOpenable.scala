@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
  * The trait makes possible to mix into the StdCommonBehaviors the standard implementation of
  * Openable.
  */
-trait Openable extends CommonBase {
+trait SimpleOpenable extends CommonBase {
 
   /**
    * Standard implementation of the common Openable behavior.
@@ -27,12 +27,12 @@ trait Openable extends CommonBase {
    *   Reaction to be executed into the State when closed, after the standard Reaction. It can be
    *   omitted.
    */
-  case class Openable(
+  case class SimpleOpenable(
     var _isOpen: Boolean = false,
-    requiredKey: Option[CommonItems.Key] = None,
+    requiredKey: Option[Key] = None,
     onOpenExtra: Option[Reaction] = None,
     onCloseExtra: Option[Reaction] = None
-  ) extends CommonBehaviors.Openable {
+  ) extends Openable {
 
     override def isOpen: Boolean = _isOpen
 

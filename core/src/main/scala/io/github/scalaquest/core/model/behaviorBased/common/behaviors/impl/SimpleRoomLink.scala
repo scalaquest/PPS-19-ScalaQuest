@@ -8,7 +8,7 @@ import monocle.Lens
 /**
  * The trait makes possible to mix into StdCommonBehaviors the standard implementation of RoomLink.
  */
-trait RoomLink extends CommonBase {
+trait SimpleRoomLink extends CommonBase {
 
   /**
    * Standard implementation of the RoomLink.
@@ -25,13 +25,13 @@ trait RoomLink extends CommonBase {
    *   Reaction to be executed into the State when entered, after the standard Reaction. It can be
    *   omitted.
    */
-  case class RoomLink(
+  case class SimpleRoomLink(
     endRoom: Room,
-    openable: Option[CommonBehaviors.Openable] = None,
+    openable: Option[Openable] = None,
     onEnterExtra: Option[Reaction] = None
   )(implicit
     currRoomLens: Lens[S, Room]
-  ) extends CommonBehaviors.RoomLink
+  ) extends RoomLink
     with Delegate {
 
     /**
