@@ -4,8 +4,12 @@ import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
 import io.github.scalaquest.core.model.{Message, Room}
 import io.github.scalaquest.cli.CLI
-import io.github.scalaquest.core.model.std.{StdModel, StdRoom}
-import io.github.scalaquest.core.model.std.StdModel.{StdGameState, StdPlayer, StdState}
+import io.github.scalaquest.core.model.behaviorBased.impl.StdModel.{
+  StdMatchState,
+  StdPlayer,
+  StdState
+}
+import io.github.scalaquest.core.model.behaviorBased.impl.StdModel
 import monocle.Lens
 import monocle.macros.GenLens
 
@@ -22,8 +26,8 @@ object Model {
 
   val state: StdState = ???
 
-  def gameLens: Lens[StdState, StdGameState]     = GenLens[StdState](_.game)
-  def playerLens: Lens[StdGameState, StdPlayer]  = GenLens[StdGameState](_.player)
+  def gameLens: Lens[StdState, StdMatchState]    = GenLens[StdState](_.matchState)
+  def playerLens: Lens[StdMatchState, StdPlayer] = GenLens[StdMatchState](_.player)
   def locationLens: Lens[StdPlayer, Room]        = GenLens[StdPlayer](_.location)
   def messagesLens: Lens[StdState, Seq[Message]] = GenLens[StdState](_.messages)
 
@@ -41,16 +45,16 @@ object Model {
             case "go s" => Right(SOUTH)
             case _      => Left("Only NORTH and SOUTH directions supported.")
           }
-          s <- state.game.player.location neighbors dir match {
+          s <- state.matchState.player.location neighbors dir match {
             case Some(room) =>
               Right(((gameLens composeLens playerLens composeLens locationLens) set room)(state))
             case _ => Left("There is no such direction.")
           }
           m <- dir match {
             case NORTH =>
-              Right(messagesLens.set(Seq(WentNorth, Describe(s.game.player.location)))(s))
+              Right(messagesLens.set(Seq(WentNorth, Describe(s.matchState.player.location)))(s))
             case SOUTH =>
-              Right(messagesLens.set(Seq(WentSouth, Describe(s.game.player.location)))(s))
+              Right(messagesLens.set(Seq(WentSouth, Describe(s.matchState.player.location)))(s))
           }
         } yield m
     }

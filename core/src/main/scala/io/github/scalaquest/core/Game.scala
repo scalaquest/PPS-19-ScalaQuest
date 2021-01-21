@@ -1,6 +1,6 @@
 package io.github.scalaquest.core
 
-import io.github.scalaquest.core.model.std.StdModel
+import io.github.scalaquest.core.model.behaviorBased.impl.StdModel
 import io.github.scalaquest.core.model.{Message, Model}
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 
