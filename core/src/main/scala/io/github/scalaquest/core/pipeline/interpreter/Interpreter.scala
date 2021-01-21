@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.model.{ItemRef, ItemRetriever, Model}
+import io.github.scalaquest.core.model.{ItemRef, Model}
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
 trait Interpreter[M <: Model, R] {
@@ -26,33 +26,31 @@ object Interpreter {
 
       // The interpreter should know the Map[ItemRef, I] in order to create a retriever
       // or should be passed the itemRetriever directly.
-      val itemRetriever: ItemRetriever[model.I] = ItemRetriever(model)(itemDict)
+      val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
 
       override def interpret(
         resolverResult: ResolverResult
-      ): Either[String, InterpreterResult[model.Reaction]] = {
-        val eventualReaction: Either[String, model.Reaction] = resolverResult.statement match {
-          case Statement.Intransitive(action) =>
-            ground.use(action, state) toRight s"Could not recognize action"
+      ): Either[String, InterpreterResult[model.Reaction]] =
+        for {
+          maybeReaction <- resolverResult.statement match {
+            case Statement.Intransitive(action) =>
+              ground
+                .use(action, state)
+                .toRight(s"Could not recognize action")
 
-          case Statement.Transitive(action, itemRetriever(item)) =>
-            item.use(action, state) toRight s"Couldn't recognize action on the given item"
+            case Statement.Transitive(action, refToItem(item)) =>
+              item
+                .use(action, state)
+                .toRight(s"Couldn't recognize action on the given item")
 
-          case Statement.Ditransitive(
-                action,
-                itemRetriever(directObj),
-                itemRetriever(indirectObj)
-              ) =>
-            directObj.use(
-              action,
-              state,
-              Some(indirectObj)
-            ) toRight s"Couldn't recognize action on the given item with the other item"
-        }
-
-        eventualReaction.map(InterpreterResult(model)(_))
-      }
+            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
+              directObj
+                .use(action, state, Some(indirectObj))
+                .toRight(s"Couldn't recognize action on the given item with the other item")
+          }
+        } yield InterpreterResult(model)(maybeReaction)
     }
+
     SimpleInterpreter(state)
   }
 }
