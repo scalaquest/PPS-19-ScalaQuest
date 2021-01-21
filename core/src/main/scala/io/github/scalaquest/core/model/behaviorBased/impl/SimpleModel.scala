@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.impl
 
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.common.behaviors.SimpleCommonBehaviors
+import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.SimpleCommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
 import monocle.Lens
 import monocle.macros.GenLens

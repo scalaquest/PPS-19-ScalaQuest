@@ -1,8 +1,8 @@
-package io.github.scalaquest.core.model.behaviorBased.common.behaviors
+package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors
 
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
-import io.github.scalaquest.core.model.behaviorBased.common.behaviors.impl.{
+import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.{
   SimpleEatable,
   SimpleOpenable,
   SimpleRoomLink,

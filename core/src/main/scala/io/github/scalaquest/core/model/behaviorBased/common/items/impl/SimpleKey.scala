@@ -13,7 +13,7 @@ trait SimpleKey extends CommonBase {
   /**
    * Standard implementation of the common Key item.
    */
-  case class SimpleKey(itemRef: ItemRef, additionalBehaviors: Behavior*) extends Key {
-    override val behaviors: Seq[Behavior] = additionalBehaviors
+  case class SimpleKey(itemRef: ItemRef, additionalBehaviors: ItemBehavior*) extends Key {
+    override val behaviors: Seq[ItemBehavior] = additionalBehaviors
   }
 }

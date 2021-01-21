@@ -1,9 +1,9 @@
-package io.github.scalaquest.core.model.behaviorBased.common.behaviors.impl
+package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Take
 import io.github.scalaquest.core.model.Room
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
-import io.github.scalaquest.core.model.behaviorBased.common.behaviors.{
+import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.{
   CommonBehaviors,
   SimpleCommonBehaviors
 }

@@ -17,9 +17,9 @@ trait SimpleDoor extends CommonBase {
   case class SimpleDoor(
     itemRef: ItemRef,
     doorBehavior: RoomLink,
-    additionalBehaviors: Behavior*
+    additionalBehaviors: ItemBehavior*
   ) extends Door {
-    override def behaviors: Seq[Behavior] = doorBehavior +: additionalBehaviors
+    override def behaviors: Seq[ItemBehavior] = doorBehavior +: additionalBehaviors
 
     override def isAccessible: Boolean = doorBehavior.isAccessible
   }

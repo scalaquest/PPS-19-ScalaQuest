@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.common.behaviors.impl
+package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.{Close, Open}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase

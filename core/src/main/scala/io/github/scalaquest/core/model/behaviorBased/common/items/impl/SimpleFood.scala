@@ -16,8 +16,8 @@ trait SimpleFood extends CommonBase {
   case class SimpleFood(
     itemRef: ItemRef,
     foodBehavior: Eatable,
-    additionalBehaviors: Behavior*
+    additionalBehaviors: ItemBehavior*
   ) extends Food {
-    override def behaviors: Seq[Behavior] = foodBehavior +: additionalBehaviors
+    override def behaviors: Seq[ItemBehavior] = foodBehavior +: additionalBehaviors
   }
 }

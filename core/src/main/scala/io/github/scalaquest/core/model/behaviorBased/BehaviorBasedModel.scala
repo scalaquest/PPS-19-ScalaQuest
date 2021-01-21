@@ -12,7 +12,7 @@ abstract class BehaviorBasedModel extends Model {
   override type I = BehaviorBasedItem
 
   /**
-   * A [[Item]] capable to process [[Behavior]] s to react to specific action-item-state
+   * A [[Item]] capable to process [[ItemBehavior]] s to react to specific action-item-state
    * combinations.
    *
    * Items that exploit the behavioral mechanism should extend this partial implementation. This
@@ -22,11 +22,12 @@ abstract class BehaviorBasedModel extends Model {
   abstract class BehaviorBasedItem extends Item {
 
     /**
-     * [[Behavior]] s associated to the Item.
+     * [[ItemBehavior]] s associated to the Item.
+     *
      * @return
-     *   [[Behavior]] s associated to the Item.
+     *   [[ItemBehavior]] s associated to the Item.
      */
-    def behaviors: Seq[Behavior] = Seq()
+    def behaviors: Seq[ItemBehavior] = Seq()
 
     override def use(action: Action, state: S, maybeSideItem: Option[I]): Option[Reaction] =
       behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, maybeSideItem, state))
@@ -35,7 +36,7 @@ abstract class BehaviorBasedModel extends Model {
   /**
    * A [[PartialFunction]], that makes possible to react to specific combinations
    * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
-   * [[Behavior]] is based into this construct.
+   * [[ItemBehavior]] is based into this construct.
    */
   type ItemTriggers = PartialFunction[(Action, I, Option[I], S), Reaction]
 
@@ -43,23 +44,23 @@ abstract class BehaviorBasedModel extends Model {
    * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
    * [[BehaviorBasedModel]] is based into this construct.
    */
-  abstract class Behavior {
+  abstract class ItemBehavior {
     def triggers: ItemTriggers = PartialFunction.empty
   }
 
   /**
-   * A mixin for [[Behavior]], that enables the possibility implement the delegation pattern for
+   * A mixin for [[ItemBehavior]], that enables the possibility implement the delegation pattern for
    * them. It means that the receiver behavior (the one that mixes in [[Delegate]] ) can owe
    * internally another one, inheriting its [[ItemTriggers]]. If the receiver overwrites some of the
    * delegate triggers, the receiver ones have the priority, and the delegate ones are not executed.
    */
-  trait Delegate extends Behavior {
+  trait Delegate extends ItemBehavior {
 
     /**
-     * Here might be passed the delegate [[Behavior]] 's [[ItemTriggers]].
+     * Here might be passed the delegate [[ItemBehavior]] 's [[ItemTriggers]].
      *
      * @return
-     *   The delegate [[Behavior]] 's [[ItemTriggers]].
+     *   The delegate [[ItemBehavior]] 's [[ItemTriggers]].
      */
     def delegateTriggers: ItemTriggers
 

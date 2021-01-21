@@ -13,8 +13,8 @@ trait SimpleGenericItem extends CommonBase {
   /**
    * Standard implementation of the common GenericItem.
    */
-  case class SimpleGenericItem(itemRef: ItemRef, additionalBehaviors: Behavior*)
+  case class SimpleGenericItem(itemRef: ItemRef, additionalBehaviors: ItemBehavior*)
     extends GenericItem {
-    override def behaviors: Seq[Behavior] = additionalBehaviors
+    override def behaviors: Seq[ItemBehavior] = additionalBehaviors
   }
 }

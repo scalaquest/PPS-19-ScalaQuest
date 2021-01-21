@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.common.items
 
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.common.behaviors.CommonBehaviors
+import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors
 
 /**
  * When mixed into a [[Model]], it integrates into it the interfaces for some commonly used
