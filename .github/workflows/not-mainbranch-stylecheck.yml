@@ -1,13 +1,7 @@
 name: Gradle CI on feature branch
 
-on:
-
-  push:
-    branches:
-      - 'feature/*'       # matches feature branches only
-  pull_request:
-    branches:
-      - 'feature/*'       # matches feature branches only
+# Triggered when code is pushed to any branch in a repository
+on: push
 
 jobs:
   StyleCheck:
