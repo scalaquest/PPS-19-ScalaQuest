@@ -46,7 +46,7 @@ jobs:
       if: ${{ matrix.os }} == 'ubuntu-latest'      # run it on the entire matrix would be overkill
       run: |
         echo ${{ matrix.os }}
-       ./gradlew spotlessCheck
+        ./gradlew spotlessCheck
 
     - name: Compile all Scala sources
       run: |
