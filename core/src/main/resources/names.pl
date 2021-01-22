@@ -8,6 +8,8 @@ name(door) --> [door].
 name(water) --> [water].
 name(apple) --> [apple].
 
+adj(X^big(X)) --> [big].
+
 tv(X^Y^use(Y,X)) --> [use].
 tv(X^Y^take(Y,X)) --> [take].
 tv(X^Y^pick_up(Y,X)) --> [pick, up].

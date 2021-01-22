@@ -5,7 +5,7 @@ i(S) --> vp(you^S).
 
 vp(VP) --> iv(VP).
 vp(VP) --> tv(NP^VP), np(NP).
-vp(VP) --> vp(2/Pform, VP).
+vp(VP) --> vp(3/Pform, VP).
 vp(VP) --> vp(3/Pform, VP).
 
 vp(2/Pform, Sem) -->
@@ -18,6 +18,8 @@ vp(3/Pform, Sem) -->
 	pp(Pform,Z).
 
 np(X) --> det, name(X).
+
+name(Y) --> adj(X^Y), name(X).
 
 det --> [].
 det --> [a].

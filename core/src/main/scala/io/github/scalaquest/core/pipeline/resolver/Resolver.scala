@@ -1,53 +1,97 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.{Action, ItemRef}
-import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
+import io.github.scalaquest.core.model.{Action, ItemRef, Model}
+import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, BaseItem, DecoratedItem, ItemDescription, ParserResult}
+
+import scala.annotation.tailrec
 
 trait Resolver {
   def resolve(parserResult: ParserResult): Either[String, ResolverResult]
 }
 
+/*
+ * Ci sono due chiavi:
+ * - chiave rossa
+ * - chiave blu
+ *
+ * Chiedo "prendi la chiave":
+ * - se il resolver non risolve:
+ *     Interpreter cerca "chiave": ne trova 2
+ * - se il resolver risolve:
+ *     Resolver dice "chiave" si riferisce a due oggetti
+ */
+
 object Resolver {
 
-  def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
+  type Builder[S] = S => Resolver
 
-    case class SimpleResolver(actions: Map[String, Action], items: Map[String, ItemRef])
-      extends Resolver {
+  abstract class SimpleResolver extends Resolver {
 
-      override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
-        for {
-          statement <- parserResult.tree match {
-            case AbstractSyntaxTree.Intransitive(verb, _) =>
-              for {
-                action <- retrieveAction(verb)
-              } yield Statement.Intransitive(action)
+    def actions: PartialFunction[String, Action]
 
-            case AbstractSyntaxTree.Transitive(verb, _, obj) =>
-              for {
-                action  <- retrieveAction(verb)
-                itemRef <- retrieveItem(obj)
-              } yield Statement.Transitive(action, itemRef)
+    def items: PartialFunction[ItemDescription, ItemRef]
 
-            case AbstractSyntaxTree.Ditransitive(verb, _, directObj, indirectObj) =>
-              for {
-                action          <- retrieveAction(verb)
-                directItemRef   <- retrieveItem(directObj)
-                indirectItemRef <- retrieveItem(indirectObj)
-              } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
+    def retrieveAction(verb: String): Either[String, Action] =
+      actions lift verb toRight s"Couldn't understand $verb."
 
-            case _ => Left("The statement is wrong.")
+    def retrieveItem(name: ItemDescription): Either[String, ItemRef] =
+      items lift name toRight s"Couldn't understand $name"
+
+    override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
+      for {
+        statement <- parserResult.tree match {
+          case AbstractSyntaxTree.Intransitive(verb, _) =>
+            for {
+              action <- retrieveAction(verb)
+            } yield Statement.Intransitive(action)
+
+          case AbstractSyntaxTree.Transitive(verb, _, obj) =>
+            for {
+              action  <- retrieveAction(verb)
+              itemRef <- retrieveItem(obj)
+            } yield Statement.Transitive(action, itemRef)
+
+          case AbstractSyntaxTree.Ditransitive(verb, _, directObj, indirectObj) =>
+            for {
+              action          <- retrieveAction(verb)
+              directItemRef   <- retrieveItem(directObj)
+              indirectItemRef <- retrieveItem(indirectObj)
+            } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
+
+          case _ => Left("The statement is wrong.")
+        }
+      } yield ResolverResult(statement)
+    }
+  }
+
+  def fromModel[M <: Model](implicit model: M): Builder[model.S] = s =>
+
+    new SimpleResolver {
+
+      def isSubSet(d1: ItemDescription, d2: ItemDescription): Boolean = {
+        def decorators(d: ItemDescription): Set[String] = {
+          @tailrec
+          def go(d: ItemDescription, acc: Set[String]): Set[String] = d match {
+            case DecoratedItem(decoration, item) => go(item, acc + decoration)
+            case _ => acc
           }
-        } yield ResolverResult(statement)
+          go(d, Set())
+        }
+        @tailrec
+        def base(d: ItemDescription): BaseItem = d match {
+          case i: BaseItem => i
+          case DecoratedItem(_, i) => base(i)
+        }
+
+        base(d1) == base(d2) && decorators(d1).subsetOf(decorators(d2))
       }
 
-      def retrieveItem(name: String): Either[String, ItemRef] = {
-        items get name toRight s"Couldn't understand $name"
-      }
+      override def actions: PartialFunction[String, Action] = s.actions
 
-      def retrieveAction(verb: String): Either[String, Action] =
-        actions get verb toRight s"Couldn't understand $verb."
+      override def items: PartialFunction[ItemDescription, ItemRef] = d =>
+        s.game.itemsInScope.find(i => isSubSet(d, i.description)) match {
+          case x if x.isDefined => x.get.itemRef
+        }
     }
 
-    SimpleResolver(actions, items)
-  }
 }

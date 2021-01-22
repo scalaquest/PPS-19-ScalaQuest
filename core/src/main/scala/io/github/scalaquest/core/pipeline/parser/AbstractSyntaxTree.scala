@@ -23,7 +23,7 @@ object AbstractSyntaxTree {
    * @param obj
    *   the object of the verbal predicate
    */
-  final case class Transitive(verb: String, subject: String, obj: String) extends AbstractSyntaxTree
+  final case class Transitive(verb: String, subject: String, obj: ItemDescription) extends AbstractSyntaxTree
 
   /**
    * Repesentation of a ditransitive sentence.
@@ -39,7 +39,7 @@ object AbstractSyntaxTree {
   final case class Ditransitive(
     verb: String,
     subject: String,
-    directObj: String,
-    indirectObj: String
+    directObj: ItemDescription,
+    indirectObj: ItemDescription
   ) extends AbstractSyntaxTree
 }
