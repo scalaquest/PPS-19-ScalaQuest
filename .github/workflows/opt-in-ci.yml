@@ -8,6 +8,7 @@ on:
 
 jobs:
   OptIn:
+    if: contains(github.event.head_commit.message, '[style]') || contains(github.event.head_commit.message, '[asm]')
     runs-on: ubuntu-latest
 
     steps:
