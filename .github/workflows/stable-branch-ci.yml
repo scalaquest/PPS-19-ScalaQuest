@@ -47,7 +47,9 @@ jobs:
       run: ./gradlew spotlessCheck
 
     - name: Compile all Scala sources
-      run: ./gradlew assemble
+      run: |
+       echo ${{ runner.os }}
+       ./gradlew assemble
 
     - name: Tests and checks
       run: ./gradlew check
