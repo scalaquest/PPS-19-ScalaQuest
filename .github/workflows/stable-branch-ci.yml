@@ -4,7 +4,6 @@ on:
   # Trigger the workflow on pushes and pull request, on stable branches
   push:
     branches:
-      - feature/ci-fix
       - main
       - dev
   pull_request:
@@ -43,13 +42,12 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Syntax and Style Check with Spotless
-      if: contains(runner.os, 'Linux') # run it on the entire matrix would be overkill
+      # run it on the entire matrix would be overkill
+      if: contains(runner.os, 'Linux')
       run: ./gradlew spotlessCheck
 
     - name: Compile all Scala sources
-      run: |
-       echo ${{ runner.os }}
-       ./gradlew assemble
+      run: ./gradlew assemble
 
     - name: Tests and checks
       run: ./gradlew check
