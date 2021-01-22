@@ -31,6 +31,7 @@ object Resolver {
 
   /**
    * It generates a [[Resolver]] with a standard implementation.
+   *
    * @param actions
    *   A [[Map]] that links the textual representation of the [[Action]] to the instance.
    * @param items
@@ -54,35 +55,31 @@ object Resolver {
     val retrieveAction: String => Either[String, Action] =
       verb => actions get verb toRight s"Couldn't understand $verb."
 
-    case object SimpleResolver extends Resolver {
+    // shortcut for implementing the Resolver, as it is a single method trait.
+    parserResult => {
+      for {
+        statement <- parserResult.tree match {
+          case AbstractSyntaxTree.Intransitive(verb, _) =>
+            for {
+              action <- retrieveAction(verb)
+            } yield Statement.Intransitive(action)
 
-      override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
-        for {
-          statement <- parserResult.tree match {
-            case AbstractSyntaxTree.Intransitive(verb, _) =>
-              for {
-                action <- retrieveAction(verb)
-              } yield Statement.Intransitive(action)
+          case AbstractSyntaxTree.Transitive(verb, _, obj) =>
+            for {
+              action  <- retrieveAction(verb)
+              itemRef <- retrieveItem(obj)
+            } yield Statement.Transitive(action, itemRef)
 
-            case AbstractSyntaxTree.Transitive(verb, _, obj) =>
-              for {
-                action  <- retrieveAction(verb)
-                itemRef <- retrieveItem(obj)
-              } yield Statement.Transitive(action, itemRef)
+          case AbstractSyntaxTree.Ditransitive(verb, _, directObj, indirectObj) =>
+            for {
+              action          <- retrieveAction(verb)
+              directItemRef   <- retrieveItem(directObj)
+              indirectItemRef <- retrieveItem(indirectObj)
+            } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
 
-            case AbstractSyntaxTree.Ditransitive(verb, _, directObj, indirectObj) =>
-              for {
-                action          <- retrieveAction(verb)
-                directItemRef   <- retrieveItem(directObj)
-                indirectItemRef <- retrieveItem(indirectObj)
-              } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
-
-            case _ => Left("The statement is wrong.")
-          }
-        } yield ResolverResult(statement)
-      }
+          case _ => Left("The statement is wrong.")
+        }
+      } yield ResolverResult(statement)
     }
-
-    SimpleResolver
   }
 }

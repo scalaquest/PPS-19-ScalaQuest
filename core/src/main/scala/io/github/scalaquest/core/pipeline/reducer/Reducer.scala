@@ -73,16 +73,8 @@ object Reducer {
    * @return
    *   A [[Reducer]], with the right type constraints.
    */
-  def apply[M <: Model](model: M)(state: model.S): Reducer[model.type, model.S, model.Reaction] = {
+  def apply[M <: Model](model: M)(state: model.S): Reducer[model.type, model.S, model.Reaction] =
+    // shortcut for implementing the Reducer, as it is a single method trait
+    interpreterResult => ReducerResult(model)(interpreterResult.reaction(state))
 
-    case object SimpleReducer extends Reducer[model.type, model.S, model.Reaction] {
-      override def reduce(
-        interpreterResult: InterpreterResult[model.Reaction]
-      ): ReducerResult[model.S] = {
-        ReducerResult(model)(interpreterResult.reaction(state))
-      }
-    }
-
-    SimpleReducer
-  }
 }

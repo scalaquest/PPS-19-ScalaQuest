@@ -96,31 +96,25 @@ object Interpreter {
 
     val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
 
-    case object SimpleInterpreter extends Interpreter[model.type, model.Reaction] {
+    // shortcut for implementing the Interpreter, as it is a single method trait
+    resolverResult =>
+      for {
+        maybeReaction <- resolverResult.statement match {
+          case Statement.Intransitive(action) =>
+            ground
+              .use(action, state)
+              .toRight(s"Could not recognize action")
 
-      override def interpret(
-        resolverResult: ResolverResult
-      ): Either[String, InterpreterResult[model.Reaction]] =
-        for {
-          maybeReaction <- resolverResult.statement match {
-            case Statement.Intransitive(action) =>
-              ground
-                .use(action, state)
-                .toRight(s"Could not recognize action")
+          case Statement.Transitive(action, refToItem(item)) =>
+            item
+              .use(action, state)
+              .toRight(s"Couldn't recognize action on the given item")
 
-            case Statement.Transitive(action, refToItem(item)) =>
-              item
-                .use(action, state)
-                .toRight(s"Couldn't recognize action on the given item")
-
-            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
-              directObj
-                .use(action, state, Some(indirectObj))
-                .toRight(s"Couldn't recognize action on the given item with the other item")
-          }
-        } yield InterpreterResult(model)(maybeReaction)
-    }
-
-    SimpleInterpreter
+          case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
+            directObj
+              .use(action, state, Some(indirectObj))
+              .toRight(s"Couldn't recognize action on the given item with the other item")
+        }
+      } yield InterpreterResult(model)(maybeReaction)
   }
 }
