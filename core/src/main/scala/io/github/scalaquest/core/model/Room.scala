@@ -10,6 +10,7 @@ object Direction extends Enumeration {
 
 trait Room {
   def name: String
+  // def items: Set[I]
   def neighbors(direction: Direction): Option[Room]
 }
 
