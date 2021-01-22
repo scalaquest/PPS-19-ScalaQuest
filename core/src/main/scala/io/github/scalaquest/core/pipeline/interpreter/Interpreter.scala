@@ -97,7 +97,7 @@ object Interpreter {
     val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
 
     // shortcut for implementing the Interpreter, as it is a single method trait
-    resolverResult =>
+    (resolverResult: ResolverResult) =>
       for {
         maybeReaction <- resolverResult.statement match {
           case Statement.Intransitive(action) =>

@@ -56,7 +56,7 @@ object Resolver {
       verb => actions get verb toRight s"Couldn't understand $verb."
 
     // shortcut for implementing the Resolver, as it is a single method trait.
-    parserResult => {
+    (parserResult: ParserResult) => {
       for {
         statement <- parserResult.tree match {
           case AbstractSyntaxTree.Intransitive(verb, _) =>

@@ -75,6 +75,7 @@ object Reducer {
    */
   def apply[M <: Model](model: M)(state: model.S): Reducer[model.type, model.S, model.Reaction] =
     // shortcut for implementing the Reducer, as it is a single method trait
-    interpreterResult => ReducerResult(model)(interpreterResult.reaction(state))
+    (interpreterResult: InterpreterResult[model.Reaction]) =>
+      ReducerResult(model)(interpreterResult.reaction(state))
 
 }
