@@ -61,7 +61,8 @@ object Reducer {
     apply(model)(_)
 
   /**
-   * It generates a [[Reducer]] with the right type constraints.
+   * It generates a [[Reducer]] with the right type constraints, and a standard implementation based
+   * on them.
    * @param model
    *   The concrete instance of the [[Model]] in use.
    * @param state
@@ -74,7 +75,7 @@ object Reducer {
    */
   def apply[M <: Model](model: M)(state: model.S): Reducer[model.type, model.S, model.Reaction] = {
 
-    case class SimpleReducer(state: model.S) extends Reducer[model.type, model.S, model.Reaction] {
+    case object SimpleReducer extends Reducer[model.type, model.S, model.Reaction] {
       override def reduce(
         interpreterResult: InterpreterResult[model.Reaction]
       ): ReducerResult[model.S] = {
@@ -82,6 +83,6 @@ object Reducer {
       }
     }
 
-    SimpleReducer(state)
+    SimpleReducer
   }
 }

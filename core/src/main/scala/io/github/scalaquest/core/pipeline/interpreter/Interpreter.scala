@@ -5,8 +5,8 @@ import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
 /**
  * A pipeline component that takes a [[Statement]] (wrapped into a [[ResolverResult]] ) and returns
- * a [[Model.Reaction]] wrapped into an [[InterpreterResult]]. The execution may fail, when no
- * [[Model.Reaction]] is returned.
+ * a [[Model.Reaction]] wrapped into an [[InterpreterResult]]. The execution may fail, when the
+ * given [[Statement]] does not generate a [[Model.Reaction]].
  * @tparam M
  *   The concrete type of the [[Model]] in use.
  * @tparam R
@@ -70,7 +70,8 @@ object Interpreter {
   ): Builder[model.type, model.S, model.Reaction] = apply(model)(_, itemDict, ground)
 
   /**
-   * It generates an [[Interpreter]] with the right type constraints.
+   * It generates an [[Interpreter]] with the right type constraints, and a standard implementation
+   * based on them.
    * @param model
    *   The concrete instance of the [[Model]] in use.
    * @param state
@@ -93,9 +94,9 @@ object Interpreter {
     ground: model.G
   ): Interpreter[model.type, model.Reaction] = {
 
-    case class SimpleInterpreter(state: model.S) extends Interpreter[model.type, model.Reaction] {
+    val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
 
-      val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
+    case object SimpleInterpreter extends Interpreter[model.type, model.Reaction] {
 
       override def interpret(
         resolverResult: ResolverResult
@@ -120,6 +121,6 @@ object Interpreter {
         } yield InterpreterResult(model)(maybeReaction)
     }
 
-    SimpleInterpreter(state)
+    SimpleInterpreter
   }
 }

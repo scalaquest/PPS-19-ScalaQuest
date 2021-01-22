@@ -1,18 +1,60 @@
 package io.github.scalaquest.core.pipeline.resolver
 
 import io.github.scalaquest.core.model.{Action, ItemRef}
+import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
 
+/**
+ * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and
+ * returns a [[Statement]] wrapped into an [[ResolverResult]]. The execution may fail, when the
+ * given [[AbstractSyntaxTree]] has not a match with the [[Model]] components.
+ */
 trait Resolver {
+
+  /**
+   * Triggers the [[Resolver]] execution.
+   * @param parserResult
+   *   A wrapper for the input [[AbstractSyntaxTree]].
+   * @return
+   *   An [[Either]] describing the resolver result. If the [[Resolver]] fails, the result is a
+   *   [[Left]] describing what went wrong. Otherwise, it is a [[Right]] with the [[ResolverResult]]
+   *   (wrapper for a [[Statement]] ).
+   */
   def resolve(parserResult: ParserResult): Either[String, ResolverResult]
 }
 
+/**
+ * Companion object for the [[Resolver]] trait. It exposes the [[Resolver::apply()]] to instantiate
+ * the [[Resolver]] .
+ */
 object Resolver {
 
+  /**
+   * It generates a [[Resolver]] with a standard implementation.
+   * @param actions
+   *   A [[Map]] that links the textual representation of the [[Action]] to the instance.
+   * @param items
+   *   A [[Map]] that links the textual representation of the [[ItemRef]] to the instance.
+   * @return
+   *   A standard implementation of the [[Resolver]].
+   */
   def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
 
-    case class SimpleResolver(actions: Map[String, Action], items: Map[String, ItemRef])
-      extends Resolver {
+    /**
+     * Higher order function that extracts the [[ItemRef]] from its textual representation. It may
+     * fail, if the given representation does not match with an [[ItemRef]].
+     */
+    val retrieveItem: String => Either[String, ItemRef] =
+      name => items get name toRight s"Couldn't understand $name"
+
+    /**
+     * Higher order function that extracts the [[Action]] from its textual representation. It may
+     * fail, if the given representation does not match with an [[Action]].
+     */
+    val retrieveAction: String => Either[String, Action] =
+      verb => actions get verb toRight s"Couldn't understand $verb."
+
+    case object SimpleResolver extends Resolver {
 
       override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
         for {
@@ -39,15 +81,8 @@ object Resolver {
           }
         } yield ResolverResult(statement)
       }
-
-      def retrieveItem(name: String): Either[String, ItemRef] = {
-        items get name toRight s"Couldn't understand $name"
-      }
-
-      def retrieveAction(verb: String): Either[String, Action] =
-        actions get verb toRight s"Couldn't understand $verb."
     }
 
-    SimpleResolver(actions, items)
+    SimpleResolver
   }
 }
