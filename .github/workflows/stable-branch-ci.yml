@@ -1,0 +1,53 @@
+name: Stable Branches CI
+
+on:
+  # Trigger the workflow on pushes and pull request, on stable branches
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+ StabilityCheck:
+
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: true
+    matrix:
+      os: [ ubuntu-latest, macOS-latest, windows-latest ]
+
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # The project uses java 11 (LTS) with scala 2.13
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    # Use cache if available for Gradle
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Syntax and Style Check with Spotless
+      # run it on the entire matrix would be overkill
+      if: ${{ runner.os }} == 'Linux'
+      run: ./gradlew spotlessCheck
+
+    - name: Compile all Scala sources
+      run: ./gradlew assemble
+
+    - name: Tests and checks
+      run: ./gradlew check
