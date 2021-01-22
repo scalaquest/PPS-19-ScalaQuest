@@ -43,10 +43,8 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Syntax and Style Check with Spotless
-      if: ${{ matrix.os }} == 'ubuntu-latest'      # run it on the entire matrix would be overkill
-      run: |
-        echo ${{ matrix.os }}
-        ./gradlew spotlessCheck
+      if: contains(runner.os, 'Linux') # run it on the entire matrix would be overkill
+      run: ./gradlew spotlessCheck
 
     - name: Compile all Scala sources
       run: |
