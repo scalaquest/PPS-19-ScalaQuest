@@ -31,7 +31,7 @@ trait Interpreter[M <: Model, R] {
  * [[Interpreter]] with the right constraints between types.
  *
  * It exposes an [[Interpreter::apply()]] to build an [[Interpreter]] <b>with the right types</b>,
- * as we defined some constraints between the used types. In addition, it provides a
+ * as some constraints between the used types are defined. In addition, it provides a
  * [[Interpreter::builder()]] utility used into the pipeline to inject the [[Model.State]] in a
  * separate phase, compared to passing the state directly to [[Interpreter::interpret()]].
  */
