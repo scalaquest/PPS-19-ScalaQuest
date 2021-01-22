@@ -4,6 +4,7 @@ on:
   # Trigger the workflow on pushes and pull request, on stable branches
   push:
     branches:
+      - feature/ci-fix
       - main
       - dev
   pull_request:
