@@ -1,18 +1,18 @@
-name: Gradle CI on main branch
+name: Stable Branches CI
 
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
+  # Trigger the workflow on pushes and pull request, on stable branches
   push:
     branches:
       - main
-      - feature/new-gradle-build #to be removed
+      - dev
   pull_request:
     branches:
       - main
+      - dev
 
 jobs:
- Routine:
+ StabilityCheck:
 
   runs-on: ${{ matrix.os }}
   strategy:
@@ -21,7 +21,6 @@ jobs:
       os: [ ubuntu-latest, macOS-latest, windows-latest ]
 
   steps:
-
     - name: Checkout repository
       uses: actions/checkout@v2
 
@@ -42,13 +41,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-
-    - name: Spotless check
-      if: ${{ runner.os }} == 'Linux' #run it on the entire matrix would be overkill
+    - name: Syntax and Style Check with Spotless
+      # run it on the entire matrix would be overkill
+      if: ${{ runner.os }} == 'Linux'
       run: ./gradlew spotlessCheck
 
-    - name: Gradle assemble
+    - name: Compile all Scala sources
       run: ./gradlew assemble
 
-    - name: Gradle check
+    - name: Tests and checks
       run: ./gradlew check
