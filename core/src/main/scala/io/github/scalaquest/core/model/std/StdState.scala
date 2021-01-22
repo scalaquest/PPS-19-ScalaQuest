@@ -11,7 +11,8 @@ trait StdState extends Model {
 
   override type S = StdState
 
-  case class StdState(actions: Map[String, Action], game: StdGameState, messages: Seq[Message]) extends State {
+  case class StdState(actions: Map[String, Action], game: StdGameState, messages: Seq[Message])
+    extends State {
 
     override def extractRefs: Map[ItemRef, I] = {
       val allItems = game.hiddenItems ++ game.player.bag ++ game.itemsInRooms.flatMap(_._2)

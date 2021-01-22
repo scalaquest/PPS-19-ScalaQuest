@@ -14,8 +14,11 @@ trait GenericItem extends CommonBase {
   /**
    * Standard implementation of the common GenericItem.
    */
-  case class GenericItem(description: ItemDescription, itemRef: ItemRef, additionalBehaviors: Behavior*)
-    extends CommonItems.GenericItem {
+  case class GenericItem(
+    description: ItemDescription,
+    itemRef: ItemRef,
+    additionalBehaviors: Behavior*
+  ) extends CommonItems.GenericItem {
     override def behaviors: Seq[Behavior] = additionalBehaviors
   }
 }

@@ -1,7 +1,13 @@
 package io.github.scalaquest.core.pipeline.resolver
 
 import io.github.scalaquest.core.model.{Action, ItemRef, Model}
-import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, BaseItem, DecoratedItem, ItemDescription, ParserResult}
+import io.github.scalaquest.core.pipeline.parser.{
+  AbstractSyntaxTree,
+  BaseItem,
+  DecoratedItem,
+  ItemDescription,
+  ParserResult
+}
 
 import scala.annotation.tailrec
 
@@ -64,34 +70,37 @@ object Resolver {
     }
   }
 
-  def fromModel[M <: Model](implicit model: M): Builder[model.S] = s =>
+  def fromModel[M <: Model](implicit model: M): Builder[model.S] =
+    s =>
+      new SimpleResolver {
 
-    new SimpleResolver {
-
-      def isSubSet(d1: ItemDescription, d2: ItemDescription): Boolean = {
-        def decorators(d: ItemDescription): Set[String] = {
-          @tailrec
-          def go(d: ItemDescription, acc: Set[String]): Set[String] = d match {
-            case DecoratedItem(decoration, item) => go(item, acc + decoration)
-            case _ => acc
+        def isSubSet(d1: ItemDescription, d2: ItemDescription): Boolean = {
+          def decorators(d: ItemDescription): Set[String] = {
+            @tailrec
+            def go(d: ItemDescription, acc: Set[String]): Set[String] =
+              d match {
+                case DecoratedItem(decoration, item) => go(item, acc + decoration)
+                case _                               => acc
+              }
+            go(d, Set())
           }
-          go(d, Set())
-        }
-        @tailrec
-        def base(d: ItemDescription): BaseItem = d match {
-          case i: BaseItem => i
-          case DecoratedItem(_, i) => base(i)
+          @tailrec
+          def base(d: ItemDescription): BaseItem =
+            d match {
+              case i: BaseItem         => i
+              case DecoratedItem(_, i) => base(i)
+            }
+
+          base(d1) == base(d2) && decorators(d1).subsetOf(decorators(d2))
         }
 
-        base(d1) == base(d2) && decorators(d1).subsetOf(decorators(d2))
+        override def actions: PartialFunction[String, Action] = s.actions
+
+        override def items: PartialFunction[ItemDescription, ItemRef] =
+          d =>
+            s.game.itemsInScope.find(i => isSubSet(d, i.description)) match {
+              case x if x.isDefined => x.get.itemRef
+            }
       }
-
-      override def actions: PartialFunction[String, Action] = s.actions
-
-      override def items: PartialFunction[ItemDescription, ItemRef] = d =>
-        s.game.itemsInScope.find(i => isSubSet(d, i.description)) match {
-          case x if x.isDefined => x.get.itemRef
-        }
-    }
 
 }

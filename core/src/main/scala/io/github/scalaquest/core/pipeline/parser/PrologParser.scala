@@ -17,17 +17,21 @@ trait Helpers {
 
   object itemDescription {
 
-    private def toItemDescription(t: Term): ItemDescription = t match {
-      case Atom(name) => BaseItem(name)
-      case Compound(Atom(description), item, Nil) => DecoratedItem(description, toItemDescription(item))
-    }
+    private def toItemDescription(t: Term): ItemDescription =
+      t match {
+        case Atom(name) => BaseItem(name)
+        case Compound(Atom(description), item, Nil) =>
+          DecoratedItem(description, toItemDescription(item))
+      }
 
-    def unapply(t: Seq[Term]): Option[Seq[ItemDescription]] = t match {
-      case (obj @ (_: Compound | _: Term)) :: Nil =>
-        Some(Seq(toItemDescription(obj)))
-      case (directObj @ (_: Compound | _: Term)) :: (indirectObj @ (_: Compound | _: Term)) :: Nil =>
-        Some(Seq(toItemDescription(directObj), toItemDescription(indirectObj)))
-    }
+    def unapply(t: Seq[Term]): Option[Seq[ItemDescription]] =
+      t match {
+        case (obj @ (_: Compound | _: Term)) :: Nil =>
+          Some(Seq(toItemDescription(obj)))
+        case (directObj @ (_: Compound | _: Term)) :: (indirectObj @ (_: Compound |
+            _: Term)) :: Nil =>
+          Some(Seq(toItemDescription(directObj), toItemDescription(indirectObj)))
+      }
   }
 }
 
@@ -54,7 +58,11 @@ abstract class PrologParser extends Parser with Helpers {
           Some(AbstractSyntaxTree.Intransitive(verb, subject))
         case Compound(Atom(verb), Atom(subject), itemDescription(obj :: Nil)) =>
           Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
-        case Compound(Atom(verb), Atom(subject), itemDescription(directObj :: indirectObj :: Nil)) =>
+        case Compound(
+              Atom(verb),
+              Atom(subject),
+              itemDescription(directObj :: indirectObj :: Nil)
+            ) =>
           Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
         case _ => None
       }

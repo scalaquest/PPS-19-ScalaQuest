@@ -14,7 +14,8 @@ trait Key extends CommonBase {
   /**
    * Standard implementation of the common Key item.
    */
-  case class Key(description: ItemDescription, itemRef: ItemRef, additionalBehaviors: Behavior*) extends CommonItems.Key {
+  case class Key(description: ItemDescription, itemRef: ItemRef, additionalBehaviors: Behavior*)
+    extends CommonItems.Key {
     override val behaviors: Seq[Behavior] = additionalBehaviors
   }
 }
