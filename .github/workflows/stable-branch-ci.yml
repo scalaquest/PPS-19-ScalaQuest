@@ -43,7 +43,7 @@ jobs:
 
     - name: Syntax and Style Check with Spotless
       # run it on the entire matrix would be overkill
-      if: ${{ runner.os }} == 'Linux'
+      if: contains(runner.os, 'Linux')
       run: ./gradlew spotlessCheck
 
     - name: Compile all Scala sources
