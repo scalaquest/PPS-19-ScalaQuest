@@ -98,8 +98,8 @@ object Resolver {
 
         override def items: PartialFunction[ItemDescription, ItemRef] =
           d =>
-            s.game.itemsInScope.find(i => isSubSet(d, i.description)) match {
-              case x if x.isDefined => x.get.itemRef
+            s.game.itemsInScope.filter(i => isSubSet(d, i.description)).toList match {
+              case x :: Nil => x.itemRef
             }
       }
 
