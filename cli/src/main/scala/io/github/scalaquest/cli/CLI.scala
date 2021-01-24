@@ -32,7 +32,7 @@ object CLI {
         })
         _ <- putStrLn(out)
         _ <-
-          if (!nextState.game.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher)
+          if (!nextState.matchState.ended) UIO.succeed(nextState) flatMap gameLoop(game, pusher)
           else ZIO.unit
       } yield ()
 

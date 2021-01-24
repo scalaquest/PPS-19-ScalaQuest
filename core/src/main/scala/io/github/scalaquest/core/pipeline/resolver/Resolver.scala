@@ -1,5 +1,8 @@
 package io.github.scalaquest.core.pipeline.resolver
 
+import io.github.scalaquest.core.model.{Action, ItemRef}
+import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
 import io.github.scalaquest.core.model.{Action, ItemRef, Model}
 import io.github.scalaquest.core.pipeline.parser.{
   AbstractSyntaxTree,
@@ -11,24 +14,42 @@ import io.github.scalaquest.core.pipeline.parser.{
 
 import scala.annotation.tailrec
 
+/**
+ * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and
+ * returns a [[Statement]] wrapped into an [[ResolverResult]]. The execution may fail, when the
+ * given [[AbstractSyntaxTree]] has not a match with the [[Model]] components.
+ */
 trait Resolver {
+
+  /**
+   * Triggers the [[Resolver]] execution.
+   * @param parserResult
+   *   A wrapper for the input [[AbstractSyntaxTree]].
+   * @return
+   *   An [[Either]] describing the resolver result. If the [[Resolver]] fails, the result is a
+   *   [[Left]] describing what went wrong. Otherwise, it is a [[Right]] with the [[ResolverResult]]
+   *   (wrapper for a [[Statement]] ).
+   */
   def resolve(parserResult: ParserResult): Either[String, ResolverResult]
 }
 
-/*
- * Ci sono due chiavi:
- * - chiave rossa
- * - chiave blu
- *
- * Chiedo "prendi la chiave":
- * - se il resolver non risolve:
- *     Interpreter cerca "chiave": ne trova 2
- * - se il resolver risolve:
- *     Resolver dice "chiave" si riferisce a due oggetti
+/**
+ * Companion object for the [[Resolver]] trait. It exposes the [[Resolver::apply()]] to instantiate
+ * the [[Resolver]] .
  */
-
 object Resolver {
 
+  /**
+   * It generates a [[Resolver]] with a standard implementation.
+   *
+   * @param actions
+   *   A [[Map]] that links the textual representation of the [[Action]] to the instance.
+   * @param items
+   *   A [[Map]] that links the textual representation of the [[ItemRef]] to the instance.
+   * @return
+   *   A standard implementation of the [[Resolver]].
+   */
+  def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
   type Builder[S] = S => Resolver
 
   abstract class SimpleResolver extends Resolver {

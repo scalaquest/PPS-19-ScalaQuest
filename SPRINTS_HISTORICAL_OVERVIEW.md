@@ -55,3 +55,15 @@ Useful links:
 - [(Issue) Deepen model, interpreter and resolver component](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/7)
 - [(Issue) Deepen Prolog engine, parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
 - [(Issue) Improve Scaladoc format rules](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/29)
+
+## Sprint 4 (17th January - 24th January)
+
+In this Sprint we closed the base structure tasks of the previous Sprint, and we continued working divided in teams: we finished Model's ScalaDoc and refactoring, and started a re-organization of the `ItemRef` concept, as an `AST.
+Additionally, we started some minor tasks, as an automation structure for the report, and CI optimization,
+
+Useful links:
+- [(Issue) Re-organize Model packages, ScalaDoc](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/35)
+- [(Issue) Represent ItemRefs as an ADT](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/30)
+- [(Issue) Report basic structure](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/20)
+- [(Issue) CI optimization](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/23)
+- [(Issue) Improve Scaladoc format rules](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/29)
