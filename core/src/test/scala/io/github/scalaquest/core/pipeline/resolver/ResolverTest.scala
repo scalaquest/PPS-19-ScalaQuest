@@ -38,7 +38,7 @@ class ResolverTest extends AnyWordSpec {
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Transitive Statement" in {
-        for { _ <- maybeStatement.left } yield fail("" + maybeStatement.left)
+        for { _ <- maybeStatement.left } yield fail("Resolver has not produced any statement")
 
         maybeStatement map {
           case Statement.Transitive(action, obj) if action == Take && obj == appleItemRef =>

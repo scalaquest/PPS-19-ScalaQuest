@@ -47,7 +47,11 @@ object TestsUtils {
   )
 
   val apple: GenericItem =
-    SimpleGenericItem(ItemDescription("apple", "red"), appleItemRef, SimpleTakeable())
+    SimpleGenericItem(
+      ItemDescription("apple", "big", "red", "juicy"),
+      appleItemRef,
+      SimpleTakeable()
+    )
   val key: Key = SimpleKey(ItemDescription("key"), keyItemRef)
 
   val door: Door =
@@ -66,9 +70,9 @@ object TestsUtils {
   val simpleState: SimpleState = SimpleState(
     actionsMap,
     matchState = SimpleMatchState(
-      player = SimplePlayer(bag = Set(), location = startRoom),
+      player = SimplePlayer(bag = Set(apple), location = startRoom),
       ended = false,
-      geography = Map(startRoom -> Set(), targetRoom -> Set()),
+      geography = Map(startRoom -> Set(door, key), targetRoom -> Set()),
       Set()
     ),
     messages = Seq()
