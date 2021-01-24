@@ -1,13 +1,6 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.TestsUtils.{
-  actionsMap,
-  appleItemRef,
-  doorItemRef,
-  itemsMap,
-  keyItemRef,
-  simpleState
-}
+import io.github.scalaquest.core.TestsUtils.{appleItemRef, doorItemRef, keyItemRef, simpleState}
 import io.github.scalaquest.core.model.Action.Common.{Open, Take}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, BaseItem, SimpleParserResult}
@@ -16,8 +9,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class ResolverTest extends AnyWordSpec {
   "A Resolver" when {
     val model    = SimpleModel
-    val state    = simpleState
-    val resolver = Resolver.builder(model)(state)
+    val resolver = Resolver.builder(model)(simpleState)
 
     "receives an Intransitive AST" should {
       val parserResult   = SimpleParserResult(AbstractSyntaxTree.Intransitive("open", "you"))
@@ -39,11 +31,13 @@ class ResolverTest extends AnyWordSpec {
 
     "receives an Transitive AST" should {
       val parserResult =
-        SimpleParserResult(AbstractSyntaxTree.Transitive("take", "you", BaseItem("apple")))
+        SimpleParserResult(
+          AbstractSyntaxTree.Transitive("take", "you", BaseItem("apple"))
+        )
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Transitive Statement" in {
-        for { _ <- maybeStatement.left } yield fail("Resolver has not produced any statement")
+        for { _ <- maybeStatement.left } yield fail("" + maybeStatement.left)
 
         maybeStatement map {
           case Statement.Transitive(action, obj) if action == Take && obj == appleItemRef =>
