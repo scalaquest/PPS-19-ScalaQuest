@@ -58,24 +58,8 @@ object Reducer {
    *   A [[Builder]] of [[Reducer]] instances, with the right type constraints.
    */
   def builder[M <: Model](implicit model: M): Builder[model.type, model.S, model.Reaction] =
-    apply(model)(_)
-
-  /**
-   * It generates a [[Reducer]] with the right type constraints, and a standard implementation based
-   * on them.
-   * @param model
-   *   The concrete instance of the [[Model]] in use.
-   * @param state
-   *   The concrete instance of the [[Model.State]] in use. The [[Model.State]] type must be derived
-   *   from the `model` passed as parameter.
-   * @tparam M
-   *   The concrete type of the [[Model]] in use.
-   * @return
-   *   A [[Reducer]], with the right type constraints.
-   */
-  def apply[M <: Model](model: M)(state: model.S): Reducer[model.type, model.S, model.Reaction] =
     // shortcut for implementing the Reducer, as it is a single method trait
-    (interpreterResult: InterpreterResult[model.Reaction]) =>
-      ReducerResult(model)(interpreterResult.reaction(state))
-
+    state =>
+      (interpreterResult: InterpreterResult[model.Reaction]) =>
+        ReducerResult(model)(interpreterResult.reaction(state))
 }

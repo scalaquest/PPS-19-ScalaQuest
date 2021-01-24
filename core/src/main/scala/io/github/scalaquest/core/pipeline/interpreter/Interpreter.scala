@@ -67,54 +67,29 @@ object Interpreter {
   def builder[M <: Model](model: M)(
     itemDict: Map[ItemRef, model.I],
     ground: model.G
-  ): Builder[model.type, model.S, model.Reaction] = apply(model)(_, itemDict, ground)
+  ): Builder[model.type, model.S, model.Reaction] =
+    state => {
+      val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
 
-  /**
-   * It generates an [[Interpreter]] with the right type constraints, and a standard implementation
-   * based on them.
-   * @param model
-   *   The concrete instance of the [[Model]] in use.
-   * @param state
-   *   The concrete instance of the [[Model.State]] in use. The [[Model.State]] type must be derived
-   *   from the `model` passed as parameter.
-   * @param itemDict
-   *   A [[Map]] that indicates the [[ItemRef]] of each ot the [[Model.Item]] in use. The
-   *   [[Model.Item]] type must be derived from the `model` passed as parameter.
-   * @param ground
-   *   The [[Model.Ground]] instance of the match. he [[Model.Ground]] type must be derived from the
-   *   `model` passed as parameter.
-   * @tparam M
-   *   The concrete type of the [[Model]] in use.
-   * @return
-   *   An [[Interpreter]], with the right type constraints.
-   */
-  def apply[M <: Model](model: M)(
-    state: model.S,
-    itemDict: Map[ItemRef, model.I],
-    ground: model.G
-  ): Interpreter[model.type, model.Reaction] = {
+      // shortcut for implementing the Interpreter, as it is a single method trait
+      (resolverResult: ResolverResult) =>
+        for {
+          maybeReaction <- resolverResult.statement match {
+            case Statement.Intransitive(action) =>
+              ground
+                .use(action, state)
+                .toRight(s"Could not recognize action")
 
-    val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
+            case Statement.Transitive(action, refToItem(item)) =>
+              item
+                .use(action, state)
+                .toRight(s"Couldn't recognize action on the given item")
 
-    // shortcut for implementing the Interpreter, as it is a single method trait
-    (resolverResult: ResolverResult) =>
-      for {
-        maybeReaction <- resolverResult.statement match {
-          case Statement.Intransitive(action) =>
-            ground
-              .use(action, state)
-              .toRight(s"Could not recognize action")
-
-          case Statement.Transitive(action, refToItem(item)) =>
-            item
-              .use(action, state)
-              .toRight(s"Couldn't recognize action on the given item")
-
-          case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
-            directObj
-              .use(action, state, Some(indirectObj))
-              .toRight(s"Couldn't recognize action on the given item with the other item")
-        }
-      } yield InterpreterResult(model)(maybeReaction)
-  }
+            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
+              directObj
+                .use(action, state, Some(indirectObj))
+                .toRight(s"Couldn't recognize action on the given item with the other item")
+          }
+        } yield InterpreterResult(model)(maybeReaction)
+    }
 }

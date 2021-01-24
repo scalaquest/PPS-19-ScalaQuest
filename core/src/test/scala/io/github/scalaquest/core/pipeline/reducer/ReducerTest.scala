@@ -8,7 +8,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ReducerTest extends AnyWordSpec {
   "A Reducer" when {
-    val reducer = Reducer(SimpleModel)(simpleState)
+    val reducer = Reducer.builder(SimpleModel)(simpleState)
 
     "given a Reaction" should {
       // an Interpreter Result with a Reaction that adds an apple to the bag

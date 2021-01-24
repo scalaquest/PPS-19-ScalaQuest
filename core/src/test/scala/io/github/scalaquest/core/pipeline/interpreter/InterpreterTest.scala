@@ -20,7 +20,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class InterpreterTest extends AnyWordSpec {
   "An Interpreter" when {
-    val interpreter = Interpreter(SimpleModel)(simpleState, refItemDictionary, StdGround)
+    val interpreter = Interpreter.builder(SimpleModel)(refItemDictionary, StdGround)(simpleState)
 
     "given an Intransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.North)))
