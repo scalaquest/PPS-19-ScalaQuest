@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.model.BaseItem
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexerResult
 import org.scalatest.wordspec.AnyWordSpec

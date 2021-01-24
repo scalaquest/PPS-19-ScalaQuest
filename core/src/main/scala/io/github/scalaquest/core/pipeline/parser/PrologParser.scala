@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.model.{BaseItem, DecoratedItem, ItemDescription}
 import io.github.scalaquest.core.parsing.engine.Engine
 import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult

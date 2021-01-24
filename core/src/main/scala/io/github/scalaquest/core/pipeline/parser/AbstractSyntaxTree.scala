@@ -1,5 +1,7 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.model.ItemDescription
+
 /** Data structure representing the possible output of the parsing operation. */
 sealed trait AbstractSyntaxTree
 

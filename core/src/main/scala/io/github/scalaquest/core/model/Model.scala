@@ -1,7 +1,5 @@
 package io.github.scalaquest.core.model
 
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
-
 trait Model {
   type S <: State
   type I <: Item

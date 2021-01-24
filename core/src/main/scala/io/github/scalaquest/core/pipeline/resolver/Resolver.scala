@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.{Action, ItemRef, Model}
-import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ItemDescription, ParserResult}
+import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Model}
+import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
 
 /**
  * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and

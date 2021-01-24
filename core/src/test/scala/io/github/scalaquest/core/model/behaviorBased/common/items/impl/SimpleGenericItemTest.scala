@@ -1,13 +1,12 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
   SimpleGenericItem,
   SimpleTakeable
 }
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 
 class SimpleGenericItemTest extends AnyWordSpec {
   "A GenericItem" when {

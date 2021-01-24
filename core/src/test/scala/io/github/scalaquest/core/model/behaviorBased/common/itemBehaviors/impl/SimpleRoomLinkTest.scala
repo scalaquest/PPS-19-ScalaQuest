@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
 import io.github.scalaquest.core.model.Action.Common.Enter
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleDoor,
   SimpleOpenable,
@@ -10,7 +10,6 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleState,
   geographyLens
 }
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleRoomLinkTest extends AnyWordSpec {

@@ -2,7 +2,7 @@ package io.github.scalaquest.core
 
 import io.github.scalaquest.core.model.Action.Common.{Open, Take}
 import io.github.scalaquest.core.model.Room.Direction
-import io.github.scalaquest.core.model.{Action, ItemRef, Room}
+import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Room}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedItem,
   Door,
@@ -20,7 +20,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleState,
   SimpleTakeable
 }
-import io.github.scalaquest.core.pipeline.parser.{BaseItem, DecoratedItem, ItemDescription}
+import io.github.scalaquest.core.model.DecoratedItem
 import monocle.Lens
 import monocle.macros.GenLens
 

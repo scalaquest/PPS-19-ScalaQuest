@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
 import io.github.scalaquest.core.model.Action.Common.Open
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   Openable,
   SimpleGenericItem,
@@ -12,7 +12,6 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   geographyLens,
   playerBagLens
 }
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleOpenableTest extends AnyWordSpec {

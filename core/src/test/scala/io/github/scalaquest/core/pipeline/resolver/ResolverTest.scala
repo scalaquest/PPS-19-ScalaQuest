@@ -2,8 +2,9 @@ package io.github.scalaquest.core.pipeline.resolver
 
 import io.github.scalaquest.core.TestsUtils.{appleItemRef, doorItemRef, keyItemRef, simpleState}
 import io.github.scalaquest.core.model.Action.Common.{Open, Take}
+import io.github.scalaquest.core.model.BaseItem
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
-import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, BaseItem, SimpleParserResult}
+import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, SimpleParserResult}
 import org.scalatest.wordspec.AnyWordSpec
 
 class ResolverTest extends AnyWordSpec {

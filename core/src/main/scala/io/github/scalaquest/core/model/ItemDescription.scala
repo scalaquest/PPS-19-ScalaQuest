@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.pipeline.parser
+package io.github.scalaquest.core.model
 
 import scala.annotation.tailrec
 

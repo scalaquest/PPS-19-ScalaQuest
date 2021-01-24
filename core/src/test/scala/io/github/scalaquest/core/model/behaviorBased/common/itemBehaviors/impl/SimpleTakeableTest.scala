@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
 import io.github.scalaquest.core.model.Action.Common.Take
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleGenericItem,
   SimpleState,
@@ -10,7 +10,6 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   geographyLens,
   playerBagLens
 }
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleTakeableTest extends AnyWordSpec {

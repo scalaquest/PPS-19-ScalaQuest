@@ -1,9 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.items.{CommonItems, SimpleCommonItems}
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 
 /**
  * The trait makes possible to mix into the [[SimpleCommonItems]] the standard implementation of

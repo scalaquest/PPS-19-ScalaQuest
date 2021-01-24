@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
@@ -9,7 +9,6 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleOpenable,
   SimpleTakeable
 }
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 
 class KeyTest extends AnyWordSpec {
   "A Key" when {

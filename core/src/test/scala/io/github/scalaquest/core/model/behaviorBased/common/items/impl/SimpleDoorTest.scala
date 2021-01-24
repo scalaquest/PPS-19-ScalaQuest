@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
 import io.github.scalaquest.core.model.Room.Direction
-import io.github.scalaquest.core.model.{ItemRef, Room}
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef, Room}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleDoor,
   SimpleEatable,
@@ -9,7 +9,6 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleRoomLink,
   SimpleTakeable
 }
-import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleDoorTest extends AnyWordSpec {
