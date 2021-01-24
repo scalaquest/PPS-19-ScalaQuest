@@ -7,5 +7,5 @@ trait GameState[I <: Model#Item] {
   def itemsInRooms: Map[Room, Set[I]]
   // def itemsInRoom(room: Room): Set[I]
 
-  def itemsInScope: Set[I] = player.bag ++ itemsInRooms.getOrElse(player.location, Set()) // TODO: unsafe
+  def itemsInScope: Set[I] = player.bag ++ itemsInRooms.getOrElse(player.location, Set())
 }
