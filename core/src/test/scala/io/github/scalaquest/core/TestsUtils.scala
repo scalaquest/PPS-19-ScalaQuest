@@ -7,19 +7,20 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedItem,
   Door,
   GenericItem,
-  SimpleGenericItem,
   Key,
   Openable,
-  SimpleOpenable,
   RoomLink,
-  SimpleRoomLink,
-  SimpleMatchState,
-  SimplePlayer,
   SimpleDoor,
+  SimpleGenericItem,
+  SimpleKey,
+  SimpleMatchState,
+  SimpleOpenable,
+  SimplePlayer,
+  SimpleRoomLink,
   SimpleState,
-  SimpleTakeable,
-  SimpleKey
+  SimpleTakeable
 }
+import io.github.scalaquest.core.pipeline.parser.{BaseItem, DecoratedItem, ItemDescription}
 import monocle.Lens
 import monocle.macros.GenLens
 
@@ -39,18 +40,19 @@ object TestsUtils {
   val keyItemRef: ItemRef   = new ItemRef {}
   val doorItemRef: ItemRef  = new ItemRef {}
 
-  val itemsMap: Map[String, ItemRef] = Map[String, ItemRef](
-    "apple"     -> appleItemRef,
-    "red apple" -> appleItemRef,
-    "door"      -> doorItemRef,
-    "key"       -> keyItemRef
+  val itemsMap: Map[ItemDescription, ItemRef] = Map[ItemDescription, ItemRef](
+    ItemDescription("apple", "red") -> appleItemRef,
+    ItemDescription("door")         -> doorItemRef,
+    ItemDescription("key")          -> keyItemRef
   )
 
-  val apple: GenericItem = SimpleGenericItem(appleItemRef, SimpleTakeable())
-  val key: Key           = SimpleKey(keyItemRef)
+  val apple: GenericItem =
+    SimpleGenericItem(ItemDescription("apple", "red"), appleItemRef, SimpleTakeable())
+  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef)
 
   val door: Door =
     SimpleDoor(
+      ItemDescription("door"),
       doorItemRef,
       SimpleRoomLink(targetRoom, Some(SimpleOpenable(requiredKey = Some(key))))
     )
@@ -62,6 +64,7 @@ object TestsUtils {
   )
 
   val simpleState: SimpleState = SimpleState(
+    actionsMap,
     matchState = SimpleMatchState(
       player = SimplePlayer(bag = Set(), location = startRoom),
       ended = false,

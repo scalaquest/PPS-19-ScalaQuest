@@ -7,9 +7,10 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleGenericItem,
   SimpleState,
   SimpleTakeable,
-  playerBagLens,
-  geographyLens
+  geographyLens,
+  playerBagLens
 }
+import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleTakeableTest extends AnyWordSpec {
@@ -17,7 +18,7 @@ class SimpleTakeableTest extends AnyWordSpec {
     val takeable = SimpleTakeable()
 
     "applied to an item" when {
-      val item = SimpleGenericItem(new ItemRef {}, takeable)
+      val item = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, takeable)
       val stateItemInRoom =
         geographyLens.modify(_ + (startRoom -> Set(item)))(simpleState)
       val stateItemNotInRoom: SimpleState = simpleState

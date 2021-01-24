@@ -7,9 +7,10 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
   SimpleGenericItem,
   SimpleState,
-  playerBagLens,
-  geographyLens
+  geographyLens,
+  playerBagLens
 }
+import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleEatableTest extends AnyWordSpec {
@@ -18,7 +19,7 @@ class SimpleEatableTest extends AnyWordSpec {
     val room    = startRoom
 
     "applied to an item" when {
-      val item = SimpleGenericItem(new ItemRef {}, eatable)
+      val item = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, eatable)
       val stateItemInRoom =
         geographyLens.modify(_ + (room -> Set(item)))(simpleState)
       val stateItemInBag           = playerBagLens.modify(_ + item)(simpleState)

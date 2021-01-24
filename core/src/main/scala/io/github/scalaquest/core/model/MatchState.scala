@@ -7,6 +7,8 @@ package io.github.scalaquest.core.model
  */
 trait MatchState[I <: Model#Item] {
 
+  def itemsInScope: Set[I] = player.bag ++ geography.getOrElse(player.location, Set())
+
   /**
    * The player involved into the match. As it is a core concept, an instance of [[Player]] is
    * included into the [[MatchState]].

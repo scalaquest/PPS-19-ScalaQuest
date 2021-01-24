@@ -9,9 +9,10 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleKey,
   SimpleOpenable,
   SimpleState,
-  playerBagLens,
-  geographyLens
+  geographyLens,
+  playerBagLens
 }
+import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleOpenableTest extends AnyWordSpec {
@@ -27,9 +28,9 @@ class SimpleOpenableTest extends AnyWordSpec {
     }
 
     "a key is required" when {
-      val targetKey  = SimpleKey(new ItemRef {})
+      val targetKey  = SimpleKey(ItemDescription("key"), new ItemRef {})
       val openable   = SimpleOpenable(requiredKey = Some(targetKey))
-      val targetItem = SimpleGenericItem(new ItemRef {}, openable)
+      val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
 
       val copyWKeyAndPortal = Function.chain(
         Seq(
@@ -53,14 +54,18 @@ class SimpleOpenableTest extends AnyWordSpec {
 
         "not open without the right Key" in {
           assert(targetItem.use(Open, stateWKeyAndItem, None).isEmpty)
-          assert(targetItem.use(Open, stateWKeyAndItem, Some(SimpleKey(new ItemRef {}))).isEmpty)
+          assert(
+            targetItem
+              .use(Open, stateWKeyAndItem, Some(SimpleKey(ItemDescription("key"), new ItemRef {})))
+              .isEmpty
+          )
         }
       }
     }
 
     "a key is not required" when {
       val openable   = SimpleOpenable()
-      val targetItem = SimpleGenericItem(new ItemRef {}, openable)
+      val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
       val stateWPort: SimpleState =
         geographyLens.modify(_ + (startRoom -> Set(targetItem)))(simpleState)
 
@@ -74,7 +79,11 @@ class SimpleOpenableTest extends AnyWordSpec {
 
         }
         "not open with any Key" in {
-          assert(targetItem.use(Open, stateWPort, Some(SimpleKey(new ItemRef {}))).isEmpty)
+          assert(
+            targetItem
+              .use(Open, stateWPort, Some(SimpleKey(ItemDescription("key"), new ItemRef {})))
+              .isEmpty
+          )
         }
       }
     }

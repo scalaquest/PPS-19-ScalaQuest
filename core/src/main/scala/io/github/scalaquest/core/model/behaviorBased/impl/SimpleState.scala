@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
-import io.github.scalaquest.core.model.{MatchState, ItemRef, Message, Model, Player, Room}
+import io.github.scalaquest.core.model.{Action, ItemRef, MatchState, Message, Model, Player, Room}
 
 /**
  * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the
@@ -10,7 +10,11 @@ trait SimpleState extends Model {
 
   override type S = SimpleState
 
-  case class SimpleState(matchState: SimpleMatchState, messages: Seq[Message]) extends State {
+  final case class SimpleState(
+    actions: Map[String, Action],
+    matchState: SimpleMatchState,
+    messages: Seq[Message]
+  ) extends State {
 
     override def extractRefs: Map[ItemRef, I] = {
       val allItems =

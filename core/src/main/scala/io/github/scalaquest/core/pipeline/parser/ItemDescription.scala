@@ -8,6 +8,15 @@ final case class DecoratedItem(decoration: String, item: ItemDescription) extend
 
 object ItemDescription {
 
+  def apply(base: String, decorators: String*): ItemDescription = {
+    def go(decorators: List[String]): ItemDescription =
+      decorators match {
+        case head :: next => DecoratedItem(head, go(next))
+        case Nil          => BaseItem(base)
+      }
+    go(decorators.toList)
+  }
+
   @tailrec
   def base(d: ItemDescription): BaseItem =
     d match {

@@ -9,11 +9,12 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleOpenable,
   SimpleTakeable
 }
+import io.github.scalaquest.core.pipeline.parser.ItemDescription
 
 class KeyTest extends AnyWordSpec {
   "A Key" when {
     val behaviors = Seq(SimpleTakeable(), SimpleEatable())
-    val key       = SimpleKey(new ItemRef {}, behaviors.head, behaviors(1))
+    val key       = SimpleKey(ItemDescription("key"), new ItemRef {}, behaviors.head, behaviors(1))
 
     "instantiated" should {
       "take whatever number of behaviors" in {

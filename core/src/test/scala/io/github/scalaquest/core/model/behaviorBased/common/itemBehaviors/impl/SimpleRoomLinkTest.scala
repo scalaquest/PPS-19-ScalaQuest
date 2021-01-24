@@ -10,6 +10,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleState,
   geographyLens
 }
+import io.github.scalaquest.core.pipeline.parser.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleRoomLinkTest extends AnyWordSpec {
@@ -19,7 +20,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
     "the item has not an openable behavior" when {
       val roomLink     = SimpleRoomLink(targetRoom)
-      val targetPortal = SimpleDoor(new ItemRef {}, roomLink)
+      val targetPortal = SimpleDoor(ItemDescription("door"), new ItemRef {}, roomLink)
       val stateWPort: SimpleState =
         geographyLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
 
@@ -41,7 +42,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
     "the item is open" when {
       val roomLink     = SimpleRoomLink(targetRoom, Some(SimpleOpenable(_isOpen = true)))
-      val targetPortal = SimpleDoor(new ItemRef {}, roomLink)
+      val targetPortal = SimpleDoor(ItemDescription("door"), new ItemRef {}, roomLink)
       val stateWOpenPort: SimpleState =
         geographyLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
 
@@ -63,7 +64,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
     "the item is closed" when {
       val roomLink     = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
-      val targetPortal = SimpleDoor(new ItemRef {}, roomLink)
+      val targetPortal = SimpleDoor(ItemDescription("door"), new ItemRef {}, roomLink)
       val stateWClosedPort: SimpleState =
         geographyLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
       "the user says 'enter the item'" should {

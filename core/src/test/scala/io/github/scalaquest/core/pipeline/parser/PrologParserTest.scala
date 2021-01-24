@@ -46,7 +46,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("take", "the", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Transitive("take", "you", "key"))
+            .contains(AbstractSyntaxTree.Transitive("take", "you", BaseItem("key")))
         )
       }
       "recognize phrasal verbs and escape space with underscore" in {
@@ -54,7 +54,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("pick", "up", "the", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Transitive("pick_up", "you", "key"))
+            .contains(AbstractSyntaxTree.Transitive("pick_up", "you", BaseItem("key")))
         )
       }
     }
@@ -64,7 +64,9 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("open", "the", "door", "with", "the", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Ditransitive("open", "you", "door", "key"))
+            .contains(
+              AbstractSyntaxTree.Ditransitive("open", "you", BaseItem("door"), BaseItem("key"))
+            )
         )
       }
       "distinguish between direct and indirect objects" in {
@@ -72,7 +74,9 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("put", "the", "apple", "in", "the", "bag")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Ditransitive("put", "you", "apple", "bag"))
+            .contains(
+              AbstractSyntaxTree.Ditransitive("put", "you", BaseItem("apple"), BaseItem("bag"))
+            )
         )
       }
     }

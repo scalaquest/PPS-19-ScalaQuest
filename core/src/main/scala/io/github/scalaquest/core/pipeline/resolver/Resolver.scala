@@ -1,18 +1,7 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.{Action, ItemRef}
-import io.github.scalaquest.core.model.Model
-import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
 import io.github.scalaquest.core.model.{Action, ItemRef, Model}
-import io.github.scalaquest.core.pipeline.parser.{
-  AbstractSyntaxTree,
-  BaseItem,
-  DecoratedItem,
-  ItemDescription,
-  ParserResult
-}
-
-import scala.annotation.tailrec
+import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ItemDescription, ParserResult}
 
 /**
  * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and
@@ -39,17 +28,6 @@ trait Resolver {
  */
 object Resolver {
 
-  /**
-   * It generates a [[Resolver]] with a standard implementation.
-   *
-   * @param actions
-   *   A [[Map]] that links the textual representation of the [[Action]] to the instance.
-   * @param items
-   *   A [[Map]] that links the textual representation of the [[ItemRef]] to the instance.
-   * @return
-   *   A standard implementation of the [[Resolver]].
-   */
-  def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
   type Builder[S] = S => Resolver
 
   abstract class SimpleResolver extends Resolver {
@@ -89,9 +67,10 @@ object Resolver {
         }
       } yield ResolverResult(statement)
     }
+
   }
 
-  def fromModel[M <: Model](implicit model: M): Builder[model.S] =
+  def builder[M <: Model](implicit model: M): Builder[model.S] =
     s =>
       new SimpleResolver {
 
@@ -99,9 +78,8 @@ object Resolver {
 
         override def items: PartialFunction[ItemDescription, ItemRef] =
           d =>
-            s.game.itemsInScope.filter(i => d.isSubset(i.description)).toList match {
+            s.matchState.itemsInScope.filter(i => d.isSubset(i.description)).toList match {
               case x :: Nil => x.itemRef
             }
       }
-
 }
