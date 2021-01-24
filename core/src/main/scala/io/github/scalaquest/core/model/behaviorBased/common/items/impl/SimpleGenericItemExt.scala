@@ -6,14 +6,15 @@ import io.github.scalaquest.core.model.behaviorBased.common.items.{CommonItems, 
 
 /**
  * The trait makes possible to mix into the [[SimpleCommonItems]] the standard implementation of
- * [[CommonItems.Key]].
+ * [[CommonItems.GenericItem]].
  */
-trait SimpleKey extends CommonBase {
+trait SimpleGenericItemExt extends CommonBase {
 
   /**
-   * Standard implementation of the common Key item.
+   * Standard implementation of the common GenericItem.
    */
-  case class SimpleKey(itemRef: ItemRef, additionalBehaviors: ItemBehavior*) extends Key {
-    override val behaviors: Seq[ItemBehavior] = additionalBehaviors
+  case class SimpleGenericItem(itemRef: ItemRef, additionalBehaviors: ItemBehavior*)
+    extends GenericItem {
+    override def behaviors: Seq[ItemBehavior] = additionalBehaviors
   }
 }

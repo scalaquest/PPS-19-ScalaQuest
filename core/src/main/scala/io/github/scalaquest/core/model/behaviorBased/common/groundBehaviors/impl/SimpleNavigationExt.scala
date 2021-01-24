@@ -9,7 +9,7 @@ import monocle.Lens
  * The trait makes possible to mix into StdCommonGroundBehaviors the standard implementation of
  * Navigation.
  */
-trait SimpleNavigation extends CommonBase {
+trait SimpleNavigationExt extends CommonBase {
 
   /**
    * Standard implementation of the Navigation GroundBehavior.

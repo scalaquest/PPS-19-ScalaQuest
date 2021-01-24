@@ -8,7 +8,7 @@ import monocle.Lens
 /**
  * The trait makes possible to mix into StdCommonBehaviors the standard implementation of Eatable.
  */
-trait SimpleEatable extends CommonBase {
+trait SimpleEatableExt extends CommonBase {
 
   /**
    * Standard implementation of the Eatable behavior.

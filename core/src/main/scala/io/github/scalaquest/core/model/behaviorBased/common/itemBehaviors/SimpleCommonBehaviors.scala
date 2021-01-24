@@ -3,10 +3,10 @@ package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.{
-  SimpleEatable,
-  SimpleOpenable,
-  SimpleRoomLink,
-  SimpleTakeable
+  SimpleEatableExt,
+  SimpleOpenableExt,
+  SimpleRoomLinkExt,
+  SimpleTakeableExt
 }
 
 /**
@@ -16,7 +16,7 @@ import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.{
  */
 trait SimpleCommonBehaviors
   extends CommonBase
-  with SimpleTakeable
-  with SimpleEatable
-  with SimpleOpenable
-  with SimpleRoomLink
+  with SimpleTakeableExt
+  with SimpleEatableExt
+  with SimpleOpenableExt
+  with SimpleRoomLinkExt

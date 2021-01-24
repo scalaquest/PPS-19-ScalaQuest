@@ -3,10 +3,10 @@ package io.github.scalaquest.core.model.behaviorBased.common.items
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.items.impl.{
-  SimpleDoor,
-  SimpleFood,
-  SimpleGenericItem,
-  SimpleKey
+  SimpleDoorExt,
+  SimpleFoodExt,
+  SimpleGenericItemExt,
+  SimpleKeyExt
 }
 
 /**
@@ -15,7 +15,7 @@ import io.github.scalaquest.core.model.behaviorBased.common.items.impl.{
  */
 trait SimpleCommonItems
   extends CommonBase
-  with SimpleDoor
-  with SimpleGenericItem
-  with SimpleKey
-  with SimpleFood
+  with SimpleDoorExt
+  with SimpleGenericItemExt
+  with SimpleKeyExt
+  with SimpleFoodExt

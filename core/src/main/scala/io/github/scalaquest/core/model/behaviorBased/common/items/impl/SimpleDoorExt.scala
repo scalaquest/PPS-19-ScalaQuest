@@ -9,7 +9,7 @@ import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
  * The trait makes possible to mix into the [[SimpleCommonItems]] the standard implementation of
  * [[CommonItems.Door]].
  */
-trait SimpleDoor extends CommonBase {
+trait SimpleDoorExt extends CommonBase {
 
   /**
    * Standard implementation of the common Door item.

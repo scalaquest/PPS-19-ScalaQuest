@@ -13,7 +13,7 @@ import monocle.Lens
  * The trait makes possible to mix into the [[SimpleCommonBehaviors]] the standard implementation of
  * [[CommonBehaviors.Takeable]].
  */
-trait SimpleTakeable extends CommonBase {
+trait SimpleTakeableExt extends CommonBase {
 
   /**
    * Standard implementation of the Takeable.

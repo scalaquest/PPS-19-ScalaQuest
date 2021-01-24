@@ -8,7 +8,7 @@ import monocle.Lens
 /**
  * The trait makes possible to mix into StdCommonBehaviors the standard implementation of RoomLink.
  */
-trait SimpleRoomLink extends CommonBase {
+trait SimpleRoomLinkExt extends CommonBase {
 
   /**
    * Standard implementation of the RoomLink.

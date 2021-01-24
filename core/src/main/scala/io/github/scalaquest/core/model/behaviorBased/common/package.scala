@@ -8,10 +8,10 @@ package io.github.scalaquest.core.model.behaviorBased
  * Usage example:
  * {{{
  *   object MyModel extends BehaviorableModel
- *     with StdCommonBehaviors with StdCommonItems ...
+ *     with SimpleCommonBehaviors with SimpleCommonItems ...
  *
  *   import MyModel._
- *   val door = Door(itemRef, RoomLink(...))
+ *   val door = SimpleDoor(itemRef, SimpleRoomLink(...))
  * }}}
  */
 package object common {}
