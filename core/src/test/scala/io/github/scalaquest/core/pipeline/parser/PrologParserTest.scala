@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.parser
 
-import io.github.scalaquest.core.model.BaseItem
+import io.github.scalaquest.core.model.{BaseItem, DecoratedItem}
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexerResult
 import org.scalatest.wordspec.AnyWordSpec
@@ -16,6 +16,9 @@ class PrologParserTest extends AnyWordSpec {
       |name(door) --> [door].
       |name(apple) --> [apple].
       |name(bag) --> [bag].
+      |
+      |adj(X^little(X)) --> [little].
+      |adj(X^red(X)) --> [red].
       |
       |iv(X^inspect(X)) --> [inspect].
       |tv(X^Y^take(Y,X)) --> [take].
@@ -56,6 +59,15 @@ class PrologParserTest extends AnyWordSpec {
             .parse(SimpleLexerResult(Seq("pick", "up", "the", "key")))
             .map(_.tree)
             .contains(AbstractSyntaxTree.Transitive("pick_up", "you", BaseItem("key")))
+        )
+      }
+      "recognize adjectives and wrap them in ItemDescription" in {
+        val decoratedItem = DecoratedItem("little", BaseItem("key"))
+        assert(
+          parser
+            .parse(SimpleLexerResult(Seq("take", "the", "little", "key")))
+            .map(_.tree)
+            .contains(AbstractSyntaxTree.Transitive("take", "you", decoratedItem))
         )
       }
     }
