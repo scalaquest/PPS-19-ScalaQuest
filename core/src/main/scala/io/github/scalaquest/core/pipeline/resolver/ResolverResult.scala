@@ -12,10 +12,18 @@ object Statement {
     extends Statement
 }
 
+/**
+ * A wrapper for the output of the [[Resolver]] execution. It should contain a [[Statement]]
+ * instance.
+ */
 trait ResolverResult {
   def statement: Statement
 }
 
+/**
+ * A companion object for the [[ResolverResult]] trait. It exposes an [[ResolverResult::apply()]]
+ * with a standard implementation of [[ResolverResult]].
+ */
 object ResolverResult {
 
   def apply(statement: Statement): ResolverResult = {

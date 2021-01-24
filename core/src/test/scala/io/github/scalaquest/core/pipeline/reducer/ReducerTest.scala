@@ -1,19 +1,19 @@
 package io.github.scalaquest.core.pipeline.reducer
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, apple}
-import io.github.scalaquest.core.model.std.StdModel
-import io.github.scalaquest.core.model.std.StdModel.bagLens
+import io.github.scalaquest.core.TestsUtils.{apple, simpleState}
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.playerBagLens
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.pipeline.interpreter.InterpreterResult
 import org.scalatest.wordspec.AnyWordSpec
 
 class ReducerTest extends AnyWordSpec {
   "A Reducer" when {
-    val reducer = Reducer(StdModel)(simpleState)
+    val reducer = Reducer.builder(SimpleModel)(simpleState)
 
     "given a Reaction" should {
       // an Interpreter Result with a Reaction that adds an apple to the bag
-      val interpreterResult = InterpreterResult(StdModel)(bagLens.modify(_ + apple)(_))
-      val desiredState      = bagLens.modify(_ + apple)(simpleState)
+      val interpreterResult = InterpreterResult(SimpleModel)(playerBagLens.modify(_ + apple)(_))
+      val desiredState      = playerBagLens.modify(_ + apple)(simpleState)
 
       "return a State modified accordingly" in {
         assert(
@@ -27,7 +27,7 @@ class ReducerTest extends AnyWordSpec {
       import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
 
       "be of the right type" in {
-        val builder = Reducer.builder(StdModel)
+        val builder = Reducer.builder(SimpleModel)
         builder shouldBe a[Reducer.Builder[_, _, _]]
 
         val reducer = builder(simpleState)
