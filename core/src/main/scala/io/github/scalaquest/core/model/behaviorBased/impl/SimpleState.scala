@@ -23,12 +23,12 @@ trait SimpleState extends Model {
     }
   }
 
-  case class SimpleMatchState(
+  final case class SimpleMatchState(
     player: SimplePlayer,
     ended: Boolean,
     geography: Map[Room, Set[I]],
     hiddenItems: Set[I]
   ) extends MatchState[I]
 
-  case class SimplePlayer(bag: Set[I], location: Room) extends Player[I]
+  final case class SimplePlayer(bag: Set[I], location: Room) extends Player[I]
 }
