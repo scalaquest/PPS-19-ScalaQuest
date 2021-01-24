@@ -21,7 +21,7 @@ class SimpleOpenableTest extends AnyWordSpec {
     val targetOpenable: SimpleState => Option[Openable] = state => {
       for {
         itemsInLoc <- state.matchState.geography.get(startRoom)
-        openable <- itemsInLoc.collectFirst({ case SimpleGenericItem(_, openable: Openable) =>
+        openable <- itemsInLoc.collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
           openable
         })
       } yield openable
