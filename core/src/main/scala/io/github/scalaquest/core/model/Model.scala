@@ -38,7 +38,8 @@ trait Model {
      * @return
      *   A [[Map]] from [[ItemRef]] to [[Item]].
      */
-    def extractRefs: Map[ItemRef, I]
+    def extractRefs: Map[ItemRef, I] =
+      matchState.items.foldLeft(Map.empty[ItemRef, I])((map, item) => map + (item.id -> item))
   }
 
   /**
@@ -52,7 +53,7 @@ trait Model {
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
      * the reference to an object changes, the [[State]] works in an immutable fashion.
      */
-    def itemRef: ItemRef
+    def id: ItemRef
 
     /**
      * The hash code of the [[Item]] is overridden in a way that delegates to the Item's [[ItemRef]]
@@ -61,7 +62,7 @@ trait Model {
      * @return
      *   The Item's [[ItemRef]] hashcode.
      */
-    final override def hashCode(): Int = itemRef.hashCode()
+    final override def hashCode(): Int = id.hashCode()
 
     /**
      * Define a way make the item interact with the [[State]]. The interaction is founded into the

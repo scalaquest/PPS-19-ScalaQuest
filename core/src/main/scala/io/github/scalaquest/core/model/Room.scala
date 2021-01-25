@@ -2,6 +2,19 @@ package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.model.Room.Direction
 
+import java.util.UUID
+
+trait RoomRef
+
+object RoomRef {
+
+  private case class SimpleRoomRef() extends RoomRef {
+    private val id: UUID = UUID.randomUUID()
+  }
+
+  def apply(): RoomRef = SimpleRoomRef()
+}
+
 /**
  * A geographical portion of the match map.
  *
@@ -17,20 +30,34 @@ trait Room {
    */
   def name: String
 
+  def id: RoomRef
+
+  override def hashCode(): Int = this.id.hashCode()
+
   /**
    * Identifies rooms near to the current one, at the cardinal points.
    */
   def neighbors(direction: Direction): Option[Room]
+
+  def items: Set[ItemRef]
 }
 
 object Room {
 
-  private case class SimpleRoom(name: String, _neighbors: () => Map[Direction, Room]) extends Room {
+  private case class SimpleRoom(
+    name: String,
+    _items: () => Set[ItemRef],
+    _neighbors: () => Map[Direction, Room]
+  ) extends Room {
     override def neighbors(direction: Direction): Option[Room] = _neighbors() get direction
+
+    override def id: RoomRef = RoomRef()
+
+    override def items: Set[ItemRef] = _items()
   }
 
-  def apply(name: String, neighbors: => Map[Direction, Room]): Room =
-    SimpleRoom(name, () => neighbors)
+  def apply(name: String, neighbors: => Map[Direction, Room], items: => Set[ItemRef]): Room =
+    SimpleRoom(name, () => items, () => neighbors)
 
   sealed trait Direction
 

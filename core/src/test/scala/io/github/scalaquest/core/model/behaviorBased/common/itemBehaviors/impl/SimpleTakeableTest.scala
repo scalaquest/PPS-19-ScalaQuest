@@ -7,8 +7,10 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleGenericItem,
   SimpleState,
   SimpleTakeable,
-  geographyLens,
-  playerBagLens
+  itemsLens,
+  matchRoomsLens,
+  playerBagLens,
+  roomLens
 }
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -17,35 +19,44 @@ class SimpleTakeableTest extends AnyWordSpec {
     val takeable = SimpleTakeable()
 
     "applied to an item" when {
-      val item = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, takeable)
-      val stateItemInRoom =
-        geographyLens.modify(_ + (startRoom -> Set(item)))(simpleState)
-      val stateItemNotInRoom: SimpleState = simpleState
+      val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), takeable)
+
+      val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+
+      val stateWithTargetInRoom: SimpleState =
+        matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
+
+      val stateWithoutTargetInRoom = stateWithTarget
 
       "the user says 'take the item'" should {
         "let the item disappear from the current room" in {
           for {
-            react    <- item.use(Take, stateItemInRoom, None) toRight fail("Reaction not generated")
-            modState <- Right(react(stateItemInRoom))
-            currRoomItems <- modState.matchState.geography.get(startRoom) toRight fail(
-              "Error into the test implementation"
+            react <- targetItem.use(Take, stateWithTargetInRoom, None) toRight fail(
+              "Reaction not generated"
             )
-          } yield assert(!currRoomItems.contains(item), "The item is into the room yet")
+            modState <- Right(react(stateWithTargetInRoom))
+          } yield assert(
+            !modState.currentRoom.items.contains(targetItem.id),
+            "The item is into the room yet"
+          )
         }
 
         "appear into the bag" in {
           for {
-            react    <- item.use(Take, stateItemInRoom, None) toRight fail("Reaction not generated")
-            modState <- Right(react(stateItemInRoom))
+            react <- targetItem.use(Take, stateWithTargetInRoom, None) toRight fail(
+              "Reaction not generated"
+            )
+            modState <- Right(react(stateWithTargetInRoom))
           } yield assert(
-            modState.matchState.player.bag.contains(item),
+            modState.matchState.player.bag.contains(targetItem.id),
             "The item is not into the bag"
           )
         }
 
         "not work if the item is not in the current room" in {
           assert(
-            item.use(Take, stateItemNotInRoom, None).isEmpty,
+            targetItem.use(Take, stateWithoutTargetInRoom, None).isEmpty,
             "Generated a reaction when it shouldn't"
           )
         }

@@ -15,7 +15,7 @@ trait SimpleKeyExt extends CommonBase {
    */
   final case class SimpleKey(
     description: ItemDescription,
-    itemRef: ItemRef,
+    id: ItemRef,
     additionalBehaviors: ItemBehavior*
   ) extends Key {
     override val behaviors: Seq[ItemBehavior] = additionalBehaviors

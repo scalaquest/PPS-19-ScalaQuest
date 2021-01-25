@@ -16,7 +16,7 @@ trait SimpleDoorExt extends CommonBase {
    */
   final case class SimpleDoor(
     description: ItemDescription,
-    itemRef: ItemRef,
+    id: ItemRef,
     doorBehavior: RoomLink,
     additionalBehaviors: ItemBehavior*
   ) extends Door {

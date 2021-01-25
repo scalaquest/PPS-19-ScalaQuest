@@ -8,27 +8,24 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   Door,
   GenericItem,
   Key,
-  Openable,
-  RoomLink,
   SimpleDoor,
   SimpleGenericItem,
   SimpleKey,
-  SimpleMatchState,
   SimpleOpenable,
-  SimplePlayer,
   SimpleRoomLink,
   SimpleState,
-  SimpleTakeable
+  SimpleTakeable,
+  SimplePlayer,
+  SimpleMatchState
 }
-import io.github.scalaquest.core.model.DecoratedItem
-import monocle.Lens
-import monocle.macros.GenLens
 
 object TestsUtils {
-  val startRoom: Room = Room("startRoom", Map[Direction, Room](Direction.North -> targetRoom))
+
+  val startRoom: Room =
+    Room("startRoom", Map[Direction, Room](Direction.North -> targetRoom), Set(door, key))
 
   val targetRoom: Room =
-    Room("targetRoom", Map[Direction, Room](Direction.South -> startRoom))
+    Room("targetRoom", Map[Direction, Room](Direction.South -> startRoom), Set())
 
   val actionsMap: Map[String, Action] = Map[String, Action](
     "take"  -> Take,
@@ -36,9 +33,9 @@ object TestsUtils {
     "open"  -> Open
   )
 
-  val appleItemRef: ItemRef = new ItemRef {}
-  val keyItemRef: ItemRef   = new ItemRef {}
-  val doorItemRef: ItemRef  = new ItemRef {}
+  val appleItemRef: ItemRef = ItemRef()
+  val keyItemRef: ItemRef   = ItemRef()
+  val doorItemRef: ItemRef  = ItemRef()
 
   val itemsMap: Map[ItemDescription, ItemRef] = Map[ItemDescription, ItemRef](
     ItemDescription("apple", "red") -> appleItemRef,
@@ -46,12 +43,11 @@ object TestsUtils {
     ItemDescription("key")          -> keyItemRef
   )
 
-  val apple: GenericItem =
-    SimpleGenericItem(
-      ItemDescription("apple", "big", "red", "juicy"),
-      appleItemRef,
-      SimpleTakeable()
-    )
+  val apple: GenericItem = SimpleGenericItem(
+    ItemDescription("apple", "big", "red", "juicy"),
+    appleItemRef,
+    SimpleTakeable()
+  )
   val key: Key = SimpleKey(ItemDescription("key"), keyItemRef)
 
   val door: Door =
@@ -70,10 +66,10 @@ object TestsUtils {
   val simpleState: SimpleState = SimpleState(
     actionsMap,
     matchState = SimpleMatchState(
-      player = SimplePlayer(bag = Set(apple), location = startRoom),
+      player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.id),
       ended = false,
-      geography = Map(startRoom -> Set(door, key), targetRoom -> Set()),
-      Set()
+      items = Set(apple, key, door),
+      rooms = Set(startRoom, targetRoom)
     ),
     messages = Seq()
   )

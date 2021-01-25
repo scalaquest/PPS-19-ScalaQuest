@@ -1,11 +1,12 @@
 package io.github.scalaquest.core.model.behaviorBased.common
 
-import io.github.scalaquest.core.model.Room
+import io.github.scalaquest.core.model.{ItemRef, Room, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.CommonGroundBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import monocle.Lens
+import monocle.macros.GenLens
 
 /**
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional
@@ -17,25 +18,48 @@ trait CommonBase
   with CommonItems
   with CommonBehaviors {
 
-  implicit def playerBagLens: Lens[S, Set[I]]
-  implicit def geographyLens: Lens[S, Map[Room, Set[I]]]
-  implicit def playerLocationLens: Lens[S, Room]
+  implicit def playerBagLens: Lens[S, Set[ItemRef]]
+  implicit def matchRoomsLens: Lens[S, Set[Room]]
+  implicit def playerLocationLens: Lens[S, RoomRef]
+  implicit def itemsLens: Lens[S, Set[I]]
+  implicit def roomLens: Lens[Room, Set[ItemRef]]
 
   implicit class StateUtils(state: S) {
-    def rooms: Set[Room] = state.matchState.geography.keySet
-
-    def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item)
+    def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.id)
 
     def isInCurrentRoom(item: I): Boolean =
-      state.matchState.geography.get(state.matchState.player.location).exists(_ contains item)
+      state.matchState.rooms
+        .collectFirst({ case room if room.id == state.matchState.player.location => room.items })
+        .exists(_ contains item.id)
 
     def isInScope(item: I): Boolean = state.isInCurrentRoom(item) || state.isInBag(item)
 
     def applyReactionIfPresent(maybeReaction: Option[Reaction]): S =
       maybeReaction.fold(state)(_(state))
 
-    def location: Room = {
-      state.matchState.player.location
+    def currentRoom: Room = {
+      state.matchState.rooms
+        .collectFirst({ case room if room.id == state.matchState.player.location => room })
+        .get
     }
+
+    def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
+      state.matchState.rooms
+        .collectFirst({ case room if room.id == roomRef => room.items })
+        .getOrElse(Set())
+
+    def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] = {
+      itemRefs.map(ref => itemFromRef(ref)).collect({ case Some(item) => item })
+    }
+
+    def itemFromRef(itemRef: ItemRef): Option[I] =
+      state.matchState.items.collectFirst({ case item if item.id == itemRef => item })
+
+    def copyWithItemInLocation(item: I): S = {
+      val stateWithTarget    = itemsLens.modify(_ + item)(state)
+      val currRoomWithTarget = roomLens.modify(_ + item.id)(state.currentRoom)
+      matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
+    }
+
   }
 }

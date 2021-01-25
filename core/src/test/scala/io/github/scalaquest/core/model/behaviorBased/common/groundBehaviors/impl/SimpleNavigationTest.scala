@@ -27,7 +27,7 @@ class SimpleNavigationTest extends AnyWordSpec {
             )
             modState <- Right(react(simpleState))
             currRoom <- Right(modState.matchState.player.location)
-          } yield assert(targetRoom == currRoom, "The player has reached the Room")
+          } yield assert(targetRoom.id == currRoom, "The player has reached the Room")
         }
 
         "not move the player, if a designed room is not defined" in {

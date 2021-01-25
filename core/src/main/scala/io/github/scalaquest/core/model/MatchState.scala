@@ -7,7 +7,13 @@ package io.github.scalaquest.core.model
  */
 trait MatchState[I <: Model#Item] {
 
-  def itemsInScope: Set[I] = player.bag ++ geography.getOrElse(player.location, Set())
+  def itemsInScope: Set[I] =
+    items.filter(x =>
+      player.bag.contains(x.id) ||
+        rooms
+          .collectFirst({ case room if room.id == player.location => room.items })
+          .exists(_.contains(x.id))
+    )
 
   /**
    * The player involved into the match. As it is a core concept, an instance of [[Player]] is
@@ -15,7 +21,7 @@ trait MatchState[I <: Model#Item] {
    * @return
    *   The current [[Player]].
    */
-  def player: Player[I]
+  def player: Player
 
   /**
    * Indicates whether the match has reached the end. When true, the entire match ende after the
@@ -26,9 +32,11 @@ trait MatchState[I <: Model#Item] {
   def ended: Boolean
 
   /**
-   * Represents the configuration match, in terms of [[Room]] s and [[Model.Item]].
+   * Represents the configuration of the match, in terms of [[Room]] s and [[Model.Item]].
    * @return
-   *   a [[Map]] representing all [[Room]] s of the match, and the [[Model.Item]] s in them.
+   *   a [[Set]] representing all [[Room]] s of the match, and the [[Model.Item]] s in them.
    */
-  def geography: Map[Room, Set[I]]
+  def rooms: Set[Room]
+
+  def items: Set[I]
 }

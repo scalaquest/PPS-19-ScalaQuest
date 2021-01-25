@@ -9,8 +9,11 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleKey,
   SimpleOpenable,
   SimpleState,
-  geographyLens,
-  playerBagLens
+  StateUtils,
+  itemsLens,
+  matchRoomsLens,
+  playerBagLens,
+  roomLens
 }
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -18,44 +21,47 @@ class SimpleOpenableTest extends AnyWordSpec {
   "An Openable behavior" when {
 
     val targetOpenable: SimpleState => Option[Openable] = state => {
-      for {
-        itemsInLoc <- state.matchState.geography.get(startRoom)
-        openable <- itemsInLoc.collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
-          openable
-        })
-      } yield openable
+      val itemsRefsFromCurrRoom = state.itemRefsFromRoomRef(state.matchState.player.location)
+      val itemsFromCurrRoom     = state.itemsFromRefs(itemsRefsFromCurrRoom)
+      itemsFromCurrRoom.collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
+        openable
+      })
     }
 
     "a key is required" when {
-      val targetKey  = SimpleKey(ItemDescription("key"), new ItemRef {})
+      val targetKey  = SimpleKey(ItemDescription("key"), ItemRef())
       val openable   = SimpleOpenable(requiredKey = Some(targetKey))
       val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
 
-      val copyWKeyAndPortal = Function.chain(
-        Seq(
-          playerBagLens.modify(_ + targetKey),
-          geographyLens.modify(_ + (startRoom -> Set(targetItem)))
-        )
+      val stateWithItems     = itemsLens.modify(_ + targetItem + targetKey)(simpleState)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+
+      val copyWKeyAndTarget = Function.chain(
+        Seq(playerBagLens.modify(_ + targetKey.id), matchRoomsLens.modify(_ + currRoomWithTarget))
       )
-      val stateWKeyAndItem: SimpleState = copyWKeyAndPortal(simpleState)
+      val stateWKeyAndTarget: SimpleState = copyWKeyAndTarget(stateWithItems)
 
       "the user says 'open the item'" should {
 
         "let the item open only with the right Key" in {
           for {
-            react <- targetItem.use(Open, stateWKeyAndItem, Some(targetKey)) toRight fail(
+            react <- targetItem.use(Open, stateWKeyAndTarget, Some(targetKey)) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateWKeyAndItem))
+            modState <- Right(react(stateWKeyAndTarget))
             openable <- targetOpenable(modState) toRight fail("Error into the test implementation")
           } yield assert(openable.isOpen, "The item is not in open state")
         }
 
         "not open without the right Key" in {
-          assert(targetItem.use(Open, stateWKeyAndItem, None).isEmpty)
+          assert(targetItem.use(Open, stateWKeyAndTarget, None).isEmpty)
           assert(
             targetItem
-              .use(Open, stateWKeyAndItem, Some(SimpleKey(ItemDescription("key"), new ItemRef {})))
+              .use(
+                Open,
+                stateWKeyAndTarget,
+                Some(SimpleKey(ItemDescription("key"), new ItemRef {}))
+              )
               .isEmpty
           )
         }
@@ -64,15 +70,20 @@ class SimpleOpenableTest extends AnyWordSpec {
 
     "a key is not required" when {
       val openable   = SimpleOpenable()
-      val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
-      val stateWPort: SimpleState =
-        geographyLens.modify(_ + (startRoom -> Set(targetItem)))(simpleState)
+      val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), openable)
+
+      val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val stateWithTargetInRoom: SimpleState =
+        matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
 
       "the user says 'open the item'" should {
         "open without Key" in {
           for {
-            react    <- targetItem.use(Open, stateWPort, None) toRight fail("Reaction not generated")
-            modState <- Right(react(stateWPort))
+            react <- targetItem.use(Open, stateWithTargetInRoom, None) toRight fail(
+              "Reaction not generated"
+            )
+            modState <- Right(react(stateWithTargetInRoom))
             openable <- targetOpenable(modState) toRight fail("Error into the test implementation")
           } yield assert(openable.isOpen, "The item is not in open state")
 
@@ -80,7 +91,7 @@ class SimpleOpenableTest extends AnyWordSpec {
         "not open with any Key" in {
           assert(
             targetItem
-              .use(Open, stateWPort, Some(SimpleKey(ItemDescription("key"), new ItemRef {})))
+              .use(Open, stateWithTargetInRoom, Some(SimpleKey(ItemDescription("key"), ItemRef())))
               .isEmpty
           )
         }
