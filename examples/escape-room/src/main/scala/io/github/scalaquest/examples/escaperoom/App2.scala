@@ -25,6 +25,7 @@ object Model {
   val model: SimpleModel.type = SimpleModel
 
   val state: SimpleState = SimpleState(
+    Map(),
     SimpleMatchState(
       SimplePlayer(Set(), room1),
       ended = false,

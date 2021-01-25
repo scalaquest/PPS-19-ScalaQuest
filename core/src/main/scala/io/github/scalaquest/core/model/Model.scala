@@ -15,6 +15,8 @@ trait Model {
    */
   abstract class State { self: S =>
 
+    def actions: Map[String, Action]
+
     /**
      * The state of the game, in a vision scoped to the [[Player]] capabilities.
      *
@@ -43,6 +45,8 @@ trait Model {
    * Represents a single object against which the [[Player]] can interact.
    */
   abstract class Item { item: I =>
+
+    def description: ItemDescription
 
     /**
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,

@@ -23,11 +23,11 @@ trait Room {
   def neighbors(direction: Direction): Option[Room]
 }
 
-case class SimpleRoom private (name: String, _neighbors: () => Map[Direction, Room]) extends Room {
-  override def neighbors(direction: Direction): Option[Room] = _neighbors() get direction
-}
-
 object Room {
+
+  private case class SimpleRoom(name: String, _neighbors: () => Map[Direction, Room]) extends Room {
+    override def neighbors(direction: Direction): Option[Room] = _neighbors() get direction
+  }
 
   def apply(name: String, neighbors: => Map[Direction, Room]): Room =
     SimpleRoom(name, () => neighbors)

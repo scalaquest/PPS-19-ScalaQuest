@@ -2,13 +2,13 @@ package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
 import io.github.scalaquest.core.model.Action.Common.Eat
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
   SimpleGenericItem,
   SimpleState,
-  playerBagLens,
-  geographyLens
+  geographyLens,
+  playerBagLens
 }
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -18,7 +18,7 @@ class SimpleEatableTest extends AnyWordSpec {
     val room    = startRoom
 
     "applied to an item" when {
-      val item = SimpleGenericItem(new ItemRef {}, eatable)
+      val item = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, eatable)
       val stateItemInRoom =
         geographyLens.modify(_ + (room -> Set(item)))(simpleState)
       val stateItemInBag           = playerBagLens.modify(_ + item)(simpleState)

@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.{Model, SimpleRoom}
+import io.github.scalaquest.core.model.{Model}
 import io.github.scalaquest.core.{Game, MessagePusher}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 

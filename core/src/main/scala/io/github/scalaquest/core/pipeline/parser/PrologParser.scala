@@ -1,19 +1,13 @@
 package io.github.scalaquest.core.pipeline.parser
 
+import io.github.scalaquest.core.model.{BaseItem, DecoratedItem, ItemDescription}
 import io.github.scalaquest.core.parsing.engine.Engine
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Variable}
+import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
 
-/**
- * A [[Parser]] implementation that takes advantage of an
- * [[io.github.scalaquest.core.parsing.engine.Engine]] in order to perform the syntactical analysis.
- */
-abstract class PrologParser extends Parser {
-
-  /** The [[io.github.scalaquest.core.parsing.engine.Engine]] used. */
-  protected def engine: Engine
+trait Helpers {
 
   object dsl {
     import io.github.scalaquest.core.parsing.scalog.dsl._
@@ -22,9 +16,38 @@ abstract class PrologParser extends Parser {
     val phrase = CompoundBuilder("phrase")
   }
 
+  object itemDescription {
+
+    private def toItemDescription(t: Term): ItemDescription =
+      t match {
+        case Atom(name) => BaseItem(name)
+        case Compound(Atom(description), item, Nil) =>
+          DecoratedItem(description, toItemDescription(item))
+      }
+
+    def unapply(t: Seq[Term]): Option[Seq[ItemDescription]] =
+      t match {
+        case (obj @ (_: Compound | _: Term)) :: Nil =>
+          Some(Seq(toItemDescription(obj)))
+        case (directObj @ (_: Compound | _: Term)) :: (indirectObj @ (_: Compound |
+            _: Term)) :: Nil =>
+          Some(Seq(toItemDescription(directObj), toItemDescription(indirectObj)))
+      }
+  }
+}
+
+/**
+ * A [[Parser]] implementation that takes advantage of an
+ * [[io.github.scalaquest.core.parsing.engine.Engine]] in order to perform the syntactical analysis.
+ */
+abstract class PrologParser extends Parser with Helpers {
+
+  /** The [[io.github.scalaquest.core.parsing.engine.Engine]] used. */
+  protected def engine: Engine
+
   override def parse(lexerResult: LexerResult): Option[ParserResult] = {
-    import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
     import dsl._
+    import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
     val tokens = lexerResult.tokens.map(Atom)
     val query  = phrase(i(X), tokens)
 
@@ -34,9 +57,13 @@ abstract class PrologParser extends Parser {
       ast <- x match {
         case Compound(Atom(verb), Atom(subject), Nil) =>
           Some(AbstractSyntaxTree.Intransitive(verb, subject))
-        case Compound(Atom(verb), Atom(subject), Atom(obj) :: Nil) =>
+        case Compound(Atom(verb), Atom(subject), itemDescription(obj :: Nil)) =>
           Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
-        case Compound(Atom(verb), Atom(subject), Atom(directObj) :: Atom(indirectObj) :: Nil) =>
+        case Compound(
+              Atom(verb),
+              Atom(subject),
+              itemDescription(directObj :: indirectObj :: Nil)
+            ) =>
           Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
         case _ => None
       }

@@ -2,15 +2,15 @@ package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
 import io.github.scalaquest.core.model.Action.Common.Open
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   Openable,
   SimpleGenericItem,
   SimpleKey,
   SimpleOpenable,
   SimpleState,
-  playerBagLens,
-  geographyLens
+  geographyLens,
+  playerBagLens
 }
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -20,16 +20,16 @@ class SimpleOpenableTest extends AnyWordSpec {
     val targetOpenable: SimpleState => Option[Openable] = state => {
       for {
         itemsInLoc <- state.matchState.geography.get(startRoom)
-        openable <- itemsInLoc.collectFirst({ case SimpleGenericItem(_, openable: Openable) =>
+        openable <- itemsInLoc.collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
           openable
         })
       } yield openable
     }
 
     "a key is required" when {
-      val targetKey  = SimpleKey(new ItemRef {})
+      val targetKey  = SimpleKey(ItemDescription("key"), new ItemRef {})
       val openable   = SimpleOpenable(requiredKey = Some(targetKey))
-      val targetItem = SimpleGenericItem(new ItemRef {}, openable)
+      val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
 
       val copyWKeyAndPortal = Function.chain(
         Seq(
@@ -53,14 +53,18 @@ class SimpleOpenableTest extends AnyWordSpec {
 
         "not open without the right Key" in {
           assert(targetItem.use(Open, stateWKeyAndItem, None).isEmpty)
-          assert(targetItem.use(Open, stateWKeyAndItem, Some(SimpleKey(new ItemRef {}))).isEmpty)
+          assert(
+            targetItem
+              .use(Open, stateWKeyAndItem, Some(SimpleKey(ItemDescription("key"), new ItemRef {})))
+              .isEmpty
+          )
         }
       }
     }
 
     "a key is not required" when {
       val openable   = SimpleOpenable()
-      val targetItem = SimpleGenericItem(new ItemRef {}, openable)
+      val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
       val stateWPort: SimpleState =
         geographyLens.modify(_ + (startRoom -> Set(targetItem)))(simpleState)
 
@@ -74,7 +78,11 @@ class SimpleOpenableTest extends AnyWordSpec {
 
         }
         "not open with any Key" in {
-          assert(targetItem.use(Open, stateWPort, Some(SimpleKey(new ItemRef {}))).isEmpty)
+          assert(
+            targetItem
+              .use(Open, stateWPort, Some(SimpleKey(ItemDescription("key"), new ItemRef {})))
+              .isEmpty
+          )
         }
       }
     }

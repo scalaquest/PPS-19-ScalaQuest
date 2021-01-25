@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.items.{CommonItems, SimpleCommonItems}
 
@@ -13,8 +13,11 @@ trait SimpleGenericItemExt extends CommonBase {
   /**
    * Standard implementation of the common GenericItem.
    */
-  case class SimpleGenericItem(itemRef: ItemRef, additionalBehaviors: ItemBehavior*)
-    extends GenericItem {
+  final case class SimpleGenericItem(
+    description: ItemDescription,
+    itemRef: ItemRef,
+    additionalBehaviors: ItemBehavior*
+  ) extends GenericItem {
     override def behaviors: Seq[ItemBehavior] = additionalBehaviors
   }
 }

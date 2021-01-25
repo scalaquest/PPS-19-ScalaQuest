@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
@@ -13,7 +13,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
 class KeyTest extends AnyWordSpec {
   "A Key" when {
     val behaviors = Seq(SimpleTakeable(), SimpleEatable())
-    val key       = SimpleKey(new ItemRef {}, behaviors.head, behaviors(1))
+    val key       = SimpleKey(ItemDescription("key"), new ItemRef {}, behaviors.head, behaviors(1))
 
     "instantiated" should {
       "take whatever number of behaviors" in {
