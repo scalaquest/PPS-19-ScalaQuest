@@ -8,7 +8,7 @@ import io.github.scalaquest.core.model.Room.Direction
 class SimpleRoomTest extends AnyWordSpec {
   "A Room" when {
 
-    val sRoom: Room = Room("startRoom", () => Map[Direction, Room](Direction.North -> targetRoom))
+    val sRoom: Room = Room("startRoom", Map[Direction, Room](Direction.North -> targetRoom))
 
     "someone accesses a neighbor" should {
       "return a Room if the direction has an associated Room" in {

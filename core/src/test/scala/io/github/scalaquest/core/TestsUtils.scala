@@ -24,10 +24,10 @@ import monocle.Lens
 import monocle.macros.GenLens
 
 object TestsUtils {
-  val startRoom: Room = Room("startRoom", () => Map[Direction, Room](Direction.North -> targetRoom))
+  val startRoom: Room = Room("startRoom", Map[Direction, Room](Direction.North -> targetRoom))
 
   val targetRoom: Room =
-    Room("targetRoom", () => Map[Direction, Room](Direction.South -> startRoom))
+    Room("targetRoom", Map[Direction, Room](Direction.South -> startRoom))
 
   val actionsMap: Map[String, Action] = Map[String, Action](
     "take"  -> Take,
