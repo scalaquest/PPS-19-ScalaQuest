@@ -1,9 +1,13 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.core.model.{Message, Model}
-import io.github.scalaquest.core.{MessagePusher, Game}
+import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.console._
-import zio.{UIO, ZIO}
+import zio.{ExitCode, UIO, URIO, ZIO}
+
+case class CLIApp(cli: CLI) extends zio.App {
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = cli.start.exitCode
+}
 
 trait CLI {
   def start: ZIO[Console, Exception, Unit]
