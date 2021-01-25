@@ -19,12 +19,20 @@ object Model {
   case object GameStarted extends Message
   case object TestMessage extends Message
 
-  def room1: Room = Room("room1", () => Map(Direction.North -> room2))
-  def room2: Room = Room("room2", () => Map(Direction.South -> room1))
+  def room1: Room = Room("room1", Map(Direction.North -> room2))
+  def room2: Room = Room("room2", Map(Direction.South -> room1))
 
   val model: SimpleModel.type = SimpleModel
 
-  val state: SimpleState = ???
+  val state: SimpleState = SimpleState(
+    SimpleMatchState(
+      SimplePlayer(Set(), room1),
+      ended = false,
+      Map(),
+      Set()
+    ),
+    Seq()
+  )
 
   def gameLens: Lens[SimpleState, SimpleMatchState]    = GenLens[SimpleState](_.matchState)
   def playerLens: Lens[SimpleMatchState, SimplePlayer] = GenLens[SimpleMatchState](_.player)
