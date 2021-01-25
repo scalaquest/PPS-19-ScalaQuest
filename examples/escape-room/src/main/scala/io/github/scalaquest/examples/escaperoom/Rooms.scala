@@ -3,7 +3,7 @@ package io.github.scalaquest.examples.escaperoom
 import io.github.scalaquest.core.model.Room.Direction
 import io.github.scalaquest.core.model.{Room}
 
-object Rooms {
+object House {
 
   def kitchen: Room =
     Room(

@@ -5,8 +5,10 @@ import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
 
-case class CLIApp(cli: CLI) extends zio.App {
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = cli.start.exitCode
+trait CLIApp extends zio.App {
+  def cli: CLI
+
+  final override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = cli.start.exitCode
 }
 
 trait CLI {
