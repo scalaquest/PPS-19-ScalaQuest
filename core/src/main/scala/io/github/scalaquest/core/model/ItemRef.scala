@@ -6,9 +6,7 @@ trait ItemRef
 
 object ItemRef {
 
-  private case class SimpleItemRef() extends ItemRef {
-    private val id: UUID = UUID.randomUUID()
-  }
+  private case class SimpleItemRef(id: UUID) extends ItemRef
 
-  def apply(): ItemRef = SimpleItemRef()
+  def apply(): ItemRef = SimpleItemRef(UUID.randomUUID())
 }

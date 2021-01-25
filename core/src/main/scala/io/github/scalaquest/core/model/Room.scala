@@ -1,6 +1,8 @@
 package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.model.Room.Direction
+import monocle.Lens
+import monocle.macros.GenLens
 
 import java.util.UUID
 
@@ -8,11 +10,9 @@ trait RoomRef
 
 object RoomRef {
 
-  private case class SimpleRoomRef() extends RoomRef {
-    private val id: UUID = UUID.randomUUID()
-  }
+  private case class SimpleRoomRef(id: UUID) extends RoomRef
 
-  def apply(): RoomRef = SimpleRoomRef()
+  def apply(): RoomRef = SimpleRoomRef(UUID.randomUUID())
 }
 
 /**
