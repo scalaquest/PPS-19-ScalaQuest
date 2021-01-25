@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
 import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
@@ -14,7 +14,8 @@ trait SimpleDoorExt extends CommonBase {
   /**
    * Standard implementation of the common Door item.
    */
-  case class SimpleDoor(
+  final case class SimpleDoor(
+    description: ItemDescription,
     itemRef: ItemRef,
     doorBehavior: RoomLink,
     additionalBehaviors: ItemBehavior*

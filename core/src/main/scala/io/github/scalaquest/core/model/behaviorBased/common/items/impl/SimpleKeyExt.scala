@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.items.{CommonItems, SimpleCommonItems}
 
@@ -13,7 +13,11 @@ trait SimpleKeyExt extends CommonBase {
   /**
    * Standard implementation of the common Key item.
    */
-  case class SimpleKey(itemRef: ItemRef, additionalBehaviors: ItemBehavior*) extends Key {
+  final case class SimpleKey(
+    description: ItemDescription,
+    itemRef: ItemRef,
+    additionalBehaviors: ItemBehavior*
+  ) extends Key {
     override val behaviors: Seq[ItemBehavior] = additionalBehaviors
   }
 }

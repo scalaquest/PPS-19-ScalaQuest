@@ -24,7 +24,7 @@ class PipelineFromModel[M <: Model](val model: M) {
   def build(
     lexer: Lexer,
     parser: Parser,
-    resolver: Resolver,
+    resolver: Resolver.Builder[model.S],
     interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
     reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
   )(state: model.S): Pipeline[model.type] =
@@ -34,7 +34,7 @@ class PipelineFromModel[M <: Model](val model: M) {
         for {
           lr  <- Right(lexer tokenize rawSentence)
           pr  <- (parser parse lr) toRight "Couldn't understand input."
-          rr  <- resolver resolve pr
+          rr  <- resolver(state) resolve pr
           ir  <- interpreterBuilder(state) interpret rr
           rdr <- Right(reducerBuilder(state) reduce ir)
         } yield rdr.state

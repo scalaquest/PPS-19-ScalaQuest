@@ -1,7 +1,6 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.model.{Action, ItemRef}
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Model}
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
 
 /**
@@ -29,34 +28,21 @@ trait Resolver {
  */
 object Resolver {
 
-  /**
-   * It generates a [[Resolver]] with a standard implementation.
-   *
-   * @param actions
-   *   A [[Map]] that links the textual representation of the [[Action]] to the instance.
-   * @param items
-   *   A [[Map]] that links the textual representation of the [[ItemRef]] to the instance.
-   * @return
-   *   A standard implementation of the [[Resolver]].
-   */
-  def apply(actions: Map[String, Action], items: Map[String, ItemRef]): Resolver = {
+  type Builder[S] = S => Resolver
 
-    /**
-     * Higher order function that extracts the [[ItemRef]] from its textual representation. It may
-     * fail, if the given representation does not match with an [[ItemRef]].
-     */
-    val retrieveItem: String => Either[String, ItemRef] =
-      name => items get name toRight s"Couldn't understand $name"
+  abstract class SimpleResolver extends Resolver {
 
-    /**
-     * Higher order function that extracts the [[Action]] from its textual representation. It may
-     * fail, if the given representation does not match with an [[Action]].
-     */
-    val retrieveAction: String => Either[String, Action] =
-      verb => actions get verb toRight s"Couldn't understand $verb."
+    def actions: PartialFunction[String, Action]
 
-    // shortcut for implementing the Resolver, as it is a single method trait.
-    (parserResult: ParserResult) => {
+    def items: PartialFunction[ItemDescription, ItemRef]
+
+    def retrieveAction(verb: String): Either[String, Action] =
+      actions lift verb toRight s"Couldn't understand $verb."
+
+    def retrieveItem(name: ItemDescription): Either[String, ItemRef] =
+      items lift name toRight s"Couldn't understand $name"
+
+    override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
       for {
         statement <- parserResult.tree match {
           case AbstractSyntaxTree.Intransitive(verb, _) =>
@@ -81,5 +67,19 @@ object Resolver {
         }
       } yield ResolverResult(statement)
     }
+
   }
+
+  def builder[M <: Model](implicit model: M): Builder[model.S] =
+    s =>
+      new SimpleResolver {
+
+        override def actions: PartialFunction[String, Action] = s.actions
+
+        override def items: PartialFunction[ItemDescription, ItemRef] =
+          d =>
+            s.matchState.itemsInScope.filter(i => d.isSubset(i.description)).toList match {
+              case x :: Nil => x.itemRef
+            }
+      }
 }
