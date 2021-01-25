@@ -30,9 +30,9 @@ trait Room {
    */
   def name: String
 
-  def id: RoomRef
+  def ref: RoomRef
 
-  override def hashCode(): Int = this.id.hashCode()
+  override def hashCode(): Int = this.ref.hashCode()
 
   /**
    * Identifies rooms near to the current one, at the cardinal points.
@@ -51,7 +51,7 @@ object Room {
   ) extends Room {
     override def neighbors(direction: Direction): Option[Room] = _neighbors() get direction
 
-    override def id: RoomRef = RoomRef()
+    override def ref: RoomRef = RoomRef()
 
     override def items: Set[ItemRef] = _items()
   }

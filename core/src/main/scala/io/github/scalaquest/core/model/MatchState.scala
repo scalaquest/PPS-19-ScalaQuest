@@ -9,10 +9,10 @@ trait MatchState[I <: Model#Item] {
 
   def itemsInScope: Set[I] =
     items.filter(x =>
-      player.bag.contains(x.id) ||
+      player.bag.contains(x.ref) ||
         rooms
-          .collectFirst({ case room if room.id == player.location => room.items })
-          .exists(_.contains(x.id))
+          .collectFirst({ case room if room.ref == player.location => room.items })
+          .exists(_.contains(x.ref))
     )
 
   /**

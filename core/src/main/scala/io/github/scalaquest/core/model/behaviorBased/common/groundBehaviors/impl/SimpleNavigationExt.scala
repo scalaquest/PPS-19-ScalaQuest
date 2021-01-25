@@ -28,6 +28,6 @@ trait SimpleNavigationExt extends CommonBase {
     }
 
     private def movePlayer(targetRoom: Room): Reaction =
-      playerLocationLens.set(targetRoom.id)(_).applyReactionIfPresent(onNavigateExtra)
+      playerLocationLens.set(targetRoom.ref)(_).applyReactionIfPresent(onNavigateExtra)
   }
 }

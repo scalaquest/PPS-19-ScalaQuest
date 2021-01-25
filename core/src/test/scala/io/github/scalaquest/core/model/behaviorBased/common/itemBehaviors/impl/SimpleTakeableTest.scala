@@ -22,7 +22,7 @@ class SimpleTakeableTest extends AnyWordSpec {
       val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), takeable)
 
       val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
 
       val stateWithTargetInRoom: SimpleState =
         matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
@@ -37,7 +37,7 @@ class SimpleTakeableTest extends AnyWordSpec {
             )
             modState <- Right(react(stateWithTargetInRoom))
           } yield assert(
-            !modState.currentRoom.items.contains(targetItem.id),
+            !modState.currentRoom.items.contains(targetItem.ref),
             "The item is into the room yet"
           )
         }
@@ -49,7 +49,7 @@ class SimpleTakeableTest extends AnyWordSpec {
             )
             modState <- Right(react(stateWithTargetInRoom))
           } yield assert(
-            modState.matchState.player.bag.contains(targetItem.id),
+            modState.matchState.player.bag.contains(targetItem.ref),
             "The item is not into the bag"
           )
         }

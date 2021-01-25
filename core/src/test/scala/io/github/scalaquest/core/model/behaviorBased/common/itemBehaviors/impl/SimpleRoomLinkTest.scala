@@ -24,7 +24,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
       val targetItem = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
 
       val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
       val stateWithTargetInRoom: SimpleState =
         matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
 
@@ -37,7 +37,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
             )
             modState <- Right(react(stateWithTargetInRoom))
           } yield assert(
-            modState.matchState.player.location == targetRoom.id,
+            modState.matchState.player.location == targetRoom.ref,
             "The player is not in the right location"
           )
         }
@@ -49,7 +49,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
       val targetItem = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
 
       val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
       val stateWithOpenedTargetInRoom: SimpleState =
         matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
 
@@ -62,7 +62,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
             )
             modState <- Right(react(stateWithOpenedTargetInRoom))
           } yield assert(
-            modState.matchState.player.location == targetRoom.id,
+            modState.matchState.player.location == targetRoom.ref,
             "The player is not in the right location"
           )
         }
@@ -74,7 +74,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
       val targetItem = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
 
       val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
       val stateWithClosedTargetInRoom: SimpleState =
         matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
       "the user says 'enter the item'" should {

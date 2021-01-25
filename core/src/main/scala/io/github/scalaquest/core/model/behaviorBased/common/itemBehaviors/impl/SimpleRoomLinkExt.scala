@@ -51,7 +51,7 @@ trait SimpleRoomLinkExt extends CommonBase {
 
     def enterRoom(): Reaction =
       state => {
-        val updLocState = playerLocationLens.modify(_ => endRoom.id)(state)
+        val updLocState = playerLocationLens.modify(_ => endRoom.ref)(state)
         updLocState.applyReactionIfPresent(onEnterExtra)
       }
 

@@ -33,9 +33,9 @@ trait SimpleEatableExt extends CommonBase {
     private def eat(item: I): Reaction =
       state => {
 
-        val updCurrRoom = roomLens.modify(_ - item.id)(state.currentRoom)
+        val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
         val removeItemFromRoomAndBag = Function.chain(
-          Seq(matchRoomsLens.modify(_ + updCurrRoom), playerBagLens.modify(_ - item.id))
+          Seq(matchRoomsLens.modify(_ + updCurrRoom), playerBagLens.modify(_ - item.ref))
         )
         val stateWithoutItem = removeItemFromRoomAndBag(state)
 

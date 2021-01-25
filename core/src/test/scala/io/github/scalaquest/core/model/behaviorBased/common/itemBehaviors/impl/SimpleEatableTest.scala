@@ -21,10 +21,10 @@ class SimpleEatableTest extends AnyWordSpec {
     "applied to an item" when {
       val targetItem       = SimpleGenericItem(ItemDescription("item"), ItemRef(), eatable)
       val stateWithItem    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithItem = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithItem = roomLens.modify(_ + targetItem.ref)(startRoom)
 
       val stateItemInRoom   = matchRoomsLens.modify(_ + currRoomWithItem)(simpleState)
-      val stateItemInBag    = playerBagLens.modify(_ + targetItem.id)(simpleState)
+      val stateItemInBag    = playerBagLens.modify(_ + targetItem.ref)(simpleState)
       val stateNoItemInRoom = stateWithItem
 
       "the user says 'eat the item'" should {
@@ -35,7 +35,7 @@ class SimpleEatableTest extends AnyWordSpec {
             )
             modState <- Right(react(stateItemInRoom))
           } yield assert(
-            !modState.currentRoom.items.contains(targetItem.id),
+            !modState.currentRoom.items.contains(targetItem.ref),
             "The item is into the room yet"
           )
         }
@@ -47,7 +47,7 @@ class SimpleEatableTest extends AnyWordSpec {
             )
             modState <- Right(react(stateItemInBag))
           } yield assert(
-            !modState.matchState.player.bag.contains(targetItem.id),
+            !modState.matchState.player.bag.contains(targetItem.ref),
             "The item is into the bag yet"
           )
         }

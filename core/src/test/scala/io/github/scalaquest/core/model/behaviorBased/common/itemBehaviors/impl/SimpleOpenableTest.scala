@@ -34,10 +34,10 @@ class SimpleOpenableTest extends AnyWordSpec {
       val targetItem = SimpleGenericItem(ItemDescription("item"), new ItemRef {}, openable)
 
       val stateWithItems     = itemsLens.modify(_ + targetItem + targetKey)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
 
       val copyWKeyAndTarget = Function.chain(
-        Seq(playerBagLens.modify(_ + targetKey.id), matchRoomsLens.modify(_ + currRoomWithTarget))
+        Seq(playerBagLens.modify(_ + targetKey.ref), matchRoomsLens.modify(_ + currRoomWithTarget))
       )
       val stateWKeyAndTarget: SimpleState = copyWKeyAndTarget(stateWithItems)
 
@@ -73,7 +73,7 @@ class SimpleOpenableTest extends AnyWordSpec {
       val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), openable)
 
       val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.id)(startRoom)
+      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
       val stateWithTargetInRoom: SimpleState =
         matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
 

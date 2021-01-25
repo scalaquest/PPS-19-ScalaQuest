@@ -66,7 +66,7 @@ object TestsUtils {
   val simpleState: SimpleState = SimpleState(
     actionsMap,
     matchState = SimpleMatchState(
-      player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.id),
+      player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.ref),
       ended = false,
       items = Set(apple, key, door),
       rooms = Set(startRoom, targetRoom)

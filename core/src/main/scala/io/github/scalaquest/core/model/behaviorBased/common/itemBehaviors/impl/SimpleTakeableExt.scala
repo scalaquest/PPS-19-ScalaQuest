@@ -46,9 +46,9 @@ trait SimpleTakeableExt extends CommonBase {
     private def take(item: I): Reaction =
       state => {
 
-        val updCurrRoom = roomLens.modify(_ - item.id)(state.currentRoom)
+        val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
         val takeItemFromRoom = Function.chain(
-          Seq(matchRoomsLens.modify(_ + updCurrRoom), playerBagLens.modify(_ + item.id))
+          Seq(matchRoomsLens.modify(_ + updCurrRoom), playerBagLens.modify(_ + item.ref))
         )
         val stateWithItemInBag = takeItemFromRoom(state)
 

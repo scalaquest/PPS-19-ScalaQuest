@@ -25,12 +25,12 @@ trait CommonBase
   implicit def roomLens: Lens[Room, Set[ItemRef]]
 
   implicit class StateUtils(state: S) {
-    def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.id)
+    def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.ref)
 
     def isInCurrentRoom(item: I): Boolean =
       state.matchState.rooms
-        .collectFirst({ case room if room.id == state.matchState.player.location => room.items })
-        .exists(_ contains item.id)
+        .collectFirst({ case room if room.ref == state.matchState.player.location => room.items })
+        .exists(_ contains item.ref)
 
     def isInScope(item: I): Boolean = state.isInCurrentRoom(item) || state.isInBag(item)
 
@@ -39,13 +39,13 @@ trait CommonBase
 
     def currentRoom: Room = {
       state.matchState.rooms
-        .collectFirst({ case room if room.id == state.matchState.player.location => room })
+        .collectFirst({ case room if room.ref == state.matchState.player.location => room })
         .get
     }
 
     def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
       state.matchState.rooms
-        .collectFirst({ case room if room.id == roomRef => room.items })
+        .collectFirst({ case room if room.ref == roomRef => room.items })
         .getOrElse(Set())
 
     def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] = {
@@ -53,11 +53,11 @@ trait CommonBase
     }
 
     def itemFromRef(itemRef: ItemRef): Option[I] =
-      state.matchState.items.collectFirst({ case item if item.id == itemRef => item })
+      state.matchState.items.collectFirst({ case item if item.ref == itemRef => item })
 
     def copyWithItemInLocation(item: I): S = {
       val stateWithTarget    = itemsLens.modify(_ + item)(state)
-      val currRoomWithTarget = roomLens.modify(_ + item.id)(state.currentRoom)
+      val currRoomWithTarget = roomLens.modify(_ + item.ref)(state.currentRoom)
       matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
     }
 

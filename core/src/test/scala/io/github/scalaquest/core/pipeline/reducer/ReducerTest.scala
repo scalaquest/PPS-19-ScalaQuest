@@ -18,8 +18,8 @@ class ReducerTest extends AnyWordSpec {
     "given a Reaction" should {
       // an Interpreter Result with a Reaction that adds an apple to the bag
       val stateWithTarget   = itemsLens.modify(_ + apple)(simpleState)
-      val interpreterResult = InterpreterResult(SimpleModel)(playerBagLens.modify(_ + apple.id)(_))
-      val desiredState      = playerBagLens.modify(_ + apple.id)(simpleState)
+      val interpreterResult = InterpreterResult(SimpleModel)(playerBagLens.modify(_ + apple.ref)(_))
+      val desiredState      = playerBagLens.modify(_ + apple.ref)(simpleState)
 
       "return a State modified accordingly" in {
         assert(
