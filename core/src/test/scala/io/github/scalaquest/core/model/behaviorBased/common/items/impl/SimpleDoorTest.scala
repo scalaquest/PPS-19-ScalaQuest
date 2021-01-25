@@ -13,7 +13,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleDoorTest extends AnyWordSpec {
   "A Door" when {
-    val room: Room          = Room("room", () => Map[Direction, Room]())
+    val room: Room          = Room("room", Map[Direction, Room]())
     val roomLinkBehavior    = SimpleRoomLink(room, Some(SimpleOpenable()))
     val additionalBehaviors = Seq(SimpleTakeable(), SimpleEatable())
     val door =

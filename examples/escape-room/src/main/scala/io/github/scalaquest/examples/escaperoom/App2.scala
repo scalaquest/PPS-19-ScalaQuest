@@ -19,8 +19,8 @@ object Model {
   case object GameStarted extends Message
   case object TestMessage extends Message
 
-  def room1: Room = Room("room1", () => Map(Direction.North -> room2))
-  def room2: Room = Room("room2", () => Map(Direction.South -> room1))
+  def room1: Room = Room("room1", Map(Direction.North -> room2))
+  def room2: Room = Room("room2", Map(Direction.South -> room1))
 
   val model: SimpleModel.type = SimpleModel
 
