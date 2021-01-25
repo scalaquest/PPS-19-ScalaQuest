@@ -102,17 +102,18 @@ class ItemDescriptionTest extends AnyWordSpec with Matchers {
       }
     }
     "the first item is a nested decorated item" should {
-      val first = DecoratedItem("golden", DecoratedItem("medium-sized", BaseItem("key")))
+      val mediumSized = "medium-sized"
+      val first       = DecoratedItem("golden", DecoratedItem(mediumSized, BaseItem("key")))
       "return false if the second doesn't contain the same decorators" in {
         val second = DecoratedItem("golden", BaseItem("key"))
         isSubset(first, second) shouldBe false
       }
       "return true if the second contains the same decorators" in {
-        val second = DecoratedItem("golden", DecoratedItem("medium-sized", BaseItem("key")))
+        val second = DecoratedItem("golden", DecoratedItem(mediumSized, BaseItem("key")))
         isSubset(first, second) shouldBe true
       }
       "return true if the second contains the same decorators in a different order" in {
-        val second = DecoratedItem("medium-sized", DecoratedItem("golden", BaseItem("key")))
+        val second = DecoratedItem(mediumSized, DecoratedItem("golden", BaseItem("key")))
         isSubset(first, second) shouldBe true
       }
     }
