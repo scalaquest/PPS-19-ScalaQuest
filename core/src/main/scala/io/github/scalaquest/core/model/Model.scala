@@ -4,6 +4,7 @@ trait Model {
   type S <: State
   type I <: Item
   type G <: Ground
+  type RM <: Room
 
   type Reaction = S => S
 
@@ -23,7 +24,7 @@ trait Model {
      * @return
      *   The [[MatchState]] of the match.
      */
-    def matchState: MatchState[I]
+    def matchState: MatchState[I, RM]
 
     /**
      * A representation of the output to render to the user at the end of the pipeline round.
@@ -31,14 +32,6 @@ trait Model {
      *   A [[Seq]] of [[Message]] s.
      */
     def messages: Seq[Message]
-
-    /**
-     * A method that extracts a [[Map]] that links all the [[Item]] inside the [[State]] to their
-     * [[ItemRef]] s. This should be implemented for each concrete [[Model]] implementation.
-     * @return
-     *   A [[Map]] from [[ItemRef]] to [[Item]].
-     */
-    def extractRefs: Map[ItemRef, I]
   }
 
   /**
@@ -52,7 +45,7 @@ trait Model {
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
      * the reference to an object changes, the [[State]] works in an immutable fashion.
      */
-    def itemRef: ItemRef
+    def ref: ItemRef
 
     /**
      * The hash code of the [[Item]] is overridden in a way that delegates to the Item's [[ItemRef]]
@@ -61,7 +54,7 @@ trait Model {
      * @return
      *   The Item's [[ItemRef]] hashcode.
      */
-    final override def hashCode(): Int = itemRef.hashCode()
+    final override def hashCode(): Int = ref.hashCode()
 
     /**
      * Define a way make the item interact with the [[State]]. The interaction is founded into the
@@ -81,5 +74,32 @@ trait Model {
 
   abstract class Ground { ground: G =>
     def use(action: Action, state: S): Option[Reaction]
+  }
+
+  /**
+   * A geographical portion of the match map.
+   *
+   * This is one of the basic block for the story build by the storyteller, as it is used to
+   * identify [[Player]] 's and [[Model.Item]] s' location, in a given moment of the story.
+   */
+  abstract class Room { room: RM =>
+
+    /**
+     * A textual identifier for the room.
+     * @return
+     *   A textual identifier for the room.
+     */
+    def name: String
+
+    def ref: RoomRef
+
+    override def hashCode(): Int = this.ref.hashCode()
+
+    /**
+     * Identifies rooms near to the current one, at the cardinal points.
+     */
+    def neighbor(direction: Direction): Option[RoomRef]
+
+    def items: Set[ItemRef]
   }
 }

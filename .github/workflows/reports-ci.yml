@@ -1,0 +1,71 @@
+name: Reports with Gradle CI
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+
+  push:
+    branches:
+      - reports-releases
+
+jobs:
+  ReportsGeneration:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Make report directory
+        run: mkdir report
+
+
+      - name: Merge PPS markdown files
+        id: ppsreportfiles
+        run: |
+          echo "::set-output name=PPS_REPORT_FILES::$(printf '"%s" ' reports/pps-report/*.md)"
+
+      - name: Merge LSS markdown files
+        id: lssreportfiles
+        run: |
+            echo "::set-output name=LSS_REPORT_FILES::$(printf '"%s" ' reports/lss-report/*.md)"
+
+      - name: PPS report generation
+        uses: docker://pandoc/latex:2.11.3.2
+        with:
+          args: -F pandoc-crossref --output=report/PPSReport.pdf  ${{ steps.ppsreportfiles.outputs.PPS_REPORT_FILES }}
+
+      - name: LSS report generation
+        uses: docker://pandoc/latex:2.11.3.2
+        with:
+         args: -F pandoc-crossref --output=report/LSSReport.pdf  ${{ steps.lssreportfiles.outputs.LSS_REPORT_FILES }}
+
+      - name: Archive generated file(s)
+        uses: actions/upload-artifact@v2
+        with:
+          name: generatedReports
+          path: report
+
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+        #run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+         tag_name: reports-${{ steps.date.outputs.date }}
+         release_name: Release ${{ steps.date.outputs.date }}
+         draft: false
+         prerelease: false
+
+      - name: Upload Release Assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+         release_id: ${{ steps.create-release.outputs.id }}
+         assets_path: report

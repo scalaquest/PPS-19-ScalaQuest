@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Eat
-import io.github.scalaquest.core.model.Room
+import io.github.scalaquest.core.model.{ItemRef, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -20,29 +20,29 @@ trait SimpleEatableExt extends CommonBase {
    *   [[Reaction]]. It can be omitted.
    */
   case class SimpleEatable(onEatExtra: Option[Reaction] = None)(implicit
-    bagLens: Lens[S, Set[I]],
-    itemsLens: Lens[S, Map[Room, Set[I]]]
+    playerBagLens: Lens[S, Set[ItemRef]],
+    matchRoomsLens: Lens[S, Map[RoomRef, RM]],
+    roomLens: Lens[RM, Set[ItemRef]]
   ) extends Eatable {
 
     override def triggers: ItemTriggers = {
       // "Eat the item"
-      case (Eat, item, None, state) if state.isInCurrentRoom(item) || state.isInBag(item) =>
-        eat(item)
+      case (Eat, item, None, state) if state.isInScope(item) => eat(item)
     }
 
     private def eat(item: I): Reaction =
       state => {
-
-        // remove the item if it is in the current room
-        val currRoom         = state.matchState.player.location
-        val currRoomItemsUpd = itemsLens.get(state).get(currRoom).fold(Set[I]())(_ - item)
-        val stateWithoutItem = itemsLens.modify(_ + (currRoom -> currRoomItemsUpd))(state)
-
-        // remove the item if is into the bag
-        val stateItemInBag = bagLens.modify(_ - item)(stateWithoutItem)
+        val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
+        val removeItemFromRoomAndBag = Function.chain(
+          Seq(
+            matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
+            playerBagLens.modify(_ - item.ref)
+          )
+        )
+        val stateWithoutItem = removeItemFromRoomAndBag(state)
 
         // execute additional reaction, if specified
-        stateItemInBag.applyReactionIfPresent(onEatExtra)
+        stateWithoutItem.applyReactionIfPresent(onEatExtra)
       }
   }
 }

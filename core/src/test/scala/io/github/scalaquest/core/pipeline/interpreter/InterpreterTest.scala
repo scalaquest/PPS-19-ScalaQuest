@@ -8,23 +8,22 @@ import io.github.scalaquest.core.TestsUtils.{
   key,
   keyItemRef,
   refItemDictionary,
-  simpleState,
-  startRoom
+  simpleState
 }
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
-import io.github.scalaquest.core.model.Room.Direction
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{StdGround, geographyLens}
+import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.SimpleGround
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 import org.scalatest.wordspec.AnyWordSpec
 
 class InterpreterTest extends AnyWordSpec {
   "An Interpreter" when {
-    val interpreter = Interpreter.builder(SimpleModel)(refItemDictionary, StdGround)(simpleState)
+    val interpreter = Interpreter.builder(SimpleModel)(refItemDictionary, SimpleGround)(simpleState)
 
     "given an Intransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.North)))
-      val maybeExpReaction = StdGround.use(Go(Direction.North), simpleState)
+      val maybeExpReaction = SimpleGround.use(Go(Direction.North), simpleState)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -33,7 +32,7 @@ class InterpreterTest extends AnyWordSpec {
 
     "given a Transitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Transitive(Take, appleItemRef))
-      val stateItemInRoom  = geographyLens.modify(_ + (startRoom -> Set(apple)))(simpleState)
+      val stateItemInRoom  = simpleState.copyWithItemInLocation(apple)
       val maybeExpReaction = apple.use(Take, stateItemInRoom, None)
 
       "return the right Reaction" in {
@@ -42,9 +41,10 @@ class InterpreterTest extends AnyWordSpec {
     }
 
     "given a Ditransitive Statement" should {
-      val resolverResult   = ResolverResult(Statement.Ditransitive(Open, doorItemRef, keyItemRef))
-      val stateItemInRoom  = geographyLens.modify(_ + (startRoom -> Set(door, key)))(simpleState)
-      val maybeExpReaction = door.use(Open, stateItemInRoom, Some(key))
+      val resolverResult     = ResolverResult(Statement.Ditransitive(Open, doorItemRef, keyItemRef))
+      val stateDoorInRoom    = simpleState.copyWithItemInLocation(door)
+      val stateDoorKeyInRoom = stateDoorInRoom.copyWithItemInLocation(key)
+      val maybeExpReaction   = door.use(Open, stateDoorKeyInRoom, Some(key))
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -72,7 +72,7 @@ class InterpreterTest extends AnyWordSpec {
   "An interpreterBuilder" should {
     import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
     "be of the right type" in {
-      val builder = Interpreter.builder(SimpleModel)(refItemDictionary, StdGround)
+      val builder = Interpreter.builder(SimpleModel)(refItemDictionary, SimpleGround)
       builder shouldBe a[Interpreter.Builder[_, _, _]]
 
       val interpreter = builder(simpleState)

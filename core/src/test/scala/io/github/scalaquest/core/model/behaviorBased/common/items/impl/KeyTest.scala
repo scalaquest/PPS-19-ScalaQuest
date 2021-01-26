@@ -4,7 +4,6 @@ import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
-  SimpleGenericItem,
   SimpleKey,
   SimpleOpenable,
   SimpleTakeable

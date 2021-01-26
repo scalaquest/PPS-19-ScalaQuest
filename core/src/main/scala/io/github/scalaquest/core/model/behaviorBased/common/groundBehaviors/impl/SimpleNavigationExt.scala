@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Go
-import io.github.scalaquest.core.model.Room
+import io.github.scalaquest.core.model.RoomRef
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -18,16 +18,16 @@ trait SimpleNavigationExt extends CommonBase {
    *   Actions after the standard [[Reaction]]. It can be omitted.
    */
   case class SimpleNavigation(onNavigateExtra: Option[Reaction] = None)(implicit
-    currRoomLens: Lens[S, Room]
+    playerLocationLens: Lens[S, RoomRef]
   ) extends Navigation {
 
     override def triggers: GroundTriggers = {
       // "go <direction>"
-      case (Go(direction), state) if state.location.neighbors(direction).isDefined =>
-        movePlayer(state.location.neighbors(direction).get)
+      case (Go(direction), state) if state.currentRoom.neighbor(direction).isDefined =>
+        movePlayer(state.currentRoom.neighbor(direction).get)
     }
 
-    private def movePlayer(targetRoom: Room): Reaction =
-      currRoomLens.set(targetRoom)(_).applyReactionIfPresent(onNavigateExtra)
+    private def movePlayer(targetRoomRef: RoomRef): Reaction =
+      playerLocationLens.set(targetRoomRef)(_).applyReactionIfPresent(onNavigateExtra)
   }
 }

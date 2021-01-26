@@ -1,38 +1,35 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
+import io.github.scalaquest.core.TestsUtils.{simpleState, targetRoom}
 import io.github.scalaquest.core.model.Action.Common.Enter
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleDoor,
   SimpleOpenable,
   SimpleRoomLink,
-  SimpleState,
-  geographyLens
+  SimpleState
 }
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleRoomLinkTest extends AnyWordSpec {
 
   "A RoomLinkBehavior" when {
-    val stateWithRoom: SimpleState = geographyLens.modify(_ + (targetRoom -> Set()))(simpleState)
 
     "the item has not an openable behavior" when {
-      val roomLink     = SimpleRoomLink(targetRoom)
-      val targetPortal = SimpleDoor(ItemDescription("door"), new ItemRef {}, roomLink)
-      val stateWPort: SimpleState =
-        geographyLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
+      val roomLink              = SimpleRoomLink(targetRoom)
+      val targetItem            = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
 
         "move the player in the designed room" in {
           for {
-            react <- targetPortal.use(Enter, stateWPort, None) toRight fail(
+            react <- targetItem.use(Enter, stateWithTargetInRoom, None) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateWPort))
+            modState <- Right(react(stateWithTargetInRoom))
           } yield assert(
-            modState.matchState.player.location == targetRoom,
+            modState.matchState.player.location == targetRoom.ref,
             "The player is not in the right location"
           )
         }
@@ -40,21 +37,20 @@ class SimpleRoomLinkTest extends AnyWordSpec {
     }
 
     "the item is open" when {
-      val roomLink     = SimpleRoomLink(targetRoom, Some(SimpleOpenable(_isOpen = true)))
-      val targetPortal = SimpleDoor(ItemDescription("door"), new ItemRef {}, roomLink)
-      val stateWOpenPort: SimpleState =
-        geographyLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
+      val roomLink                                 = SimpleRoomLink(targetRoom, Some(SimpleOpenable(_isOpen = true)))
+      val targetItem                               = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val stateWithOpenedTargetInRoom: SimpleState = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
 
         "move the player in the designed room" in {
           for {
-            react <- targetPortal.use(Enter, stateWOpenPort, None) toRight fail(
+            react <- targetItem.use(Enter, stateWithOpenedTargetInRoom, None) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateWOpenPort))
+            modState <- Right(react(stateWithOpenedTargetInRoom))
           } yield assert(
-            modState.matchState.player.location == targetRoom,
+            modState.matchState.player.location == targetRoom.ref,
             "The player is not in the right location"
           )
         }
@@ -62,14 +58,13 @@ class SimpleRoomLinkTest extends AnyWordSpec {
     }
 
     "the item is closed" when {
-      val roomLink     = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
-      val targetPortal = SimpleDoor(ItemDescription("door"), new ItemRef {}, roomLink)
-      val stateWClosedPort: SimpleState =
-        geographyLens.modify(_ + (startRoom -> Set(targetPortal)))(stateWithRoom)
+      val roomLink                    = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
+      val targetItem                  = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val stateWithClosedTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
       "the user says 'enter the item'" should {
         "not move the player in the designed room" in {
           assert(
-            targetPortal.use(Enter, stateWClosedPort, None).isEmpty,
+            targetItem.use(Enter, stateWithClosedTargetInRoom, None).isEmpty,
             "A reaction has been generated"
           )
         }
