@@ -5,9 +5,9 @@ package io.github.scalaquest.core.model
  * @tparam I
  *   the specific implementation of the [[Model.Item]].
  */
-trait MatchState[I <: Model#Item] {
+trait MatchState[I <: Model#Item, RM <: Model#Room] {
 
-  def itemsInScope: Set[I] = player.bag ++ geography.getOrElse(player.location, Set())
+  def itemsInScope: Set[I] = (player.bag ++ rooms(player.location).items).flatMap(items.get(_))
 
   /**
    * The player involved into the match. As it is a core concept, an instance of [[Player]] is
@@ -15,7 +15,7 @@ trait MatchState[I <: Model#Item] {
    * @return
    *   The current [[Player]].
    */
-  def player: Player[I]
+  def player: Player
 
   /**
    * Indicates whether the match has reached the end. When true, the entire match ende after the
@@ -26,9 +26,11 @@ trait MatchState[I <: Model#Item] {
   def ended: Boolean
 
   /**
-   * Represents the configuration match, in terms of [[Room]] s and [[Model.Item]].
+   * Represents the configuration of the match, in terms of [[Model.Room]] s and [[Model.Item]].
    * @return
-   *   a [[Map]] representing all [[Room]] s of the match, and the [[Model.Item]] s in them.
+   *   a [[Set]] representing all [[Model.Room]] s of the match, and the [[Model.Item]] s in them.
    */
-  def geography: Map[Room, Set[I]]
+  def rooms: Map[RoomRef, RM]
+
+  def items: Map[ItemRef, I]
 }

@@ -15,8 +15,6 @@ object Action {
    * Some commonly used [[Action]] s.
    */
   object Common {
-    import io.github.scalaquest.core.model.Room.Direction
-
     case object Take                    extends Action
     case object Open                    extends Action
     case object Close                   extends Action

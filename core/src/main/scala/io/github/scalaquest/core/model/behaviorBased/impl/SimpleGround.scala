@@ -11,7 +11,7 @@ trait SimpleGround
   with CommonGroundBehaviors
   with SimpleCommonGroundBehaviors {
 
-  case object StdGround extends BehaviorBasedGround {
+  case object SimpleGround extends BehaviorBasedGround {
     override val behaviors: Seq[GroundBehavior] = Seq(SimpleNavigation())
   }
 }

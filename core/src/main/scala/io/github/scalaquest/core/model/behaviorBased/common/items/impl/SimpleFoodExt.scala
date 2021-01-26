@@ -13,9 +13,9 @@ trait SimpleFoodExt extends CommonBase {
   /**
    * Standard implementation of the standard item Food.
    */
-  final case class SimpleFood(
+  case class SimpleFood(
     description: ItemDescription,
-    itemRef: ItemRef,
+    ref: ItemRef,
     foodBehavior: Eatable,
     additionalBehaviors: ItemBehavior*
   ) extends Food {

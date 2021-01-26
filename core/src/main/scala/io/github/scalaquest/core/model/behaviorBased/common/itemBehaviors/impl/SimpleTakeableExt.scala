@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Take
-import io.github.scalaquest.core.model.Room
+import io.github.scalaquest.core.model.{ItemRef, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.{
   CommonBehaviors,
@@ -24,8 +24,9 @@ trait SimpleTakeableExt extends CommonBase {
    *   omitted.
    */
   case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit
-    bagLens: Lens[S, Set[I]],
-    itemsLens: Lens[S, Map[Room, Set[I]]]
+    playerBagLens: Lens[S, Set[ItemRef]],
+    matchRoomsLens: Lens[S, Map[RoomRef, RM]],
+    roomLens: Lens[RM, Set[ItemRef]]
   ) extends Takeable {
 
     override def triggers: ItemTriggers = {
@@ -44,16 +45,18 @@ trait SimpleTakeableExt extends CommonBase {
      */
     private def take(item: I): Reaction =
       state => {
-        // remove the item from the current room
-        val currRoom         = state.matchState.player.location
-        val currRoomItemsUpd = itemsLens.get(state).get(currRoom).fold(Set[I]())(_ - item)
-        val stateWithoutItem = itemsLens.modify(_ + (currRoom -> currRoomItemsUpd))(state)
 
-        // put the item into the bag
-        val stateItemInBag = bagLens.modify(_ + item)(stateWithoutItem)
+        val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
+        val takeItemFromRoom = Function.chain(
+          Seq(
+            matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
+            playerBagLens.modify(_ + item.ref)
+          )
+        )
+        val stateWithItemInBag = takeItemFromRoom(state)
 
         // execute additional reaction, if specified
-        stateItemInBag.applyReactionIfPresent(onTakeExtra)
+        stateWithItemInBag.applyReactionIfPresent(onTakeExtra)
       }
   }
 }
