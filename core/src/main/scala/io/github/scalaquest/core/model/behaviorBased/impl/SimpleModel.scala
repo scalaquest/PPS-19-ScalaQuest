@@ -26,7 +26,7 @@ object SimpleModel
   override implicit def playerBagLens: Lens[S, Set[ItemRef]]      = GenLens[S](_.matchState.player.bag)
   override implicit def matchRoomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.matchState.rooms)
 
-  override implicit def roomLens: Lens[RM, Set[ItemRef]] = //GenLens[RM](_.items)
+  override implicit def roomLens: Lens[RM, Set[ItemRef]] =
     Lens[RM, Set[ItemRef]](get = _.items)(set = a => b => b.copy(_items = () => a))
 
   override implicit def playerLocationLens: Lens[S, RoomRef] =
