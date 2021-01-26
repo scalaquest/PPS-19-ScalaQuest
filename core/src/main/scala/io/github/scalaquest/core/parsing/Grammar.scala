@@ -54,8 +54,8 @@ object Verb {
     override def clause: CodeGen = tv(atom.name betaReduce 2) --> tokens
   }
 
-  case class Ditransitive(name: String, action: Action) extends Verb {
-    override def clause: CodeGen = v("3/to", atom.name betaReduce 3) --> tokens
+  case class Ditransitive(name: String, action: Action, prep: String) extends Verb {
+    override def clause: CodeGen = v(3 / prep, atom.name betaReduce 3) --> tokens
   }
 }
 /*

@@ -16,6 +16,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.Room
 import monocle.Lens
 import monocle.macros.GenLens
 
+/*
 object Model {
 
   case object GameStarted extends Message
@@ -89,3 +90,4 @@ object App2 extends zio.App {
     CLI.fromModel(model).build(state, game, pusher).start.exitCode
 
 }
+ */
