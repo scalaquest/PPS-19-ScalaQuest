@@ -43,7 +43,7 @@ object Config {
     }
 
   val game: Game[Model]            = Game.fromModel(myModel).withPipelineBuilder(pipelineBuilder)
-  val messagePusher: MessagePusher = _.map(parseMessage)
+  val messagePusher: MessagePusher = MessagePusher(parseMessage)
   val cli: CLI                     = CLI.fromModel(myModel).build(state, game, messagePusher)
 }
 

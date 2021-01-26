@@ -11,6 +11,10 @@ abstract class Game[M <: Model](val model: M) {
 
 trait MessagePusher extends (Seq[Message] => Seq[String])
 
+object MessagePusher {
+  def apply(f: Message => String): MessagePusher = _.map(f)
+}
+
 object Game {
 
   class GameFromModel[M <: Model](val model: M) {
