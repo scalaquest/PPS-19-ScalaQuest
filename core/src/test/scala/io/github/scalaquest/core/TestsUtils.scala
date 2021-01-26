@@ -1,8 +1,7 @@
 package io.github.scalaquest.core
 
 import io.github.scalaquest.core.model.Action.Common.{Open, Take}
-import io.github.scalaquest.core.model.Room.Direction
-import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Room}
+import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedItem,
   Door,
@@ -11,21 +10,30 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleDoor,
   SimpleGenericItem,
   SimpleKey,
+  SimpleMatchState,
   SimpleOpenable,
+  SimplePlayer,
+  SimpleRoom,
   SimpleRoomLink,
   SimpleState,
   SimpleTakeable,
-  SimplePlayer,
-  SimpleMatchState
+  roomBuilder
 }
 
 object TestsUtils {
 
-  val startRoom: Room =
-    Room("startRoom", Map[Direction, Room](Direction.North -> targetRoom), Set(door, key))
+  val startRoom: SimpleRoom =
+    roomBuilder(
+      "startRoom",
+      Map(Direction.North -> targetRoom.ref),
+      Set(door.ref, key.ref)
+    )
 
-  val targetRoom: Room =
-    Room("targetRoom", Map[Direction, Room](Direction.South -> startRoom), Set())
+  val targetRoom: SimpleRoom = roomBuilder(
+    "targetRoom",
+    Map(Direction.South -> startRoom.ref),
+    Set()
+  )
 
   val actionsMap: Map[String, Action] = Map[String, Action](
     "take"  -> Take,

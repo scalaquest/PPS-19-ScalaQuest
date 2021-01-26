@@ -20,13 +20,9 @@ class SimpleRoomLinkTest extends AnyWordSpec {
   "A RoomLinkBehavior" when {
 
     "the item has not an openable behavior" when {
-      val roomLink   = SimpleRoomLink(targetRoom)
-      val targetItem = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
-
-      val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
-      val stateWithTargetInRoom: SimpleState =
-        matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
+      val roomLink              = SimpleRoomLink(targetRoom)
+      val targetItem            = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
 
@@ -45,13 +41,9 @@ class SimpleRoomLinkTest extends AnyWordSpec {
     }
 
     "the item is open" when {
-      val roomLink   = SimpleRoomLink(targetRoom, Some(SimpleOpenable(_isOpen = true)))
-      val targetItem = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
-
-      val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
-      val stateWithOpenedTargetInRoom: SimpleState =
-        matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
+      val roomLink                                 = SimpleRoomLink(targetRoom, Some(SimpleOpenable(_isOpen = true)))
+      val targetItem                               = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val stateWithOpenedTargetInRoom: SimpleState = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
 
@@ -70,13 +62,9 @@ class SimpleRoomLinkTest extends AnyWordSpec {
     }
 
     "the item is closed" when {
-      val roomLink   = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
-      val targetItem = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
-
-      val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
-      val stateWithClosedTargetInRoom: SimpleState =
-        matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
+      val roomLink                    = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
+      val targetItem                  = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val stateWithClosedTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
       "the user says 'enter the item'" should {
         "not move the player in the designed room" in {
           assert(

@@ -1,19 +1,24 @@
 package io.github.scalaquest.core.model.behaviorBased.common.items.impl
 
-import io.github.scalaquest.core.model.Room.Direction
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef, Room}
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleDoor,
   SimpleEatable,
   SimpleOpenable,
   SimpleRoomLink,
-  SimpleTakeable
+  SimpleTakeable,
+  SimpleRoom,
+  roomBuilder
 }
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleDoorTest extends AnyWordSpec {
   "A Door" when {
-    val room: Room          = Room("room", Map[Direction, Room](), Set())
+    val room = roomBuilder(
+      "room",
+      Map(),
+      Set()
+    )
     val roomLinkBehavior    = SimpleRoomLink(room, Some(SimpleOpenable()))
     val additionalBehaviors = Seq(SimpleTakeable(), SimpleEatable())
     val door =

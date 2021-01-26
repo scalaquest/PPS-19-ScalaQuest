@@ -1,12 +1,11 @@
 package io.github.scalaquest.core.model.behaviorBased.common
 
-import io.github.scalaquest.core.model.{ItemRef, Room, RoomRef}
+import io.github.scalaquest.core.model.{ItemRef, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.CommonGroundBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import monocle.Lens
-import monocle.macros.GenLens
 
 /**
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional
@@ -19,25 +18,22 @@ trait CommonBase
   with CommonBehaviors {
 
   implicit def playerBagLens: Lens[S, Set[ItemRef]]
-  implicit def matchRoomsLens: Lens[S, Set[Room]]
+  implicit def matchRoomsLens: Lens[S, Set[RM]]
   implicit def playerLocationLens: Lens[S, RoomRef]
   implicit def itemsLens: Lens[S, Set[I]]
-  implicit def roomLens: Lens[Room, Set[ItemRef]]
+  implicit def roomLens: Lens[RM, Set[ItemRef]]
 
   implicit class StateUtils(state: S) {
     def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.ref)
 
-    def isInCurrentRoom(item: I): Boolean =
-      state.matchState.rooms
-        .collectFirst({ case room if room.ref == state.matchState.player.location => room.items })
-        .exists(_ contains item.ref)
+    def isInCurrentRoom(item: I): Boolean = state.currentRoom.items.contains(item.ref)
 
     def isInScope(item: I): Boolean = state.isInCurrentRoom(item) || state.isInBag(item)
 
     def applyReactionIfPresent(maybeReaction: Option[Reaction]): S =
       maybeReaction.fold(state)(_(state))
 
-    def currentRoom: Room = {
+    def currentRoom: RM = {
       state.matchState.rooms
         .collectFirst({ case room if room.ref == state.matchState.player.location => room })
         .get
@@ -61,5 +57,9 @@ trait CommonBase
       matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
     }
 
+    def copyWithItemInBag(item: I): S = {
+      val stateWithTarget = itemsLens.modify(_ + item)(state)
+      playerBagLens.modify(_ + item.ref)(stateWithTarget)
+    }
   }
 }

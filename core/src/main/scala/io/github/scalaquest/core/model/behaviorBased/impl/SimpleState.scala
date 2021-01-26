@@ -7,7 +7,6 @@ import io.github.scalaquest.core.model.{
   Message,
   Model,
   Player,
-  Room,
   RoomRef
 }
 
@@ -28,9 +27,9 @@ trait SimpleState extends Model {
   final case class SimpleMatchState(
     player: SimplePlayer,
     ended: Boolean,
-    rooms: Set[Room],
+    rooms: Set[RM],
     items: Set[I]
-  ) extends MatchState[I]
+  ) extends MatchState[I, RM]
 
   final case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
 }

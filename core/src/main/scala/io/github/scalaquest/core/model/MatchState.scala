@@ -5,7 +5,7 @@ package io.github.scalaquest.core.model
  * @tparam I
  *   the specific implementation of the [[Model.Item]].
  */
-trait MatchState[I <: Model#Item] {
+trait MatchState[I <: Model#Item, RM <: Model#Room] {
 
   def itemsInScope: Set[I] =
     items.filter(x =>
@@ -36,7 +36,7 @@ trait MatchState[I <: Model#Item] {
    * @return
    *   a [[Set]] representing all [[Room]] s of the match, and the [[Model.Item]] s in them.
    */
-  def rooms: Set[Room]
+  def rooms: Set[RM]
 
   def items: Set[I]
 }

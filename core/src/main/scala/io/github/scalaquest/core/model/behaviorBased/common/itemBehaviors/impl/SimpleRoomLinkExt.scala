@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Enter
-import io.github.scalaquest.core.model.{Room, RoomRef}
+import io.github.scalaquest.core.model.RoomRef
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 

@@ -4,6 +4,7 @@ trait Model {
   type S <: State
   type I <: Item
   type G <: Ground
+  type RM <: Room
 
   type Reaction = S => S
 
@@ -23,7 +24,7 @@ trait Model {
      * @return
      *   The [[MatchState]] of the match.
      */
-    def matchState: MatchState[I]
+    def matchState: MatchState[I, RM]
 
     /**
      * A representation of the output to render to the user at the end of the pipeline round.
@@ -64,6 +65,8 @@ trait Model {
      */
     final override def hashCode(): Int = ref.hashCode()
 
+    override def equals(obj: Any): Boolean = this.hashCode() == obj.hashCode()
+
     /**
      * Define a way make the item interact with the [[State]]. The interaction is founded into the
      * [[Action]] (ex. 'open the door'), but it can include also an additional [[Item]] ('open the
@@ -82,5 +85,34 @@ trait Model {
 
   abstract class Ground { ground: G =>
     def use(action: Action, state: S): Option[Reaction]
+  }
+
+  /**
+   * A geographical portion of the match map.
+   *
+   * This is one of the basic block for the story build by the storyteller, as it is used to
+   * identify [[Player]] 's and [[Model.Item]] s' location, in a given moment of the story.
+   */
+  abstract class Room { room: RM =>
+
+    /**
+     * A textual identifier for the room.
+     * @return
+     *   A textual identifier for the room.
+     */
+    def name: String
+
+    def ref: RoomRef
+
+    override def hashCode(): Int = this.ref.hashCode()
+
+    override def equals(obj: Any): Boolean = this.hashCode() == obj.hashCode()
+
+    /**
+     * Identifies rooms near to the current one, at the cardinal points.
+     */
+    def neighbor(direction: Direction): Option[RoomRef]
+
+    def items: Set[ItemRef]
   }
 }

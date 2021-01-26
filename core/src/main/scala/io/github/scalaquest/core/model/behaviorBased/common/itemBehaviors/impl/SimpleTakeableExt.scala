@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Take
-import io.github.scalaquest.core.model.{ItemRef, Room}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.{
   CommonBehaviors,
@@ -25,8 +25,8 @@ trait SimpleTakeableExt extends CommonBase {
    */
   case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit
     playerBagLens: Lens[S, Set[ItemRef]],
-    matchRoomsLens: Lens[S, Set[Room]],
-    roomLens: Lens[Room, Set[ItemRef]]
+    matchRoomsLens: Lens[S, Set[RM]],
+    roomLens: Lens[RM, Set[ItemRef]]
   ) extends Takeable {
 
     override def triggers: ItemTriggers = {

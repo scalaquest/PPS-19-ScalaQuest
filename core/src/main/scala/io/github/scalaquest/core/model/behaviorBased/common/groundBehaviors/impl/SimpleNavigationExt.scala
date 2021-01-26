@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Go
-import io.github.scalaquest.core.model.{Room, RoomRef}
+import io.github.scalaquest.core.model.RoomRef
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -23,11 +23,11 @@ trait SimpleNavigationExt extends CommonBase {
 
     override def triggers: GroundTriggers = {
       // "go <direction>"
-      case (Go(direction), state) if state.currentRoom.neighbors(direction).isDefined =>
-        movePlayer(state.currentRoom.neighbors(direction).get)
+      case (Go(direction), state) if state.currentRoom.neighbor(direction).isDefined =>
+        movePlayer(state.currentRoom.neighbor(direction).get)
     }
 
-    private def movePlayer(targetRoom: Room): Reaction =
-      playerLocationLens.set(targetRoom.ref)(_).applyReactionIfPresent(onNavigateExtra)
+    private def movePlayer(targetRoomRef: RoomRef): Reaction =
+      playerLocationLens.set(targetRoomRef)(_).applyReactionIfPresent(onNavigateExtra)
   }
 }

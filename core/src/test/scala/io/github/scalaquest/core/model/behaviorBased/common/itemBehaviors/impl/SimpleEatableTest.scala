@@ -1,16 +1,16 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
+import io.github.scalaquest.core.TestsUtils.simpleState
 import io.github.scalaquest.core.model.Action.Common.Eat
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
   SimpleGenericItem,
+  StateUtils,
+  itemsLens,
   matchRoomsLens,
   playerBagLens,
-  roomLens,
-  itemsLens,
-  StateUtils
+  roomLens
 }
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -19,13 +19,11 @@ class SimpleEatableTest extends AnyWordSpec {
     val eatable = SimpleEatable()
 
     "applied to an item" when {
-      val targetItem       = SimpleGenericItem(ItemDescription("item"), ItemRef(), eatable)
-      val stateWithItem    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithItem = roomLens.modify(_ + targetItem.ref)(startRoom)
+      val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), eatable)
 
-      val stateItemInRoom   = matchRoomsLens.modify(_ + currRoomWithItem)(simpleState)
-      val stateItemInBag    = playerBagLens.modify(_ + targetItem.ref)(simpleState)
-      val stateNoItemInRoom = stateWithItem
+      val stateItemInRoom   = simpleState.copyWithItemInLocation(targetItem)
+      val stateItemInBag    = simpleState.copyWithItemInBag(targetItem)
+      val stateNoItemInRoom = itemsLens.modify(_ + targetItem)(simpleState)
 
       "the user says 'eat the item'" should {
         "let the item disappear if it is in the current room" in {

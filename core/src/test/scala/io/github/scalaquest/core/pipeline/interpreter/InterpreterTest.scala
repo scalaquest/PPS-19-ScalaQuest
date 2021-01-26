@@ -12,7 +12,7 @@ import io.github.scalaquest.core.TestsUtils.{
   startRoom
 }
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
-import io.github.scalaquest.core.model.Room.Direction
+import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{StdGround, matchRoomsLens}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}

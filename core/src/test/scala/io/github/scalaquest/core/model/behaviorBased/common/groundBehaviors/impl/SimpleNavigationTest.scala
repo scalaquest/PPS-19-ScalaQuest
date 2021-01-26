@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.imp
 
 import io.github.scalaquest.core.TestsUtils.{simpleState, targetRoom}
 import io.github.scalaquest.core.model.Action.Common.Go
-import io.github.scalaquest.core.model.Room.Direction
+import io.github.scalaquest.core.model.Direction
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedGround,
