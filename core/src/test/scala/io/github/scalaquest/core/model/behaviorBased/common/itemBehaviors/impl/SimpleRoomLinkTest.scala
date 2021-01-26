@@ -1,17 +1,13 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
+import io.github.scalaquest.core.TestsUtils.{simpleState, targetRoom}
 import io.github.scalaquest.core.model.Action.Common.Enter
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
-  Door,
   SimpleDoor,
   SimpleOpenable,
   SimpleRoomLink,
-  SimpleState,
-  itemsLens,
-  matchRoomsLens,
-  roomLens
+  SimpleState
 }
 import org.scalatest.wordspec.AnyWordSpec
 

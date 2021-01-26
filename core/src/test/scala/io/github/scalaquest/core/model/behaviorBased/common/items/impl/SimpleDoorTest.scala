@@ -7,7 +7,6 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleOpenable,
   SimpleRoomLink,
   SimpleTakeable,
-  SimpleRoom,
   roomBuilder
 }
 import org.scalatest.wordspec.AnyWordSpec

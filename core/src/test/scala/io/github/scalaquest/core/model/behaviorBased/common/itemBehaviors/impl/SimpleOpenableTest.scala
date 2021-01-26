@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
+import io.github.scalaquest.core.TestsUtils.simpleState
 import io.github.scalaquest.core.model.Action.Common.Open
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
@@ -9,11 +9,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleKey,
   SimpleOpenable,
   SimpleState,
-  StateUtils,
-  itemsLens,
-  matchRoomsLens,
-  playerBagLens,
-  roomLens
+  StateUtils
 }
 import org.scalatest.wordspec.AnyWordSpec
 
