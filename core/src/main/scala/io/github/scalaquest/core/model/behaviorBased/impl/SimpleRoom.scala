@@ -16,10 +16,12 @@ trait SimpleRoom extends Model {
     override def items: Set[ItemRef]                             = _items()
   }
 
-  def roomBuilder(
-    name: String,
-    neighbors: => Map[Direction, RoomRef],
-    items: => Set[ItemRef]
-  ): SimpleRoom = SimpleRoom(name, () => items, () => neighbors, RoomRef())
+  object Room {
 
+    def apply(
+      name: String,
+      neighbors: => Map[Direction, RoomRef],
+      items: => Set[ItemRef]
+    ): SimpleRoom = SimpleRoom(name, () => items, () => neighbors, RoomRef())
+  }
 }

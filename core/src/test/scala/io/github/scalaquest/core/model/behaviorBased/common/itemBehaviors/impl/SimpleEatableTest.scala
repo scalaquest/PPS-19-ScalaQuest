@@ -6,7 +6,6 @@ import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
   SimpleGenericItem,
-  StateUtils,
   itemsLens,
   matchRoomsLens,
   playerBagLens,

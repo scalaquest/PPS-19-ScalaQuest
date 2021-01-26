@@ -17,7 +17,9 @@ class ResolverTest extends AnyWordSpec {
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Intransitive Statement" in {
-        for { _ <- maybeStatement.left } yield fail("Resolver has not produced any statement")
+        for { left <- maybeStatement.left } yield fail(
+          s"Resolver has not produced any statement: $left"
+        )
 
         maybeStatement map {
           case Statement.Intransitive(action) if action == Open =>

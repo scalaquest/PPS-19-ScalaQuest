@@ -32,4 +32,13 @@ trait SimpleState extends Model {
   ) extends MatchState[I, RM]
 
   case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
+
+  object State {
+
+    def apply(
+      actions: Map[String, Action],
+      matchState: SimpleMatchState,
+      messages: Seq[Message]
+    ): SimpleState = SimpleState(actions, matchState, messages)
+  }
 }

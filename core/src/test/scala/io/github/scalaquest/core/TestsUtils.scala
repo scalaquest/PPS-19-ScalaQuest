@@ -17,19 +17,18 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleRoomLink,
   SimpleState,
   SimpleTakeable,
-  roomBuilder
+  Room
 }
 
 object TestsUtils {
 
-  val startRoom: SimpleRoom =
-    roomBuilder(
-      "startRoom",
-      Map(Direction.North -> targetRoom.ref),
-      Set(door.ref, key.ref)
-    )
+  val startRoom: SimpleRoom = Room(
+    "startRoom",
+    Map(Direction.North -> targetRoom.ref),
+    Set(door.ref, key.ref)
+  )
 
-  val targetRoom: SimpleRoom = roomBuilder(
+  val targetRoom: SimpleRoom = Room(
     "targetRoom",
     Map(Direction.South -> startRoom.ref),
     Set()

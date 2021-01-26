@@ -12,18 +12,18 @@ import io.github.scalaquest.core.TestsUtils.{
 }
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.StdGround
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.SimpleGround
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 import org.scalatest.wordspec.AnyWordSpec
 
 class InterpreterTest extends AnyWordSpec {
   "An Interpreter" when {
-    val interpreter = Interpreter.builder(SimpleModel)(refItemDictionary, StdGround)(simpleState)
+    val interpreter = Interpreter.builder(SimpleModel)(refItemDictionary, SimpleGround)(simpleState)
 
     "given an Intransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.North)))
-      val maybeExpReaction = StdGround.use(Go(Direction.North), simpleState)
+      val maybeExpReaction = SimpleGround.use(Go(Direction.North), simpleState)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -72,7 +72,7 @@ class InterpreterTest extends AnyWordSpec {
   "An interpreterBuilder" should {
     import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
     "be of the right type" in {
-      val builder = Interpreter.builder(SimpleModel)(refItemDictionary, StdGround)
+      val builder = Interpreter.builder(SimpleModel)(refItemDictionary, SimpleGround)
       builder shouldBe a[Interpreter.Builder[_, _, _]]
 
       val interpreter = builder(simpleState)

@@ -7,13 +7,13 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleOpenable,
   SimpleRoomLink,
   SimpleTakeable,
-  roomBuilder
+  Room
 }
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleDoorTest extends AnyWordSpec {
   "A Door" when {
-    val room = roomBuilder(
+    val room = Room(
       "room",
       Map(),
       Set()

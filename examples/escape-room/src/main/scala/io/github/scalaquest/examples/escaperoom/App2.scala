@@ -8,10 +8,11 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleMatchState,
   SimplePlayer,
   SimpleRoom,
-  SimpleState,
-  roomBuilder
+  SimpleState
 }
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.Room
+
 import monocle.Lens
 import monocle.macros.GenLens
 
@@ -20,8 +21,8 @@ object Model {
   case object GameStarted extends Message
   case object TestMessage extends Message
 
-  def room1: SimpleRoom = roomBuilder("room1", Map(Direction.North -> room2.ref), Set())
-  def room2: SimpleRoom = roomBuilder("room2", Map(Direction.South -> room1.ref), Set())
+  def room1: SimpleRoom = Room("room1", Map(Direction.North -> room2.ref), Set())
+  def room2: SimpleRoom = Room("room2", Map(Direction.South -> room1.ref), Set())
 
   val model: SimpleModel.type = SimpleModel
 

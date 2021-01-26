@@ -7,7 +7,7 @@ package io.github.scalaquest.core.model
  */
 trait MatchState[I <: Model#Item, RM <: Model#Room] {
 
-  def itemsInScope: Set[I] = (player.bag ++ rooms(player.location).items).flatMap(k => items.get(k))
+  def itemsInScope: Set[I] = (player.bag ++ rooms(player.location).items).flatMap(items.get(_))
 
   /**
    * The player involved into the match. As it is a core concept, an instance of [[Player]] is
@@ -26,9 +26,9 @@ trait MatchState[I <: Model#Item, RM <: Model#Room] {
   def ended: Boolean
 
   /**
-   * Represents the configuration of the match, in terms of [[Room]] s and [[Model.Item]].
+   * Represents the configuration of the match, in terms of [[Model.Room]] s and [[Model.Item]].
    * @return
-   *   a [[Set]] representing all [[Room]] s of the match, and the [[Model.Item]] s in them.
+   *   a [[Set]] representing all [[Model.Room]] s of the match, and the [[Model.Item]] s in them.
    */
   def rooms: Map[RoomRef, RM]
 
