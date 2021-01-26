@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
-import io.github.scalaquest.core.model.{ItemRef, RoomRef}
+import io.github.scalaquest.core.model.{ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.SimpleCommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
@@ -33,4 +33,7 @@ object SimpleModel
     GenLens[S](_.matchState.player.location)
 
   override implicit def itemsLens: Lens[S, Map[ItemRef, I]] = GenLens[S](_.matchState.items)
+
+  override implicit def messageLens: Lens[SimpleModel.SimpleState, Seq[Message]] =
+    GenLens[S](_.messages)
 }
