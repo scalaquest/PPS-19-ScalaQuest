@@ -1,8 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.{Direction, RoomRef}
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.Room
+import io.github.scalaquest.core.model.{Direction, RoomRef}
 
 object House {
 
