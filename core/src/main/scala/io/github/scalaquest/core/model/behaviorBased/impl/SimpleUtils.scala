@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
-import io.github.scalaquest.core.model.{ItemRef, Model, RoomRef}
+import io.github.scalaquest.core.model.{ItemRef, Message, Model, RoomRef}
 import monocle.Lens
 
 /**
@@ -14,6 +14,7 @@ trait SimpleUtils extends Model {
   implicit def playerLocationLens: Lens[S, RoomRef]
   implicit def itemsLens: Lens[S, Map[ItemRef, I]]
   implicit def roomLens: Lens[RM, Set[ItemRef]]
+  implicit def messageLens: Lens[S, Seq[Message]]
 
   implicit class StateUtils(state: S) {
     def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.ref)
