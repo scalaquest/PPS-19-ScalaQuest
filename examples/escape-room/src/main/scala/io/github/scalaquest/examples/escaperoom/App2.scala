@@ -1,5 +1,5 @@
 package io.github.scalaquest.examples.escaperoom
-
+/*
 import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
 import io.github.scalaquest.core.model.{Direction, Message, RoomRef}
@@ -16,7 +16,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.Room
 import monocle.Lens
 import monocle.macros.GenLens
 
-/*
+
 object Model {
 
   case object GameStarted extends Message
