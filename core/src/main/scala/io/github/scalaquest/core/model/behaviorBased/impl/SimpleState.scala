@@ -26,9 +26,9 @@ trait SimpleState extends Model {
 
   case class SimpleMatchState(
     player: SimplePlayer,
-    ended: Boolean,
     rooms: Map[RoomRef, RM],
-    items: Map[ItemRef, I]
+    items: Map[ItemRef, I],
+    ended: Boolean = false
   ) extends MatchState[I, RM]
 
   case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player

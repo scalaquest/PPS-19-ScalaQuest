@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.parsing
 
 import io.github.scalaquest.core.model.Action
-import io.github.scalaquest.core.parsing.scalog.{Atom, CodeGen, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog.{Atom, CodeGen, Number, Term, Variable}
 
 import scala.annotation.tailrec
 
@@ -55,8 +55,8 @@ object Verb {
   }
 
   case class Ditransitive(name: String, action: Action, prep: String) extends Verb {
-    override def clause: CodeGen = v("3/to", atom.name betaReduce 3) --> tokens
-    //override def clause: CodeGen = v(3 / prep, atom.name betaReduce 3) --> tokens
+    private val _prep            = Atom(prep)
+    override def clause: CodeGen = v(3 /: _prep, atom.name betaReduce 3) --> tokens
   }
 }
 /*

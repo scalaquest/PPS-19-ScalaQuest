@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.examples.escaperoom.Config.EatenMessage
+import io.github.scalaquest.examples.escaperoom.Config.Eaten
 
 object Items {
   import myModel._
@@ -11,9 +11,7 @@ object Items {
     SimpleFood(
       itemDescription,
       itemRef,
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ EatenMessage)(localState))
-      )
+      SimpleEatable(onEatExtra = Option(localState => messageLens.modify(_ :+ Eaten)(localState)))
     )
   }
 

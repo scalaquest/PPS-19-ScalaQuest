@@ -9,8 +9,11 @@ name(water) --> [water].
 name(apple) --> [apple].
 
 adj(X^big(X)) --> [big].
+adj(X^red(X)) --> [red].
+adj(X^green(X)) --> [green].
 
 tv(X^Y^use(Y,X)) --> [use].
+tv(X^Y^eat(Y,X)) --> [eat].
 tv(X^Y^take(Y,X)) --> [take].
 tv(X^Y^pick_up(Y,X)) --> [pick, up].
 

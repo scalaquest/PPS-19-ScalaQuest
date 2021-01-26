@@ -22,6 +22,6 @@ trait SimpleRoom extends Model {
       name: String,
       neighbors: => Map[Direction, RoomRef],
       items: => Set[ItemRef]
-    ): SimpleRoom = SimpleRoom(name, () => items, () => neighbors, RoomRef())
+    ): SimpleRoom = SimpleRoom(name, () => items, () => neighbors, RoomRef(name))
   }
 }

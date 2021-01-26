@@ -13,7 +13,11 @@ import scala.io.Source
 
 object MyPipeline {
 
-  val source: String = Source.fromResource("base.pl").mkString
+  val source: String = {
+    val s = Source.fromResource("base.pl").mkString + "\n" +
+      Source.fromResource("names.pl").mkString
+    s
+  }
 
   val lexer: Lexer = SimpleLexer
 
