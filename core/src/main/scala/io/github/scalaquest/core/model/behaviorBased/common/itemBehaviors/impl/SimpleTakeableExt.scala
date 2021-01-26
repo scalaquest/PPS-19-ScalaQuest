@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Take
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemRef, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.{
   CommonBehaviors,
@@ -25,7 +25,7 @@ trait SimpleTakeableExt extends CommonBase {
    */
   case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit
     playerBagLens: Lens[S, Set[ItemRef]],
-    matchRoomsLens: Lens[S, Set[RM]],
+    matchRoomsLens: Lens[S, Map[RoomRef, RM]],
     roomLens: Lens[RM, Set[ItemRef]]
   ) extends Takeable {
 
@@ -48,7 +48,10 @@ trait SimpleTakeableExt extends CommonBase {
 
         val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
         val takeItemFromRoom = Function.chain(
-          Seq(matchRoomsLens.modify(_ + updCurrRoom), playerBagLens.modify(_ + item.ref))
+          Seq(
+            matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
+            playerBagLens.modify(_ + item.ref)
+          )
         )
         val stateWithItemInBag = takeItemFromRoom(state)
 

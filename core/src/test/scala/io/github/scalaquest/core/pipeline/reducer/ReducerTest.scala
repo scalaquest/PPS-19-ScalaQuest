@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.reducer
 
-import io.github.scalaquest.core.TestsUtils.{apple, simpleState, startRoom}
+import io.github.scalaquest.core.TestsUtils.{apple, appleItemRef, simpleState, startRoom}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   itemsLens,
   matchRoomsLens,
@@ -17,7 +17,6 @@ class ReducerTest extends AnyWordSpec {
 
     "given a Reaction" should {
       // an Interpreter Result with a Reaction that adds an apple to the bag
-      val stateWithTarget   = itemsLens.modify(_ + apple)(simpleState)
       val interpreterResult = InterpreterResult(SimpleModel)(playerBagLens.modify(_ + apple.ref)(_))
       val desiredState      = playerBagLens.modify(_ + apple.ref)(simpleState)
 

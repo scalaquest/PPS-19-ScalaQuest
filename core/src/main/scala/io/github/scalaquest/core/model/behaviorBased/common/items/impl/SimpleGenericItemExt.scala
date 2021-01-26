@@ -13,7 +13,7 @@ trait SimpleGenericItemExt extends CommonBase {
   /**
    * Standard implementation of the common GenericItem.
    */
-  final case class SimpleGenericItem(
+  case class SimpleGenericItem(
     description: ItemDescription,
     ref: ItemRef,
     additionalBehaviors: ItemBehavior*

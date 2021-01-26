@@ -23,7 +23,7 @@ class SimpleEatableTest extends AnyWordSpec {
 
       val stateItemInRoom   = simpleState.copyWithItemInLocation(targetItem)
       val stateItemInBag    = simpleState.copyWithItemInBag(targetItem)
-      val stateNoItemInRoom = itemsLens.modify(_ + targetItem)(simpleState)
+      val stateNoItemInRoom = itemsLens.modify(_ + (targetItem.ref -> targetItem))(simpleState)
 
       "the user says 'eat the item'" should {
         "let the item disappear if it is in the current room" in {

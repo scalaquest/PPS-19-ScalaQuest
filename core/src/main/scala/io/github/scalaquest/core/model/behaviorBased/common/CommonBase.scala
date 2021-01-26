@@ -18,9 +18,9 @@ trait CommonBase
   with CommonBehaviors {
 
   implicit def playerBagLens: Lens[S, Set[ItemRef]]
-  implicit def matchRoomsLens: Lens[S, Set[RM]]
+  implicit def matchRoomsLens: Lens[S, Map[RoomRef, RM]]
   implicit def playerLocationLens: Lens[S, RoomRef]
-  implicit def itemsLens: Lens[S, Set[I]]
+  implicit def itemsLens: Lens[S, Map[ItemRef, I]]
   implicit def roomLens: Lens[RM, Set[ItemRef]]
 
   implicit class StateUtils(state: S) {
@@ -33,32 +33,24 @@ trait CommonBase
     def applyReactionIfPresent(maybeReaction: Option[Reaction]): S =
       maybeReaction.fold(state)(_(state))
 
-    def currentRoom: RM = {
-      state.matchState.rooms
-        .collectFirst({ case room if room.ref == state.matchState.player.location => room })
-        .get
-    }
+    def currentRoom: RM = state.matchState.rooms(state.matchState.player.location)
 
     def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
-      state.matchState.rooms
-        .collectFirst({ case room if room.ref == roomRef => room.items })
-        .getOrElse(Set())
+      state.matchState.rooms.get(roomRef).fold(Set[ItemRef]())(x => x.items)
 
-    def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] = {
-      itemRefs.map(ref => itemFromRef(ref)).collect({ case Some(item) => item })
-    }
+    def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] =
+      itemRefs.flatMap(k => state.matchState.items.get(k))
 
-    def itemFromRef(itemRef: ItemRef): Option[I] =
-      state.matchState.items.collectFirst({ case item if item.ref == itemRef => item })
+    def itemFromRef(itemRef: ItemRef): Option[I] = state.matchState.items.get(itemRef)
 
     def copyWithItemInLocation(item: I): S = {
-      val stateWithTarget    = itemsLens.modify(_ + item)(state)
+      val stateWithTarget    = itemsLens.modify(_ + (item.ref -> item))(state)
       val currRoomWithTarget = roomLens.modify(_ + item.ref)(state.currentRoom)
-      matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
+      matchRoomsLens.modify(_ + (currRoomWithTarget.ref -> currRoomWithTarget))(stateWithTarget)
     }
 
     def copyWithItemInBag(item: I): S = {
-      val stateWithTarget = itemsLens.modify(_ + item)(state)
+      val stateWithTarget = itemsLens.modify(_ + (item.ref -> item))(state)
       playerBagLens.modify(_ + item.ref)(stateWithTarget)
     }
   }

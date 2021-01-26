@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom}
+import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
 import io.github.scalaquest.core.model.Action.Common.Take
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
@@ -19,15 +19,10 @@ class SimpleTakeableTest extends AnyWordSpec {
     val takeable = SimpleTakeable()
 
     "applied to an item" when {
-      val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), takeable)
-
-      val stateWithTarget    = itemsLens.modify(_ + targetItem)(simpleState)
-      val currRoomWithTarget = roomLens.modify(_ + targetItem.ref)(startRoom)
-
-      val stateWithTargetInRoom: SimpleState =
-        matchRoomsLens.modify(_ + currRoomWithTarget)(stateWithTarget)
-
-      val stateWithoutTargetInRoom = stateWithTarget
+      val targetItem            = SimpleGenericItem(ItemDescription("item"), ItemRef(), takeable)
+      val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
+      val stateWithoutTargetInRoom =
+        itemsLens.modify(_ + (targetItem.ref -> targetItem))(simpleState)
 
       "the user says 'take the item'" should {
         "let the item disappear from the current room" in {

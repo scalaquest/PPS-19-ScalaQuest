@@ -32,15 +32,6 @@ trait Model {
      *   A [[Seq]] of [[Message]] s.
      */
     def messages: Seq[Message]
-
-    /**
-     * A method that extracts a [[Map]] that links all the [[Item]] inside the [[State]] to their
-     * [[ItemRef]] s. This should be implemented for each concrete [[Model]] implementation.
-     * @return
-     *   A [[Map]] from [[ItemRef]] to [[Item]].
-     */
-    def extractRefs: Map[ItemRef, I] =
-      matchState.items.foldLeft(Map.empty[ItemRef, I])((map, item) => map + (item.ref -> item))
   }
 
   /**
@@ -64,8 +55,6 @@ trait Model {
      *   The Item's [[ItemRef]] hashcode.
      */
     final override def hashCode(): Int = ref.hashCode()
-
-    override def equals(obj: Any): Boolean = this.hashCode() == obj.hashCode()
 
     /**
      * Define a way make the item interact with the [[State]]. The interaction is founded into the
@@ -105,8 +94,6 @@ trait Model {
     def ref: RoomRef
 
     override def hashCode(): Int = this.ref.hashCode()
-
-    override def equals(obj: Any): Boolean = this.hashCode() == obj.hashCode()
 
     /**
      * Identifies rooms near to the current one, at the cardinal points.

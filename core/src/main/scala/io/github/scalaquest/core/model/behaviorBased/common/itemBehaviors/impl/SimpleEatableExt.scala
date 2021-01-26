@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Eat
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{ItemRef, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -21,7 +21,7 @@ trait SimpleEatableExt extends CommonBase {
    */
   case class SimpleEatable(onEatExtra: Option[Reaction] = None)(implicit
     playerBagLens: Lens[S, Set[ItemRef]],
-    matchRoomsLens: Lens[S, Set[RM]],
+    matchRoomsLens: Lens[S, Map[RoomRef, RM]],
     roomLens: Lens[RM, Set[ItemRef]]
   ) extends Eatable {
 
@@ -34,7 +34,10 @@ trait SimpleEatableExt extends CommonBase {
       state => {
         val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
         val removeItemFromRoomAndBag = Function.chain(
-          Seq(matchRoomsLens.modify(_ + updCurrRoom), playerBagLens.modify(_ - item.ref))
+          Seq(
+            matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
+            playerBagLens.modify(_ - item.ref)
+          )
         )
         val stateWithoutItem = removeItemFromRoomAndBag(state)
 

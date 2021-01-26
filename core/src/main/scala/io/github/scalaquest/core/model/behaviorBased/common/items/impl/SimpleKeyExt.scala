@@ -13,7 +13,7 @@ trait SimpleKeyExt extends CommonBase {
   /**
    * Standard implementation of the common Key item.
    */
-  final case class SimpleKey(
+  case class SimpleKey(
     description: ItemDescription,
     ref: ItemRef,
     additionalBehaviors: ItemBehavior*

@@ -76,8 +76,8 @@ object TestsUtils {
     matchState = SimpleMatchState(
       player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.ref),
       ended = false,
-      items = Set(apple, key, door),
-      rooms = Set(startRoom, targetRoom)
+      items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
+      rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom)
     ),
     messages = Seq()
   )

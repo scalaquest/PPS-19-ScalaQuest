@@ -18,18 +18,18 @@ trait SimpleState extends Model {
 
   override type S = SimpleState
 
-  final case class SimpleState(
+  case class SimpleState(
     actions: Map[String, Action],
     matchState: SimpleMatchState,
     messages: Seq[Message]
   ) extends State
 
-  final case class SimpleMatchState(
+  case class SimpleMatchState(
     player: SimplePlayer,
     ended: Boolean,
-    rooms: Set[RM],
-    items: Set[I]
+    rooms: Map[RoomRef, RM],
+    items: Map[ItemRef, I]
   ) extends MatchState[I, RM]
 
-  final case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
+  case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
 }
