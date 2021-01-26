@@ -5,7 +5,7 @@ import io.github.scalaquest.core.model.{Direction, RoomRef}
 
 object House {
 
-  def kitchen: Room =
+  def kitchen: myModel.RM =
     Room(
       "kitchen",
       Map(
@@ -14,7 +14,7 @@ object House {
       Set()
     )
 
-  def livingRoom: Room =
+  def livingRoom: myModel.RM =
     Room(
       "living room",
       Map(
@@ -22,7 +22,7 @@ object House {
       Set()
     )
 
-  def bathroom: Room =
+  def bathroom: myModel.RM =
     Room(
       "bathroom",
       Map(
@@ -30,7 +30,7 @@ object House {
       Set()
     )
 
-  def allTheRooms: Set[Room] =
+  def allTheRooms: Set[myModel.RM] =
     Set(
       kitchen,
       livingRoom,
@@ -39,6 +39,6 @@ object House {
 
   def checkRooms: Boolean = allTheRooms.groupBy(_.ref).size == allTheRooms.size
 
-  def genMap: Map[RoomRef, Room] = allTheRooms.map(r => r.ref -> r).toMap
+  def genMap: Map[RoomRef, myModel.RM] = allTheRooms.map(r => r.ref -> r).toMap
 
 }

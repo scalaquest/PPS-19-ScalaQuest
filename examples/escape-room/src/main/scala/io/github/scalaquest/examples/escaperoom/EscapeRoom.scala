@@ -13,13 +13,15 @@ object Config {
   case object EatenMessage extends Message
 
   case class TextualMessage(msg: String) extends Message
+  //val rooms = Map[RoomRef, Room](kitchen.ref -> kitchen)
+  val rooms: Map[RoomRef, myModel.RM] = Map[RoomRef, myModel.RM](kitchen.ref -> kitchen)
 
-  val state: myModel.SimpleState = SimpleState(
+  val state: SimpleState = SimpleState(
     actions,
-    SimpleMatchState(
+    myModel.SimpleMatchState(
       player,
       ended = false,
-      Map[RoomRef, RM](kitchen.ref -> kitchen),
+      rooms,
       items
     ),
     Seq.empty[Message]

@@ -9,10 +9,10 @@ package object escaperoom {
 
   val myModel: SimpleModel.type = SimpleModel
 
-  type Model    = myModel.type
-  type State    = myModel.S
-  type Item     = myModel.I
-  type Room     = myModel.RM
+  type Model = myModel.type
+  type State = myModel.S
+  type Item  = myModel.I
+  //type Room     = myModel.RM
   type Reaction = myModel.Reaction
 
   val actions: Map[String, Action] = Map(
