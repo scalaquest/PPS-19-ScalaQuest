@@ -1,40 +1,28 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef, Message}
+import io.github.scalaquest.core.model.{Message, RoomRef}
 import io.github.scalaquest.core.{Game, MessagePusher}
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
-import io.github.scalaquest.core.pipeline.Pipeline
-import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
+import io.github.scalaquest.examples.escaperoom.House.kitchen
 import io.github.scalaquest.examples.escaperoom.MyPipeline.pipelineBuilder
-import io.github.scalaquest.examples.escaperoom.House.{kitchen, livingRoom}
 
 object Config {
   import myModel._
-  val player = SimplePlayer(Set(), House.kitchen.ref)
+  val player: myModel.SimplePlayer = SimplePlayer(Set(), House.kitchen.ref)
 
   case object EatenMessage extends Message
 
   case class TextualMessage(msg: String) extends Message
-
-  def kitchen: Room =
-    Room(
-      "kitchen",
-      Map(
-        Direction.East -> livingRoom.ref
-      ),
-      Set()
-    )
 
   val state: myModel.SimpleState = SimpleState(
     actions,
     SimpleMatchState(
       player,
       ended = false,
-      Map(kitchen.ref -> kitchen),
-      Map()
+      Map[RoomRef, RM](kitchen.ref -> kitchen),
+      items
     ),
-    Seq()
+    Seq.empty[Message]
   )
 
   def parseMessage(msg: Message): String =

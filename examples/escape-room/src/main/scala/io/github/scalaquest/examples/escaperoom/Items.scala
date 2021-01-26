@@ -6,11 +6,11 @@ import io.github.scalaquest.examples.escaperoom.Config.EatenMessage
 object Items {
   import myModel._
 
-  def apple: SimpleFood = {
+  def apple(itemDescription: ItemDescription, itemRef: ItemRef): SimpleFood = {
 
     SimpleFood(
-      ItemDescription("apple", "red"),
-      ItemRef(),
+      itemDescription,
+      itemRef,
       SimpleEatable(onEatExtra =
         Option(localState => messageLens.modify(_ :+ EatenMessage)(localState))
       )

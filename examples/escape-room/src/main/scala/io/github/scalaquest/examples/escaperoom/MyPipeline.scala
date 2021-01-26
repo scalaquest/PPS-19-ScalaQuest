@@ -21,7 +21,8 @@ object MyPipeline {
 
   val resolverB: Resolver.Builder[State] = Resolver.builder(myModel)
 
-  val interpreterB: Interpreter.Builder[Model, State, Reaction] = Interpreter.builder(myModel)
+  val interpreterB: Interpreter.Builder[Model, State, Reaction] =
+    Interpreter.builder(myModel)(itemDict = items, myModel.SimpleGround)
 
   val reducerB: Reducer.Builder[Model, State, Reaction] = Reducer.builder(myModel)
 

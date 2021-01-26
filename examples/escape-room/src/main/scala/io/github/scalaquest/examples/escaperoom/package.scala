@@ -1,6 +1,7 @@
 package io.github.scalaquest.examples
 
-import io.github.scalaquest.core.model.Action
+import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
+import io.github.scalaquest.core.model.{Action, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 
 package object escaperoom {
@@ -21,4 +22,12 @@ package object escaperoom {
     "open"    -> Open,
     "close"   -> Close
   )
+
+  var items: Map[ItemRef, myModel.I] = Map(
+    {
+      val appleId = ItemRef()
+      appleId -> Items.apple(i(d("red"), "apple"), appleId)
+    }
+  )
+
 }
