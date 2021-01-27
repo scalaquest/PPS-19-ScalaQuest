@@ -27,11 +27,6 @@ class ItemDescriptionTest extends AnyWordSpec with Matchers {
   }
   "Item description dsl" when {
     import ItemDescription.dsl._
-    val apple       = i("apple")
-    val redApple    = i(d("red"), "apple")
-    val redBigApple = i(d("red", "big"), "apple")
-    val wrongApple  = ItemDescription("red", "big", "apple")
-    val rightApple  = ItemDescription("apple", "big", "red")
     "provided only the base item" should {
       "create a base item" in {
         i("apple") shouldBe BaseItem("apple")
