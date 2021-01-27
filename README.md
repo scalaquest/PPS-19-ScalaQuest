@@ -2,7 +2,7 @@
 An exam project. From UNIBO, for the course "Paradigmi di Programmazione e Sviluppo", 2020.
 
 Useful links:
-- [Sprints historical overview](./SPRINTS_HISTORICAL_OVERVIEW.md)
+- [Sprints historical overview](reports/sprints-historical-overview.md)
 - [License (MIT)](./LICENSE)
 - [Code of conduct](./CODE_OF_CONDUCT.md)
 
