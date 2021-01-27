@@ -41,7 +41,7 @@ trait Model {
 
     def description: ItemDescription
 
-    def name: String = description.completeName
+    def name: String = description.mkString
 
     /**
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,

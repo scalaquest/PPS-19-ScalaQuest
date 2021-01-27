@@ -10,5 +10,5 @@ object ItemRef {
   def apply(): ItemRef = SimpleItemRef(UUID.randomUUID())
 
   private case class StringItemRef(id: String) extends ItemRef
-  def apply(itemDescription: ItemDescription): ItemRef = StringItemRef(itemDescription.completeName)
+  def apply(itemDescription: ItemDescription): ItemRef = StringItemRef(itemDescription.mkString)
 }

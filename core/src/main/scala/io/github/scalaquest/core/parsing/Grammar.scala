@@ -42,6 +42,10 @@ object Verb {
     def betaReduce(variablesNumber: Int): Term = Verb.betaReduce(functor, variablesNumber)
   }
 
+  implicit class AllowBetaReductionOnAtom(functor: Atom) {
+    def betaReduce(variablesNumber: Int): Term = Verb.betaReduce(functor.name, variablesNumber)
+  }
+
   val iv = CompoundBuilder("iv")
   val tv = CompoundBuilder("tv")
   val v  = CompoundBuilder("v")

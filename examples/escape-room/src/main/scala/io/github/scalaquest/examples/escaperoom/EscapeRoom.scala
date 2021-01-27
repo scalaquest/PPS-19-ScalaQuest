@@ -42,5 +42,7 @@ object Config {
 }
 
 object EscapeRoom extends CLIApp {
+  itemsSet.foreach(println)
+  items.foreach(println)
   override def cli: CLI = Config.cli
 }

@@ -15,6 +15,16 @@ package object escaperoom {
   type Room     = myModel.RM
   type Reaction = myModel.Reaction
 
+  var itemsSet: Set[Item] = Set(
+    Items.redApple,
+    Items.apple,
+    Items.greenApple
+  )
+
+  // generated
+  var items: Map[ItemRef, Item] = itemsSet.map(i => i.ref -> i).toMap
+
+  // generated
   val actions: Map[String, Action] = Map(
     "take"    -> Take,
     "pick up" -> Take,
@@ -22,12 +32,4 @@ package object escaperoom {
     "open"    -> Open,
     "close"   -> Close
   )
-
-  var items: Map[ItemRef, myModel.I] = Map(
-    {
-      val appleId = ItemRef()
-      appleId -> Items.apple(i(d("red"), "apple"), appleId)
-    }
-  )
-
 }
