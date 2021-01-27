@@ -1,14 +1,6 @@
-package io.github.scalaquest.core.model.behaviorBased.impl
+package io.github.scalaquest.core.model.impl
 
-import io.github.scalaquest.core.model.{
-  Action,
-  ItemRef,
-  MatchState,
-  Message,
-  Model,
-  Player,
-  RoomRef
-}
+import io.github.scalaquest.core.model._
 
 /**
  * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the

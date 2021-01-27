@@ -4,6 +4,7 @@ import io.github.scalaquest.core.model.{ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.SimpleCommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
+import io.github.scalaquest.core.model.impl.{SimpleRoom, SimpleState}
 import monocle.Lens
 import monocle.macros.GenLens
 

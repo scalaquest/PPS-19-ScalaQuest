@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Eat
-import io.github.scalaquest.core.model.{ItemRef, RoomRef}
+import io.github.scalaquest.core.model.{ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -22,7 +22,8 @@ trait SimpleEatableExt extends CommonBase {
   case class SimpleEatable(onEatExtra: Option[Reaction] = None)(implicit
     playerBagLens: Lens[S, Set[ItemRef]],
     matchRoomsLens: Lens[S, Map[RoomRef, RM]],
-    roomLens: Lens[RM, Set[ItemRef]]
+    roomLens: Lens[RM, Set[ItemRef]],
+    messageLens: Lens[S, Seq[Message]]
   ) extends Eatable {
 
     override def triggers: ItemTriggers = {
@@ -30,19 +31,15 @@ trait SimpleEatableExt extends CommonBase {
       case (Eat, item, None, state) if state.isInScope(item) => eat(item)
     }
 
-    private def eat(item: I): Reaction =
+    def eat(item: I): Reaction =
       state => {
         val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
-        val removeItemFromRoomAndBag = Function.chain(
-          Seq(
-            matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
-            playerBagLens.modify(_ - item.ref)
-          )
+        state.applyReactions(
+          matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
+          playerBagLens.modify(_ - item.ref),
+          messageLens.modify(_ :+ Eaten(item)),
+          onEatExtra.getOrElse(state => state)
         )
-        val stateWithoutItem = removeItemFromRoomAndBag(state)
-
-        // execute additional reaction, if specified
-        stateWithoutItem.applyReactionIfPresent(onEatExtra)
       }
   }
 }

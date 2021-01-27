@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.impl
+package io.github.scalaquest.core.model.impl
 
 import io.github.scalaquest.core.model.{Direction, ItemRef, Model, RoomRef}
 

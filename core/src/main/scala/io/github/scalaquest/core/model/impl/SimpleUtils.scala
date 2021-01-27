@@ -1,7 +1,9 @@
-package io.github.scalaquest.core.model.behaviorBased.impl
+package io.github.scalaquest.core.model.impl
 
 import io.github.scalaquest.core.model.{ItemRef, Message, Model, RoomRef}
 import monocle.Lens
+
+import scala.collection.immutable.{AbstractSeq, LinearSeq}
 
 /**
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional
@@ -23,9 +25,6 @@ trait SimpleUtils extends Model {
 
     def isInScope(item: I): Boolean = state.isInCurrentRoom(item) || state.isInBag(item)
 
-    def applyReactionIfPresent(maybeReaction: Option[Reaction]): S =
-      maybeReaction.fold(state)(_(state))
-
     def currentRoom: RM = state.matchState.rooms(state.matchState.player.location)
 
     def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
@@ -35,6 +34,8 @@ trait SimpleUtils extends Model {
       itemRefs.flatMap(k => state.matchState.items.get(k))
 
     def itemFromRef(itemRef: ItemRef): Option[I] = state.matchState.items.get(itemRef)
+
+    def roomFromRef(roomRef: RoomRef): Option[RM] = state.matchState.rooms.get(roomRef)
 
     def copyWithItemInLocation(item: I): S = {
       val stateWithTarget    = itemsLens.modify(_ + (item.ref -> item))(state)
@@ -46,5 +47,8 @@ trait SimpleUtils extends Model {
       val stateWithTarget = itemsLens.modify(_ + (item.ref -> item))(state)
       playerBagLens.modify(_ + item.ref)(stateWithTarget)
     }
+
+    def applyReactions(reactions: Reaction*): S = Function.chain(reactions.toList)(this.state)
+
   }
 }
