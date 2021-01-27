@@ -31,6 +31,7 @@ gitSemVer {
 }
 
 spotless {
+    // scala format with Scalafmt
     scala {
         scalafmt("2.7.5").configFile(rootDir.absolutePath + "/.scalafmt.conf")
     }
@@ -41,8 +42,8 @@ dependencies {
     implementation("org.scala-lang:scala-library:_")
 
     // Lenses
-    implementation("com.github.julien-truffaut:monocle-core_2.13:2.0.3")
-    implementation("com.github.julien-truffaut:monocle-macro_2.13:2.0.3")
+    implementation("com.github.julien-truffaut:monocle-core_2.13:_")
+    implementation("com.github.julien-truffaut:monocle-macro_2.13:_")
 
     // The ScalaTest framework
     testImplementation("org.scalatest:scalatest_2.13:_")
