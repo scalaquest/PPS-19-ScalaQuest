@@ -41,6 +41,8 @@ trait Model {
 
     def description: ItemDescription
 
+    def name: String = description.completeName
+
     /**
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
      * the reference to an object changes, the [[State]] works in an immutable fashion.

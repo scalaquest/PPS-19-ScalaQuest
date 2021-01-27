@@ -7,10 +7,8 @@ trait RoomRef
 object RoomRef {
 
   private case class SimpleRoomRef(id: UUID) extends RoomRef
-
   def apply(): RoomRef = SimpleRoomRef(UUID.randomUUID())
 
   private case class StringRef(name: String) extends RoomRef
-
-  def apply(name: String): RoomRef = StringRef(name)
+  def apply(roomName: String): RoomRef = StringRef(roomName)
 }

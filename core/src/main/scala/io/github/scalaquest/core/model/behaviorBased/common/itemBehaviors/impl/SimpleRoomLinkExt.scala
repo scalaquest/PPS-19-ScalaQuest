@@ -53,7 +53,7 @@ trait SimpleRoomLinkExt extends CommonBase {
     def enterRoom(): Reaction =
       _.applyReactions(
         playerLocationLens.modify(_ => endRoom.ref),
-        messageLens.modify(_ :+ Entered(endRoom)),
+        messageLens.modify(_ :+ Navigated(endRoom)),
         onEnterExtra.getOrElse(state => state)
       )
 

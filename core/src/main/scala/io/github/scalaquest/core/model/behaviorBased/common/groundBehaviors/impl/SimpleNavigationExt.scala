@@ -38,7 +38,7 @@ trait SimpleNavigationExt extends CommonBase {
       state =>
         state.applyReactions(
           playerLocationLens.set(targetRoom.ref),
-          messageLens.modify(_ :+ Entered(targetRoom)),
+          messageLens.modify(_ :+ Navigated(targetRoom)),
           onNavigateExtra.getOrElse(s => s)
         )
   }

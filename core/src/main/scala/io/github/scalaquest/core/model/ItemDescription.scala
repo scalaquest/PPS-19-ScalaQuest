@@ -2,7 +2,18 @@ package io.github.scalaquest.core.model
 
 import scala.annotation.tailrec
 
-sealed trait ItemDescription
+sealed trait ItemDescription {
+
+  def completeName: String = {
+    def print(itemDesc: ItemDescription): String =
+      itemDesc match {
+        case BaseItem(name)                  => name
+        case DecoratedItem(decoration, item) => decoration + " " + print(item)
+      }
+    print(this)
+  }
+}
+
 final case class BaseItem(name: String)                                   extends ItemDescription
 final case class DecoratedItem(decoration: String, item: ItemDescription) extends ItemDescription
 

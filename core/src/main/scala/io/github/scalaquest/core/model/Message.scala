@@ -12,3 +12,5 @@ trait ItemMessage[I <: Model#Item] extends Message {
 trait RoomMessage[RM <: Model#Room] extends Message {
   def room: RM
 }
+
+case object NotRecognizedMessage extends Message

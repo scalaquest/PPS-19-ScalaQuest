@@ -1,7 +1,7 @@
 package io.github.scalaquest.cli
 
-import io.github.scalaquest.core.model.{Message, Model}
-import io.github.scalaquest.core.{Game, MessagePusher}
+import io.github.scalaquest.core.model.{Message, Model, StringPusher}
+import io.github.scalaquest.core.Game
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
 
@@ -22,12 +22,13 @@ object CLI {
   class CLIFromModel[M <: Model](val model: M) {
     type S = model.S
 
-    private def printNotifications(pusher: MessagePusher)(messages: Seq[Message]): String =
-      pusher(messages) reduceOption (_ + "\n" + _) getOrElse ""
+    private def printNotifications(pusher: StringPusher)(messages: Seq[Message]): String = {
+      messages.map(pusher.push) reduceOption (_ + "\n" + _) getOrElse ""
+    }
 
     private def gameLoop(
       game: Game[model.type],
-      pusher: MessagePusher
+      pusher: StringPusher
     )(state: S): ZIO[Console, Exception, Unit] =
       for {
         input <- getStrLn
@@ -42,7 +43,7 @@ object CLI {
           else ZIO.unit
       } yield ()
 
-    def build(state: S, game: Game[model.type], pusher: MessagePusher): CLI =
+    def build(state: S, game: Game[model.type], pusher: StringPusher): CLI =
       new CLI() {
 
         override def start: ZIO[Console, Exception, Unit] =
