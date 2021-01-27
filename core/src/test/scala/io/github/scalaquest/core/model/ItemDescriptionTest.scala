@@ -25,6 +25,28 @@ class ItemDescriptionTest extends AnyWordSpec with Matchers {
       }
     }
   }
+  "Item description dsl" when {
+    import ItemDescription.dsl._
+    "provided only the base item" should {
+      "create a base item" in {
+        i("apple") shouldBe BaseItem("apple")
+      }
+    }
+    "provided a decorator" should {
+      "create a decorated item" in {
+        i(d("red"), "apple") shouldBe DecoratedItem("red", BaseItem("apple"))
+      }
+    }
+    "provided multiple decorators" should {
+      "create a nested decorated item" in {
+        val matcher = DecoratedItem(
+          "brown",
+          DecoratedItem("small", DecoratedItem("slippery", BaseItem("rock")))
+        )
+        i(d("brown", "small", "slippery"), "rock") shouldBe matcher
+      }
+    }
+  }
   "The base of an item description" when {
     import ItemDescription.base
     "called with a base item" should {
