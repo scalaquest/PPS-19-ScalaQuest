@@ -26,10 +26,10 @@ trait SimpleUtils extends Model {
     def currentRoom: RM = state.matchState.rooms(state.matchState.player.location)
 
     def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
-      state.matchState.rooms.get(roomRef).fold(Set[ItemRef]())(x => x.items)
+      state.matchState.rooms.get(roomRef).fold(Set[ItemRef]())(_.items)
 
     def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] =
-      itemRefs.flatMap(k => state.matchState.items.get(k))
+      itemRefs.flatMap(state.matchState.items.get(_))
 
     def itemFromRef(itemRef: ItemRef): Option[I] = state.matchState.items.get(itemRef)
 
