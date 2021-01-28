@@ -33,4 +33,17 @@ case class CompoundBuilder(functor: Atom) {
    *   arguments.
    */
   def apply(arg: Term, args: Term*): Compound = Compound(functor, arg, args.toList)
+
+  /**
+   * Allows to simulate the Prolog compound term during pattern matching.
+   * @param term
+   *   the [[Compound]] to extract data from
+   * @return
+   *   the sequence of extracted terms.
+   */
+  def unapplySeq(term: Term): Option[Seq[Term]] =
+    term match {
+      case Compound(`functor`, t0, terms) => Some(t0 +: terms)
+      case _                              => None
+    }
 }

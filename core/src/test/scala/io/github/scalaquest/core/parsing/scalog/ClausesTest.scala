@@ -168,6 +168,23 @@ class ClausesTest extends AnyWordSpec {
         )
       )
     }
+    "allow pattern matching compound terms" in {
+      val hello = CompoundBuilder("hello")
+      val hi    = CompoundBuilder("hi")
+      val term  = Compound("hello", "darkness", List("my", "old", "friend"))
+
+      term match {
+        case hi(_, _, _, _) => fail()
+        case hello(_)       => fail()
+        case hello(Atom(darkness), Atom(my), Atom(old), Atom(friend)) =>
+          assert(darkness == "darkness")
+          assert(my == "my")
+          assert(old == "old")
+          assert(friend == "friend")
+        case _ => fail()
+      }
+
+    }
   }
 
 }
