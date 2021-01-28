@@ -19,7 +19,9 @@ abstract class CommonStringPusher(model: CommonMessages) extends ComposableStrin
           case Nil            => "nothing."
         }
       }
-      s"${room.name} contains ${go(items.toList)}"
+
+      val ordItems = items.toList.sortWith(_.name < _.name)
+      s"The ${room.name} contains ${go(ordItems)}"
 
     case model.Eaten(item)     => s"The ${item.name} has been eaten!"
     case model.Taken(item)     => s"The ${item.name} has been taken!"
