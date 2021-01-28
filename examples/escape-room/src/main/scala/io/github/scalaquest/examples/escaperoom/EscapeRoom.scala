@@ -1,10 +1,10 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.behaviorBased.common.CommonStringPusher
 import io.github.scalaquest.core.model.{Message, RoomRef, StringPusher}
 import io.github.scalaquest.core.Game
 import io.github.scalaquest.core.model.MessagePusher.MessageTriggers
+import io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher
 import io.github.scalaquest.examples.escaperoom.MyPipeline.pipelineBuilder
 
 object Config {
@@ -29,12 +29,12 @@ object Config {
       Seq.empty[Message]
     )
 
-  val defaultPusher: CommonStringPusher = new CommonStringPusher(myModel) {
-
-    override def additionalTriggers: MessageTriggers[String] = { case SuperStonksPowered =>
+  val defaultPusher: CommonStringPusher = CommonStringPusher(
+    myModel,
+    { case SuperStonksPowered =>
       "Became SuperStonks ( ͡° ͜ʖ ͡°)"
     }
-  }
+  )
 
   def game: Game[Model]           = Game.fromModel(myModel).withPipelineBuilder(pipelineBuilder)
   def messagePusher: StringPusher = defaultPusher

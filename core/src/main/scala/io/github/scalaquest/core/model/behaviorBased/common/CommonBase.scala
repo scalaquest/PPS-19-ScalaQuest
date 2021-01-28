@@ -4,7 +4,7 @@ import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.Comm
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.common.messages.CommonMessages
+import io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonMessages
 import io.github.scalaquest.core.model.impl.SimpleUtils
 
 /**

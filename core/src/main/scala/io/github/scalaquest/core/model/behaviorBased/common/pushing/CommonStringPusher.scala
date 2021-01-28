@@ -1,0 +1,43 @@
+package io.github.scalaquest.core.model.behaviorBased.common.pushing
+
+import io.github.scalaquest.core.model.ComposableStringPusher
+import io.github.scalaquest.core.model.MessagePusher.{MessageTriggers, StringMessageTriggers}
+
+import scala.annotation.tailrec
+
+abstract class CommonStringPusher(model: CommonMessages) extends ComposableStringPusher {
+
+  override def additionalTriggers: MessageTriggers[String] = PartialFunction.empty
+
+  final def commonTriggers: StringMessageTriggers = {
+    case model.Inspected(room, items) =>
+      @tailrec
+      def go(tail: List[CommonMessages#I], acc: String = ""): String = {
+        tail match {
+          case ::(head, Nil)  => s"${acc}a ${head.name}."
+          case ::(head, next) => go(next, s"${acc}a ${head.name}, ")
+          case Nil            => "nothing."
+        }
+      }
+      s"${room.name} contains ${go(items.toList)}"
+
+    case model.Eaten(item)     => s"The ${item.name} has been eaten!"
+    case model.Taken(item)     => s"The ${item.name} has been taken!"
+    case model.Closed(item)    => s"The ${item.name} has been closed!"
+    case model.Opened(item)    => s"The ${item.name} has been opened!"
+    case model.Navigated(room) => s"You entered ${room.name}!"
+  }
+}
+
+object CommonStringPusher {
+  def apply(model: CommonMessages): CommonStringPusher = new CommonStringPusher(model) {}
+
+  def apply(
+    model: CommonMessages,
+    _additionalTriggers: MessageTriggers[String]
+  ): CommonStringPusher = {
+    new CommonStringPusher(model) {
+      override def additionalTriggers: MessageTriggers[String] = _additionalTriggers
+    }
+  }
+}

@@ -3,8 +3,6 @@ package io.github.scalaquest.core.model.impl
 import io.github.scalaquest.core.model.{ItemRef, Message, Model, RoomRef}
 import monocle.Lens
 
-import scala.collection.immutable.{AbstractSeq, LinearSeq}
-
 /**
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional
  * functionalities for state inspection and re-generation, by the use of [[monocle.Lens]].
