@@ -14,6 +14,7 @@ trait Helpers {
     val X      = Variable("X")
     val i      = CompoundBuilder("i")
     val phrase = CompoundBuilder("phrase")
+    val res    = CompoundBuilder("result")
   }
 
   object itemDescription {
@@ -25,7 +26,7 @@ trait Helpers {
           DecoratedItem(description, toItemDescription(item))
       }
 
-    def unapply(t: Seq[Term]): Option[Seq[ItemDescription]] =
+    def unapplySeq(t: Seq[Term]): Option[Seq[ItemDescription]] =
       t match {
         case (obj @ (_: Compound | _: Term)) :: Nil =>
           Some(Seq(toItemDescription(obj)))
@@ -57,12 +58,12 @@ abstract class PrologParser extends Parser with Helpers {
       ast <- x match {
         case Compound(Atom(verb), Atom(subject), Nil) =>
           Some(AbstractSyntaxTree.Intransitive(verb, subject))
-        case Compound(Atom(verb), Atom(subject), itemDescription(obj :: Nil)) =>
+        case Compound(Atom(verb), Atom(subject), itemDescription(obj)) =>
           Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
         case Compound(
               Atom(verb),
               Atom(subject),
-              itemDescription(directObj :: indirectObj :: Nil)
+              itemDescription(directObj, indirectObj)
             ) =>
           Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
         case _ => None
