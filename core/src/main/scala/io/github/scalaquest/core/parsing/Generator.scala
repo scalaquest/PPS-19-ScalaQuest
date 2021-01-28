@@ -1,8 +1,5 @@
 package io.github.scalaquest.core.parsing
 
-import io.github.scalaquest.core.model.Model
-import io.github.scalaquest.core.parsing.scalog.ListP
-
 trait Generator { self =>
   def generate: String
 
@@ -12,10 +9,10 @@ trait Generator { self =>
     }
 }
 
+/*
 case class GrammarGenerator(verbs: Verb*) extends Generator {
   override def generate: String = verbs.map(_.clause.generate).mkString("\n")
 }
-/*
 case class ItemGenerator(items: Model#Item*) extends Generator {
 
   import io.github.scalaquest.core.parsing.scalog.dsl._
