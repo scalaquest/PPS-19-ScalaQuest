@@ -18,6 +18,8 @@ object Config {
   case class TextualMessage(msg: String) extends Message
   def rooms: Map[RoomRef, Room] = House.genMap
 
+  // todo ad ogni ciclo di pipeline, la sequenza di messaggi dovrebbe essere svuotata
+
   def state: SimpleState =
     SimpleState(
       actions,
