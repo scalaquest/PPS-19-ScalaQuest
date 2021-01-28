@@ -5,6 +5,11 @@ import io.github.scalaquest.core.model.MessagePusher.{MessageTriggers, StringMes
 
 import scala.annotation.tailrec
 
+/**
+ * A [[ComposableStringPusher]] that have an implementation for [[commonTriggers]].
+ * @param model
+ *   contains some implementation of [[commonTriggers]].
+ */
 abstract class CommonStringPusher(model: CommonMessages) extends ComposableStringPusher {
 
   override def additionalTriggers: MessageTriggers[String] = PartialFunction.empty
@@ -31,6 +36,9 @@ abstract class CommonStringPusher(model: CommonMessages) extends ComposableStrin
   }
 }
 
+/**
+ * Object with some useful construct for create a [[CommonStringPusher]].
+ */
 object CommonStringPusher {
   def apply(model: CommonMessages): CommonStringPusher = new CommonStringPusher(model) {}
 

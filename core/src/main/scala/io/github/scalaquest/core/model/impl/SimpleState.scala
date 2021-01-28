@@ -4,7 +4,7 @@ import io.github.scalaquest.core.model._
 
 /**
  * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the
- * State into the model.
+ * [[Model.State]] into the model.
  */
 trait SimpleState extends Model {
 
@@ -25,6 +25,9 @@ trait SimpleState extends Model {
 
   case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
 
+  /**
+   * Companion object with apply.
+   */
   object State {
 
     def apply(

@@ -2,6 +2,9 @@ package io.github.scalaquest.core.model
 
 sealed trait Direction
 
+/**
+ * All the possible [[Direction]].
+ */
 object Direction {
   case object North extends Direction
   case object South extends Direction
