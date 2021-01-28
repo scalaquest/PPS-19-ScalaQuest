@@ -17,7 +17,8 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
     "the item has not an openable behavior" when {
       val roomLink              = SimpleRoomLink(targetRoom)
-      val targetItem            = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val doorDescription       = ItemDescription("door")
+      val targetItem            = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
@@ -38,7 +39,8 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
     "the item is open" when {
       val roomLink                                 = SimpleRoomLink(targetRoom, Some(SimpleOpenable(_isOpen = true)))
-      val targetItem                               = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val doorDescription                          = ItemDescription("door")
+      val targetItem                               = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
       val stateWithOpenedTargetInRoom: SimpleState = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
@@ -59,7 +61,8 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
     "the item is closed" when {
       val roomLink                    = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
-      val targetItem                  = SimpleDoor(ItemDescription("door"), ItemRef(), roomLink)
+      val doorDescription             = ItemDescription("door")
+      val targetItem                  = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
       val stateWithClosedTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
       "the user says 'enter the item'" should {
         "not move the player in the designed room" in {

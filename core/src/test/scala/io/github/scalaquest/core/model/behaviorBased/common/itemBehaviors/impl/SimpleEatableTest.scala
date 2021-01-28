@@ -18,7 +18,8 @@ class SimpleEatableTest extends AnyWordSpec {
     val eatable = SimpleEatable()
 
     "applied to an item" when {
-      val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), eatable)
+      val itemDescription = ItemDescription("item")
+      val targetItem      = SimpleGenericItem(itemDescription, ItemRef(itemDescription), eatable)
 
       val stateItemInRoom   = simpleState.copyWithItemInLocation(targetItem)
       val stateItemInBag    = simpleState.copyWithItemInBag(targetItem)

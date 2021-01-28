@@ -40,14 +40,14 @@ object TestsUtils {
     "open"  -> Open
   )
 
-  val appleItemRef: ItemRef = ItemRef()
-  val keyItemRef: ItemRef   = ItemRef()
-  val doorItemRef: ItemRef  = ItemRef()
+  val appleItemRef: ItemRef = ItemRef(ItemDescription("apple", "big", "red", "juicy"))
+  val keyItemRef: ItemRef   = ItemRef(ItemDescription("key"))
+  val doorItemRef: ItemRef  = ItemRef(ItemDescription("door"))
 
   val itemsMap: Map[ItemDescription, ItemRef] = Map[ItemDescription, ItemRef](
-    ItemDescription("apple", "red") -> appleItemRef,
-    ItemDescription("door")         -> doorItemRef,
-    ItemDescription("key")          -> keyItemRef
+    ItemDescription("apple", "big", "red", "juicy") -> appleItemRef,
+    ItemDescription("door")                         -> doorItemRef,
+    ItemDescription("key")                          -> keyItemRef
   )
 
   val apple: GenericItem = SimpleGenericItem(
@@ -74,7 +74,6 @@ object TestsUtils {
     actionsMap,
     matchState = SimpleMatchState(
       player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.ref),
-      ended = false,
       items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
       rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom)
     ),

@@ -18,7 +18,8 @@ class SimpleTakeableTest extends AnyWordSpec {
     val takeable = SimpleTakeable()
 
     "applied to an item" when {
-      val targetItem            = SimpleGenericItem(ItemDescription("item"), ItemRef(), takeable)
+      val itemDescription       = ItemDescription("item")
+      val targetItem            = SimpleGenericItem(itemDescription, ItemRef(itemDescription), takeable)
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
       val stateWithoutTargetInRoom =
         itemsLens.modify(_ + (targetItem.ref -> targetItem))(simpleState)
