@@ -23,13 +23,13 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
 object TestsUtils {
 
   val startRoom: SimpleRoom = Room(
-    "startRoom",
+    "start room",
     Map(Direction.North -> targetRoom.ref),
     Set(door.ref, key.ref)
   )
 
   val targetRoom: SimpleRoom = Room(
-    "targetRoom",
+    "target room",
     Map(Direction.South -> startRoom.ref),
     Set()
   )
@@ -55,7 +55,7 @@ object TestsUtils {
     appleItemRef,
     SimpleTakeable()
   )
-  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef)
+  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef, SimpleTakeable())
 
   val door: Door =
     SimpleDoor(
