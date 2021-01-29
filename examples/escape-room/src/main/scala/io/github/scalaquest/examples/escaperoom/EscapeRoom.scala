@@ -41,7 +41,7 @@ object Config {
 
   def game: Game[Model]           = Game.fromModel(myModel).withPipelineBuilder(pipelineBuilder)
   def messagePusher: StringPusher = defaultPusher
-  def cli: CLI                    = CLI.fromModel(myModel).build(state, game, messagePusher)
+  def cli: CLI                    = CLI builderFrom myModel build (state, game, messagePusher)
 }
 
 object EscapeRoom extends CLIApp {

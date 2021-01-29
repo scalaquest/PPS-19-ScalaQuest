@@ -36,6 +36,8 @@ abstract class MessagePusher[A] {
   def push(input: Message): A = {
     triggers.lift(input).getOrElse(notFound)
   }
+
+  def push(input: Seq[Message]): A
 }
 
 /**
@@ -43,6 +45,9 @@ abstract class MessagePusher[A] {
  */
 abstract class StringPusher extends MessagePusher[String] {
   override def notFound: String = "Nothing happened!"
+
+  override def push(input: Seq[Message]): String =
+    input.map(push).reduceOption(_ + "\n" + _) getOrElse ""
 }
 
 /**
