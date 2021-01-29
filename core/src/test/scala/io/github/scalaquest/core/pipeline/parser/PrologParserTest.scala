@@ -19,15 +19,21 @@ class PrologParserTest extends AnyWordSpec {
       |
       |adjective(little).
       |adjective(red).
+      |adjective(golden).
+      |adjective(shiny).
+      |
+      |preposition(with).
+      |preposition(up).
+      |preposition(into).
+      |preposition(in).
       |
       |verb(1, inspect).
       |verb(2, take).
       |verb(2, pick, up).
-      |iv(X^inspect(X)) --> [inspect].
-      |tv(X^Y^take(Y,X)) --> [take].
-      |tv(X^Y^pick_up(Y,X)) --> [pick,up].
-      |v(3/with, Z^Y^X^open(X,Y,Z)) --> [open].
-      |v(3/in, Z^Y^X^put(X,Y,Z)) --> [put].
+      |verb(3, open, with).
+      |verb(3, put, into).
+      |verb(3, put, in).
+      |
       |""".stripMargin
   val parser: Parser = Parser(Engine(Theory(source), Set(DCGLibrary)))
 
@@ -56,19 +62,31 @@ class PrologParserTest extends AnyWordSpec {
             .contains(AbstractSyntaxTree.Transitive("take", "you", BaseItem("key")))
         )
       }
-      "recognize phrasal verbs and escape space with underscore" in {
+      "recognize phrasal verbs" in {
         assert(
           parser
             .parse(SimpleLexerResult(Seq("pick", "up", "the", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Transitive("pick_up", "you", BaseItem("key")))
+            .contains(AbstractSyntaxTree.Transitive("pick", "you", BaseItem("key")))
         )
       }
-      "recognize adjectives and wrap them in ItemDescription" in {
+    }
+    "provided an decorated item" should {
+      "wrap it in a decorated item" in {
         val decoratedItem = DecoratedItem("little", BaseItem("key"))
         assert(
           parser
             .parse(SimpleLexerResult(Seq("take", "the", "little", "key")))
+            .map(_.tree)
+            .contains(AbstractSyntaxTree.Transitive("take", "you", decoratedItem))
+        )
+      }
+      "wrap it in a nested decorated item" in {
+        val decoratedItem =
+          DecoratedItem("little", DecoratedItem("golden", DecoratedItem("shiny", BaseItem("key"))))
+        assert(
+          parser
+            .parse(SimpleLexerResult(Seq("take", "the", "little", "golden", "shiny", "key")))
             .map(_.tree)
             .contains(AbstractSyntaxTree.Transitive("take", "you", decoratedItem))
         )

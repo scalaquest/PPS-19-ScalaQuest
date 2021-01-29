@@ -4,9 +4,7 @@ import io.github.scalaquest.core.parsing.scalog.dsl.{CompoundBuilder, stringToAt
 
 package object dictionary {
 
-  val iv = CompoundBuilder("iv")
-  val tv = CompoundBuilder("tv")
-  val v  = CompoundBuilder("v")
+  val verb = CompoundBuilder("verb").constructor
 
   type Verb = BaseVerb with GenerateClause with GeneratePair
 

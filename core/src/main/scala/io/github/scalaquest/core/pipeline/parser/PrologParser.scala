@@ -2,7 +2,8 @@ package io.github.scalaquest.core.pipeline.parser
 
 import io.github.scalaquest.core.model.{BaseItem, DecoratedItem, ItemDescription}
 import io.github.scalaquest.core.parsing.engine.Engine
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog
+import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, ListP, Term, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
@@ -12,31 +13,33 @@ trait Helpers {
   object dsl {
     import io.github.scalaquest.core.parsing.scalog.dsl._
 
-    val X        = Variable("X")
-    val imp      = CompoundBuilder("imp").constructor
-    val phrase   = CompoundBuilder("phrase").constructor
-    val sentence = CompoundBuilder("sentence").extractor.toTerms
-    val `/`      = CompoundBuilder("/").extractor.toStrings
+    val X         = Variable("X")
+    val imp       = CompoundBuilder("imp").constructor
+    val phrase    = CompoundBuilder("phrase").constructor
+    val sentence  = CompoundBuilder("sentence").extractor.toTerms
+    val `/`       = CompoundBuilder("/").extractor.toStrings
+    val decorated = CompoundBuilder("decorated").extractor.toTerms
   }
 
-  object itemDescription {
+  object ItemDescription {
+    import dsl.decorated
 
-    private def toItemDescription(t: Term): ItemDescription =
-      t match {
+    private def toItemDescription(term: Term): ItemDescription =
+      term match {
         case Atom(name) => BaseItem(name)
-        case Compound(Atom(description), item, Nil) =>
-          DecoratedItem(description, toItemDescription(item))
+        case decorated(Atom(decoration), t) =>
+          DecoratedItem(decoration, toItemDescription(t))
       }
 
-    def unapplySeq(t: Seq[Term]): Option[Seq[ItemDescription]] =
+    def unapply(t: Term): Option[ItemDescription] =
       t match {
-        case (obj @ (_: Compound | _: Term)) :: Nil =>
-          Some(Seq(toItemDescription(obj)))
-        case (directObj @ (_: Compound | _: Term)) :: (indirectObj @ (_: Compound |
-            _: Term)) :: Nil =>
-          Some(Seq(toItemDescription(directObj), toItemDescription(indirectObj)))
+        case obj @ (_: Compound | _: Term) => Some(toItemDescription(obj))
+        case _                             => None
       }
+
   }
+
+  val i = ItemDescription
 }
 
 /**
@@ -57,12 +60,18 @@ abstract class PrologParser extends Parser with Helpers {
     for {
       r <- engine.solve(query).headOption
       x <- r.getVariable(X)
+      _ = println(x)
       ast <- x match {
         case sentence(`/`(verb, prep), Atom(subject)) =>
           Some(AbstractSyntaxTree.Intransitive(verb, subject))
-        case sentence(`/`(verb, prep), Atom(subject), itemDescription(obj)) =>
+        case sentence(`/`(verb, prep), Atom(subject), i(obj)) =>
           Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
-        case sentence(`/`(verb, prep), Atom(subject), itemDescription(directObj, indirectObj)) =>
+        case sentence(
+              `/`(verb, prep),
+              Atom(subject),
+              i(directObj),
+              i(indirectObj)
+            ) =>
           Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
         case _ => None
       }

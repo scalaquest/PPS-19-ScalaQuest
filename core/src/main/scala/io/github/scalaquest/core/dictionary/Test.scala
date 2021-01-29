@@ -8,15 +8,15 @@ object Test extends App {
 
   val myVerbs: Set[Verb] = Set(
     Transitive("take", Take),
-    Transitive("pick up", Take),
-    Ditransitive("open", "with", Open),
+    Transitive("pick", Take, Some("up")),
+    Ditransitive("open", Open, Some("with")),
     Transitive("open", Open),
     Intransitive("inspect", Inspect)
   )
 
   def toClauses(verbs: List[Verb with GenerateClause]): List[Clause] = verbs.map(_.clause)
 
-  def toActions(verbs: List[BaseVerb with GeneratePair]): Map[String, Action] =
+  def toActions(verbs: List[BaseVerb with GeneratePair]): Map[BaseVerb, Action] =
     verbs.map(_.pair).toMap
 
   println(toClauses(myVerbs.toList).map(_.generate).mkString("\n"))
