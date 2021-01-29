@@ -21,8 +21,7 @@ object CLI {
 
   def builderFrom[M <: Model](implicit model: M) = new CLIBuilder[M](model)
 
-  private class CLIBuilder[M <: Model](val model: M) {
-    val messageLens: Lens[model.S, Seq[Message]] = GenLens[model.S](_.messages)
+  class CLIBuilder[M <: Model](val model: M) {
 
     private def gameLoop(
       game: Game[model.type],
@@ -36,7 +35,7 @@ object CLI {
           case Right(updState) => (pusher push updState.messages, updState)
         })
         _         <- putStrLn(output)
-        nextState <- UIO.succeed(messageLens.set(Seq())(updState))
+        nextState <- UIO.succeed(model.messageLens.set(Seq())(updState))
         _ <-
           if (nextState.matchState.ended) ZIO.unit
           else UIO.succeed(nextState) flatMap gameLoop(game, pusher)
