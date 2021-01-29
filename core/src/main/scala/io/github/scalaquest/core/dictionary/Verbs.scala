@@ -2,7 +2,6 @@ package io.github.scalaquest.core.dictionary
 
 import io.github.scalaquest.core.model.Action
 
-// input
 sealed trait BaseVerb {
   def name: String
 
