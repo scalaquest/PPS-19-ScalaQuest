@@ -1,5 +1,6 @@
 package io.github.scalaquest.core
 
+import io.github.scalaquest.core.dictionary.VerbPrep
 import io.github.scalaquest.core.model.Action.Common.{Open, Take}
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
@@ -7,6 +8,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   Door,
   GenericItem,
   Key,
+  Room,
   SimpleDoor,
   SimpleGenericItem,
   SimpleKey,
@@ -16,8 +18,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleRoom,
   SimpleRoomLink,
   SimpleState,
-  SimpleTakeable,
-  Room
+  SimpleTakeable
 }
 
 object TestsUtils {
@@ -34,10 +35,10 @@ object TestsUtils {
     Set()
   )
 
-  val actionsMap: Map[String, Action] = Map[String, Action](
-    "take"  -> Take,
-    "bring" -> Take,
-    "open"  -> Open
+  val actionsMap: Map[VerbPrep, Action] = Map(
+    ("take", None)         -> Take,
+    ("bring", None)        -> Take,
+    ("open", Some("with")) -> Open
   )
 
   val appleItemRef: ItemRef = ItemRef()

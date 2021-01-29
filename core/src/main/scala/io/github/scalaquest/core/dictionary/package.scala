@@ -8,4 +8,6 @@ package object dictionary {
 
   type Verb = BaseVerb with GenerateClause with GeneratePair
 
+  type VerbPrep = (String, Option[String])
+
 }

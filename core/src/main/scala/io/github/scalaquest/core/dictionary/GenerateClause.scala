@@ -12,7 +12,7 @@ trait ClauseUtils extends GenerateClause { self: BaseVerb =>
   def arity: Int
 
   def clause: Fact =
-    preposition match {
+    prep match {
       case Some(value) => verb(arity, name, value)
       case None        => verb(arity, name)
     }

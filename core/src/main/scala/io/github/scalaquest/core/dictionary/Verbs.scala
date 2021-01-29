@@ -6,10 +6,10 @@ import io.github.scalaquest.core.model.Action
 sealed trait BaseVerb {
   def name: String
 
-  def preposition: Option[String]
+  def prep: Option[String]
 }
 
-final case class Intransitive(name: String, action: Action, preposition: Option[String] = None)
+final case class Intransitive(name: String, action: Action, prep: Option[String] = None)
   extends BaseVerb
   with ClauseUtils
   with PairUtils {
@@ -17,7 +17,7 @@ final case class Intransitive(name: String, action: Action, preposition: Option[
   override def arity: Int = 1
 }
 
-final case class Transitive(name: String, action: Action, preposition: Option[String] = None)
+final case class Transitive(name: String, action: Action, prep: Option[String] = None)
   extends BaseVerb
   with ClauseUtils
   with PairUtils {
@@ -28,9 +28,10 @@ final case class Transitive(name: String, action: Action, preposition: Option[St
 final case class Ditransitive(
   name: String,
   action: Action,
-  preposition: Option[String] = None
+  prep: Option[String] = None
 ) extends BaseVerb
   with ClauseUtils
   with PairUtils {
+
   override def arity: Int = 3
 }

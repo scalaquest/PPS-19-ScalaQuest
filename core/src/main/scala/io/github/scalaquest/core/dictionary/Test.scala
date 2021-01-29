@@ -16,7 +16,7 @@ object Test extends App {
 
   def toClauses(verbs: List[Verb with GenerateClause]): List[Clause] = verbs.map(_.clause)
 
-  def toActions(verbs: List[BaseVerb with GeneratePair]): Map[BaseVerb, Action] =
+  def toActions(verbs: List[BaseVerb with GeneratePair]): Map[VerbPrep, Action] =
     verbs.map(_.pair).toMap
 
   println(toClauses(myVerbs.toList).map(_.generate).mkString("\n"))

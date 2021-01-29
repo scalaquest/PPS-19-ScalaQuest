@@ -39,7 +39,18 @@ trait Helpers {
 
   }
 
+  object Preposition {
+    private final val EMPTY = "{}"
+
+    def unapply(prep: String): Option[Option[String]] =
+      prep match {
+        case `EMPTY` => Some(None)
+        case x       => Some(Some(x))
+      }
+  }
+
   val i = ItemDescription
+  val p = Preposition
 }
 
 /**
@@ -62,17 +73,17 @@ abstract class PrologParser extends Parser with Helpers {
       x <- r.getVariable(X)
       _ = println(x)
       ast <- x match {
-        case sentence(`/`(verb, prep), Atom(subject)) =>
-          Some(AbstractSyntaxTree.Intransitive(verb, subject))
-        case sentence(`/`(verb, prep), Atom(subject), i(obj)) =>
-          Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
+        case sentence(`/`(verb, p(prep)), Atom(subject)) =>
+          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
+        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =>
+          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
         case sentence(
-              `/`(verb, prep),
+              `/`(verb, p(prep)),
               Atom(subject),
               i(directObj),
               i(indirectObj)
             ) =>
-          Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
+          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
         case _ => None
       }
     } yield SimpleParserResult(ast)

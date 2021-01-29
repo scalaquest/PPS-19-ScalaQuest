@@ -23,9 +23,11 @@ vp(Sem) --> vp(3/Pform, Sem).
 
 % Preposition not followed by substantive
 ppN(Form) --> p(Form, _).
-% Preposition followed by a substantive
-pp(Form, Sem) --> p(Form,X^Sem), np(Sem).
-
+% Allow swapping preposition and np for phrasal verbs recognition
+pp(2/Form, Sem) --> p(Form, X^Sem), np(Sem).
+pp(2/Form, Sem) --> np(Sem), p(Form,X^Sem).
+% In ditransitive sentences preposition comes before the name
+pp(3/Form, Sem) --> p(Form,X^Sem), np(Sem).
 
 % Intransitive verb followed by preposition.
 vp(1/Pform, Sem) -->
@@ -35,13 +37,13 @@ vp(1/Pform, Sem) -->
 % Transitive verb followed by a complement.
 vp(2/Pform, Sem) -->
 	v(2/Pform,Y^Sem),
-	pp(Pform,Y).
+	pp(2/Pform,Y).
 
 % Ditransitive verb followed by two complements.
 vp(3/Pform, Sem) -->
 	v(3/Pform,Z^Y^Sem),
 	np(Y),
-	pp(Pform,Z).
+	pp(3/Pform,Z).
 
 % Nominal phrase
 np(X) --> det, substantive(X).
