@@ -12,14 +12,17 @@ class PrologParserTest extends AnyWordSpec {
   val source = Source.fromResource("base.pl").mkString +
     """
       |
-      |name(key) --> [key].
-      |name(door) --> [door].
-      |name(apple) --> [apple].
-      |name(bag) --> [bag].
+      |name(key).
+      |name(door).
+      |name(apple).
+      |name(bag).
       |
-      |adj(X^little(X)) --> [little].
-      |adj(X^red(X)) --> [red].
+      |adjective(little).
+      |adjective(red).
       |
+      |verb(1, inspect).
+      |verb(2, take).
+      |verb(2, pick, up).
       |iv(X^inspect(X)) --> [inspect].
       |tv(X^Y^take(Y,X)) --> [take].
       |tv(X^Y^pick_up(Y,X)) --> [pick,up].

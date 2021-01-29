@@ -4,11 +4,10 @@ import io.github.scalaquest.core.parsing.scalog.Term
 
 /**
  * An object that allows to destructure a [[Compound]] in its arguments.
+ * @tparam T
+ *   the type of the returned objects
  */
-trait CompoundExtractor {
-
-  /** The type of the arguments */
-  type Out
+trait CompoundExtractor[T] {
 
   /**
    * Allows to simulate the Prolog compound term during pattern matching.
@@ -17,5 +16,5 @@ trait CompoundExtractor {
    * @return
    *   the sequence of extracted terms.
    */
-  def unapplySeq(term: Term): Option[Seq[Out]]
+  def unapplySeq(term: Term): Option[Seq[T]]
 }

@@ -119,7 +119,6 @@ class ClausesTest extends AnyWordSpec {
   }
 
   "Implicit operators" should {
-    import io.github.scalaquest.core.parsing.scalog.dsl.Formats._
     import io.github.scalaquest.core.parsing.scalog.dsl._
     val hello = CompoundBuilder(Atom("hello")).constructor
     "allow the usage of strings as atoms" in {
@@ -170,9 +169,8 @@ class ClausesTest extends AnyWordSpec {
       )
     }
     "allow pattern matching compound terms" in {
-      import Formats.Terms
-      val hello = CompoundBuilder("hello").extractor to Terms
-      val hi    = CompoundBuilder("hi").extractor to Terms
+      val hello = CompoundBuilder("hello").extractor.toTerms
+      val hi    = CompoundBuilder("hi").extractor.toTerms
       val term  = Compound("hello", "darkness", List("my", "old", "friend"))
 
       term match {
@@ -184,8 +182,8 @@ class ClausesTest extends AnyWordSpec {
 
     }
     "allow even cleaner matching of compound terms" in {
-      val hello = CompoundBuilder("hello").extractor to Strings
-      val hi    = CompoundBuilder("hi").extractor to Strings
+      val hello = CompoundBuilder("hello").extractor.toStrings
+      val hi    = CompoundBuilder("hi").extractor.toStrings
       val term  = Compound("hello", "darkness", List("my", "old", "friend"))
 
       term match {

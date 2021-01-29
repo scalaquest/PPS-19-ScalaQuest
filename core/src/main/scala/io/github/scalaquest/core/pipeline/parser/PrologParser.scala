@@ -11,10 +11,12 @@ trait Helpers {
 
   object dsl {
     import io.github.scalaquest.core.parsing.scalog.dsl._
-    val X      = Variable("X")
-    val i      = CompoundBuilder("i").constructor
-    val phrase = CompoundBuilder("phrase").constructor
-    val res    = CompoundBuilder("result").constructor
+
+    val X        = Variable("X")
+    val imp      = CompoundBuilder("imp").constructor
+    val phrase   = CompoundBuilder("phrase").constructor
+    val sentence = CompoundBuilder("sentence").extractor.toTerms
+    val `/`      = CompoundBuilder("/").extractor.toStrings
   }
 
   object itemDescription {
@@ -50,21 +52,17 @@ abstract class PrologParser extends Parser with Helpers {
     import dsl._
     import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
     val tokens = lexerResult.tokens.map(Atom)
-    val query  = phrase(i(X), tokens)
+    val query  = phrase(imp(X), tokens)
 
     for {
       r <- engine.solve(query).headOption
       x <- r.getVariable(X)
       ast <- x match {
-        case Compound(Atom(verb), Atom(subject), Nil) =>
+        case sentence(`/`(verb, prep), Atom(subject)) =>
           Some(AbstractSyntaxTree.Intransitive(verb, subject))
-        case Compound(Atom(verb), Atom(subject), itemDescription(obj)) =>
+        case sentence(`/`(verb, prep), Atom(subject), itemDescription(obj)) =>
           Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
-        case Compound(
-              Atom(verb),
-              Atom(subject),
-              itemDescription(directObj, indirectObj)
-            ) =>
+        case sentence(`/`(verb, prep), Atom(subject), itemDescription(directObj, indirectObj)) =>
           Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
         case _ => None
       }

@@ -24,4 +24,6 @@ abstract class CompoundBase {
  * @param functor
  *   the atom used as a functor by the generated compound terms
  */
-case class CompoundBuilder(functor: Atom) extends CompoundBase with Extractors with Constructor
+case class CompoundBuilder(functor: Atom) extends CompoundBase with Extractors with Constructor {
+  def unapplySeq = extractor.toString
+}
