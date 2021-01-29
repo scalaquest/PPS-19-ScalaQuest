@@ -1,7 +1,7 @@
 package io.github.scalaquest.core
 
 import io.github.scalaquest.core.dictionary.VerbPrep
-import io.github.scalaquest.core.model.Action.Common.{Open, Take}
+import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedItem,
@@ -36,6 +36,7 @@ object TestsUtils {
   )
 
   val actionsMap: Map[VerbPrep, Action] = Map(
+    ("go north", None)     -> Go(Direction.North),
     ("take", None)         -> Take,
     ("bring", None)        -> Take,
     ("open", Some("with")) -> Open
