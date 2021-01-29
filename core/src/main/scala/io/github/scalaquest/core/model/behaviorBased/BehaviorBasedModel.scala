@@ -88,7 +88,7 @@ abstract class BehaviorBasedModel extends Model {
   override type G = BehaviorBasedGround
 
   /**
-   * * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
+   * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
    * combinations.
    *
    * A Ground that exploit the behavioral mechanism should extend this partial implementation. This
