@@ -1,40 +1,21 @@
 package io.github.scalaquest.core.model
 
 /**
- * A representation a single line of output to render to the user at the end of the pipeline round.
+ * A representation of an event occurred into the [[Model.State]], following a [[Model.Reaction]].
  */
-trait Message
+abstract class Message
 
 /**
- * Interface for a message that involve a [[Model.Item]].
+ * A message that keeps track of an [[Model.Item]] involved into the occurred event.
  * @tparam I
- *   the concrete type of [[Model.Item]]
+ *   The concrete type of [[Model.Item]]
  */
 trait ItemMessage[I <: Model#Item] extends Message {
-
-  /**
-   * The [[Model.Item]] involved.
-   * @return
-   *   the item
-   */
   def item: I
 }
 
 /**
- * Interface for a message that involve a specific [[Model.Room]] and the [[Model.Item]] s that room
- * contains.
- * @tparam I
- *   the concrete type for [[Model.Item]] s.
- * @tparam RM
- *   the concrete type for [[Model.Room]].
- */
-trait RoomConfigMessage[I <: Model#Item, RM <: Model#Room] extends Message {
-  def room: RM
-  def items: Set[I]
-}
-
-/**
- * Interface for a message that involve a specific [[Model.Room]].
+ * A message that keeps track of a [[Model.Room]].
  * @tparam RM
  *   the concrete type for [[Model.Room]].
  */
@@ -43,6 +24,12 @@ trait RoomMessage[RM <: Model#Room] extends Message {
 }
 
 /**
- * Message used when input isn't recognized by the system.
+ * A message that keeps track of a [[Model.Room]] and the [[Model.Item]] s contained into it.
+ * @tparam I
+ *   the concrete type for [[Model.Item]] s.
+ * @tparam RM
+ *   the concrete type for [[Model.Room]].
  */
-case object NotRecognizedMessage extends Message
+trait RoomCompositionMessage[I <: Model#Item, RM <: Model#Room] extends RoomMessage[RM] {
+  def items: Set[I]
+}
