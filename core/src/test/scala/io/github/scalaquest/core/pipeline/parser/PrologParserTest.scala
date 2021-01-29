@@ -22,11 +22,6 @@ class PrologParserTest extends AnyWordSpec {
       |adjective(golden).
       |adjective(shiny).
       |
-      |preposition(with).
-      |preposition(up).
-      |preposition(into).
-      |preposition(in).
-      |
       |verb(1, inspect).
       |verb(2, take).
       |verb(2, pick, up).

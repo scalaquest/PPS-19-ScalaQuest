@@ -65,8 +65,7 @@ det --> [the].
 % Special symbol for empty preposition is {}
 p({}, _) --> [].
 p(X, _) -->
-	[X],
-	{ preposition(X) }.
+	[X].
 
 % Verb creation helpers
 verb(X, Y, {}) :- verb(X, Y).
