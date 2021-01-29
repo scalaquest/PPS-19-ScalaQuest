@@ -4,8 +4,8 @@ import io.github.scalaquest.core.model.{ItemRef, Message, Model, RoomRef}
 import monocle.Lens
 
 /**
- * A base trait used to implement all the StdCommon* mixins. Integrates some additional
- * functionalities for state inspection and re-generation, by the use of [[monocle.Lens]].
+ * Integrates some additional functionalities for state inspection and re-generation, by the use of
+ * [[monocle.Lens]].
  */
 trait SimpleUtils extends Model {
 
@@ -14,7 +14,6 @@ trait SimpleUtils extends Model {
   implicit def playerLocationLens: Lens[S, RoomRef]
   implicit def itemsLens: Lens[S, Map[ItemRef, I]]
   implicit def roomLens: Lens[RM, Set[ItemRef]]
-  implicit def messageLens: Lens[S, Seq[Message]]
 
   implicit class StateUtils(state: S) {
     def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.ref)

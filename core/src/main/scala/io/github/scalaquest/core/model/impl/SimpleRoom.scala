@@ -3,8 +3,7 @@ package io.github.scalaquest.core.model.impl
 import io.github.scalaquest.core.model.{Direction, ItemRef, Model, RoomRef}
 
 /**
- * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the
- * [[Model.Room]] into the model.
+ * Extension for the model. Adds a base implementation of the [[Model.Room]].
  */
 trait SimpleRoom extends Model {
 
@@ -32,7 +31,8 @@ trait SimpleRoom extends Model {
   }
 
   /**
-   * Companion object for [[SimpleRoom]].
+   * Companion object with a factory to build the [[Room]] with the right constraints of the given
+   * extension.
    */
   object Room {
 

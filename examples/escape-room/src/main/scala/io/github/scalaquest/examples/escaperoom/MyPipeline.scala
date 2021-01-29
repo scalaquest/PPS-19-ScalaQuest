@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.pipeline.Pipeline
-import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
+import io.github.scalaquest.core.pipeline.Pipeline.PartialBuilder
 import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
@@ -30,14 +30,8 @@ object MyPipeline {
 
   val reducerB: Reducer.Builder[Model, State, Reaction] = Reducer.builder(myModel)
 
-  val pipelineBuilder: PipelineBuilder[State, Model] =
+  val pipelineFactory: Pipeline.PartialBuilder[State, Model] =
     Pipeline
-      .fromModel(myModel)
-      .build(
-        lexer,
-        parser,
-        resolverB,
-        interpreterB,
-        reducerB
-      )
+      .builderFrom(myModel)
+      .build(lexer, parser, resolverB, interpreterB, reducerB)
 }

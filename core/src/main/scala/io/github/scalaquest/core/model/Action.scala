@@ -1,13 +1,13 @@
 package io.github.scalaquest.core.model
 
 /**
- * An action is a base representation of a single 'move' into the Game. To be significant, could be
- * associated to one or more [[Model.Item]].
+ * A base representation of a single 'move' into the match. To be significant, could be associated
+ * to one or more [[Model.Item]].
  */
 trait Action
 
 /**
- * Companion object for the [[Action]] trait, including some commonly actions.
+ * Companion object for the [[Action]] trait, including some commonly used actions.
  */
 object Action {
 

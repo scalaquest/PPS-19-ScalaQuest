@@ -6,7 +6,8 @@ package io.github.scalaquest.core.model
 trait RoomRef
 
 /**
- * Companion object for [[RoomRef]]. Exposes some factories to build it.
+ * Companion object for [[RoomRef]]. Exposes a factory to build the [[RoomRef]] based on a
+ * [[String]] (hopefully, the room name).
  */
 object RoomRef {
 

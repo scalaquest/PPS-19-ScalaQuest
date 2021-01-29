@@ -11,7 +11,7 @@ import io.github.scalaquest.core.model.impl.SimpleUtils
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional
  * functionalities for state inspection and re-generation, by the use of [[monocle.Lens]].
  */
-trait CommonBase
+private[common] trait CommonBase
   extends BehaviorBasedModel
   with SimpleUtils
   with CommonMessages

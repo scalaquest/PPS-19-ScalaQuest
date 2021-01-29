@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model
 
 /**
- * The package makes available to the storyteller a ready-to-use implementation of [[Model]].
+ * Makes available to the storyteller some ready-to-use implementation of portions of the [[Model]].
  */
 package object impl {}

@@ -1,5 +1,7 @@
 package io.github.scalaquest.core.model
 
+import monocle.Lens
+
 /**
  * A way to represent the basic linked concepts of the story, in an extendible way. Usage example:
  * {{{
@@ -145,4 +147,10 @@ trait Model {
      */
     def items: Set[ItemRef]
   }
+
+  /**
+   * Lens used to empty [[Message]] s after each pipeline round.
+   * @return
+   */
+  implicit def messageLens: Lens[S, Seq[Message]]
 }
