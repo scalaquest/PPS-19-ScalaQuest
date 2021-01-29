@@ -29,7 +29,7 @@ object Verb {
         case h :: t => go(t, h ^: term)
         case Nil    => term
       }
-    val f         = CompoundBuilder(functor)
+    val f         = CompoundBuilder(functor).constructor
     val variables = ('A' to 'Z' map (_.toString) map Variable take variablesNum).toList
     val right = variables match {
       case h :: Nil => f(h)
@@ -42,9 +42,9 @@ object Verb {
     def betaReduce(variablesNumber: Int): Term = Verb.betaReduce(functor, variablesNumber)
   }
 
-  val iv = CompoundBuilder("iv")
-  val tv = CompoundBuilder("tv")
-  val v  = CompoundBuilder("v")
+  val iv = CompoundBuilder("iv").constructor
+  val tv = CompoundBuilder("tv").constructor
+  val v  = CompoundBuilder("v").constructor
 
   case class Intransitive(name: String, action: Action) extends Verb {
     override def clause: CodeGen = iv(atom) --> tokens

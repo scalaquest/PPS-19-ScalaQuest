@@ -12,9 +12,9 @@ trait Helpers {
   object dsl {
     import io.github.scalaquest.core.parsing.scalog.dsl._
     val X      = Variable("X")
-    val i      = CompoundBuilder("i")
-    val phrase = CompoundBuilder("phrase")
-    val res    = CompoundBuilder("result")
+    val i      = CompoundBuilder("i").constructor
+    val phrase = CompoundBuilder("phrase").constructor
+    val res    = CompoundBuilder("result").constructor
   }
 
   object itemDescription {

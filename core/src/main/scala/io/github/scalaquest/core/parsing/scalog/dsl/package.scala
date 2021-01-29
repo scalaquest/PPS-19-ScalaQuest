@@ -18,6 +18,13 @@ package io.github.scalaquest.core.parsing.scalog
  */
 package object dsl {
 
+  sealed trait Format[T]
+
+  object Formats {
+    case object Strings extends Format[String]
+    case object Terms   extends Format[Term]
+  }
+
   /** Enables the implicit conversion from `String` to `Atom` */
   implicit def stringToAtom(name: String): Atom = Atom(name)
 
