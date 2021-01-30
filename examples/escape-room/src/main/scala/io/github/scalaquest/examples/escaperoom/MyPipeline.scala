@@ -1,7 +1,6 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.pipeline.Pipeline
-import io.github.scalaquest.core.pipeline.Pipeline.PartialBuilder
 import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter

@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples
 
-import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.{Action, ItemRef}
+import io.github.scalaquest.core.dictionary.VerbPrep
+import io.github.scalaquest.core.model.{Action, Direction, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 
 package object escaperoom {
@@ -25,11 +25,12 @@ package object escaperoom {
   var items: Map[ItemRef, Item] = itemsSet.map(i => i.ref -> i).toMap
 
   // generated
-  val actions: Map[String, Action] = Map(
-    "take"    -> Take,
-    "pick up" -> Take,
-    "eat"     -> Eat,
-    "open"    -> Open,
-    "close"   -> Close
+  val actions: Map[VerbPrep, Action] = Map(
+    ("take", None)        -> Take,
+    ("pick", Some("up"))  -> Take,
+    ("eat", None)         -> Eat,
+    ("open", None)        -> Open,
+    ("close", None)       -> Close,
+    ("go", Some("north")) -> Go(Direction.North)
   )
 }
