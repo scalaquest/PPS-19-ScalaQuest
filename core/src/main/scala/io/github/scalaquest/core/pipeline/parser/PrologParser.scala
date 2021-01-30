@@ -40,11 +40,11 @@ trait Helpers {
   }
 
   object Preposition {
-    private final val EMPTY = "{}"
+    private final val empty = "{}"
 
     def unapply(prep: String): Option[Option[String]] =
       prep match {
-        case `EMPTY` => Some(None)
+        case `empty` => Some(None)
         case x       => Some(Some(x))
       }
   }
@@ -71,7 +71,6 @@ abstract class PrologParser extends Parser with Helpers {
     for {
       r <- engine.solve(query).headOption
       x <- r.getVariable(X)
-      _ = println(x)
       ast <- x match {
         case sentence(`/`(verb, p(prep)), Atom(subject)) =>
           Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))

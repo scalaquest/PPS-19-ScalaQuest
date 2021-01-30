@@ -12,7 +12,7 @@ abstract class CompoundBase {
  *
  * For example if you run this code:
  * {{{
- *   val hello = CompoundBuilder(Atom("hello"))
+ *   val hello = CompoundBuilder(Atom("hello")).constructor
  *   (hello(Atom("darkness"), Atom("my"), Atom("old"), Atom("friend"))).generate
  * }}}
  *
@@ -24,6 +24,4 @@ abstract class CompoundBase {
  * @param functor
  *   the atom used as a functor by the generated compound terms
  */
-case class CompoundBuilder(functor: Atom) extends CompoundBase with Extractors with Constructor {
-  def unapplySeq = extractor.toString
-}
+case class CompoundBuilder(functor: Atom) extends CompoundBase with Extractors with Constructor
