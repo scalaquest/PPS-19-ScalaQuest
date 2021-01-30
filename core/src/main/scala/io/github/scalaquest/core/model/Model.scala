@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.model
 
+import io.github.scalaquest.core.dictionary.VerbPrep
 import monocle.Lens
 
 /**
@@ -34,7 +35,7 @@ trait Model {
      * @return
      *   All the possible [[Action]] s, as a [[Map]].
      */
-    def actions: Map[String, Action]
+    def actions: Map[VerbPrep, Action]
 
     /**
      * The state of the game, in a vision scoped to the player capabilities.

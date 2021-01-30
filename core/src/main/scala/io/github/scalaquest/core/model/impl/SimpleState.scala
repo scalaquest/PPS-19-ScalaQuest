@@ -1,6 +1,15 @@
 package io.github.scalaquest.core.model.impl
 
-import io.github.scalaquest.core.model._
+import io.github.scalaquest.core.dictionary.VerbPrep
+import io.github.scalaquest.core.model.{
+  Action,
+  ItemRef,
+  MatchState,
+  Message,
+  Model,
+  Player,
+  RoomRef
+}
 
 /**
  * Extension for the model. Adds a base implementation of the [[Model.State]].
@@ -10,7 +19,7 @@ trait SimpleState extends Model {
   override type S = SimpleState
 
   case class SimpleState(
-    actions: Map[String, Action],
+    actions: Map[VerbPrep, Action],
     matchState: SimpleMatchState,
     messages: Seq[Message]
   ) extends State
@@ -31,7 +40,7 @@ trait SimpleState extends Model {
   object State {
 
     def apply(
-      actions: Map[String, Action],
+      actions: Map[VerbPrep, Action],
       matchState: SimpleMatchState,
       messages: Seq[Message]
     ): SimpleState = SimpleState(actions, matchState, messages)

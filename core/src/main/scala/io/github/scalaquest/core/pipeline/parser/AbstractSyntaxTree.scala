@@ -11,27 +11,38 @@ object AbstractSyntaxTree {
    * Representation of an intransitive sentence.
    * @param verb
    *   the intransitive verb
+   * @param prep
+   *   the optional preposition used with the verb
    * @param subject
    *   the subject of the verbal predicate
    */
-  final case class Intransitive(verb: String, subject: String) extends AbstractSyntaxTree
+  final case class Intransitive(verb: String, prep: Option[String], subject: String)
+    extends AbstractSyntaxTree
 
   /**
    * Representation of a transitive sentence.
    * @param verb
    *   the transitive verb
+   * @param prep
+   *   the optional preposition used with the verb
    * @param subject
    *   the subject of the verbal predicate
    * @param obj
    *   the object of the verbal predicate
    */
-  final case class Transitive(verb: String, subject: String, obj: ItemDescription)
-    extends AbstractSyntaxTree
+  final case class Transitive(
+    verb: String,
+    prep: Option[String],
+    subject: String,
+    obj: ItemDescription
+  ) extends AbstractSyntaxTree
 
   /**
    * Repesentation of a ditransitive sentence.
    * @param verb
    *   the ditransitive verb
+   * @param prep
+   *   the optional preposition used with the verb
    * @param subject
    *   the subject of the verbal predicate
    * @param directObj
@@ -41,6 +52,7 @@ object AbstractSyntaxTree {
    */
   final case class Ditransitive(
     verb: String,
+    prep: Option[String],
     subject: String,
     directObj: ItemDescription,
     indirectObj: ItemDescription

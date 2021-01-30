@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.pipeline.resolver
 
 import io.github.scalaquest.core.TestsUtils.{appleItemRef, doorItemRef, keyItemRef, simpleState}
-import io.github.scalaquest.core.model.Action.Common.{Open, Take}
-import io.github.scalaquest.core.model.BaseItem
+import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
+import io.github.scalaquest.core.model.{BaseItem, Direction}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, SimpleParserResult}
 import org.scalatest.wordspec.AnyWordSpec
@@ -13,7 +13,8 @@ class ResolverTest extends AnyWordSpec {
     val resolver = Resolver.builder(model)(simpleState)
 
     "receives an Intransitive AST" should {
-      val parserResult   = SimpleParserResult(AbstractSyntaxTree.Intransitive("open", "you"))
+      val parserResult =
+        SimpleParserResult(AbstractSyntaxTree.Intransitive("go north", None, "you"))
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
       "produce the right Intransitive Statement" in {
@@ -22,7 +23,7 @@ class ResolverTest extends AnyWordSpec {
         )
 
         maybeStatement map {
-          case Statement.Intransitive(action) if action == Open =>
+          case Statement.Intransitive(action) if action == Go(Direction.North) =>
             succeed
           case Statement.Intransitive(_) =>
             fail("Resolver has produced a wrong Intransitive Statement")
@@ -35,7 +36,7 @@ class ResolverTest extends AnyWordSpec {
     "receives an Transitive AST" should {
       val parserResult =
         SimpleParserResult(
-          AbstractSyntaxTree.Transitive("take", "you", BaseItem("apple"))
+          AbstractSyntaxTree.Transitive("take", None, "you", BaseItem("apple"))
         )
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
@@ -56,7 +57,13 @@ class ResolverTest extends AnyWordSpec {
     "receives a Ditransitive AST" should {
       val parserResult =
         SimpleParserResult(
-          AbstractSyntaxTree.Ditransitive("open", "you", BaseItem("door"), BaseItem("key"))
+          AbstractSyntaxTree.Ditransitive(
+            "open",
+            Some("with"),
+            "you",
+            BaseItem("door"),
+            BaseItem("key")
+          )
         )
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
