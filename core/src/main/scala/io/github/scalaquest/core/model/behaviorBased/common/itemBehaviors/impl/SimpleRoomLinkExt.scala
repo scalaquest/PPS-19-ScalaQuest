@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Enter
-import io.github.scalaquest.core.model.RoomRef
+import io.github.scalaquest.core.model.{Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -26,11 +26,12 @@ trait SimpleRoomLinkExt extends CommonBase {
    *   omitted.
    */
   case class SimpleRoomLink(
-    endRoom: Room,
+    endRoom: RM,
     openable: Option[Openable] = None,
     onEnterExtra: Option[Reaction] = None
   )(implicit
-    playerLocationLens: Lens[S, RoomRef]
+    playerLocationLens: Lens[S, RoomRef],
+    messageLens: Lens[S, Seq[Message]]
   ) extends RoomLink
     with Delegate {
 
@@ -50,10 +51,11 @@ trait SimpleRoomLinkExt extends CommonBase {
     }
 
     def enterRoom(): Reaction =
-      state => {
-        val updLocState = playerLocationLens.modify(_ => endRoom.ref)(state)
-        updLocState.applyReactionIfPresent(onEnterExtra)
-      }
+      _.applyReactions(
+        playerLocationLens.modify(_ => endRoom.ref),
+        messageLens.modify(_ :+ Navigated(endRoom)),
+        onEnterExtra.getOrElse(state => state)
+      )
 
     override def isAccessible: Boolean = openable.fold(true)(_.isOpen)
   }

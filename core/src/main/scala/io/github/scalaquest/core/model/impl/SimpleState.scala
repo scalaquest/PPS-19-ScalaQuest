@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.impl
+package io.github.scalaquest.core.model.impl
 
 import io.github.scalaquest.core.dictionary.VerbPrep
 import io.github.scalaquest.core.model.{
@@ -12,8 +12,7 @@ import io.github.scalaquest.core.model.{
 }
 
 /**
- * This can be used as a mixin or as an extension for the model. Adds a simple implementation of the
- * State into the model.
+ * Extension for the model. Adds a base implementation of the [[Model.State]].
  */
 trait SimpleState extends Model {
 
@@ -27,13 +26,17 @@ trait SimpleState extends Model {
 
   case class SimpleMatchState(
     player: SimplePlayer,
-    ended: Boolean,
     rooms: Map[RoomRef, RM],
-    items: Map[ItemRef, I]
+    items: Map[ItemRef, I],
+    ended: Boolean = false
   ) extends MatchState[I, RM]
 
   case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
 
+  /**
+   * Companion object with a factory to build the [[State]] with the right constraints of the given
+   * extension.
+   */
   object State {
 
     def apply(

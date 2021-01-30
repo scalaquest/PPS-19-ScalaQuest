@@ -1,7 +1,9 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.{Close, Open}
+import io.github.scalaquest.core.model.Message
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
+import monocle.Lens
 
 /**
  * The trait makes possible to mix into the StdCommonBehaviors the standard implementation of
@@ -32,6 +34,8 @@ trait SimpleOpenableExt extends CommonBase {
     requiredKey: Option[Key] = None,
     onOpenExtra: Option[Reaction] = None,
     onCloseExtra: Option[Reaction] = None
+  )(implicit
+    messageLens: Lens[S, Seq[Message]]
   ) extends Openable {
 
     override def isOpen: Boolean = _isOpen
@@ -40,12 +44,12 @@ trait SimpleOpenableExt extends CommonBase {
       // "Open the item (with something)"
       case (Open, item, maybeKey, state)
           if state.isInCurrentRoom(item) && canBeOpened(state, maybeKey) && !isOpen =>
-        open()
+        open(item)
 
       // "Close the item (with something)"
       case (Close, item, maybeKey, state)
           if state.isInCurrentRoom(item) && canBeOpened(state, maybeKey) && isOpen =>
-        close()
+        close(item)
     }
 
     /**
@@ -80,14 +84,27 @@ trait SimpleOpenableExt extends CommonBase {
      * @return
      *   A Reaction that sets the Item in an open state and executes eventual extra actions.
      */
-    def open(): Reaction = state => { _isOpen = true; state.applyReactionIfPresent(onOpenExtra) }
+    def open(item: I): Reaction =
+      state => {
+        _isOpen = true
+        state.applyReactions(
+          messageLens.modify(_ :+ Opened(item)),
+          onOpenExtra.getOrElse(state => state)
+        )
+      }
 
     /**
      * Sets the Item in a closed state and executes eventual extra actions.
      * @return
      *   A Reaction that sets the Item in a closed state and executes eventual extra actions.
      */
-    def close(): Reaction = state => { _isOpen = false; state.applyReactionIfPresent(onCloseExtra) }
+    def close(item: I): Reaction =
+      state => {
+        _isOpen = false
+        state.applyReactions(
+          messageLens.modify(_ :+ Closed(item)),
+          onCloseExtra.getOrElse(state => state)
+        )
+      }
   }
-
 }

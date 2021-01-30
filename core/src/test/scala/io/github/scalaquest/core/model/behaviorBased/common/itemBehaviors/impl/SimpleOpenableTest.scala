@@ -25,9 +25,11 @@ class SimpleOpenableTest extends AnyWordSpec {
     }
 
     "a key is required" when {
-      val targetKey  = SimpleKey(ItemDescription("key"), ItemRef())
-      val openable   = SimpleOpenable(requiredKey = Some(targetKey))
-      val targetItem = SimpleGenericItem(ItemDescription("item"), ItemRef(), openable)
+      val keyDescription  = ItemDescription("key")
+      val targetKey       = SimpleKey(keyDescription, ItemRef(keyDescription))
+      val openable        = SimpleOpenable(requiredKey = Some(targetKey))
+      val itemDescription = ItemDescription("item")
+      val targetItem      = SimpleGenericItem(itemDescription, ItemRef(itemDescription), openable)
 
       val stateWithTarget    = simpleState.copyWithItemInLocation(targetItem)
       val stateWKeyAndTarget = stateWithTarget.copyWithItemInBag(targetKey)
@@ -61,7 +63,8 @@ class SimpleOpenableTest extends AnyWordSpec {
 
     "a key is not required" when {
       val openable              = SimpleOpenable()
-      val targetItem            = SimpleGenericItem(ItemDescription("item"), ItemRef(), openable)
+      val itemDescription       = ItemDescription("item")
+      val targetItem            = SimpleGenericItem(itemDescription, ItemRef(itemDescription), openable)
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'open the item'" should {
@@ -78,7 +81,11 @@ class SimpleOpenableTest extends AnyWordSpec {
         "not open with any Key" in {
           assert(
             targetItem
-              .use(Open, stateWithTargetInRoom, Some(SimpleKey(ItemDescription("key"), ItemRef())))
+              .use(
+                Open,
+                stateWithTargetInRoom,
+                Some(SimpleKey(ItemDescription("key"), ItemRef(ItemDescription("key"))))
+              )
               .isEmpty
           )
         }

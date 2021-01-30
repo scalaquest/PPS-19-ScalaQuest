@@ -7,10 +7,14 @@ package io.github.scalaquest.core.model
  */
 trait MatchState[I <: Model#Item, RM <: Model#Room] {
 
+  /**
+   * All the [[Model.Item]] that a [[Player]] could see.
+   * @return
+   */
   def itemsInScope: Set[I] = (player.bag ++ rooms(player.location).items).flatMap(items.get(_))
 
   /**
-   * The player involved into the match. As it is a core concept, an instance of [[Player]] is
+   * The [[Player]] involved into the match. As it is a core concept, an instance of [[Player]] is
    * included into the [[MatchState]].
    * @return
    *   The current [[Player]].
@@ -32,5 +36,10 @@ trait MatchState[I <: Model#Item, RM <: Model#Room] {
    */
   def rooms: Map[RoomRef, RM]
 
+  /**
+   * A [[Map]] with all the [[Model.Item]] s present in the match. For each [[ItemRef]] is found the
+   * specific [[Model.Item]] in the match.
+   * @return
+   */
   def items: Map[ItemRef, I]
 }

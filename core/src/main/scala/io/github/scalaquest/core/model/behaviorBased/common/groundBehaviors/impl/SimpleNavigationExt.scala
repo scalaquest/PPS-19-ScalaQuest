@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Go
-import io.github.scalaquest.core.model.RoomRef
+import io.github.scalaquest.core.model.{Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import monocle.Lens
 
@@ -18,16 +18,28 @@ trait SimpleNavigationExt extends CommonBase {
    *   Actions after the standard [[Reaction]]. It can be omitted.
    */
   case class SimpleNavigation(onNavigateExtra: Option[Reaction] = None)(implicit
-    playerLocationLens: Lens[S, RoomRef]
+    playerLocationLens: Lens[S, RoomRef],
+    messageLens: Lens[S, Seq[Message]]
   ) extends Navigation {
 
     override def triggers: GroundTriggers = {
       // "go <direction>"
-      case (Go(direction), state) if state.currentRoom.neighbor(direction).isDefined =>
-        movePlayer(state.currentRoom.neighbor(direction).get)
+      case (Go(direction), state) if (for {
+            roomRef <- state.currentRoom.neighbor(direction)
+            room    <- state.roomFromRef(roomRef)
+          } yield movePlayer(room)).isDefined =>
+        (for {
+          roomRef <- state.currentRoom.neighbor(direction)
+          room    <- state.roomFromRef(roomRef)
+        } yield movePlayer(room)).getOrElse(state => state)
     }
 
-    private def movePlayer(targetRoomRef: RoomRef): Reaction =
-      playerLocationLens.set(targetRoomRef)(_).applyReactionIfPresent(onNavigateExtra)
+    def movePlayer(targetRoom: RM): Reaction =
+      state =>
+        state.applyReactions(
+          playerLocationLens.set(targetRoom.ref),
+          messageLens.modify(_ :+ Navigated(targetRoom)),
+          onNavigateExtra.getOrElse(s => s)
+        )
   }
 }

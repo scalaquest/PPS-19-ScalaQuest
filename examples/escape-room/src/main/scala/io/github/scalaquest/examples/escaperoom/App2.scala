@@ -1,5 +1,5 @@
 package io.github.scalaquest.examples.escaperoom
-
+/*
 import io.github.scalaquest.core.{Game, MessagePusher}
 import zio.{ExitCode, URIO}
 import io.github.scalaquest.core.model.{Direction, Message, RoomRef}
@@ -16,6 +16,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.Room
 import monocle.Lens
 import monocle.macros.GenLens
 
+
 object Model {
 
   case object GameStarted extends Message
@@ -26,7 +27,16 @@ object Model {
 
   val model: SimpleModel.type = SimpleModel
 
-  val state: SimpleState = ???
+  val state: SimpleState = SimpleState(
+    Map(),
+    SimpleMatchState(
+      SimplePlayer(Set(), room1),
+      ended = false,
+      Map(),
+      Set()
+    ),
+    Seq()
+  )
 
   def gameLens: Lens[SimpleState, SimpleMatchState]    = GenLens[SimpleState](_.matchState)
   def playerLens: Lens[SimpleMatchState, SimplePlayer] = GenLens[SimpleMatchState](_.player)
@@ -80,3 +90,4 @@ object App2 extends zio.App {
     CLI.fromModel(model).build(state, game, pusher).start.exitCode
 
 }
+ */

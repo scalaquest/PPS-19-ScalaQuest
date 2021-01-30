@@ -1,12 +1,15 @@
 package io.github.scalaquest.core.model
 
-import java.util.UUID
-
+/**
+ * A unique identifier for a [[Model.Item]].
+ */
 trait ItemRef
 
+/**
+ * Companion object for [[ItemRef]]. Exposes a factory to build the [[ItemRef]] based on an
+ * [[ItemDescription]].
+ */
 object ItemRef {
-
-  private case class SimpleItemRef(id: UUID) extends ItemRef
-
-  def apply(): ItemRef = SimpleItemRef(UUID.randomUUID())
+  private case class StringItemRef(id: String) extends ItemRef
+  def apply(itemDescription: ItemDescription): ItemRef = StringItemRef(itemDescription.mkString)
 }
