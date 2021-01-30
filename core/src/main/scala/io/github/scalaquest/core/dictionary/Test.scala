@@ -14,7 +14,11 @@ object Test extends App {
     Intransitive("inspect", Inspect)
   )
 
-  def toClauses(verbs: List[Verb with ClauseUtils]): List[Clause] = verbs.map(_.clause)
+  def toClauses(verbs: List[VerbC]): Program = {
+    import generators.implicits.verbListGenerator
+    import generators.GeneratorK
+    GeneratorK[List, VerbC, Program].generate(verbs)
+  }
 
   def toActions(verbs: List[BaseVerb with Meaning]): Map[VerbPrep, Action] =
     verbs.map(_.binding).toMap

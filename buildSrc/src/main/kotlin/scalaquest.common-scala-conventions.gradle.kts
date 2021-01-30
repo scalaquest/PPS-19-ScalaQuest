@@ -45,6 +45,9 @@ dependencies {
     implementation("com.github.julien-truffaut:monocle-core_2.13:_")
     implementation("com.github.julien-truffaut:monocle-macro_2.13:_")
 
+    // Cats
+    implementation("org.typelevel:cats-core_2.13:2.3.1")
+
     // The ScalaTest framework
     testImplementation("org.scalatest:scalatest_2.13:_")
 
