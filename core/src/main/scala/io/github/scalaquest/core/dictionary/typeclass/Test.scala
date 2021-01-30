@@ -68,8 +68,8 @@ object aaa extends App {
   val itemListGenerator = new ListProgramGenerator[Item]
 
   val program = List(
-    verbListGenerator generate myVerbs.toList,
-    itemListGenerator generate myItems.toList
+    verbListGenerator.generate(myVerbs.toList),
+    itemListGenerator.generate(myItems.toList)
   ).fold(Monoid[Program].unit)(Monoid[Program].combine)
   program
     .map(_.generate)
