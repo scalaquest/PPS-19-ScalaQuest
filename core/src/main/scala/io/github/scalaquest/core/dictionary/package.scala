@@ -6,8 +6,11 @@ package object dictionary {
 
   val verb = CompoundBuilder("verb").constructor
 
-  type Verb = BaseVerb with GenerateClause with GeneratePair
+  type Verb = BaseVerb with ClauseUtils with Meaning
 
   type VerbPrep = (String, Option[String])
+
+  val programSeparator = "\n"
+  type Program = String
 
 }

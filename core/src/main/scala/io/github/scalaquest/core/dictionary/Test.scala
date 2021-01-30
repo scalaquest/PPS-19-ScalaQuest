@@ -14,10 +14,10 @@ object Test extends App {
     Intransitive("inspect", Inspect)
   )
 
-  def toClauses(verbs: List[Verb with GenerateClause]): List[Clause] = verbs.map(_.clause)
+  def toClauses(verbs: List[Verb with ClauseUtils]): List[Clause] = verbs.map(_.clause)
 
-  def toActions(verbs: List[BaseVerb with GeneratePair]): Map[VerbPrep, Action] =
-    verbs.map(_.pair).toMap
+  def toActions(verbs: List[BaseVerb with Meaning]): Map[VerbPrep, Action] =
+    verbs.map(_.binding).toMap
 
   println(toClauses(myVerbs.toList).map(_.generate).mkString("\n"))
   println(toActions(myVerbs.toList).mkString("\n"))
