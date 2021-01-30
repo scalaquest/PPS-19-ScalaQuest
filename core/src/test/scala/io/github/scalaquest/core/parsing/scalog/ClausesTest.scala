@@ -96,7 +96,7 @@ class ClausesTest extends AnyWordSpec {
 
   "Compound builder" should {
     import io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder
-    val hello = CompoundBuilder(Atom("hello"))
+    val hello = CompoundBuilder(Atom("hello")).constructor
 
     "allow for the creation of a compound term" in {
       assert(hello(Atom("world")) == Compound(Atom("hello"), Atom("world")))
@@ -120,7 +120,7 @@ class ClausesTest extends AnyWordSpec {
 
   "Implicit operators" should {
     import io.github.scalaquest.core.parsing.scalog.dsl._
-    val hello = CompoundBuilder(Atom("hello"))
+    val hello = CompoundBuilder(Atom("hello")).constructor
     "allow the usage of strings as atoms" in {
       assert(hello("world") == Compound(Atom("hello"), Atom("world")))
     }
@@ -167,6 +167,31 @@ class ClausesTest extends AnyWordSpec {
           )
         )
       )
+    }
+    "allow pattern matching compound terms" in {
+      val hello = CompoundBuilder("hello").extractor.toTerms
+      val hi    = CompoundBuilder("hi").extractor.toTerms
+      val term  = Compound("hello", "darkness", List("my", "old", "friend"))
+
+      term match {
+        case hi(_, _, _, _)                                                   => fail()
+        case hello(_)                                                         => fail()
+        case hello(Atom("darkness"), Atom("my"), Atom("old"), Atom("friend")) => succeed
+        case _                                                                => fail("Illegal state")
+      }
+
+    }
+    "allow even cleaner matching of compound terms" in {
+      val hello = CompoundBuilder("hello").extractor.toStrings
+      val hi    = CompoundBuilder("hi").extractor.toStrings
+      val term  = Compound("hello", "darkness", List("my", "old", "friend"))
+
+      term match {
+        case hi(_, _, _, _)                           => fail()
+        case hello(_, _)                              => fail()
+        case hello("darkness", "my", "old", "friend") => succeed
+        case _                                        => fail("Illegal state")
+      }
     }
   }
 

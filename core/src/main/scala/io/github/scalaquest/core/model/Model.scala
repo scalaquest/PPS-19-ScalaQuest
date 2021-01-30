@@ -1,5 +1,7 @@
 package io.github.scalaquest.core.model
 
+import io.github.scalaquest.core.dictionary.VerbPrep
+
 trait Model {
   type S <: State
   type I <: Item
@@ -16,7 +18,7 @@ trait Model {
    */
   abstract class State { self: S =>
 
-    def actions: Map[String, Action]
+    def actions: Map[VerbPrep, Action]
 
     /**
      * The state of the game, in a vision scoped to the [[Player]] capabilities.

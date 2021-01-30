@@ -1,22 +1,23 @@
-name(ugo) --> [ugo].
-name(giuseppe) --> [giuseppe].
-name(marco) --> [marco].
+% Dynamic, generated
+name(ugo).
+name(key).
+name(door).
 
-name(gift) --> [gift].
-name(key) --> [key].
-name(door) --> [door].
-name(water) --> [water].
-name(apple) --> [apple].
+preposition(for).
+preposition(up).
+preposition(around).
+preposition(with).
+preposition(using).
 
-adj(X^big(X)) --> [big].
+adjective(big).
+adjective(red).
+adjective(green).
 
-tv(X^Y^use(Y,X)) --> [use].
-tv(X^Y^take(Y,X)) --> [take].
-tv(X^Y^pick_up(Y,X)) --> [pick, up].
-
-v(2/to, Y^X^go(X, Y)) --> [go].
-v(3/to, Z^Y^X^give(X,Y,Z) ) --> [give].
-v(3/from, Z^Y^X^buy(X,Y,Z) ) --> [buy].
-v(3/into, Z^Y^X^insert(X,Y,Z)) --> [insert].
-v(3/with, Z^Y^X^hit(X,Y,Z)) --> [hit].
-v(3/from, Z^Y^X^hitfrom(X,Y,Z)) --> [hit].
+verb(1, inspect).
+verb(1, look_around, around).
+verb(2, eat).
+verb(2, pick, up)
+verb(2, look, for).
+verb(3, open, with).
+verb(3, open, using).
+verb(3, give).

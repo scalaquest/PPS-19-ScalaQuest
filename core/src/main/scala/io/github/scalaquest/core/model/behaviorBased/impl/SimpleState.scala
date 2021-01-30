@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
+import io.github.scalaquest.core.dictionary.VerbPrep
 import io.github.scalaquest.core.model.{
   Action,
   ItemRef,
@@ -19,7 +20,7 @@ trait SimpleState extends Model {
   override type S = SimpleState
 
   case class SimpleState(
-    actions: Map[String, Action],
+    actions: Map[VerbPrep, Action],
     matchState: SimpleMatchState,
     messages: Seq[Message]
   ) extends State
@@ -36,7 +37,7 @@ trait SimpleState extends Model {
   object State {
 
     def apply(
-      actions: Map[String, Action],
+      actions: Map[VerbPrep, Action],
       matchState: SimpleMatchState,
       messages: Seq[Message]
     ): SimpleState = SimpleState(actions, matchState, messages)
