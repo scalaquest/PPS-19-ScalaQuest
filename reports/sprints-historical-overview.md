@@ -81,13 +81,13 @@ Useful links:
 - [(Issue) Deepen Prolog engine, parser and lexer components](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/6)
 - [(Issue) Improve Scaladoc format rules](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/29)
 
-## Sprint 4 (17th January - 24th January)
+## Sprint 4 (17th January - 23rd January)
 
 In this Sprint we closed the base structure tasks of the previous Sprint, and we
 continued working divided in teams: we finished Model's ScalaDoc and
 refactoring, and started a re-organization of the `ItemRef` concept, as an `AST.
 Additionally, we started some minor tasks, as an automation structure for the
-report, and CI optimization,
+report, and CI optimization.
 
 Useful links:
 
@@ -96,3 +96,25 @@ Useful links:
 - [(Issue) Report basic structure](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/20)
 - [(Issue) CI optimization](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/23)
 - [(Issue) Improve Scaladoc format rules](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/29)
+
+## Sprint 5 (24th January - 30th January)
+
+In this Sprint we continued working in teams, bringing up more other tasks.
+**Team 1** revised the model, dealing with the concept of `MessagePusher` and
+`Message`s, improving the ScalaDoc and making some refactoring. In the
+meanwhile, **Team 2** started working in a more structured concept of
+`ItemDescription` and `Verbs`, as a lexical abstraction for the game concepts.
+In addition, the team refactored the `Prolog` generation and some of the related
+concepts.
+
+Furthermore, a task has been closed together, regarding a re-organization of the
+reports in a Gradle subproject, with a dedicated formatter and Linter for
+Markdown.
+
+Useful links:
+
+- [(Issue) Messages and MessagePusher implementation](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/47)
+- [(Issue) Dictionary and Prolog Parser refactoring](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/48)
+- [(Issue) Represent ItemRefs as an ADT](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/30)
+- [(Issue) Reports basic structure](https://github.com/scalaquest/PPS-19-ScalaQuest/issues/20)
+- [(Pull request) Set up Markdown subproject](https://github.com/scalaquest/PPS-19-ScalaQuest/pull/46)
