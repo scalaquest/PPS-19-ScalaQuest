@@ -1,5 +1,6 @@
 package io.github.scalaquest.core
 
+import io.github.scalaquest.core.parsing.scalog.Clause
 import io.github.scalaquest.core.parsing.scalog.dsl.{CompoundBuilder, stringToAtom}
 
 package object dictionary {
@@ -10,7 +11,6 @@ package object dictionary {
 
   type VerbPrep = (String, Option[String])
 
-  val programSeparator = "\n"
-  type Program = String
+  type Program = Set[Clause]
 
 }
