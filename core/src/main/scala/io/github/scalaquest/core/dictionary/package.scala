@@ -10,4 +10,7 @@ package object dictionary {
 
   type VerbPrep = (String, Option[String])
 
+  val programSeparator = "\n"
+  type Program = String
+
 }
