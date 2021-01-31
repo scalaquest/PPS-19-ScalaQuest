@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.dictionary
 
-import cats.implicits.{catsStdInstancesForList}
+import cats.implicits.catsStdInstancesForList
 import cats.{Foldable, Monoid}
 import io.github.scalaquest.core.model.Model
 

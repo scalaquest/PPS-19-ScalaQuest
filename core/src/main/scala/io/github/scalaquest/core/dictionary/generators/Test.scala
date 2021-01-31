@@ -1,15 +1,15 @@
 package io.github.scalaquest.core.dictionary.generators
 
 import cats.implicits.catsKernelStdSemilatticeForSet
-import io.github.scalaquest.core.dictionary.{Ditransitive, Intransitive, Program, Transitive, Verb}
+import io.github.scalaquest.core.dictionary.{Ditransitive, Intransitive, Program, Transitive, VerbC}
 import io.github.scalaquest.core.model.Action.Common.{Inspect, Open, Take}
-import io.github.scalaquest.core.model.{ItemRef, Model}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.model.ItemDescription.dsl._
 
 object Test extends App {
 
-  val myVerbs: Set[Verb] = Set(
+  val myVerbs: Set[VerbC] = Set(
     Transitive("take", Take),
     Transitive("pick", Take, Some("up")),
     Ditransitive("open", Open, Some("with")),
@@ -39,7 +39,7 @@ object Test extends App {
   import implicits.{verbListGenerator, itemListGenerator}
 
   val program = combineAll(
-    GeneratorK[List, Verb, Program].generate(myVerbs.toList),
+    GeneratorK[List, VerbC, Program].generate(myVerbs.toList),
     GeneratorK[List, Item, Program].generate(myItems.toList),
     GeneratorK[List, Item, Program].generate(myItems.toList)
   )

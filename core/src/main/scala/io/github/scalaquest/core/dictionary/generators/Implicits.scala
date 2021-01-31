@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.dictionary.generators
 
 import cats.implicits.{catsKernelStdSemilatticeForSet, catsStdInstancesForList}
-import io.github.scalaquest.core.dictionary.{Program, Verb, VerbC}
+import io.github.scalaquest.core.dictionary.{Program, VerbC}
 import io.github.scalaquest.core.parsing.scalog.Clause
 
 abstract class Implicits {
