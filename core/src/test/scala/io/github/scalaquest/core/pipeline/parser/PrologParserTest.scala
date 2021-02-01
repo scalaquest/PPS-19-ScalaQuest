@@ -12,19 +12,23 @@ class PrologParserTest extends AnyWordSpec {
   val source = Source.fromResource("base.pl").mkString +
     """
       |
-      |name(key) --> [key].
-      |name(door) --> [door].
-      |name(apple) --> [apple].
-      |name(bag) --> [bag].
+      |name(key).
+      |name(door).
+      |name(apple).
+      |name(bag).
       |
-      |adj(X^little(X)) --> [little].
-      |adj(X^red(X)) --> [red].
+      |adjective(little).
+      |adjective(red).
+      |adjective(golden).
+      |adjective(shiny).
       |
-      |iv(X^inspect(X)) --> [inspect].
-      |tv(X^Y^take(Y,X)) --> [take].
-      |tv(X^Y^pick_up(Y,X)) --> [pick,up].
-      |v(3/with, Z^Y^X^open(X,Y,Z)) --> [open].
-      |v(3/in, Z^Y^X^put(X,Y,Z)) --> [put].
+      |verb(1, inspect).
+      |verb(2, take).
+      |verb(2, pick, up).
+      |verb(3, open, with).
+      |verb(3, put, into).
+      |verb(3, put, in).
+      |
       |""".stripMargin
   val parser: Parser = Parser(Engine(Theory(source), Set(DCGLibrary)))
 
@@ -40,7 +44,7 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("inspect")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Intransitive("inspect", "you"))
+            .contains(AbstractSyntaxTree.Intransitive("inspect", None, "you"))
         )
       }
     }
@@ -50,24 +54,44 @@ class PrologParserTest extends AnyWordSpec {
           parser
             .parse(SimpleLexerResult(Seq("take", "the", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Transitive("take", "you", BaseItem("key")))
+            .contains(AbstractSyntaxTree.Transitive("take", None, "you", BaseItem("key")))
         )
       }
-      "recognize phrasal verbs and escape space with underscore" in {
+      "recognize phrasal verbs in the right form" in {
+        assert(
+          parser
+            .parse(SimpleLexerResult(Seq("pick", "the", "key", "up")))
+            .map(_.tree)
+            .contains(AbstractSyntaxTree.Transitive("pick", Some("up"), "you", BaseItem("key")))
+        )
+      }
+      "recognize phrasal verbs the wrong form" in {
         assert(
           parser
             .parse(SimpleLexerResult(Seq("pick", "up", "the", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Transitive("pick_up", "you", BaseItem("key")))
+            .contains(AbstractSyntaxTree.Transitive("pick", Some("up"), "you", BaseItem("key")))
         )
       }
-      "recognize adjectives and wrap them in ItemDescription" in {
+    }
+    "provided an decorated item" should {
+      "wrap it in a decorated item" in {
         val decoratedItem = DecoratedItem("little", BaseItem("key"))
         assert(
           parser
             .parse(SimpleLexerResult(Seq("take", "the", "little", "key")))
             .map(_.tree)
-            .contains(AbstractSyntaxTree.Transitive("take", "you", decoratedItem))
+            .contains(AbstractSyntaxTree.Transitive("take", None, "you", decoratedItem))
+        )
+      }
+      "wrap it in a nested decorated item" in {
+        val decoratedItem =
+          DecoratedItem("little", DecoratedItem("golden", DecoratedItem("shiny", BaseItem("key"))))
+        assert(
+          parser
+            .parse(SimpleLexerResult(Seq("take", "the", "little", "golden", "shiny", "key")))
+            .map(_.tree)
+            .contains(AbstractSyntaxTree.Transitive("take", None, "you", decoratedItem))
         )
       }
     }
@@ -78,8 +102,16 @@ class PrologParserTest extends AnyWordSpec {
             .parse(SimpleLexerResult(Seq("open", "the", "door", "with", "the", "key")))
             .map(_.tree)
             .contains(
-              AbstractSyntaxTree.Ditransitive("open", "you", BaseItem("door"), BaseItem("key"))
+              AbstractSyntaxTree
+                .Ditransitive("open", Some("with"), "you", BaseItem("door"), BaseItem("key"))
             )
+        )
+      }
+      "return empty if the preposition is in the wrong position" in {
+        assert(
+          parser
+            .parse(SimpleLexerResult(Seq("open", "the", "door", "the", "key", "with")))
+            .isEmpty
         )
       }
       "distinguish between direct and indirect objects" in {
@@ -88,7 +120,8 @@ class PrologParserTest extends AnyWordSpec {
             .parse(SimpleLexerResult(Seq("put", "the", "apple", "in", "the", "bag")))
             .map(_.tree)
             .contains(
-              AbstractSyntaxTree.Ditransitive("put", "you", BaseItem("apple"), BaseItem("bag"))
+              AbstractSyntaxTree
+                .Ditransitive("put", Some("in"), "you", BaseItem("apple"), BaseItem("bag"))
             )
         )
       }

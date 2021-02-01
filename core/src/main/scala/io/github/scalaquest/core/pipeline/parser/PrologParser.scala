@@ -2,7 +2,8 @@ package io.github.scalaquest.core.pipeline.parser
 
 import io.github.scalaquest.core.model.{BaseItem, DecoratedItem, ItemDescription}
 import io.github.scalaquest.core.parsing.engine.Engine
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog
+import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, ListP, Term, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
@@ -11,29 +12,45 @@ trait Helpers {
 
   object dsl {
     import io.github.scalaquest.core.parsing.scalog.dsl._
-    val X      = Variable("X")
-    val i      = CompoundBuilder("i")
-    val phrase = CompoundBuilder("phrase")
+
+    val X         = Variable("X")
+    val imp       = CompoundBuilder("imp").constructor
+    val phrase    = CompoundBuilder("phrase").constructor
+    val sentence  = CompoundBuilder("sentence").extractor.toTerms
+    val `/`       = CompoundBuilder("/").extractor.toStrings
+    val decorated = CompoundBuilder("decorated").extractor.toTerms
   }
 
-  object itemDescription {
+  object ItemDescription {
+    import dsl.decorated
 
-    private def toItemDescription(t: Term): ItemDescription =
-      t match {
+    private def toItemDescription(term: Term): ItemDescription =
+      term match {
         case Atom(name) => BaseItem(name)
-        case Compound(Atom(description), item, Nil) =>
-          DecoratedItem(description, toItemDescription(item))
+        case decorated(Atom(decoration), t) =>
+          DecoratedItem(decoration, toItemDescription(t))
       }
 
-    def unapply(t: Seq[Term]): Option[Seq[ItemDescription]] =
+    def unapply(t: Term): Option[ItemDescription] =
       t match {
-        case (obj @ (_: Compound | _: Term)) :: Nil =>
-          Some(Seq(toItemDescription(obj)))
-        case (directObj @ (_: Compound | _: Term)) :: (indirectObj @ (_: Compound |
-            _: Term)) :: Nil =>
-          Some(Seq(toItemDescription(directObj), toItemDescription(indirectObj)))
+        case obj @ (_: Compound | _: Term) => Some(toItemDescription(obj))
+        case _                             => None
+      }
+
+  }
+
+  object Preposition {
+    private final val empty = "{}"
+
+    def unapply(prep: String): Option[Option[String]] =
+      prep match {
+        case `empty` => Some(None)
+        case x       => Some(Some(x))
       }
   }
+
+  val i = ItemDescription
+  val p = Preposition
 }
 
 /**
@@ -49,22 +66,23 @@ abstract class PrologParser extends Parser with Helpers {
     import dsl._
     import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
     val tokens = lexerResult.tokens.map(Atom)
-    val query  = phrase(i(X), tokens)
+    val query  = phrase(imp(X), tokens)
 
     for {
       r <- engine.solve(query).headOption
       x <- r.getVariable(X)
       ast <- x match {
-        case Compound(Atom(verb), Atom(subject), Nil) =>
-          Some(AbstractSyntaxTree.Intransitive(verb, subject))
-        case Compound(Atom(verb), Atom(subject), itemDescription(obj :: Nil)) =>
-          Some(AbstractSyntaxTree.Transitive(verb, subject, obj))
-        case Compound(
-              Atom(verb),
+        case sentence(`/`(verb, p(prep)), Atom(subject)) =>
+          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
+        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =>
+          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
+        case sentence(
+              `/`(verb, p(prep)),
               Atom(subject),
-              itemDescription(directObj :: indirectObj :: Nil)
+              i(directObj),
+              i(indirectObj)
             ) =>
-          Some(AbstractSyntaxTree.Ditransitive(verb, subject, directObj, indirectObj))
+          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
         case _ => None
       }
     } yield SimpleParserResult(ast)
