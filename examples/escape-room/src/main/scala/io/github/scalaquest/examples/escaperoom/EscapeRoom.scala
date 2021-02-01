@@ -10,7 +10,7 @@ import io.github.scalaquest.examples.escaperoom.MyPipeline.pipelineBuilder
 object Config {
   import myModel.{SimplePlayer, SimpleState}
 
-  def player: myModel.SimplePlayer = SimplePlayer(Set(), House.kitchen.ref)
+  def player: SimplePlayer = SimplePlayer(Set(), House.kitchen.ref)
 
   case object SuperStonksPowered extends Message
   case class Print(msg: String)  extends Message
@@ -26,7 +26,7 @@ object Config {
         rooms,
         items
       ),
-      Seq.empty[Message]
+      Seq.empty
     )
 
   val defaultPusher: CommonStringPusher = new CommonStringPusher(myModel) {
@@ -42,7 +42,6 @@ object Config {
 }
 
 object EscapeRoom extends CLIApp {
-  itemsSet.foreach(println)
-  items.foreach(println)
+
   override def cli: CLI = Config.cli
 }

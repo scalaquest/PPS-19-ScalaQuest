@@ -1,5 +1,8 @@
 package io.github.scalaquest.examples.escaperoom
 
+import cats.implicits.catsKernelStdSemilatticeForSet
+import io.github.scalaquest.core.dictionary.{Program, Verb}
+import io.github.scalaquest.core.dictionary.generators.{Generator, GeneratorK, combineAll}
 import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
@@ -13,10 +16,15 @@ import scala.io.Source
 
 object MyPipeline {
 
-  val source: String = {
-    val s = Source.fromResource("base.pl").mkString + "\n" +
-      Source.fromResource("names.pl").mkString
-    s
+  def source: String = {
+    import generators.{verbListToProgram, itemListToProgram}
+    val base = Source.fromResource("base.pl").mkString
+    val source = base +: combineAll(
+      GeneratorK[List, Verb, Program].generate(dictionary.verbs),
+      GeneratorK[List, Item, Program].generate(dictionary.items)
+    ).map(_.generate).toList
+    println(source.mkString("\n"))
+    source.mkString("\n")
   }
 
   val lexer: Lexer = SimpleLexer

@@ -1,36 +1,33 @@
 package io.github.scalaquest.core.dictionary.generators
 
-import cats.implicits.{catsKernelStdSemilatticeForSet, catsStdInstancesForList}
-import io.github.scalaquest.core.dictionary.{Program, VerbC}
+import cats.implicits.{
+  catsKernelStdMonoidForMap,
+  catsKernelStdSemilatticeForSet,
+  catsStdInstancesForList
+}
+import cats.kernel.{Monoid, Semigroup}
+import io.github.scalaquest.core.dictionary.{Program, Verb, VerbC, VerbPrep}
+import io.github.scalaquest.core.model.{Action, ItemRef, Model}
 import io.github.scalaquest.core.parsing.scalog.Clause
 
 abstract class Implicits {
 
   object implicits {
 
+    type Item = Model#Item
+
     implicit def verbGenerator: Generator[VerbC, Program] = (v: VerbC) => Set(v.clause)
 
-    implicit def itemGenerator: Generator[Item, Program] =
-      new Generator[Item, Program] {
+    implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
+      new GeneratorK[List, A, B]
 
-        import io.github.scalaquest.core.parsing.scalog.dsl._
+    implicit def listToMapGenerator[T, K, V](implicit
+      G: Generator[T, Map[K, V]]
+    ): GeneratorK[List, T, Map[K, V]] = {
+      implicit def keepSemigroup[A]: Semigroup[A] = Semigroup.instance((a, _) => a)
 
-        val name      = CompoundBuilder("name").constructor
-        val adjective = CompoundBuilder("adjective").constructor
+      new GeneratorK[List, T, Map[K, V]]
+    }
 
-        override def generate(item: Item): Program = {
-          def names: List[Clause] = List(item.description.base.name).map(name(_))
-          def adjectives: List[Clause] =
-            item.description.decorators.toList.map(_.name).map(adjective(_))
-
-          (names ++ adjectives).toSet
-        }
-      }
-
-    implicit def verbListGenerator: GeneratorK[List, VerbC, Program] =
-      new GeneratorK[List, VerbC, Program]
-
-    implicit def itemListGenerator: GeneratorK[List, Item, Program] =
-      new GeneratorK[List, Item, Program]
   }
 }
