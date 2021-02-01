@@ -10,7 +10,7 @@ sealed trait BaseVerb {
 
 final case class Intransitive(name: String, action: Action, prep: Option[String] = None)
   extends BaseVerb
-  with ClauseUtils
+  with ClauseOps
   with PairUtils {
 
   override def arity: Int = 1
@@ -18,7 +18,7 @@ final case class Intransitive(name: String, action: Action, prep: Option[String]
 
 final case class Transitive(name: String, action: Action, prep: Option[String] = None)
   extends BaseVerb
-  with ClauseUtils
+  with ClauseOps
   with PairUtils {
 
   override def arity: Int = 2
@@ -29,7 +29,7 @@ final case class Ditransitive(
   action: Action,
   prep: Option[String] = None
 ) extends BaseVerb
-  with ClauseUtils
+  with ClauseOps
   with PairUtils {
 
   override def arity: Int = 3

@@ -3,7 +3,7 @@ package io.github.scalaquest.core.dictionary
 import io.github.scalaquest.core.parsing.scalog.dsl._
 import io.github.scalaquest.core.parsing.scalog.{Atom, Clause, Fact, Term, Variable}
 
-trait ClauseUtils { self: BaseVerb =>
+trait ClauseOps { self: BaseVerb =>
 
   def arity: Int
 
