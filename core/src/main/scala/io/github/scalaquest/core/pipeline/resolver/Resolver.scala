@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.dictionary.VerbPrep
+import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Model}
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
 

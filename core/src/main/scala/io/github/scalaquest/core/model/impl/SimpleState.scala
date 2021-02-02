@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.impl
 
-import io.github.scalaquest.core.dictionary.VerbPrep
+import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model._
 
 /**

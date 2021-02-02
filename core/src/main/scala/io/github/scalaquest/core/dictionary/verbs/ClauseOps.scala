@@ -1,7 +1,7 @@
-package io.github.scalaquest.core.dictionary
+package io.github.scalaquest.core.dictionary.verbs
 
-import io.github.scalaquest.core.parsing.scalog.dsl._
-import io.github.scalaquest.core.parsing.scalog.{Atom, Clause, Fact, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog.Fact
+import io.github.scalaquest.core.parsing.scalog.dsl.{termToFact, intToNumber, stringToAtom}
 
 trait ClauseOps { self: BaseVerb =>
 

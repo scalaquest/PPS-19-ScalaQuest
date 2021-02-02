@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.dictionary
+package io.github.scalaquest.core.dictionary.verbs
 
 import io.github.scalaquest.core.model.Action
 

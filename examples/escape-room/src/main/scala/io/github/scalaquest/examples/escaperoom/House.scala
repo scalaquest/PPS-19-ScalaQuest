@@ -1,9 +1,17 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{Room => RoomFactory}
-import io.github.scalaquest.core.model.{Direction, RoomRef}
+import io.github.scalaquest.core.application.Environment
+import io.github.scalaquest.core.model.{Direction}
 
-object House {
+object House extends Environment[Room] {
+  import model.{Room => RoomFactory}
+
+  override def allTheRooms: Set[Room] =
+    Set(
+      kitchen,
+      livingRoom,
+      bathroom
+    )
 
   def kitchen: Room =
     RoomFactory(
@@ -12,35 +20,22 @@ object House {
         Direction.East -> livingRoom.ref
       ),
       Set(
-        items.head._1
+        refToItem.head._1
       )
     )
 
   def livingRoom: Room =
     RoomFactory(
       "living room",
-      Map(
-      ),
+      Map(),
       Set()
     )
 
   def bathroom: Room =
     RoomFactory(
       "bathroom",
-      Map(
-      ),
+      Map(),
       Set()
     )
-
-  def allTheRooms: Set[Room] =
-    Set(
-      kitchen,
-      livingRoom,
-      bathroom
-    )
-
-  def checkRooms: Boolean = allTheRooms.groupBy(_.ref).size == allTheRooms.size
-
-  def genMap: Map[RoomRef, Room] = allTheRooms.map(r => r.ref -> r).toMap
 
 }

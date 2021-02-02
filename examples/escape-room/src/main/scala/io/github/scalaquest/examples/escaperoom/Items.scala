@@ -1,11 +1,11 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.examples.escaperoom.Config.SuperStonksPowered
+import io.github.scalaquest.core.model.{ItemRef}
+import io.github.scalaquest.examples.escaperoom.Messages.SuperStonksPowered
 
 object Items {
-  import myModel._
+  import model._
 
   val redApple: SimpleFood = {
     val itemDescription = i(d("red"), "apple")

@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model
 
-import io.github.scalaquest.core.dictionary.VerbPrep
+import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 
 trait Model {
   type S <: State

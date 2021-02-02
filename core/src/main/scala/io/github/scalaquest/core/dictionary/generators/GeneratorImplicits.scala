@@ -6,7 +6,7 @@ import cats.kernel.{Monoid, Semigroup}
 /**
  * Mix-in to inherit implicit generators for collections.
  */
-trait Implicits {
+trait GeneratorImplicits {
 
   object implicits {
 

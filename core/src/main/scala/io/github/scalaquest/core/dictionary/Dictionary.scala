@@ -1,5 +1,5 @@
 package io.github.scalaquest.core.dictionary
 
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.dictionary.verbs.Verb
 
-case class Dictionary[I <: Model#Item](verbs: List[Verb], items: List[I])
+case class Dictionary[I <: Item](verbs: List[Verb], items: List[I])
