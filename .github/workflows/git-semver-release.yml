@@ -19,7 +19,10 @@ jobs:
         run: mkdir version
 
       - name: Create versioning file
-        run: ./gradlew printGitSemVer > version/version.txt
+        # :core: -> uses a "forced" submodule in order to print version once
+        #--quiet -> doesn't print gradle logs
+        #  awk   -> takes last part of a string
+        run: ./gradlew :core:printGitSemVer --quiet | awk '{print $NF}' > version/version.txt
 
       - name: Create variable with version
         id: version
@@ -30,30 +33,21 @@ jobs:
         run: ./gradlew distZip
 
 
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          release_name: Release ${{ steps.version.outputs.VERSION }}
+          draft: false
+          prerelease: false
 
-      #- name: Archive generated file(s)
-        #uses: actions/upload-artifact@v2
-        #with:
-          #name: generatedDistributions
-          #path: |
-           #./examples/escape-room/build/distributions
-
-
-     # - name: Create Release
-     #   id: create-release
-     #   uses: actions/create-release@v1
-     #   env:
-     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-     #   with:
-     #     tag_name: reports-${{ steps.date.outputs.date }}
-     #     release_name: Release ${{ steps.date.outputs.date }}
-     #     draft: false
-     #     prerelease: false
-
-     # - name: Upload Release Assets
-      #  uses: dwenegar/upload-release-assets@v1
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #  with:
-      #    release_id: ${{ steps.create-release.outputs.id }}
-      #    assets_path: report
+      - name: Upload Release Assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}
+          assets_path: ./examples/escape-room/build/distributions
