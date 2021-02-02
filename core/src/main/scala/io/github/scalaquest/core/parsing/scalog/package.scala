@@ -25,4 +25,6 @@ package io.github.scalaquest.core.parsing
  *   hello(world).
  * }}}
  */
-package object scalog
+package object scalog {
+  type Program = Set[Clause]
+}

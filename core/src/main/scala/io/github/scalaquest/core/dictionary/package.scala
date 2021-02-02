@@ -7,11 +7,10 @@ package object dictionary {
 
   val verb = CompoundBuilder("verb").constructor
 
-  type Verb  = BaseVerb with ClauseOps with Meaning
+  type Verb = BaseVerb with ClauseOps with Meaning
+
   type VerbC = BaseVerb with ClauseOps
 
   type VerbPrep = (String, Option[String])
-
-  type Program = Set[Clause]
 
 }

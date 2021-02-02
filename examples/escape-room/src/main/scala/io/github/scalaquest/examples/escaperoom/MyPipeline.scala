@@ -1,12 +1,13 @@
 package io.github.scalaquest.examples.escaperoom
 
 import cats.implicits.catsKernelStdSemilatticeForSet
-import io.github.scalaquest.core.dictionary.{Program, Verb}
+import io.github.scalaquest.core.dictionary.Verb
 import io.github.scalaquest.core.dictionary.generators.{Generator, GeneratorK, combineAll}
 import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
+import io.github.scalaquest.core.parsing.scalog.Program
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
 import io.github.scalaquest.core.pipeline.parser.Parser
 import io.github.scalaquest.core.pipeline.reducer.Reducer
@@ -17,7 +18,6 @@ import scala.io.Source
 object MyPipeline {
 
   def source: String = {
-    import generators.{verbListToProgram, itemListToProgram}
     val base = Source.fromResource("base.pl").mkString
     val source = base +: combineAll(
       GeneratorK[List, Verb, Program].generate(dictionary.verbs),

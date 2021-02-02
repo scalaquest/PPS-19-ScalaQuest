@@ -1,22 +1,14 @@
 package io.github.scalaquest.core.dictionary.generators
 
-import cats.implicits.{
-  catsKernelStdMonoidForMap,
-  catsKernelStdSemilatticeForSet,
-  catsStdInstancesForList
-}
+import cats.implicits.{catsKernelStdMonoidForMap, catsStdInstancesForList}
 import cats.kernel.{Monoid, Semigroup}
-import io.github.scalaquest.core.dictionary.{Program, Verb, VerbC, VerbPrep}
-import io.github.scalaquest.core.model.{Action, ItemRef, Model}
-import io.github.scalaquest.core.parsing.scalog.Clause
 
-abstract class Implicits {
+/**
+ * Mix-in to inherit implicit generators for collections.
+ */
+trait Implicits {
 
   object implicits {
-
-    type Item = Model#Item
-
-    implicit def verbGenerator: Generator[VerbC, Program] = (v: VerbC) => Set(v.clause)
 
     implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
       new GeneratorK[List, A, B]
