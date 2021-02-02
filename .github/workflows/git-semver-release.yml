@@ -15,25 +15,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Make version directory
-        run: mkdir version
+      - name: Fetch tags
+        run: |
+         git fetch --unshallow --tags
 
       - name: Create versioning file
+
         # :core: -> uses a "forced" submodule in order to print version once
         #--quiet -> doesn't print gradle logs
         #  awk   -> takes last part of a string
+
         run: |
-         ./gradlew :core:printGitSemVer --quiet | awk '{print $NF}' > version/version.txt
-         cat version/version.txt
+         ver=$(./gradlew :core:printGitSemVer --quiet)
+         echo $ver | awk '{print $NF}' > semantic_version.txt
+
 
       - name: Create variable with version
-        id: version
+        id: semanticversion
         run: |
-          echo "::set-output name=VERSION::$(cat version/version.txt)"
+          echo "::set-output name=SEM_VER::$(cat semantic_version.txt)"
 
       - name: Generate distributions
         run: ./gradlew distZip
-
 
       - name: Create Release
         id: create-release
@@ -41,8 +44,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.VERSION }}
-          release_name: Release ${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ steps.semanticversion.outputs.SEM_VER }}
+          release_name: ${{ steps.semanticversion.outputs.SEM_VER }}
           draft: false
           prerelease: false
 
