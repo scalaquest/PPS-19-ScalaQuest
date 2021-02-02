@@ -22,12 +22,14 @@ jobs:
         # :core: -> uses a "forced" submodule in order to print version once
         #--quiet -> doesn't print gradle logs
         #  awk   -> takes last part of a string
-        run: ./gradlew :core:printGitSemVer --quiet | awk '{print $NF}' > version/version.txt
+        run: |
+         ./gradlew :core:printGitSemVer --quiet | awk '{print $NF}' > version/version.txt
+         cat version/version.txt
 
       - name: Create variable with version
         id: version
         run: |
-            echo "::set-output name=VERSION::$(printf '"%s" ' version/version.txt)"
+          echo "::set-output name=VERSION::$(cat version/version.txt)"
 
       - name: Generate distributions
         run: ./gradlew distZip
