@@ -6,9 +6,6 @@ plugins {
     // Adds support for Scala
     scala
 
-    // Support for semantic gis-sensitive semantic versioning
-    id("org.danilopianini.git-sensitive-semantic-versioning")
-
     // Plugin used to enable ScalaTest inside Gradle
     id("com.github.maiflai.scalatest")
 
@@ -25,16 +22,6 @@ tasks.withType<ScalaCompile> {
 }
 
 group = "io.github.scalaquest"
-
-gitSemVer {
-    minimumVersion.set("0.1.0")
-    developmentIdentifier.set("dev")
-    noTagIdentifier.set("archeo")
-    fullHash.set(false)
-    maxVersionLength.set(Int.MAX_VALUE)
-    developmentCounterLength.set(2)
-    version = computeGitSemVer()
-}
 
 spotless {
     // scala format with Scalafmt
