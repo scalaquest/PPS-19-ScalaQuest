@@ -1,0 +1,54 @@
+name: Release Generation
+
+# Generate new release on tag creation, only if semantic
+# versioning is respected.
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get the version
+          id: getversion
+          run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Check if pre-release
+        id: checkprerelease
+        run: |
+          if [[ ${{ steps.getversion.outputs.VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo ::set-output name=PRERELEASE::false
+          else
+            echo ::set-output name=PRERELEASE::true
+          fi
+
+      - name: Generate distributions
+        run: ./gradlew distZip
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.getversion.outputs.VERSION }}
+          release_name: Release ${{ steps.getversion.outputs.VERSION }}
+          prerelease: ${{ steps.checkprerelease.outputs.PRERELEASE }}
+
+      - name: Upload Release Assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}
+          assets_path: |
+            ./examples/escape-room/build/distributions
+            ./cli/build/libs
+            ./core/build/libs
