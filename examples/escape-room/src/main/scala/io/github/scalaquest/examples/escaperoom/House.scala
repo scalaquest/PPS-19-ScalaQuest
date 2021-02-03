@@ -20,15 +20,18 @@ object House extends Environment[Room] {
         Direction.East -> livingRoom.ref
       ),
       Set(
-        refToItem.head._1
+        Items.redApple.ref
       )
     )
 
   def livingRoom: Room =
     RoomFactory(
       "living room",
-      Map(),
-      Set()
+      Map(
+        Direction.West -> livingRoom.ref
+      ),
+      Set(
+      )
     )
 
   def bathroom: Room =

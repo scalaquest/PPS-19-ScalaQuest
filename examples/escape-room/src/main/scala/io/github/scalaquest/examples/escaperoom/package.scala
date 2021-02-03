@@ -16,20 +16,4 @@ package object escaperoom extends ApplicationStructure(SimpleModel) {
 
   override def dictionary: Dictionary[Item] = MyDictionary.dictionary
 
-  def defaultPipeline(source: String, ground: Ground): PipelineBuilder[State, Model] = {
-
-    val b = Interpreter.builder(model)(refToItem, ground)
-
-    val a = Reducer.builder(model)
-
-    Pipeline
-      .fromModel(model)
-      .build(
-        SimpleLexer,
-        Parser(Engine(Theory(source), Set(DCGLibrary))),
-        Resolver.builder(model),
-        ???,
-        ???
-      )
-  }
 }

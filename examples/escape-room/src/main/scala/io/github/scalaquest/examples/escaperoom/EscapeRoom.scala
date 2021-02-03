@@ -1,35 +1,40 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.{Message, RoomRef, StringPusher}
+import io.github.scalaquest.core.model.{Message, MessagePusher, RoomRef, StringPusher}
 import io.github.scalaquest.core.Game
-import io.github.scalaquest.examples.escaperoom.MyPipeline.pipelineBuilder
-import io.github.scalaquest.examples.escaperoom.Messages._
+import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 
-object Config {
+abstract class GameCLIApp extends CLIApp {
+
+  def pipelineBuilder: PipelineBuilder[State, Model]
+  def state: State
+  def messagePusher: StringPusher
+
+  def source: String = programFromResource("base.pl")
+
+  def game: Game[Model] = Game.fromModel(model).withPipelineBuilder(pipelineBuilder)
+
+  override def cli: CLI = CLI.fromModel(model).build(state, game, messagePusher)
+
+}
+
+object EscapeRoom extends GameCLIApp {
   import model.{SimplePlayer, SimpleState}
 
-  def player: SimplePlayer = SimplePlayer(Set(), House.kitchen.ref)
+  override def pipelineBuilder: PipelineBuilder[State, Model] =
+    defaultPipeline(source, model.SimpleGround)
 
-  def rooms: Map[RoomRef, Room] = House.refToRoom
-
-  def state: SimpleState =
+  override def state: State =
     SimpleState(
       verbToAction,
       model.SimpleMatchState(
-        player,
-        rooms,
+        SimplePlayer(Set(), House.kitchen.ref),
+        House.refToRoom,
         refToItem
       ),
       Seq.empty
     )
 
-  def game: Game[Model]           = Game.fromModel(model).withPipelineBuilder(pipelineBuilder)
-  def messagePusher: StringPusher = defaultPusher
-  def cli: CLI                    = CLI.fromModel(model).build(state, game, messagePusher)
-}
-
-object EscapeRoom extends CLIApp {
-
-  override def cli: CLI = Config.cli
+  override def messagePusher: StringPusher = Messages.defaultPusher
 }

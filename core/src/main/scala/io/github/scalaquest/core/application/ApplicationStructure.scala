@@ -9,6 +9,7 @@ import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexer
 import io.github.scalaquest.core.pipeline.parser.Parser
 import io.github.scalaquest.core.pipeline.reducer.Reducer
@@ -36,11 +37,29 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
     GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(dictionary.verbs)
 
   def programSource[F[_]: Functor](base: F[String]): F[String] =
-    ProgramFromDictionary[Item](dictionary).source(base)
+    ProgramFromDictionary(dictionary).source(base)
 
   def programFromResource(resourceName: String): String = {
     type Id[X] = X
     programSource[Id](Source.fromResource(resourceName).mkString)
+  }
+
+  def defaultPipeline(source: String, ground: Ground): PipelineBuilder[State, Model] = {
+
+    val interpreter: Builder[Model, State, Reaction] =
+      Interpreter.builder[Model](model)(refToItem, ground)
+
+    val reducer = Reducer.builder(model)
+
+    Pipeline
+      .fromModel[Model](model)
+      .build(
+        SimpleLexer,
+        Parser(Engine(Theory(source), Set(DCGLibrary))),
+        Resolver.builder(model),
+        interpreter,
+        reducer
+      )
   }
 
 }
