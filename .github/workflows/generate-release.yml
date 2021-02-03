@@ -17,8 +17,8 @@ jobs:
           fetch-depth: 0
 
       - name: Get the version
-          id: getversion
-          run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        id: getversion
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
       - name: Check if pre-release
         id: checkprerelease
