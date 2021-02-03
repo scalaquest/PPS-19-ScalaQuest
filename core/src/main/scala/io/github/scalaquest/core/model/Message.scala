@@ -5,6 +5,8 @@ package io.github.scalaquest.core.model
  */
 trait Message
 
+case class InspectedRoom(room: Model#Room) extends Message
+
 trait ItemMessage[I <: Model#Item] extends Message {
   def item: I
 }

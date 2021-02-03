@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.application.Environment
-import io.github.scalaquest.core.model.{Direction}
+import io.github.scalaquest.core.model.Direction
 
 object House extends Environment[Room] {
   import model.{Room => RoomFactory}
@@ -28,7 +28,8 @@ object House extends Environment[Room] {
     RoomFactory(
       "living room",
       Map(
-        Direction.West -> livingRoom.ref
+        Direction.North -> bathroom.ref,
+        Direction.West  -> livingRoom.ref
       ),
       Set(
       )
@@ -37,7 +38,9 @@ object House extends Environment[Room] {
   def bathroom: Room =
     RoomFactory(
       "bathroom",
-      Map(),
+      Map(
+        Direction.South -> livingRoom.ref
+      ),
       Set()
     )
 
