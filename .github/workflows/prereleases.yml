@@ -1,0 +1,60 @@
+name: Generate Prerelease
+
+# When on a release branch is pushed a commit the [prerelease] keyword
+# a new prerelease is automatically named and generated.
+
+on:
+  push:
+    branches:
+      # Push events to branches matching refs/heads/releases/10
+      - 'releases/**'
+
+jobs:
+  delivery:
+    if: contains(github.event.head_commit.message, '[prerelease]')
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Generate distributions
+        run: ./gradlew distZip
+
+      - name: Generate version
+        id: genversion
+        run: |
+          ./gradlew :core:generateVersionFile
+          echo "::set-output name=VERSION::$(cat ./core/build/version)\n"
+
+      - name: Create Pre-release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.genversion.outputs.VERSION }}
+          release_name: Pre-release ${{ steps.genversion.outputs.VERSION }}
+          prerelease: true
+
+      - name: Upload Release Assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}
+          assets_path: |
+            ./examples/escape-room/build/distributions
+            ./cli/build/libs
+            ./core/build/libs
