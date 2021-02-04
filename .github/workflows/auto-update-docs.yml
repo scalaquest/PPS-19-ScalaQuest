@@ -6,7 +6,7 @@ name: Update Docs
 on:
   push:
     branches:
-      - feature/docs-auto-update
+      - main
 
 jobs:
   docs:
@@ -34,18 +34,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Generate Core and CLI Scaladoc
+      - name: Generate Scaladoc
         run: |
           ./gradlew :core:scaladoc
           ./gradlew :cli:scaladoc
 
-      - name: Push Scaladoc to gh-pages
-        uses: EndBug/add-and-commit@v7.0.0
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
         with:
-          # Force is required, as build directories are ignored on main;
-          # Only core and cli docs are considered, as examples scaladoc should not
-          # be considered relevant.
-          add: './core/build/docs/scaladoc ./cli/build/docs/scaladoc --force'
-          author_name: Docubot [Bot]
-          branch: gh-pages
-          message: 'Update Scaladoc'
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Push Scaladoc to gh-pages
+        run: |
+          mkdir ./gh-pages/scaladoc
+          mkdir ./gh-pages/scaladoc/core
+          mkdir ./gh-pages/scaladoc/cli
+          mv ./core/build/docs/scaladoc ./gh-pages/scaladoc/core
+          mv ./cli/build/docs/scaladoc ./gh-pages/scaladoc/cli
+          cd ./gh-pages
+          git config user.name Docubot
+          git config user.email github-actions@github.com
+          git add ./scaladoc
+          git commit -m "Update Scaladoc"
+          git push
