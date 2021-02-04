@@ -16,11 +16,11 @@ object House extends Environment[Room] {
   def kitchen: Room =
     RoomFactory(
       "kitchen",
-      Map(
-        Direction.East -> livingRoom.ref
-      ),
+      Map(),
       Set(
-        Items.redApple.ref
+        Items.redApple.ref,
+        Items.livingRoomKey.ref,
+        Items.livingRoomDoor.ref
       )
     )
 
@@ -29,9 +29,10 @@ object House extends Environment[Room] {
       "living room",
       Map(
         Direction.North -> bathroom.ref,
-        Direction.West  -> livingRoom.ref
+        Direction.West  -> kitchen.ref
       ),
       Set(
+        Items.kitchenDoor.ref
       )
     )
 

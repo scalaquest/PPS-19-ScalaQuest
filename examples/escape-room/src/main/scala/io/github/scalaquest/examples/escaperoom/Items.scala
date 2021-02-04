@@ -1,8 +1,10 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.ItemRef
+import io.github.scalaquest.core.model.{Direction, ItemRef}
+import io.github.scalaquest.examples.escaperoom.House.{kitchen, livingRoom}
 import io.github.scalaquest.examples.escaperoom.Messages.SuperStonksPowered
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel._
 
 object Items {
   import model._
@@ -15,6 +17,41 @@ object Items {
       SimpleEatable(onEatExtra =
         Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
       )
+    )
+  }
+
+  val livingRoomKey: SimpleKey = {
+    val itemDescription = i(d("livingroom"), "key")
+    SimpleKey(itemDescription, ItemRef(itemDescription), SimpleTakeable())
+  }
+
+  val livingRoomDoor: SimpleDoor = {
+    val itemDescription = i(d("livingroom"), "door")
+    SimpleDoor(
+      itemDescription,
+      ItemRef(itemDescription),
+      SimpleRoomLink(
+        livingRoom,
+        Some(
+          SimpleOpenable(
+            requiredKey = Some(livingRoomKey),
+            onOpenExtra = Some(state => {
+              val newLivingRoom =
+                roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(kitchen)
+              matchRoomsLens.modify(_ + (newLivingRoom.ref -> newLivingRoom))(state)
+            })
+          )
+        )
+      )
+    )
+  }
+
+  val kitchenDoor: SimpleDoor = {
+    val itemDescription = i(d("kitchenroom"), "door")
+    SimpleDoor(
+      itemDescription,
+      ItemRef(itemDescription),
+      SimpleRoomLink(kitchen)
     )
   }
 

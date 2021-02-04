@@ -23,6 +23,8 @@ abstract class GameCLIApp extends CLIApp {
 object EscapeRoom extends GameCLIApp {
   import model.{SimplePlayer, SimpleState}
 
+  println(source)
+
   override def pipelineBuilder: Pipeline.PartialBuilder[State, Model] =
     defaultPipeline(source, model.SimpleGround)
 

@@ -78,17 +78,17 @@ object Interpreter {
             case Statement.Intransitive(action) =>
               ground
                 .use(action, state)
-                .toRight(s"Could not recognize action")
+                .toRight(s"I can't do that!")
 
             case Statement.Transitive(action, refToItem(item)) =>
               item
                 .use(action, state)
-                .toRight(s"Couldn't recognize action on the given item")
+                .toRight(s"I can't do that!")
 
             case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
               directObj
                 .use(action, state, Some(indirectObj))
-                .toRight(s"Couldn't recognize action on the given item with the other item")
+                .toRight(s"I can't do that!")
           }
         } yield InterpreterResult(model)(maybeReaction)
     }
