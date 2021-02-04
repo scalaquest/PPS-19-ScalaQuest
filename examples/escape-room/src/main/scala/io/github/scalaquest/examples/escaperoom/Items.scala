@@ -36,9 +36,11 @@ object Items {
           SimpleOpenable(
             requiredKey = Some(livingRoomKey),
             onOpenExtra = Some(state => {
-              val newLivingRoom =
-                roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(kitchen)
-              matchRoomsLens.modify(_ + (newLivingRoom.ref -> newLivingRoom))(state)
+              val newKitchen =
+                roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(
+                  state.roomFromRef(kitchen.ref).get
+                )
+              matchRoomsLens.modify(_ + (newKitchen.ref -> newKitchen))(state)
             })
           )
         )
@@ -56,7 +58,6 @@ object Items {
   }
 
   val apple: SimpleFood = {
-
     val itemDescription = i("apple")
     SimpleFood(
       itemDescription,

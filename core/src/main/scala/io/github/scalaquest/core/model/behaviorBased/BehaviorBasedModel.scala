@@ -30,7 +30,11 @@ abstract class BehaviorBasedModel extends Model {
     def behaviors: Seq[ItemBehavior] = Seq()
 
     override def use(action: Action, state: S, maybeSideItem: Option[I]): Option[Reaction] =
-      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, this, maybeSideItem, state))
+      behaviors
+        .map(_.triggers)
+        .reduceOption(_ orElse _)
+        .getOrElse(PartialFunction.empty)
+        .lift((action, this, maybeSideItem, state))
   }
 
   /**
@@ -99,7 +103,11 @@ abstract class BehaviorBasedModel extends Model {
     def behaviors: Seq[GroundBehavior] = Seq()
 
     override def use(action: Action, state: S): Option[Reaction] =
-      behaviors.map(_.triggers).reduce(_ orElse _).lift((action, state))
+      behaviors
+        .map(_.triggers)
+        .reduceOption(_ orElse _)
+        .getOrElse(PartialFunction.empty)
+        .lift((action, state))
   }
 
   /**
