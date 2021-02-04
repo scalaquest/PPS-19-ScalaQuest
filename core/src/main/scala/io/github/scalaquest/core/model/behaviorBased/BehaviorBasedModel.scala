@@ -57,7 +57,7 @@ abstract class BehaviorBasedModel extends Model {
   trait Delegate extends ItemBehavior {
 
     /**
-     * Here might be passed the delegate [[ItemBehavior]] 's [[ItemTriggers]].
+     * Should be overrode with the delegate [[ItemBehavior]] 's [[ItemTriggers]].
      *
      * @return
      *   The delegate [[ItemBehavior]] 's [[ItemTriggers]].
@@ -65,7 +65,7 @@ abstract class BehaviorBasedModel extends Model {
     def delegateTriggers: ItemTriggers
 
     /**
-     * Here might be passed the [[ItemTriggers]] of the receiver (the behavior that mixes in
+     * Should be overrode with the [[ItemTriggers]] of the receiver (the behavior that mixes in
      * [[Delegate]] ).
      *
      * @return
@@ -88,7 +88,7 @@ abstract class BehaviorBasedModel extends Model {
   override type G = BehaviorBasedGround
 
   /**
-   * * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
+   * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
    * combinations.
    *
    * A Ground that exploit the behavioral mechanism should extend this partial implementation. This

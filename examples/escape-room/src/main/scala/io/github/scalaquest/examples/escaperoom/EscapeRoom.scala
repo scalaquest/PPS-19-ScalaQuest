@@ -38,3 +38,23 @@ object EscapeRoom extends GameCLIApp {
 
   override def messagePusher: StringPusher = Messages.defaultPusher
 }
+
+/*
+  val defaultPusher: CommonStringPusher = CommonStringPusher(
+    myModel,
+    { case SuperStonksPowered =>
+      "Became SuperStonks \n" +
+        "                                                                                \n                                                                                \n                                              **                  \n                  **..                      ////                  \n              */ //(/*****                 ///////                 \n            ,,,,*/(//((/**              /////////.                \n            ////((#(*,***/.           .*//////////                \n            (#((###(///*/(               ////// .*,               \n            ((######(/#(#,              ./////,                   \n             ((##%%%%#(/                //////                    \n             #((##(#%.                 */////                     \n        &%&&@&&&//(#*.%*               /////*                     \n   &&&&&&&&&&&&@@%//( &%&&&&%&,       //////                      \n  (&&&&&&&&&&&&&&&&&/,&%&&&&&&%%,    ,/////,                      \n   #%&@&&&&&&@@&&&&&&%&%&&&&&&&&%    //////                       \n   ##%&@&&&&&@@&&&%&&&&&&&&&&&&&&&  //////                        \n   .#%%&&&&&@&@@&&&&&&&&&&&&&@&&&&% ,////*                        \n    (#%&&&&&&/@&&&&&&&&&@@&&&@@@&&%%.      "
+/*}
+)
+
+def game: Game[Model]           = Game builderFrom myModel build pipelineFactory
+def messagePusher: StringPusher = defaultPusher
+def cli: CLI                    = CLI.builderFrom(myModel).build(state, game, messagePusher)
+}
+
+object EscapeRoom extends CLIApp {
+  override def cli: CLI = Config.cli
+}
+
+ */

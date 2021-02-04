@@ -4,14 +4,14 @@ import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.Comm
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.common.messages.CommonMessages
+import io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonMessages
 import io.github.scalaquest.core.model.impl.SimpleUtils
 
 /**
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional
  * functionalities for state inspection and re-generation, by the use of [[monocle.Lens]].
  */
-trait CommonBase
+private[common] trait CommonBase
   extends BehaviorBasedModel
   with SimpleUtils
   with CommonMessages

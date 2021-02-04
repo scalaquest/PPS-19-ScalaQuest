@@ -3,11 +3,9 @@ package io.github.scalaquest.core.model.impl
 import io.github.scalaquest.core.model.{ItemRef, Message, Model, RoomRef}
 import monocle.Lens
 
-import scala.collection.immutable.{AbstractSeq, LinearSeq}
-
 /**
- * A base trait used to implement all the StdCommon* mixins. Integrates some additional
- * functionalities for state inspection and re-generation, by the use of [[monocle.Lens]].
+ * Integrates some additional functionalities for state inspection and re-generation, by the use of
+ * [[monocle.Lens]].
  */
 trait SimpleUtils extends Model {
 
@@ -16,7 +14,6 @@ trait SimpleUtils extends Model {
   implicit def playerLocationLens: Lens[S, RoomRef]
   implicit def itemsLens: Lens[S, Map[ItemRef, I]]
   implicit def roomLens: Lens[RM, Set[ItemRef]]
-  implicit def messageLens: Lens[S, Seq[Message]]
 
   implicit class StateUtils(state: S) {
     def isInBag(item: I): Boolean = state.matchState.player.bag.contains(item.ref)
@@ -28,10 +25,10 @@ trait SimpleUtils extends Model {
     def currentRoom: RM = state.matchState.rooms(state.matchState.player.location)
 
     def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
-      state.matchState.rooms.get(roomRef).fold(Set[ItemRef]())(x => x.items)
+      state.matchState.rooms.get(roomRef).fold(Set[ItemRef]())(_.items)
 
     def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] =
-      itemRefs.flatMap(k => state.matchState.items.get(k))
+      itemRefs.flatMap(state.matchState.items.get(_))
 
     def itemFromRef(itemRef: ItemRef): Option[I] = state.matchState.items.get(itemRef)
 
