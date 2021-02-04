@@ -1,16 +1,17 @@
-name: Generate Prerelease
+name: Generate new pre-release
 
-# When on a release branch is pushed a commit the [prerelease] keyword
+# When on a release branch is pushed a commit the [prerelease] keyword,
 # a new prerelease is automatically named and generated.
 
 on:
   push:
     branches:
-      # Push events to branches matching refs/heads/releases/10
-      - 'releases/**'
+      - 'release/**'
+      - 'hotfix/**'
 
 jobs:
-  delivery:
+  prerelease:
+    name: Generate new pre-release
     if: contains(github.event.head_commit.message, '[prerelease]')
     runs-on: ubuntu-18.04
     steps:
@@ -29,26 +30,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Generate distributions
-        run: ./gradlew distZip
-
-      - name: Generate version
+      - name: Extract version from GitSemVer
         id: genversion
         run: |
           ./gradlew :core:generateVersionFile
-          echo "::set-output name=VERSION::$(cat ./core/build/version)\n"
+          RELEASE_VERSION=$(cat ./core/build/version)
 
-      - name: Create Pre-release
+      - name: Create pre-release
         id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.genversion.outputs.VERSION }}
-          release_name: Pre-release ${{ steps.genversion.outputs.VERSION }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
           prerelease: true
 
-      - name: Upload Release Assets
+      - name: Generate distributions
+        run: ./gradlew distZip
+
+      - name: Upload release assets
         uses: dwenegar/upload-release-assets@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

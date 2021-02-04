@@ -1,0 +1,81 @@
+name: Generate new release
+
+# Generates a new release, after a release/* branch is successfully
+# merged into main. The tag name is inferred from the branch name.
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+     - closed
+
+jobs:
+  release:
+    name: Generate new release
+    if: github.event.pull_request.merged == true # only merged pull requests must trigger this job
+
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Extract version from branch name (for release branches)
+        if: startsWith(github.event.pull_request.head.ref, 'release/')
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Extract version from branch name (for hotfix branches)
+        if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#hotfix/}
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          prerelease: false
+
+      - name: Merge main into dev branch
+        uses: thomaseizinger/create-pull-request@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          head: master
+          base: dev
+          title: Merge main into dev branch
+          body: |
+            This PR merges the master branch back into dev.
+            This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest
+            updates are also present on the dev branch.
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Generate distributions
+        run: ./gradlew distZip
+
+      - name: Upload release assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}
+          assets_path: |
+            ./examples/escape-room/build/distributions
+            ./cli/build/libs
+            ./core/build/libs
