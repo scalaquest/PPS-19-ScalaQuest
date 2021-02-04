@@ -7,7 +7,6 @@ import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
 import io.github.scalaquest.core.model.{Action, ItemRef, Model}
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.Pipeline
-import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexer
@@ -44,7 +43,7 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
     programSource[Id](Source.fromResource(resourceName).mkString)
   }
 
-  def defaultPipeline(source: String, ground: Ground): PipelineBuilder[State, Model] = {
+  def defaultPipeline(source: String, ground: Ground): Pipeline.PartialBuilder[State, Model] = {
 
     val interpreter: Builder[Model, State, Reaction] =
       Interpreter.builder[Model](model)(refToItem, ground)
@@ -52,7 +51,7 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
     val reducer = Reducer.builder(model)
 
     Pipeline
-      .fromModel[Model](model)
+      .builderFrom[Model](model)
       .build(
         SimpleLexer,
         Parser(Engine(Theory(source), Set(DCGLibrary))),

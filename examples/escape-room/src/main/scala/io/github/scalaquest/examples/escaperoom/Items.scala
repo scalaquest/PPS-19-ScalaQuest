@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.{ItemRef}
+import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.examples.escaperoom.Messages.SuperStonksPowered
 
 object Items {

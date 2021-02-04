@@ -1,28 +1,29 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.{Message, MessagePusher, RoomRef, StringPusher}
+import io.github.scalaquest.core.model.{StringPusher}
 import io.github.scalaquest.core.Game
+import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder
 
 abstract class GameCLIApp extends CLIApp {
 
-  def pipelineBuilder: PipelineBuilder[State, Model]
+  def pipelineBuilder: Pipeline.PartialBuilder[State, Model]
   def state: State
   def messagePusher: StringPusher
 
   def source: String = programFromResource("base.pl")
 
-  def game: Game[Model] = Game.fromModel(model).withPipelineBuilder(pipelineBuilder)
+  def game: Game[Model] = Game builderFrom model build pipelineBuilder
 
-  override def cli: CLI = CLI.fromModel(model).build(state, game, messagePusher)
+  override def cli: CLI = CLI.builderFrom(model).build(state, game, messagePusher)
 
 }
 
 object EscapeRoom extends GameCLIApp {
   import model.{SimplePlayer, SimpleState}
 
-  override def pipelineBuilder: PipelineBuilder[State, Model] =
+  override def pipelineBuilder: Pipeline.PartialBuilder[State, Model] =
     defaultPipeline(source, model.SimpleGround)
 
   override def state: State =
@@ -38,23 +39,3 @@ object EscapeRoom extends GameCLIApp {
 
   override def messagePusher: StringPusher = Messages.defaultPusher
 }
-
-/*
-  val defaultPusher: CommonStringPusher = CommonStringPusher(
-    myModel,
-    { case SuperStonksPowered =>
-      "Became SuperStonks \n" +
-        "                                                                                \n                                                                                \n                                              **                  \n                  **..                      ////                  \n              */ //(/*****                 ///////                 \n            ,,,,*/(//((/**              /////////.                \n            ////((#(*,***/.           .*//////////                \n            (#((###(///*/(               ////// .*,               \n            ((######(/#(#,              ./////,                   \n             ((##%%%%#(/                //////                    \n             #((##(#%.                 */////                     \n        &%&&@&&&//(#*.%*               /////*                     \n   &&&&&&&&&&&&@@%//( &%&&&&%&,       //////                      \n  (&&&&&&&&&&&&&&&&&/,&%&&&&&&%%,    ,/////,                      \n   #%&@&&&&&&@@&&&&&&%&%&&&&&&&&%    //////                       \n   ##%&@&&&&&@@&&&%&&&&&&&&&&&&&&&  //////                        \n   .#%%&&&&&@&@@&&&&&&&&&&&&&@&&&&% ,////*                        \n    (#%&&&&&&/@&&&&&&&&&@@&&&@@@&&%%.      "
-/*}
-)
-
-def game: Game[Model]           = Game builderFrom myModel build pipelineFactory
-def messagePusher: StringPusher = defaultPusher
-def cli: CLI                    = CLI.builderFrom(myModel).build(state, game, messagePusher)
-}
-
-object EscapeRoom extends CLIApp {
-  override def cli: CLI = Config.cli
-}
-
- */
