@@ -1,29 +1,33 @@
-name: Opt-in CI
+name: CI
 
-# A minimal version of the Continuous Integration workflow, triggerable on-demand
-# from feature branches when needed, by the use of keyword [lint], [build] or [test]
-# (or combination of them).
+# Continuous Integration workflow, which aims to assure correctness and
+# quality of the sources that converges into the stable branches (dev and main).
 
 on:
   push:
     branches:
-      # feature branches only
-      - 'feature/*'
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
 
 jobs:
-  build:
+  ci:
     name: Lint, build and test
-    if: |
-      contains(github.event.head_commit.message, '[lint]') ||
-      contains(github.event.head_commit.message, '[build]') ||
-      contains(github.event.head_commit.message, '[test]')
+    runs-on: ${{ matrix.os }}
 
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest, macOS-latest, windows-latest ]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+        # The project uses by default Java 11 (LTS) with scala 2.13
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
@@ -39,14 +43,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+        # run it on the entire matrix would be overkill
       - name: Lint sources
-        if: contains(github.event.head_commit.message, '[lint]')
+        if: contains(runner.os, 'Linux')
         run: ./gradlew spotlessCheck
 
       - name: Compile sources
-        if: contains(github.event.head_commit.message, '[build]')
         run: ./gradlew assemble
 
       - name: Test sources
-        if: contains(github.event.head_commit.message, '[test]')
         run: ./gradlew check
