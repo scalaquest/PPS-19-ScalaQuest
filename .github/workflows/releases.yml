@@ -33,6 +33,12 @@ jobs:
           VERSION=${BRANCH_NAME#hotfix/}
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
+      # Only locally: this is useful to have the right release name on .jar(s) and
+      # Scaladoc' titles, as the version of the projects are based on gitSemVer.
+      - name: Add local tag
+        run: |
+          git tag env.RELEASE_VERSION -a
+
       - name: Create Release
         id: create-release
         uses: actions/create-release@v1
@@ -53,8 +59,9 @@ jobs:
           title: Merge main into dev branch
           body: |
             This PR merges the master branch back into dev.
-            This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest
-            updates are also present on the dev branch.
+            This happens to ensure that the updates that happend on the release
+            branch, i.e. CHANGELOG and manifest updates are also present on the
+            dev branch.
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -79,3 +86,28 @@ jobs:
             ./examples/escape-room/build/distributions
             ./cli/build/libs
             ./core/build/libs
+
+      - name: Generate Scaladoc
+        run: |
+          ./gradlew :core:scaladoc
+          ./gradlew :cli:scaladoc
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Push Scaladoc to gh-pages
+        run: |
+          mkdir ./gh-pages/scaladoc
+          mkdir ./gh-pages/scaladoc/core
+          mkdir ./gh-pages/scaladoc/cli
+          mv ./core/build/docs/scaladoc ./gh-pages/scaladoc/core
+          mv ./cli/build/docs/scaladoc ./gh-pages/scaladoc/cli
+          cd ./gh-pages
+          git config user.name Docubot
+          git config user.email github-actions@github.com
+          git add ./scaladoc
+          git commit -m "Update Scaladoc"
+          git push
