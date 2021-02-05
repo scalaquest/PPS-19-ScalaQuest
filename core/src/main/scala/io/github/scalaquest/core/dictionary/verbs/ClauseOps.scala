@@ -5,7 +5,7 @@ import io.github.scalaquest.core.parsing.scalog.dsl.{termToFact, intToNumber, st
 
 trait ClauseOps { self: BaseVerb =>
 
-  def arity: Int
+  protected def arity: Int
 
   def clause: Fact =
     prep match {
