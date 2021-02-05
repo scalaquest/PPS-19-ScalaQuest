@@ -16,7 +16,9 @@ class ClauseOpsTest extends AnyWordSpec with Matchers {
       }
       "generate a fact with a preposition" in {
         val verb = Intransitive("look", TestAction, Some("around"))
-        verb.clause shouldBe Fact(Compound(Atom("verb"), Number(1), List(Atom("look"),Atom("around"))))
+        verb.clause shouldBe Fact(
+          Compound(Atom("verb"), Number(1), List(Atom("look"), Atom("around")))
+        )
       }
     }
     "provided a transitive verb" should {
@@ -26,7 +28,7 @@ class ClauseOpsTest extends AnyWordSpec with Matchers {
       }
       "generate a fact with a preposition" in {
         val verb = Transitive("pick", TestAction, Some("up"))
-        verb.clause shouldBe Fact(Compound(Atom("verb"), Number(2), List(Atom("pick"),Atom("up"))))
+        verb.clause shouldBe Fact(Compound(Atom("verb"), Number(2), List(Atom("pick"), Atom("up"))))
       }
     }
     "provided a ditransitive verb" should {
@@ -36,7 +38,9 @@ class ClauseOpsTest extends AnyWordSpec with Matchers {
       }
       "generate a fact with a preposition" in {
         val verb = Ditransitive("open", TestAction, Some("with"))
-        verb.clause shouldBe Fact(Compound(Atom("verb"), Number(3), List(Atom("open"),Atom("with"))))
+        verb.clause shouldBe Fact(
+          Compound(Atom("verb"), Number(3), List(Atom("open"), Atom("with")))
+        )
       }
     }
   }
