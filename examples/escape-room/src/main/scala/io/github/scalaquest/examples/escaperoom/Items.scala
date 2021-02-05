@@ -20,50 +20,24 @@ object Items {
     )
   }
 
-  /*  val livingRoomKey: SimpleKey = {
-    val itemDescription = i(d("livingroom"), "key")
-    SimpleKey(itemDescription, ItemRef(itemDescription), SimpleTakeable())
-  }
-
-   val livingRoomDoor: SimpleDoor = {
-    val itemDescription = i(d("livingroom"), "door")
-    SimpleDoor(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleRoomLink(
-        livingRoom,
-        Some(
-          SimpleOpenable(
-            requiredKey = Some(livingRoomKey),
-            onOpenExtra = Some(state => {
-              val newKitchen =
-                roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(
-                  state.roomFromRef(kitchen.ref).get
-                )
-              matchRoomsLens.modify(_ + (newKitchen.ref -> newKitchen))(state)
-            })
-          )
-        )
-      )
-    )
-  }*/
-
   val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = DoorWithKey(
     doorDescription = i(d("living-room"), "door"),
     keyDescription = i(d("living-room"), "key"),
     room = livingRoom,
-    onOpenExtra = Some(state => {
-      val newKitchen =
-        roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(
-          state.roomFromRef(kitchen.ref).get
-        )
-      matchRoomsLens.modify(_ + (newKitchen.ref -> newKitchen))(state)
-    }),
+    onOpenExtra = Some(
+      matchRoomsLens.modify(
+        _.updatedWith(kitchen.ref) {
+          case Some(value) =>
+            Some(roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(value))
+          case _ => None
+        }
+      )
+    ),
     keyAdditionalBehaviors = Seq(SimpleTakeable())
   )
 
   val kitchenDoor: SimpleDoor = {
-    val itemDescription = i(d("kitchenroom"), "door")
+    val itemDescription = i(d("kitchen-room"), "door")
     SimpleDoor(
       itemDescription,
       ItemRef(itemDescription),
