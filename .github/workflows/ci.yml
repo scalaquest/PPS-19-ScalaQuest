@@ -53,3 +53,6 @@ jobs:
 
       - name: Test sources
         run: ./gradlew check
+
+      - name: Check coverage
+        run: ./gradlew checkScoverage
