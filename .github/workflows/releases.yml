@@ -1,4 +1,4 @@
-name: Generate new release
+name: Generate release
 
 # Generates a new release, after a release/* branch is successfully
 # merged into main. The tag name is inferred from the branch name.
@@ -11,7 +11,7 @@ on:
 
 jobs:
   release:
-    name: Generate new release
+    name: Generate release
     if: github.event.pull_request.merged == true # only merged pull requests must trigger this job
 
     runs-on: ubuntu-18.04
@@ -33,11 +33,13 @@ jobs:
           VERSION=${BRANCH_NAME#hotfix/}
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
-      # Only locally: this is useful to have the right release name on .jar(s) and
-      # Scaladoc' titles, as the version of the projects are based on gitSemVer.
+        # Only locally: this is useful to have the right release name on .jar(s) and
+        # Scaladoc' titles, as the version of the projects are based on gitSemVer.
       - name: Add local tag
         run: |
-          git tag env.RELEASE_VERSION -a
+          git config user.name releaserbot
+          git config user.email github-actions@github.com
+          git tag ${{ env.RELEASE_VERSION }} -a -m "Local tag"
 
       - name: Create Release
         id: create-release
@@ -54,14 +56,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          head: master
+          head: main
           base: dev
           title: Merge main into dev branch
           body: |
-            This PR merges the master branch back into dev.
-            This happens to ensure that the updates that happend on the release
-            branch, i.e. CHANGELOG and manifest updates are also present on the
-            dev branch.
+            This PR merges the main branch back into dev. This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates, are also present on the dev branch.
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
