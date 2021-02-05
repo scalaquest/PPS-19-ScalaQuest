@@ -6,7 +6,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class GeneratorKTest extends AnyWordSpec with Matchers {
 
   "A GeneratorK" should {
-    implicit val generator = Generator.makeEntry((x: Int) => x -> (Math.pow(x, 2)))
+    implicit val generator = Generator.makeEntry((x: Int) => x -> Math.pow(x, 2))
     "generate a map of entries" in {
       val generatorK = new GeneratorK[List, Int, Map[Int, Double]]
       generatorK.generate(List(1, 2, 3)) shouldBe Map(
