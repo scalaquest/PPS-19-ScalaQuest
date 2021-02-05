@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
-import io.github.scalaquest.core.model.{Direction, ItemRef, Message, RoomRef}
+import io.github.scalaquest.core.model.ItemDescription.dsl
+import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.SimpleCommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
@@ -39,4 +40,36 @@ object SimpleModel
 
   override implicit def roomLens: Lens[RM, Set[ItemRef]] =
     Lens[RM, Set[ItemRef]](get = _.items)(set = a => b => b.copy(_items = () => a))
+
+  def DoorWithKey(
+    doorDescription: ItemDescription,
+    keyDescription: ItemDescription,
+    room: RM,
+    onOpenExtra: Option[Reaction] = None,
+    onEnterExtra: Option[Reaction] = None,
+    doorAdditionalBehaviors: Seq[ItemBehavior] = Seq(),
+    keyAdditionalBehaviors: Seq[ItemBehavior] = Seq()
+  ): (Door, Key) = {
+
+    val key: Key = SimpleKey(keyDescription, ItemRef(keyDescription), keyAdditionalBehaviors: _*)
+
+    (
+      SimpleDoor(
+        doorDescription,
+        ItemRef(doorDescription),
+        SimpleRoomLink(
+          room,
+          Some(
+            SimpleOpenable(
+              requiredKey = Some(key),
+              onOpenExtra = onOpenExtra
+            )
+          ),
+          onEnterExtra
+        ),
+        doorAdditionalBehaviors: _*
+      ),
+      key
+    )
+  }
 }
