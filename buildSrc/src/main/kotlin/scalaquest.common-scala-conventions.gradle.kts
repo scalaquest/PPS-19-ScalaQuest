@@ -6,8 +6,8 @@ plugins {
     // Adds support for Scala
     scala
 
-    // Adds jacoco support
-    jacoco
+    // Adds scoverage support
+    id("org.scoverage")
 
     // Support for semantic gis-sensitive semantic versioning
     id("org.danilopianini.git-sensitive-semantic-versioning")
@@ -17,30 +17,6 @@ plugins {
 
     // A scala linter-formatter
     id("com.diffplug.spotless")
-}
-
-tasks.jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                counter = "CLASS"
-                value = "COVEREDRATIO"
-                minimum = 0.6.toBigDecimal()
-            }
-        }
-    }
-}
-
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test) // tests are required to run before generating the report
-
-    reports {
-        xml.isEnabled = true
-    }
 }
 
 repositories {
