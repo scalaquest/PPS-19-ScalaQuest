@@ -1,5 +1,6 @@
 plugins {
     id("scalaquest.examples-conventions")
+    application
 }
 
 dependencies {
@@ -9,5 +10,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("io.github.scalaquest.examples.escaperoom.App")
+    mainClass.set("io.github.scalaquest.examples.escaperoom.EscapeRoom")
 }
