@@ -1,21 +1,23 @@
 # ScalaQuest
-An exam project. From UNIBO, for the course "Paradigmi di Programmazione e Sviluppo", 2020.
 
-Useful links:
-- [Sprints historical overview](reports/sprints-historical-overview.md)
-- [License (MIT)](./LICENSE)
-- [Code of conduct](./CODE_OF_CONDUCT.md)
+ScalaQuest is an exam project for PPS and LSS courses in UNIBO, made by
+[Riccardo Maldini](https://www.riccardomaldini.it),
+[Filippo Nardini](https://github.com/lippo97),
+[Jacopo Corina](https://github.com/corinz97),
+[Francesco Gorini](https://github.com/francescogorini),
+[Thomas Angelini](https://github.com/ThomasAngeliniUnibo).
 
-## PPS Report
+The basic idea is to create a framework for the implementation of games of the
+Interactive Fiction](https://en.wikipedia.org/wiki/Interactive_fiction) genre,
+in which the player can use text commands to influence the environment and
+continue in the game (e.g. [Zork](https://en.wikipedia.org/wiki/Zork)).
 
-1. [Introduzione](./reports/pps-report/1-introduzione.md)
-2. [Processo di sviluppo adottato](./reports/pps-report/2-processo-sviluppo-adottato.md)
-3. [Requisiti](./reports/pps-report/3-requisiti.md)
-4. [Design architetturale](./reports/pps-report/4-design-architetturale.md)
-5. [Design di dettaglio](./reports/pps-report/5-design-di-dettaglio.md)
-6. [Implementazione](./reports/pps-report/6-implementazione.md)
-7. [Retrospettiva e conclusioni](./reports/pps-report/7-retrospettiva-conclusioni.md)
+## Official documentation
 
-## LSS Report
-
-1. [Introduzione](./reports/lss-report/1-introduzione.md)
+The official documentation of the project consists in the official Scaladoc of the 
+[Core](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/scaladoc/index.html)
+and 
+[CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/scaladoc/index.html)
+modules. Additionally, there are one report per course and some additional
+documents, and some more documental artifacts, that can be found in a separate
+[reports repository](https://github.com/scalaquest/reports).
