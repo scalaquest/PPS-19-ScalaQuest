@@ -6,6 +6,9 @@ plugins {
     // Adds support for Scala
     scala
 
+    // Adds scoverage support
+    id("org.scoverage")
+
     // Support for semantic gis-sensitive semantic versioning
     id("org.danilopianini.git-sensitive-semantic-versioning")
 
