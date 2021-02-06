@@ -7,5 +7,4 @@ dependencies {
 
     // prolog
     implementation("it.unibo.alice.tuprolog:tuprolog:3.3.0")
-
 }
