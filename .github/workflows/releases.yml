@@ -33,13 +33,12 @@ jobs:
           VERSION=${BRANCH_NAME#hotfix/}
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
-        # Only locally: this is useful to have the right release name on .jar(s) and
-        # Scaladoc' titles, as the version of the projects are based on gitSemVer.
-      - name: Add local tag
+      - name: Add tag
         run: |
           git config user.name releaserbot
           git config user.email github-actions@github.com
-          git tag ${{ env.RELEASE_VERSION }} -a -m "Local tag"
+          git tag ${{ env.RELEASE_VERSION }} -a -m "Release ${{ env.RELEASE_VERSION }}"
+          git push --follow-tags
 
       - name: Create Release
         id: create-release
@@ -90,6 +89,8 @@ jobs:
         run: |
           ./gradlew :core:scaladoc
           ./gradlew :cli:scaladoc
+          ./gradlew :core:reportScoverage
+          ./gradlew :cli:reportScoverage
 
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
@@ -104,6 +105,11 @@ jobs:
           mkdir ./gh-pages/scaladoc/cli
           mv ./core/build/docs/scaladoc ./gh-pages/scaladoc/core
           mv ./cli/build/docs/scaladoc ./gh-pages/scaladoc/cli
+          mkdir ./gh-pages/coverage
+          mkdir ./gh-pages/coverage/core
+          mkdir ./gh-pages/coverage/cli
+          mv ./core/build/reports/scoverage ./gh-pages/coverage/core
+          mv ./cli/build/reports/scoverage ./gh-pages/coverage/cli
           cd ./gh-pages
           git config user.name Docubot
           git config user.email github-actions@github.com
