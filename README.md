@@ -8,16 +8,22 @@ ScalaQuest is an exam project for PPS and LSS courses in UNIBO, made by
 [Thomas Angelini](https://github.com/ThomasAngeliniUnibo).
 
 The basic idea is to create a framework for the implementation of games of the
-Interactive Fiction](https://en.wikipedia.org/wiki/Interactive_fiction) genre,
+[Interactive Fiction](https://en.wikipedia.org/wiki/Interactive_fiction) genre,
 in which the player can use text commands to influence the environment and
 continue in the game (e.g. [Zork](https://en.wikipedia.org/wiki/Zork)).
 
 ## Official documentation
 
-The official documentation of the project consists in the official Scaladoc of the 
-[Core](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/scaladoc/index.html)
-and 
-[CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/scaladoc/index.html)
-modules. Additionally, there are one report per course and some additional
-documents, and some more documental artifacts, that can be found in a separate
-[reports repository](https://github.com/scalaquest/reports).
+The official documentation of the project consists in:
+- the official Scaladoc of the
+  [Core](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/index.html)
+  and [CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/index.html)
+  modules.
+- the official coverage reports for the
+  [Core](https://scalaquest.github.io/PPS-19-ScalaQuest/coverage/core/index.html)
+  and
+  [CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/coverage/core/index.html)
+  modules.
+- One report per course, and some additional appendix documents, that can be
+  found in the project
+  [reports repository](https://github.com/scalaquest/reports).
