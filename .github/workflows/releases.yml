@@ -100,15 +100,20 @@ jobs:
 
       - name: Push Scaladoc to gh-pages
         run: |
-          mkdir ./gh-pages/scaladoc -p
-          mv ./core/build/docs/scaladoc ./gh-pages/scaladoc/core
-          mv ./cli/build/docs/scaladoc ./gh-pages/scaladoc/cli
-          mkdir ./gh-pages/coverage -p
-          mv ./core/build/reports/scoverage ./gh-pages/coverage/core
-          mv ./cli/build/reports/scoverage ./gh-pages/coverage/cli
-          cd ./gh-pages
+          rm -rf gh-pages/scaladoc
+          mkdir gh-pages/scaladoc -p
+          rm -rf gh-pages/coverage
+          mkdir gh-pages/coverage -p
+
+          mv core/build/docs/scaladoc gh-pages/scaladoc/core
+          mv cli/build/docs/scaladoc gh-pages/scaladoc/cli
+          mv core/build/reports/scoverage gh-pages/coverage/core
+          mv cli/build/reports/scoverage gh-pages/coverage/cli
+
+          cd gh-pages
           git config user.name Docubot
           git config user.email github-actions@github.com
-          git add ./scaladoc
+          git add scaladoc
+          git add coverage
           git commit -m "Update Scaladoc"
           git push
