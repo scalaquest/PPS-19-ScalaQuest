@@ -7,6 +7,6 @@ The basic idea is to create a framework for the implementation of games of the [
 # Official documentation
 
 The official documentation of the project consists in:
-- the official Scaladoc of the [Core](./scaladoc/core/index.html) and [CLI](./scaladoc/core/index.html) modules.
-- the official coverage reports for the [Core](./coverage/core/index.html) and [CLI](./coverage/core/index.html) modules.
+- the official Scaladoc of the [Core](./scaladoc/core/index.html) and [CLI](./scaladoc/core/index.html) modules;
+- the official coverage reports for the [Core](./coverage/core/index.html) and [CLI](./coverage/core/index.html) modules;
 - One report per course, and some additional appendix documents, that can be found in the project [reports repository](https://github.com/scalaquest/reports).
