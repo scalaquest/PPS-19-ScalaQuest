@@ -18,5 +18,4 @@ bootstrapRefreshVersions()
 rootProject.name = "ScalaQuest"
 include(":core")
 include(":cli")
-include(":reports")
 include(":examples:escape-room")

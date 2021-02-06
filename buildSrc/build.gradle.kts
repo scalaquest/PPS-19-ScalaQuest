@@ -26,6 +26,7 @@ dependencies {
     implementation("org.danilopianini:publish-on-central:_")
     implementation("com.github.maiflai:gradle-scalatest:_")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:_")
+    implementation("gradle.plugin.org.scoverage:gradle-scoverage:_")
 
     // Makes Detekt configurable
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")
