@@ -1,0 +1,349 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/pipeline/Pipeline.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline
+</span>2 <span style=''>
+</span>3 <span style=''>import cats.data.Reader
+</span>4 <span style=''>import io.github.scalaquest.core.model.Model
+</span>5 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>6 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
+</span>7 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>8 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>9 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>10 <span style=''>
+</span>11 <span style=''>abstract class Pipeline[M &lt;: Model](val model: M) {
+</span>12 <span style=''>  def run(rawSentence: String): Either[String, model.S]
+</span>13 <span style=''>}
+</span>14 <span style=''>
+</span>15 <span style=''>object Pipeline {
+</span>16 <span style=''>
+</span>17 <span style=''>  type PartialBuilder[S &lt;: Model#State, M &lt;: Model] = S =&gt; Pipeline[M]
+</span>18 <span style=''>
+</span>19 <span style=''>  def builderFrom[M &lt;: Model](model: M) = </span><span style='background: #F0ADAD'>new PipelineBuilder[M](model)</span><span style=''>
+</span>20 <span style=''>
+</span>21 <span style=''>  class PipelineBuilder[M &lt;: Model](val model: M) {
+</span>22 <span style=''>
+</span>23 <span style=''>    def build(
+</span>24 <span style=''>      lexer: Lexer,
+</span>25 <span style=''>      parser: Parser,
+</span>26 <span style=''>      resolver: Resolver.Builder[model.S],
+</span>27 <span style=''>      interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
+</span>28 <span style=''>      reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
+</span>29 <span style=''>    )(state: model.S): Pipeline[model.type] =
+</span>30 <span style=''>      </span><span style='background: #F0ADAD'>new</span><span style=''> Pipeline[model.type](model) {
+</span>31 <span style=''>
+</span>32 <span style=''>        override def run(rawSentence: String): Either[String, model.S] =
+</span>33 <span style=''>          </span><span style='background: #F0ADAD'>for {
+</span>34 <span style=''></span><span style='background: #F0ADAD'>            lr  &lt;- Right(lexer tokenize rawSentence)
+</span>35 <span style=''></span><span style='background: #F0ADAD'>            pr  &lt;- (parser parse lr) toRight &quot;Couldn't understand input.&quot;
+</span>36 <span style=''></span><span style='background: #F0ADAD'>            rr  &lt;- resolver(state) resolve pr
+</span>37 <span style=''></span><span style='background: #F0ADAD'>            ir  &lt;- interpreterBuilder(state) interpret rr
+</span>38 <span style=''></span><span style='background: #F0ADAD'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
+</span>39 <span style=''></span><span style='background: #F0ADAD'>          } yield rdr.state</span><span style=''>
+</span>40 <span style=''>      }
+</span>41 <span style=''>  }
+</span>42 <span style=''>
+</span>43 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          419
+        </td>
+        <td>
+          652
+          -
+          681
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder[M](model)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          429
+        </td>
+        <td>
+          1047
+          -
+          1050
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder.$anon.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new $anon()
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          420
+        </td>
+        <td>
+          1196
+          -
+          1222
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.lexer.Lexer.tokenize
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          lexer.tokenize(rawSentence)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          428
+        </td>
+        <td>
+          1165
+          -
+          1487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.lexer.LexerResult](lexer.tokenize(rawSentence)).flatMap[String, PipelineBuilder.this.model.S](((lr: io.github.scalaquest.core.pipeline.lexer.LexerResult) =&gt; parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, PipelineBuilder.this.model.S](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))))))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          421
+        </td>
+        <td>
+          1269
+          -
+          1297
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Couldn\'t understand input.&quot;
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          427
+        </td>
+        <td>
+          1236
+          -
+          1487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, PipelineBuilder.this.model.S](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          426
+        </td>
+        <td>
+          1310
+          -
+          1487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          425
+        </td>
+        <td>
+          1356
+          -
+          1487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          422
+        </td>
+        <td>
+          1427
+          -
+          1458
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.reducer.Reducer.reduce
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          reducerBuilder.apply(state).reduce(ir)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          424
+        </td>
+        <td>
+          1414
+          -
+          1487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          423
+        </td>
+        <td>
+          1478
+          -
+          1487
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.reducer.ReducerResult.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          rdr.state
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

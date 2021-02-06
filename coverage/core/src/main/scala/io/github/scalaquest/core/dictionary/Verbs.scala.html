@@ -1,0 +1,150 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/Verbs.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Action
+</span>4 <span style=''>
+</span>5 <span style=''>sealed trait BaseVerb {
+</span>6 <span style=''>  def name: String
+</span>7 <span style=''>
+</span>8 <span style=''>  def prep: Option[String]
+</span>9 <span style=''>}
+</span>10 <span style=''>
+</span>11 <span style=''>final case class Intransitive(name: String, action: Action, prep: Option[String] = None)
+</span>12 <span style=''>  extends BaseVerb
+</span>13 <span style=''>  with ClauseUtils
+</span>14 <span style=''>  with PairUtils {
+</span>15 <span style=''>
+</span>16 <span style=''>  override def arity: Int = </span><span style='background: #F0ADAD'>1</span><span style=''>
+</span>17 <span style=''>}
+</span>18 <span style=''>
+</span>19 <span style=''>final case class Transitive(name: String, action: Action, prep: Option[String] = None)
+</span>20 <span style=''>  extends BaseVerb
+</span>21 <span style=''>  with ClauseUtils
+</span>22 <span style=''>  with PairUtils {
+</span>23 <span style=''>
+</span>24 <span style=''>  override def arity: Int = </span><span style='background: #F0ADAD'>2</span><span style=''>
+</span>25 <span style=''>}
+</span>26 <span style=''>
+</span>27 <span style=''>final case class Ditransitive(
+</span>28 <span style=''>  name: String,
+</span>29 <span style=''>  action: Action,
+</span>30 <span style=''>  prep: Option[String] = None
+</span>31 <span style=''>) extends BaseVerb
+</span>32 <span style=''>  with ClauseUtils
+</span>33 <span style=''>  with PairUtils {
+</span>34 <span style=''>
+</span>35 <span style=''>  override def arity: Int = </span><span style='background: #F0ADAD'>3</span><span style=''>
+</span>36 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          80
+        </td>
+        <td>
+          342
+          -
+          343
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          1
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          81
+        </td>
+        <td>
+          520
+          -
+          521
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          2
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          82
+        </td>
+        <td>
+          706
+          -
+          707
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          3
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

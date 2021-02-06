@@ -1,0 +1,786 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/Test.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Action
+</span>4 <span style=''>import io.github.scalaquest.core.model.Action.Common.{Inspect, Open, Take}
+</span>5 <span style=''>import io.github.scalaquest.core.parsing.scalog.Clause
+</span>6 <span style=''>
+</span>7 <span style=''>object Test extends App {
+</span>8 <span style=''>
+</span>9 <span style=''>  val myVerbs: Set[Verb] = </span><span style='background: #F0ADAD'>Set(
+</span>10 <span style=''></span><span style='background: #F0ADAD'>    Transitive(&quot;take&quot;, Take),
+</span>11 <span style=''></span><span style='background: #F0ADAD'>    Transitive(&quot;pick&quot;, Take, Some(&quot;up&quot;)),
+</span>12 <span style=''></span><span style='background: #F0ADAD'>    Ditransitive(&quot;open&quot;, Open, Some(&quot;with&quot;)),
+</span>13 <span style=''></span><span style='background: #F0ADAD'>    Transitive(&quot;open&quot;, Open),
+</span>14 <span style=''></span><span style='background: #F0ADAD'>    Intransitive(&quot;inspect&quot;, Inspect)
+</span>15 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>16 <span style=''>
+</span>17 <span style=''>  def toClauses(verbs: List[Verb with ClauseUtils]): List[Clause] = </span><span style='background: #F0ADAD'>verbs.map(_.clause)</span><span style=''>
+</span>18 <span style=''>
+</span>19 <span style=''>  def toActions(verbs: List[BaseVerb with Meaning]): Map[VerbPrep, Action] =
+</span>20 <span style=''>    </span><span style='background: #F0ADAD'>verbs.map(_.binding).toMap</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>  </span><span style='background: #F0ADAD'>println(toClauses(myVerbs.toList).map(_.generate).mkString(&quot;\n&quot;))</span><span style=''>
+</span>23 <span style=''>  </span><span style='background: #F0ADAD'>println(toActions(myVerbs.toList).mkString(&quot;\n&quot;))</span><span style=''>
+</span>24 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          70
+        </td>
+        <td>
+          277
+          -
+          470
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.Set.apply[io.github.scalaquest.core.dictionary.Verb](Transitive.apply(&quot;take&quot;, io.github.scalaquest.core.model.Action.Common.Take, Transitive.apply$default$3), Transitive.apply(&quot;pick&quot;, io.github.scalaquest.core.model.Action.Common.Take, scala.Some.apply[String](&quot;up&quot;)), Ditransitive.apply(&quot;open&quot;, io.github.scalaquest.core.model.Action.Common.Open, scala.Some.apply[String](&quot;with&quot;)), Transitive.apply(&quot;open&quot;, io.github.scalaquest.core.model.Action.Common.Open, Transitive.apply$default$3), Intransitive.apply(&quot;inspect&quot;, io.github.scalaquest.core.model.Action.Common.Inspect, Intransitive.apply$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          50
+        </td>
+        <td>
+          297
+          -
+          303
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;take&quot;
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          51
+        </td>
+        <td>
+          305
+          -
+          309
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Action.Common.Take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.Action.Common.Take
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          52
+        </td>
+        <td>
+          286
+          -
+          286
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Transitive.apply$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Transitive.apply$default$3
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          53
+        </td>
+        <td>
+          286
+          -
+          310
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Transitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Transitive.apply(&quot;take&quot;, io.github.scalaquest.core.model.Action.Common.Take, Transitive.apply$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          54
+        </td>
+        <td>
+          327
+          -
+          333
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;pick&quot;
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          55
+        </td>
+        <td>
+          335
+          -
+          339
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Action.Common.Take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.Action.Common.Take
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          56
+        </td>
+        <td>
+          341
+          -
+          351
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Some.apply[String](&quot;up&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          57
+        </td>
+        <td>
+          316
+          -
+          352
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Transitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Transitive.apply(&quot;pick&quot;, io.github.scalaquest.core.model.Action.Common.Take, scala.Some.apply[String](&quot;up&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          371
+          -
+          377
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;open&quot;
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          59
+        </td>
+        <td>
+          379
+          -
+          383
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Action.Common.Open
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.Action.Common.Open
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          60
+        </td>
+        <td>
+          385
+          -
+          397
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Some.apply[String](&quot;with&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          61
+        </td>
+        <td>
+          358
+          -
+          398
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Ditransitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Ditransitive.apply(&quot;open&quot;, io.github.scalaquest.core.model.Action.Common.Open, scala.Some.apply[String](&quot;with&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          62
+        </td>
+        <td>
+          415
+          -
+          421
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;open&quot;
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          63
+        </td>
+        <td>
+          423
+          -
+          427
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Action.Common.Open
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.Action.Common.Open
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          64
+        </td>
+        <td>
+          404
+          -
+          404
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Transitive.apply$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Transitive.apply$default$3
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          65
+        </td>
+        <td>
+          404
+          -
+          428
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Transitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Transitive.apply(&quot;open&quot;, io.github.scalaquest.core.model.Action.Common.Open, Transitive.apply$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          66
+        </td>
+        <td>
+          447
+          -
+          456
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;inspect&quot;
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          67
+        </td>
+        <td>
+          458
+          -
+          465
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Action.Common.Inspect
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.Action.Common.Inspect
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          434
+          -
+          434
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Intransitive.apply$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Intransitive.apply$default$3
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          69
+        </td>
+        <td>
+          434
+          -
+          466
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Intransitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Intransitive.apply(&quot;inspect&quot;, io.github.scalaquest.core.model.Action.Common.Inspect, Intransitive.apply$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          71
+        </td>
+        <td>
+          550
+          -
+          558
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.ClauseUtils.clause
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          x$1.clause
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          72
+        </td>
+        <td>
+          540
+          -
+          559
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          verbs.map[io.github.scalaquest.core.parsing.scalog.Fact](((x$1: io.github.scalaquest.core.dictionary.Verb with io.github.scalaquest.core.dictionary.ClauseUtils) =&gt; x$1.clause))
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          73
+        </td>
+        <td>
+          652
+          -
+          661
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.Meaning.binding
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          x$2.binding
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          74
+        </td>
+        <td>
+          663
+          -
+          663
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.&lt;:&lt;.refl
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.&lt;:&lt;.refl[(io.github.scalaquest.core.dictionary.VerbPrep, io.github.scalaquest.core.model.Action)]
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          75
+        </td>
+        <td>
+          642
+          -
+          668
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          verbs.map[(io.github.scalaquest.core.dictionary.VerbPrep, io.github.scalaquest.core.model.Action)](((x$2: io.github.scalaquest.core.dictionary.BaseVerb with io.github.scalaquest.core.dictionary.Meaning) =&gt; x$2.binding)).toMap[io.github.scalaquest.core.dictionary.VerbPrep, io.github.scalaquest.core.model.Action](scala.this.&lt;:&lt;.refl[(io.github.scalaquest.core.dictionary.VerbPrep, io.github.scalaquest.core.model.Action)])
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          76
+        </td>
+        <td>
+          680
+          -
+          736
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Test.this.toClauses(Test.this.myVerbs.toList).map[String](((x$3: io.github.scalaquest.core.parsing.scalog.Clause) =&gt; x$3.generate)).mkString(&quot;\n&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          77
+        </td>
+        <td>
+          672
+          -
+          737
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.println(Test.this.toClauses(Test.this.myVerbs.toList).map[String](((x$3: io.github.scalaquest.core.parsing.scalog.Clause) =&gt; x$3.generate)).mkString(&quot;\n&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          78
+        </td>
+        <td>
+          748
+          -
+          788
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Test.this.toActions(Test.this.myVerbs.toList).mkString(&quot;\n&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          79
+        </td>
+        <td>
+          740
+          -
+          789
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.println(Test.this.toActions(Test.this.myVerbs.toList).mkString(&quot;\n&quot;))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

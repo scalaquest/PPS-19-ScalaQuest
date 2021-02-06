@@ -1,0 +1,933 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/impl/SimpleUtils.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.{ItemRef, Message, Model, RoomRef}
+</span>4 <span style=''>import monocle.Lens
+</span>5 <span style=''>
+</span>6 <span style=''>/**
+</span>7 <span style=''> * Integrates some additional functionalities for state inspection and re-generation, by the use of
+</span>8 <span style=''> * [[monocle.Lens]].
+</span>9 <span style=''> */
+</span>10 <span style=''>trait SimpleUtils extends Model {
+</span>11 <span style=''>
+</span>12 <span style=''>  implicit def playerBagLens: Lens[S, Set[ItemRef]]
+</span>13 <span style=''>  implicit def matchRoomsLens: Lens[S, Map[RoomRef, RM]]
+</span>14 <span style=''>  implicit def playerLocationLens: Lens[S, RoomRef]
+</span>15 <span style=''>  implicit def itemsLens: Lens[S, Map[ItemRef, I]]
+</span>16 <span style=''>  implicit def roomLens: Lens[RM, Set[ItemRef]]
+</span>17 <span style=''>
+</span>18 <span style=''>  implicit class StateUtils(state: S) {
+</span>19 <span style=''>    def isInBag(item: I): Boolean = </span><span style='background: #AEF1AE'>state.matchState.player.bag.contains(item.ref)</span><span style=''>
+</span>20 <span style=''>
+</span>21 <span style=''>    def isInCurrentRoom(item: I): Boolean = </span><span style='background: #AEF1AE'>state.currentRoom.items.contains(item.ref)</span><span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>    def isInScope(item: I): Boolean = </span><span style='background: #AEF1AE'>state.isInCurrentRoom(item) || state.isInBag(item)</span><span style=''>
+</span>24 <span style=''>
+</span>25 <span style=''>    def currentRoom: RM = </span><span style='background: #AEF1AE'>state.matchState.rooms(state.matchState.player.location)</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>    def itemRefsFromRoomRef(roomRef: RoomRef): Set[ItemRef] =
+</span>28 <span style=''>      </span><span style='background: #AEF1AE'>state.matchState.rooms.get(roomRef).fold(</span><span style='background: #F0ADAD'>Set[ItemRef]()</span><span style='background: #AEF1AE'>)(_.items)</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>    def itemsFromRefs(itemRefs: Set[ItemRef]): Set[I] =
+</span>31 <span style=''>      </span><span style='background: #AEF1AE'>itemRefs.flatMap(state.matchState.items.get(_))</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>    def itemFromRef(itemRef: ItemRef): Option[I] = </span><span style='background: #F0ADAD'>state.matchState.items.get(itemRef)</span><span style=''>
+</span>34 <span style=''>
+</span>35 <span style=''>    def roomFromRef(roomRef: RoomRef): Option[RM] = </span><span style='background: #AEF1AE'>state.matchState.rooms.get(roomRef)</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>    def copyWithItemInLocation(item: I): S = {
+</span>38 <span style=''>      val stateWithTarget    = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>39 <span style=''>      val currRoomWithTarget = </span><span style='background: #AEF1AE'>roomLens.modify(_ + item.ref)(state.currentRoom)</span><span style=''>
+</span>40 <span style=''>      </span><span style='background: #AEF1AE'>matchRoomsLens.modify(_ + (currRoomWithTarget.ref -&gt; currRoomWithTarget))(stateWithTarget)</span><span style=''>
+</span>41 <span style=''>    }
+</span>42 <span style=''>
+</span>43 <span style=''>    def copyWithItemInBag(item: I): S = {
+</span>44 <span style=''>      val stateWithTarget = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>45 <span style=''>      </span><span style='background: #AEF1AE'>playerBagLens.modify(_ + item.ref)(stateWithTarget)</span><span style=''>
+</span>46 <span style=''>    }
+</span>47 <span style=''>
+</span>48 <span style=''>    def applyReactions(reactions: Reaction*): S = </span><span style='background: #AEF1AE'>Function.chain(reactions.toList)(this.state)</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>  }
+</span>51 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          296
+        </td>
+        <td>
+          679
+          -
+          687
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          item.ref
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          297
+        </td>
+        <td>
+          642
+          -
+          688
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetOps.contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.matchState.player.bag.contains(item.ref)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          734
+          -
+          739
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          299
+        </td>
+        <td>
+          767
+          -
+          775
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          item.ref
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          300
+        </td>
+        <td>
+          734
+          -
+          776
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetOps.contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.StateUtils(StateUtils.this.state).currentRoom.items.contains(item.ref)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          301
+        </td>
+        <td>
+          816
+          -
+          821
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          302
+        </td>
+        <td>
+          847
+          -
+          866
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.isInBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.StateUtils(StateUtils.this.state).isInBag(item)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          303
+        </td>
+        <td>
+          816
+          -
+          866
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.StateUtils(StateUtils.this.state).isInCurrentRoom(item).||(SimpleUtils.this.StateUtils(StateUtils.this.state).isInBag(item))
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          304
+        </td>
+        <td>
+          917
+          -
+          949
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Player.location
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.matchState.player.location
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          305
+        </td>
+        <td>
+          894
+          -
+          950
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.matchState.rooms.apply(StateUtils.this.state.matchState.player.location)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          306
+        </td>
+        <td>
+          1061
+          -
+          1075
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.Set.apply[io.github.scalaquest.core.model.ItemRef]()
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          307
+        </td>
+        <td>
+          1077
+          -
+          1084
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.items
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.items
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          308
+        </td>
+        <td>
+          1020
+          -
+          1085
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.fold
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.matchState.rooms.get(roomRef).fold[scala.collection.immutable.Set[io.github.scalaquest.core.model.ItemRef]](scala.Predef.Set.apply[io.github.scalaquest.core.model.ItemRef]())(((x$1: SimpleUtils.this.RM) =&gt; x$1.items))
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          309
+        </td>
+        <td>
+          1166
+          -
+          1195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.matchState.items.get(x$2)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          310
+        </td>
+        <td>
+          1149
+          -
+          1196
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          itemRefs.flatMap[SimpleUtils.this.I](((x$2: io.github.scalaquest.core.model.ItemRef) =&gt; StateUtils.this.state.matchState.items.get(x$2)))
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          311
+        </td>
+        <td>
+          1249
+          -
+          1284
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          StateUtils.this.state.matchState.items.get(itemRef)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          312
+        </td>
+        <td>
+          1338
+          -
+          1373
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.matchState.rooms.get(roomRef)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          313
+        </td>
+        <td>
+          1475
+          -
+          1491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[SimpleUtils.this.I](item)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          314
+        </td>
+        <td>
+          1470
+          -
+          1492
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3.+[SimpleUtils.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[SimpleUtils.this.I](item))
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          315
+        </td>
+        <td>
+          1494
+          -
+          1499
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          316
+        </td>
+        <td>
+          1453
+          -
+          1500
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.itemsLens.modify(((x$3: Map[io.github.scalaquest.core.model.ItemRef,SimpleUtils.this.I]) =&gt; x$3.+[SimpleUtils.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[SimpleUtils.this.I](item)))).apply(StateUtils.this.state)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          317
+        </td>
+        <td>
+          1552
+          -
+          1560
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          item.ref
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          318
+        </td>
+        <td>
+          1548
+          -
+          1560
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$4.+(item.ref)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          319
+        </td>
+        <td>
+          1562
+          -
+          1567
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          320
+        </td>
+        <td>
+          1562
+          -
+          1579
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.currentRoom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.StateUtils(StateUtils.this.state).currentRoom
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          321
+        </td>
+        <td>
+          1532
+          -
+          1580
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.roomLens.modify(((x$4: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$4.+(item.ref))).apply(SimpleUtils.this.StateUtils(StateUtils.this.state).currentRoom)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          322
+        </td>
+        <td>
+          1587
+          -
+          1677
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.matchRoomsLens.modify(((x$5: Map[io.github.scalaquest.core.model.RoomRef,SimpleUtils.this.RM]) =&gt; x$5.+[SimpleUtils.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](currRoomWithTarget.ref).-&gt;[SimpleUtils.this.RM](currRoomWithTarget)))).apply(stateWithTarget)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          323
+        </td>
+        <td>
+          1777
+          -
+          1793
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[SimpleUtils.this.I](item)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          324
+        </td>
+        <td>
+          1772
+          -
+          1794
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$6.+[SimpleUtils.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[SimpleUtils.this.I](item))
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          325
+        </td>
+        <td>
+          1796
+          -
+          1801
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          326
+        </td>
+        <td>
+          1755
+          -
+          1802
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.itemsLens.modify(((x$6: Map[io.github.scalaquest.core.model.ItemRef,SimpleUtils.this.I]) =&gt; x$6.+[SimpleUtils.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[SimpleUtils.this.I](item)))).apply(StateUtils.this.state)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          327
+        </td>
+        <td>
+          1809
+          -
+          1860
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleUtils.this.playerBagLens.modify(((x$7: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$7.+(item.ref))).apply(stateWithTarget)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          328
+        </td>
+        <td>
+          1933
+          -
+          1949
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          reactions.toList
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          329
+        </td>
+        <td>
+          1951
+          -
+          1961
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          this.state
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          330
+        </td>
+        <td>
+          1918
+          -
+          1962
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Function.chain[SimpleUtils.this.S](reactions.toList).apply(this.state)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

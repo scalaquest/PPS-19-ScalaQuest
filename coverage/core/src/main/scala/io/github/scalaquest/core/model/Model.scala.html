@@ -1,0 +1,247 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/Model.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.dictionary.VerbPrep
+</span>4 <span style=''>import monocle.Lens
+</span>5 <span style=''>
+</span>6 <span style=''>/**
+</span>7 <span style=''> * A way to represent the basic linked concepts of the story, in an extendible way. Usage example:
+</span>8 <span style=''> * {{{
+</span>9 <span style=''> *
+</span>10 <span style=''> *   object MyModel extends Model with SimpleState with SimpleGround with MyItems
+</span>11 <span style=''> *   ...
+</span>12 <span style=''> *   val myItemImpl = MyModel.MySword(&quot;a sword!&quot;, Weapon())
+</span>13 <span style=''> *   ...
+</span>14 <span style=''> * }}}
+</span>15 <span style=''> */
+</span>16 <span style=''>trait Model {
+</span>17 <span style=''>  type S &lt;: State
+</span>18 <span style=''>  type I &lt;: Item
+</span>19 <span style=''>  type G &lt;: Ground
+</span>20 <span style=''>  type RM &lt;: Room
+</span>21 <span style=''>
+</span>22 <span style=''>  type Reaction = S =&gt; S
+</span>23 <span style=''>
+</span>24 <span style=''>  /**
+</span>25 <span style=''>   * Represents a snapshot of the current game, at an higher level in comparison to [[MatchState]].
+</span>26 <span style=''>   * The key fact is that this level of abstraction can handle also [[Message]] s, that is a
+</span>27 <span style=''>   * representation of the output to render to the user at the end of the pipeline round, and all
+</span>28 <span style=''>   * the possible [[Action]] s.
+</span>29 <span style=''>   */
+</span>30 <span style=''>  abstract class State { self: S =&gt;
+</span>31 <span style=''>
+</span>32 <span style=''>    /**
+</span>33 <span style=''>     * All the possible [[Action]] s that can be used into the match, associated with the Verb that
+</span>34 <span style=''>     * triggers it.
+</span>35 <span style=''>     * @return
+</span>36 <span style=''>     *   All the possible [[Action]] s, as a [[Map]].
+</span>37 <span style=''>     */
+</span>38 <span style=''>    def actions: Map[VerbPrep, Action]
+</span>39 <span style=''>
+</span>40 <span style=''>    /**
+</span>41 <span style=''>     * The state of the game, in a vision scoped to the player capabilities.
+</span>42 <span style=''>     * @return
+</span>43 <span style=''>     *   The [[MatchState]] of the match.
+</span>44 <span style=''>     */
+</span>45 <span style=''>    def matchState: MatchState[I, RM]
+</span>46 <span style=''>
+</span>47 <span style=''>    /**
+</span>48 <span style=''>     * A representation of the occurred events in a given the pipeline round. The storyteller can
+</span>49 <span style=''>     * then decide what to show for each one.
+</span>50 <span style=''>     * @return
+</span>51 <span style=''>     *   A [[Seq]] of [[Message]] s.
+</span>52 <span style=''>     */
+</span>53 <span style=''>    def messages: Seq[Message]
+</span>54 <span style=''>  }
+</span>55 <span style=''>
+</span>56 <span style=''>  /**
+</span>57 <span style=''>   * Represents a single object against which the [[Player]] can interact.
+</span>58 <span style=''>   */
+</span>59 <span style=''>  abstract class Item { item: I =&gt;
+</span>60 <span style=''>
+</span>61 <span style=''>    /**
+</span>62 <span style=''>     * Semantic description of the object.
+</span>63 <span style=''>     * @return
+</span>64 <span style=''>     *   An [[ItemDescription]] describing the semantic of the object.
+</span>65 <span style=''>     */
+</span>66 <span style=''>    def description: ItemDescription
+</span>67 <span style=''>
+</span>68 <span style=''>    /**
+</span>69 <span style=''>     * A textual representation of the [[Item]].
+</span>70 <span style=''>     * @return
+</span>71 <span style=''>     */
+</span>72 <span style=''>    def name: String = </span><span style='background: #AEF1AE'>description.mkString</span><span style=''>
+</span>73 <span style=''>
+</span>74 <span style=''>    /**
+</span>75 <span style=''>     * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
+</span>76 <span style=''>     * the reference to an object changes, the [[State]] works in an immutable fashion.
+</span>77 <span style=''>     */
+</span>78 <span style=''>    def ref: ItemRef
+</span>79 <span style=''>
+</span>80 <span style=''>    /**
+</span>81 <span style=''>     * Define a way make the item interact with the [[State]]. The interaction is founded into the
+</span>82 <span style=''>     * [[Action]] (ex. 'open the door'), but it can include also an additional [[Item]] ('open the
+</span>83 <span style=''>     * door with the key'). The item should react to each combination with an appropriate
+</span>84 <span style=''>     * [[Reaction]].
+</span>85 <span style=''>     * @param action
+</span>86 <span style=''>     *   An action from a statement (ex. &lt;b&gt;open&lt;/b&gt; the door with a key).
+</span>87 <span style=''>     * @param state
+</span>88 <span style=''>     *   the starting state, useful to give a context to the decision to take.
+</span>89 <span style=''>     * @param sideItem
+</span>90 <span style=''>     *   A side [[Item]] from a statement (ex. open the door with &lt;b&gt;a key&lt;/b&gt;).
+</span>91 <span style=''>     * @return
+</span>92 <span style=''>     *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
+</span>93 <span style=''>     */
+</span>94 <span style=''>    def use(action: Action, state: S, sideItem: Option[I] = None): Option[Reaction]
+</span>95 <span style=''>  }
+</span>96 <span style=''>
+</span>97 <span style=''>  /**
+</span>98 <span style=''>   * The ground is a sort of &quot;virtual&quot; item, that handles the intransitive [[Action]] s linked to
+</span>99 <span style=''>   * the match.
+</span>100 <span style=''>   */
+</span>101 <span style=''>  abstract class Ground { ground: G =&gt;
+</span>102 <span style=''>
+</span>103 <span style=''>    /**
+</span>104 <span style=''>     * Define a way make the given [[Action]] interacts with the [[State]]. The interaction is
+</span>105 <span style=''>     * founded into a single [[Action]] value (ex. 'inspect'). The ground should react to each
+</span>106 <span style=''>     * combination with an appropriate [[Reaction]].
+</span>107 <span style=''>     * @param action
+</span>108 <span style=''>     *   An action from a statement (ex. &lt;b&gt;inspect&lt;/b&gt; ).
+</span>109 <span style=''>     * @param state
+</span>110 <span style=''>     *   the starting state, useful to give a context to the decision to take.
+</span>111 <span style=''>     * @return
+</span>112 <span style=''>     *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
+</span>113 <span style=''>     */
+</span>114 <span style=''>    def use(action: Action, state: S): Option[Reaction]
+</span>115 <span style=''>  }
+</span>116 <span style=''>
+</span>117 <span style=''>  /**
+</span>118 <span style=''>   * A geographical portion of the match map.
+</span>119 <span style=''>   *
+</span>120 <span style=''>   * This is one of the basic block for the story build by the storyteller, as it is used to
+</span>121 <span style=''>   * identify [[Player]] 's and [[Model.Item]] s' location, in a given moment of the story, and
+</span>122 <span style=''>   * navigate across the match geography.
+</span>123 <span style=''>   */
+</span>124 <span style=''>  abstract class Room { room: RM =&gt;
+</span>125 <span style=''>
+</span>126 <span style=''>    /**
+</span>127 <span style=''>     * A textual identifier for the room.
+</span>128 <span style=''>     * @return
+</span>129 <span style=''>     *   A textual identifier for the room.
+</span>130 <span style=''>     */
+</span>131 <span style=''>    def name: String
+</span>132 <span style=''>
+</span>133 <span style=''>    /**
+</span>134 <span style=''>     * The unique identifier of the [[Room]]. This is necessary, as passing from a state to another,
+</span>135 <span style=''>     * the reference to an object changes, the [[State]] works in an immutable fashion.
+</span>136 <span style=''>     */
+</span>137 <span style=''>    def ref: RoomRef
+</span>138 <span style=''>
+</span>139 <span style=''>    /**
+</span>140 <span style=''>     * Identifies [[Room]] s near to the current one, at the cardinal points.
+</span>141 <span style=''>     */
+</span>142 <span style=''>    def neighbor(direction: Direction): Option[RoomRef]
+</span>143 <span style=''>
+</span>144 <span style=''>    /**
+</span>145 <span style=''>     * Identifies the [[Item]] s positioned into the current [[Room]].
+</span>146 <span style=''>     * @return
+</span>147 <span style=''>     *   [[Item]] s positioned into the [[Room]] as a [[Set]]
+</span>148 <span style=''>     */
+</span>149 <span style=''>    def items: Set[ItemRef]
+</span>150 <span style=''>  }
+</span>151 <span style=''>
+</span>152 <span style=''>  /**
+</span>153 <span style=''>   * Lens used to empty [[Message]] s after each pipeline round.
+</span>154 <span style=''>   * @return
+</span>155 <span style=''>   */
+</span>156 <span style=''>  implicit def messageLens: Lens[S, Seq[Message]]
+</span>157 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          135
+        </td>
+        <td>
+          1975
+          -
+          1986
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.description
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Item.this.description
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          136
+        </td>
+        <td>
+          1975
+          -
+          1995
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.ItemDescription.EnhancedItemDescription.mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          model.this.ItemDescription.EnhancedItemDescription(Item.this.description).mkString
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -1,0 +1,800 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/common/itemBehaviors/impl/SimpleOpenableExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Action.Common.{Close, Open}
+</span>4 <span style=''>import io.github.scalaquest.core.model.Message
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
+</span>6 <span style=''>import monocle.Lens
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * The trait makes possible to mix into the StdCommonBehaviors the standard implementation of
+</span>10 <span style=''> * Openable.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait SimpleOpenableExt extends CommonBase {
+</span>13 <span style=''>
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * Standard implementation of the common Openable behavior.
+</span>16 <span style=''>   *
+</span>17 <span style=''>   * This is a behavior associated to an Item that can be opened and closed. Open and close actions
+</span>18 <span style=''>   * are mutually exclusive. The standard Reactions consists into changing an internal variable that
+</span>19 <span style=''>   * indicates the &quot;openness&quot; of the Openable, when Statements &quot;open Item (with something)&quot;, &quot;close
+</span>20 <span style=''>   * Item (with something)&quot; are called.
+</span>21 <span style=''>   * @param _isOpen
+</span>22 <span style=''>   *   The initial openness state of the behavior. Default to closed False.
+</span>23 <span style=''>   * @param requiredKey
+</span>24 <span style=''>   *   The key required to open the Item. If not passed the Item can be open without Key.
+</span>25 <span style=''>   * @param onOpenExtra
+</span>26 <span style=''>   *   Reaction to be executed into the State when opened, after the standard Reaction. It can be
+</span>27 <span style=''>   *   omitted.
+</span>28 <span style=''>   * @param onCloseExtra
+</span>29 <span style=''>   *   Reaction to be executed into the State when closed, after the standard Reaction. It can be
+</span>30 <span style=''>   *   omitted.
+</span>31 <span style=''>   */
+</span>32 <span style=''>  case class SimpleOpenable(
+</span>33 <span style=''>    var _isOpen: Boolean = false,
+</span>34 <span style=''>    requiredKey: Option[Key] = None,
+</span>35 <span style=''>    onOpenExtra: Option[Reaction] = None,
+</span>36 <span style=''>    onCloseExtra: Option[Reaction] = None
+</span>37 <span style=''>  )(implicit
+</span>38 <span style=''>    messageLens: Lens[S, Seq[Message]]
+</span>39 <span style=''>  ) extends Openable {
+</span>40 <span style=''>
+</span>41 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>_isOpen</span><span style=''>
+</span>42 <span style=''>
+</span>43 <span style=''>    override def triggers: ItemTriggers = {
+</span>44 <span style=''>      // &quot;Open the item (with something)&quot;
+</span>45 <span style=''>      case (Open, item, maybeKey, state)
+</span>46 <span style=''>          if </span><span style='background: #AEF1AE'>state.isInCurrentRoom(item) &amp;&amp; canBeOpened(state, maybeKey) &amp;&amp; !isOpen</span><span style=''> =&gt;
+</span>47 <span style=''>        </span><span style='background: #AEF1AE'>open(item)</span><span style=''>
+</span>48 <span style=''>
+</span>49 <span style=''>      // &quot;Close the item (with something)&quot;
+</span>50 <span style=''>      case (Close, item, maybeKey, state)
+</span>51 <span style=''>          if </span><span style='background: #F0ADAD'>state.isInCurrentRoom(item) &amp;&amp; canBeOpened(state, maybeKey) &amp;&amp; isOpen</span><span style=''> =&gt;
+</span>52 <span style=''>        </span><span style='background: #F0ADAD'>close(item)</span><span style=''>
+</span>53 <span style=''>    }
+</span>54 <span style=''>
+</span>55 <span style=''>    /**
+</span>56 <span style=''>     * Checks whether the Item can be opened with the current configuration. The usedKey is the
+</span>57 <span style=''>     * eventual Key passed explicitly by the user, with a statement like &quot;open the item with the
+</span>58 <span style=''>     * key&quot;.
+</span>59 <span style=''>     *
+</span>60 <span style=''>     * @param state
+</span>61 <span style=''>     *   The current State.
+</span>62 <span style=''>     * @param usedKey
+</span>63 <span style=''>     *   The eventual key passed explicitly by the user, e.g. , with a statement like &quot;open the item
+</span>64 <span style=''>     *   with the key&quot;.
+</span>65 <span style=''>     * @return
+</span>66 <span style=''>     *   True if:
+</span>67 <span style=''>     *   - A key was passed explicitly, is effectively into the Bag of the Player (or in the current
+</span>68 <span style=''>     *     room) and that key is effectively required to open the Item.
+</span>69 <span style=''>     *   - No key was passed explicitly, is effectively into the Bag of the Player and that key is
+</span>70 <span style=''>     *     effectively required to open the Item.
+</span>71 <span style=''>     *   - No key was passed explicitly, and no key is required.
+</span>72 <span style=''>     *
+</span>73 <span style=''>     * False otherwise.
+</span>74 <span style=''>     */
+</span>75 <span style=''>    def canBeOpened(state: S, usedKey: Option[I] = None): Boolean = {
+</span>76 <span style=''>      usedKey match {
+</span>77 <span style=''>        case Some(key) =&gt; </span><span style='background: #AEF1AE'>requiredKey.contains(key) &amp;&amp; state.isInScope(key)</span><span style=''>
+</span>78 <span style=''>        case None      =&gt; </span><span style='background: #AEF1AE'>requiredKey.fold(true)(state.isInBag(_))</span><span style=''>
+</span>79 <span style=''>      }
+</span>80 <span style=''>    }
+</span>81 <span style=''>
+</span>82 <span style=''>    /**
+</span>83 <span style=''>     * Sets the Item in an open state and executes eventual extra actions.
+</span>84 <span style=''>     * @return
+</span>85 <span style=''>     *   A Reaction that sets the Item in an open state and executes eventual extra actions.
+</span>86 <span style=''>     */
+</span>87 <span style=''>    def open(item: I): Reaction =
+</span>88 <span style=''>      state =&gt; {
+</span>89 <span style=''>        </span><span style='background: #AEF1AE'>_isOpen = true</span><span style=''>
+</span>90 <span style=''>        </span><span style='background: #AEF1AE'>state.applyReactions(
+</span>91 <span style=''></span><span style='background: #AEF1AE'>          messageLens.modify(_ :+ Opened(item)),
+</span>92 <span style=''></span><span style='background: #AEF1AE'>          onOpenExtra.getOrElse(state =&gt; state)
+</span>93 <span style=''></span><span style='background: #AEF1AE'>        )</span><span style=''>
+</span>94 <span style=''>      }
+</span>95 <span style=''>
+</span>96 <span style=''>    /**
+</span>97 <span style=''>     * Sets the Item in a closed state and executes eventual extra actions.
+</span>98 <span style=''>     * @return
+</span>99 <span style=''>     *   A Reaction that sets the Item in a closed state and executes eventual extra actions.
+</span>100 <span style=''>     */
+</span>101 <span style=''>    def close(item: I): Reaction =
+</span>102 <span style=''>      state =&gt; {
+</span>103 <span style=''>        </span><span style='background: #F0ADAD'>_isOpen = false</span><span style=''>
+</span>104 <span style=''>        </span><span style='background: #F0ADAD'>state.applyReactions(
+</span>105 <span style=''></span><span style='background: #F0ADAD'>          messageLens.modify(_ :+ Closed(item)),
+</span>106 <span style=''></span><span style='background: #F0ADAD'>          onCloseExtra.getOrElse(state =&gt; state)
+</span>107 <span style=''></span><span style='background: #F0ADAD'>        )</span><span style=''>
+</span>108 <span style=''>      }
+</span>109 <span style=''>  }
+</span>110 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          197
+        </td>
+        <td>
+          1650
+          -
+          1657
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable._isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this._isOpen
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          206
+        </td>
+        <td>
+          1701
+          -
+          1701
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          198
+        </td>
+        <td>
+          1830
+          -
+          1858
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable.canBeOpened
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.canBeOpened(state, maybeKey)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          199
+        </td>
+        <td>
+          1862
+          -
+          1869
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.isOpen.unary_!
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          200
+        </td>
+        <td>
+          1799
+          -
+          1869
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenableExt.this.StateUtils(state).isInCurrentRoom(item).&amp;&amp;(SimpleOpenable.this.canBeOpened(state, maybeKey)).&amp;&amp;(SimpleOpenable.this.isOpen.unary_!)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          201
+        </td>
+        <td>
+          1881
+          -
+          1891
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable.open
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.open(item)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          202
+        </td>
+        <td>
+          2022
+          -
+          2050
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable.canBeOpened
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenable.this.canBeOpened(state, maybeKey)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          203
+        </td>
+        <td>
+          2054
+          -
+          2060
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenable.this.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          204
+        </td>
+        <td>
+          1991
+          -
+          2060
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenableExt.this.StateUtils(state).isInCurrentRoom(item).&amp;&amp;(SimpleOpenable.this.canBeOpened(state, maybeKey)).&amp;&amp;(SimpleOpenable.this.isOpen)
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          205
+        </td>
+        <td>
+          2072
+          -
+          2083
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable.close
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenable.this.close(item)
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          207
+        </td>
+        <td>
+          3113
+          -
+          3133
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.isInScope
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenableExt.this.StateUtils(state).isInScope(key)
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          208
+        </td>
+        <td>
+          3084
+          -
+          3133
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.requiredKey.contains[SimpleOpenableExt.this.I](key).&amp;&amp;(SimpleOpenableExt.this.StateUtils(state).isInScope(key))
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          209
+        </td>
+        <td>
+          3177
+          -
+          3181
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          210
+        </td>
+        <td>
+          3183
+          -
+          3199
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.isInBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenableExt.this.StateUtils(state).isInBag(x$1)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          211
+        </td>
+        <td>
+          3160
+          -
+          3200
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.fold
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.requiredKey.fold[Boolean](true)(((x$1: SimpleOpenableExt.this.Key) =&gt; SimpleOpenableExt.this.StateUtils(state).isInBag(x$1)))
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          212
+        </td>
+        <td>
+          3474
+          -
+          3488
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable._isOpen_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this._isOpen_=(true)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          217
+        </td>
+        <td>
+          3497
+          -
+          3625
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.applyReactions
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenableExt.this.StateUtils(state).applyReactions(SimpleOpenable.this.messageLens.modify(((x$2: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$2.:+[io.github.scalaquest.core.model.Message](SimpleOpenableExt.this.Opened.apply(item)))), SimpleOpenable.this.onOpenExtra.getOrElse[SimpleOpenableExt.this.Reaction](((state: SimpleOpenableExt.this.S) =&gt; state)))
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          213
+        </td>
+        <td>
+          3553
+          -
+          3565
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonMessages.Opened.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenableExt.this.Opened.apply(item)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          214
+        </td>
+        <td>
+          3548
+          -
+          3565
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.:+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.:+[io.github.scalaquest.core.model.Message](SimpleOpenableExt.this.Opened.apply(item))
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          215
+        </td>
+        <td>
+          3529
+          -
+          3566
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.messageLens.modify(((x$2: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$2.:+[io.github.scalaquest.core.model.Message](SimpleOpenableExt.this.Opened.apply(item))))
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          216
+        </td>
+        <td>
+          3578
+          -
+          3615
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.onOpenExtra.getOrElse[SimpleOpenableExt.this.Reaction](((state: SimpleOpenableExt.this.S) =&gt; state))
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          218
+        </td>
+        <td>
+          3896
+          -
+          3911
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleOpenableExt.SimpleOpenable._isOpen_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenable.this._isOpen_=(false)
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          223
+        </td>
+        <td>
+          3920
+          -
+          4049
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.applyReactions
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenableExt.this.StateUtils(state).applyReactions(SimpleOpenable.this.messageLens.modify(((x$3: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$3.:+[io.github.scalaquest.core.model.Message](SimpleOpenableExt.this.Closed.apply(item)))), SimpleOpenable.this.onCloseExtra.getOrElse[SimpleOpenableExt.this.Reaction](((state: SimpleOpenableExt.this.S) =&gt; state)))
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          219
+        </td>
+        <td>
+          3976
+          -
+          3988
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonMessages.Closed.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenableExt.this.Closed.apply(item)
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          220
+        </td>
+        <td>
+          3971
+          -
+          3988
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.:+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          x$3.:+[io.github.scalaquest.core.model.Message](SimpleOpenableExt.this.Closed.apply(item))
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          221
+        </td>
+        <td>
+          3952
+          -
+          3989
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenable.this.messageLens.modify(((x$3: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$3.:+[io.github.scalaquest.core.model.Message](SimpleOpenableExt.this.Closed.apply(item))))
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          222
+        </td>
+        <td>
+          4001
+          -
+          4039
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleOpenable.this.onCloseExtra.getOrElse[SimpleOpenableExt.this.Reaction](((state: SimpleOpenableExt.this.S) =&gt; state))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

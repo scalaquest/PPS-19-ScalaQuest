@@ -1,0 +1,1114 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/parsing/engine/tuprolog/TuPrologEngine.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine.tuprolog
+</span>2 <span style=''>
+</span>3 <span style=''>import alice.tuprolog
+</span>4 <span style=''>import alice.tuprolog.{
+</span>5 <span style=''>  SolveInfo,
+</span>6 <span style=''>  Struct,
+</span>7 <span style=''>  Var,
+</span>8 <span style=''>  Prolog =&gt; TuProlog,
+</span>9 <span style=''>  Term =&gt; TuPrologTerm,
+</span>10 <span style=''>  Theory =&gt; TuPrologTheory
+</span>11 <span style=''>}
+</span>12 <span style=''>import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
+</span>13 <span style=''>import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
+</span>14 <span style=''>import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
+</span>15 <span style=''>import io.github.scalaquest.core.parsing.scalog
+</span>16 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Term, Variable}
+</span>17 <span style=''>
+</span>18 <span style=''>/**
+</span>19 <span style=''> * Engine implementation that uses a tuProlog engine under the hood.
+</span>20 <span style=''> * @note
+</span>21 <span style=''> *   this implementation computes solutions in a lazy way
+</span>22 <span style=''> */
+</span>23 <span style=''>private class TuPrologEngine(prolog: TuProlog) extends Engine {
+</span>24 <span style=''>  import implicits._
+</span>25 <span style=''>
+</span>26 <span style=''>  private def exploreSolutions(goal: TuPrologTerm): Seq[SolveInfo] = {
+</span>27 <span style=''>    def go(info: SolveInfo): LazyList[SolveInfo] = {
+</span>28 <span style=''>      val current =
+</span>29 <span style=''>        if (</span><span style='background: #AEF1AE'>info.isSuccess</span><span style=''>) </span><span style='background: #AEF1AE'>LazyList(info)</span><span style=''>
+</span>30 <span style=''>        else </span><span style='background: #AEF1AE'>LazyList.empty</span><span style=''>
+</span>31 <span style=''>      lazy val next = if (prolog.hasOpenAlternatives) go(prolog.solveNext()) else LazyList.empty
+</span>32 <span style=''>      current </span><span style='background: #AEF1AE'>#::: next</span><span style=''>
+</span>33 <span style=''>    }
+</span>34 <span style=''>
+</span>35 <span style=''>    </span><span style='background: #AEF1AE'>go(prolog.solve(goal))</span><span style=''>
+</span>36 <span style=''>  }
+</span>37 <span style=''>
+</span>38 <span style=''>  override def solve(term: Term): Seq[Solution] =
+</span>39 <span style=''>    </span><span style='background: #AEF1AE'>exploreSolutions(term.toTuPrologTerm).map(TuPrologSolution)</span><span style=''>
+</span>40 <span style=''>}
+</span>41 <span style=''>
+</span>42 <span style=''>object TuPrologEngine {
+</span>43 <span style=''>  import implicits._
+</span>44 <span style=''>
+</span>45 <span style=''>  /**
+</span>46 <span style=''>   * Creates an [[Engine]] with the provided theory and libraries using tuProlog under the hood.
+</span>47 <span style=''>   * @note
+</span>48 <span style=''>   *   this implementation computes solutions lazily.
+</span>49 <span style=''>   */
+</span>50 <span style=''>  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
+</span>51 <span style=''>    </span><span style='background: #AEF1AE'>new TuPrologEngine(createTuProlog(theory.toTuProlog, libraries))</span><span style=''>
+</span>52 <span style=''>
+</span>53 <span style=''>  private def getArgs(struct: Struct): Seq[Term] = {
+</span>54 <span style=''>    (</span><span style='background: #AEF1AE'>0 until struct.getArity)
+</span>55 <span style=''></span><span style='background: #AEF1AE'>      .map(i =&gt; struct.getTerm(i))
+</span>56 <span style=''></span><span style='background: #AEF1AE'>      .map(_.toTerm)</span><span style=''>
+</span>57 <span style=''>  }
+</span>58 <span style=''>
+</span>59 <span style=''>  /**
+</span>60 <span style=''>   * @note
+</span>61 <span style=''>   *   this will fail if called with a Struct with no arguments.
+</span>62 <span style=''>   */
+</span>63 <span style=''>  private[tuprolog] def buildCompound(struct: Struct): Compound =
+</span>64 <span style=''>    </span><span style='background: #AEF1AE'>getArgs(struct).toList</span><span style=''> match {
+</span>65 <span style=''>      case h :: t =&gt;
+</span>66 <span style=''>        </span><span style='background: #AEF1AE'>Compound(Atom(struct.getName), h, t)</span><span style=''>
+</span>67 <span style=''>    }
+</span>68 <span style=''>
+</span>69 <span style=''>  /**
+</span>70 <span style=''>   * @note
+</span>71 <span style=''>   *   this might fail if not called with an Integer, but for now we don't use any other Number
+</span>72 <span style=''>   *   implementation
+</span>73 <span style=''>   */
+</span>74 <span style=''>  private[tuprolog] def buildNumber(number: tuprolog.Number): scalog.Number =
+</span>75 <span style=''>    </span><span style='background: #AEF1AE'>Number(number.intValue)</span><span style=''>
+</span>76 <span style=''>
+</span>77 <span style=''>  /**
+</span>78 <span style=''>   * @note
+</span>79 <span style=''>   *   this might throw if called with an invalid theory
+</span>80 <span style=''>   */
+</span>81 <span style=''>  private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
+</span>82 <span style=''>    val prolog = </span><span style='background: #AEF1AE'>new TuProlog</span><span style=''>
+</span>83 <span style=''>    try {
+</span>84 <span style=''>      </span><span style='background: #AEF1AE'>prolog.setTheory(theory)</span><span style=''>
+</span>85 <span style=''>    } catch {
+</span>86 <span style=''>      case e: alice.tuprolog.InvalidTheoryException =&gt; </span><span style='background: #AEF1AE'>throw InvalidTheoryException(e)</span><span style=''>
+</span>87 <span style=''>    }
+</span>88 <span style=''>    </span><span style='background: #AEF1AE'>libraries.foreach(l =&gt; prolog.loadLibrary(l.toTuProlog))</span><span style=''>
+</span>89 <span style=''>    prolog
+</span>90 <span style=''>  }
+</span>91 <span style=''>}
+</span>92 <span style=''>
+</span>93 <span style=''>private[tuprolog] object implicits {
+</span>94 <span style=''>
+</span>95 <span style=''>  implicit class EnhancedTerm(term: Term) {
+</span>96 <span style=''>    def toTuPrologTerm: TuPrologTerm = </span><span style='background: #AEF1AE'>TuPrologTerm.createTerm(term.generate)</span><span style=''>
+</span>97 <span style=''>  }
+</span>98 <span style=''>
+</span>99 <span style=''>  implicit class EnhancedTuPrologTerm(tuPrologTerm: TuPrologTerm) {
+</span>100 <span style=''>
+</span>101 <span style=''>    def toTerm: Term =
+</span>102 <span style=''>      </span><span style='background: #AEF1AE'>tuPrologTerm</span><span style=''> match {
+</span>103 <span style=''>        case number: tuprolog.Number =&gt; </span><span style='background: #AEF1AE'>buildNumber(number)</span><span style=''>
+</span>104 <span style=''>        case struct: Struct =&gt;
+</span>105 <span style=''>          struct match {
+</span>106 <span style=''>            case s if </span><span style='background: #AEF1AE'>s.isCompound</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>buildCompound(s)</span><span style=''>
+</span>107 <span style=''>            case a                 =&gt; </span><span style='background: #AEF1AE'>Atom(a.getName)</span><span style=''>
+</span>108 <span style=''>          }
+</span>109 <span style=''>        case _var: Var =&gt; </span><span style='background: #F0ADAD'>Variable(_var.getName)</span><span style=''>
+</span>110 <span style=''>      }
+</span>111 <span style=''>  }
+</span>112 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          339
+        </td>
+        <td>
+          1001
+          -
+          1015
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.SolveInfo.isSuccess
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          info.isSuccess()
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          340
+        </td>
+        <td>
+          1017
+          -
+          1031
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.LazyList.apply[alice.tuprolog.SolveInfo](info)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          341
+        </td>
+        <td>
+          1017
+          -
+          1031
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.LazyList.apply[alice.tuprolog.SolveInfo](info)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          342
+        </td>
+        <td>
+          1045
+          -
+          1059
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.LazyList.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.LazyList.empty[Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          343
+        </td>
+        <td>
+          1045
+          -
+          1059
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.immutable.LazyList.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.LazyList.empty[Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          344
+        </td>
+        <td>
+          1171
+          -
+          1180
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.LazyList.Deferrer.#:::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.LazyList.toDeferrer[alice.tuprolog.SolveInfo](next).#:::[alice.tuprolog.SolveInfo](rassoc$1)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          345
+        </td>
+        <td>
+          1195
+          -
+          1213
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Prolog.solve
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TuPrologEngine.this.prolog.solve(goal)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          346
+        </td>
+        <td>
+          1192
+          -
+          1214
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.go
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          go(TuPrologEngine.this.prolog.solve(goal))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          347
+        </td>
+        <td>
+          1274
+          -
+          1333
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TuPrologEngine.this.exploreSolutions(implicits.EnhancedTerm(term).toTuPrologTerm).map[io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologSolution](TuPrologSolution)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          348
+        </td>
+        <td>
+          1666
+          -
+          1683
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.TuPrologConverter.toTuProlog
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          theory.toTuProlog
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          349
+        </td>
+        <td>
+          1651
+          -
+          1695
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.createTuProlog
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TuPrologEngine.this.createTuProlog(theory.toTuProlog, libraries)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          350
+        </td>
+        <td>
+          1632
+          -
+          1696
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new TuPrologEngine(TuPrologEngine.this.createTuProlog(theory.toTuProlog, libraries))
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          351
+        </td>
+        <td>
+          1756
+          -
+          1757
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          352
+        </td>
+        <td>
+          1764
+          -
+          1779
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Struct.getArity
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          struct.getArity()
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          353
+        </td>
+        <td>
+          1797
+          -
+          1814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Struct.getTerm
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          struct.getTerm(i)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          354
+        </td>
+        <td>
+          1827
+          -
+          1835
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.implicits.EnhancedTuPrologTerm.toTerm
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          implicits.EnhancedTuPrologTerm(x$1).toTerm
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          355
+        </td>
+        <td>
+          1756
+          -
+          1836
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.intWrapper(0).until(struct.getArity()).map[alice.tuprolog.Term](((i: Int) =&gt; struct.getTerm(i))).map[io.github.scalaquest.core.parsing.scalog.Term](((x$1: alice.tuprolog.Term) =&gt; implicits.EnhancedTuPrologTerm(x$1).toTerm))
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          356
+        </td>
+        <td>
+          2000
+          -
+          2022
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TuPrologEngine.this.getArgs(struct).toList
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          357
+        </td>
+        <td>
+          2074
+          -
+          2088
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Struct.getName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          struct.getName()
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          358
+        </td>
+        <td>
+          2069
+          -
+          2089
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.Atom.apply(struct.getName())
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          359
+        </td>
+        <td>
+          2060
+          -
+          2096
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Compound.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.Compound.apply(io.github.scalaquest.core.parsing.scalog.Atom.apply(struct.getName()), h, t)
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          360
+        </td>
+        <td>
+          2334
+          -
+          2349
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Number.intValue
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          number.intValue()
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          361
+        </td>
+        <td>
+          2327
+          -
+          2350
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Number.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.Number.apply(number.intValue())
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          362
+        </td>
+        <td>
+          2541
+          -
+          2553
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Prolog.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new alice.tuprolog.Prolog()
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          363
+        </td>
+        <td>
+          2570
+          -
+          2594
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Prolog.setTheory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          prolog.setTheory(theory)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          364
+        </td>
+        <td>
+          2570
+          -
+          2594
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          alice.tuprolog.Prolog.setTheory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          prolog.setTheory(theory)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          365
+        </td>
+        <td>
+          2664
+          -
+          2695
+        </td>
+        <td>
+          Throw
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          throw io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException.apply(e)
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          366
+        </td>
+        <td>
+          2748
+          -
+          2760
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.TuProlog.toTuProlog
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          l.toTuProlog
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          367
+        </td>
+        <td>
+          2729
+          -
+          2761
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Prolog.loadLibrary
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          prolog.loadLibrary(l.toTuProlog)
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          368
+        </td>
+        <td>
+          2706
+          -
+          2762
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          libraries.foreach[Unit](((l: io.github.scalaquest.core.parsing.engine.Library) =&gt; prolog.loadLibrary(l.toTuProlog)))
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          369
+        </td>
+        <td>
+          2926
+          -
+          2939
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.CodeGen.generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EnhancedTerm.this.term.generate
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          370
+        </td>
+        <td>
+          2902
+          -
+          2940
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Term.createTerm
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          alice.tuprolog.Term.createTerm(EnhancedTerm.this.term.generate)
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          371
+        </td>
+        <td>
+          3044
+          -
+          3056
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.implicits.EnhancedTuPrologTerm.tuPrologTerm
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EnhancedTuPrologTerm.this.tuPrologTerm
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          372
+        </td>
+        <td>
+          3105
+          -
+          3124
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.buildNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.buildNumber(number)
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          373
+        </td>
+        <td>
+          3203
+          -
+          3215
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Struct.isCompound
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.isCompound()
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          374
+        </td>
+        <td>
+          3219
+          -
+          3235
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.buildCompound
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.buildCompound(s)
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          375
+        </td>
+        <td>
+          3279
+          -
+          3288
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Struct.getName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          a.getName()
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          376
+        </td>
+        <td>
+          3274
+          -
+          3289
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.Atom.apply(a.getName())
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          377
+        </td>
+        <td>
+          3337
+          -
+          3349
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          alice.tuprolog.Var.getName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _var.getName()
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          378
+        </td>
+        <td>
+          3328
+          -
+          3350
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Variable.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.Variable.apply(_var.getName())
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -1,0 +1,355 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/MessagePusher.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.MessagePusher.MessageTriggers
+</span>4 <span style=''>
+</span>5 <span style=''>/**
+</span>6 <span style=''> * A class that aims to interpret [[Message]] s and transform them in an output for the user.
+</span>7 <span style=''> *
+</span>8 <span style=''> * The output could be of any type in the base implementation. If [[Message]] is defined in
+</span>9 <span style=''> * &lt;b&gt;MessageTriggers&lt;/b&gt; it will trigger the specific answer, otherwise return &lt;b&gt;not found&lt;/b&gt;
+</span>10 <span style=''> * @tparam A
+</span>11 <span style=''> *   the concrete type that will shown to the user.
+</span>12 <span style=''> */
+</span>13 <span style=''>abstract class MessagePusher[A] {
+</span>14 <span style=''>
+</span>15 <span style=''>  /**
+</span>16 <span style=''>   * A [[PartialFunction]] used to find a match for the given input.
+</span>17 <span style=''>   * @return
+</span>18 <span style=''>   *   A [[PartialFunction]] used to find a match for the given input.
+</span>19 <span style=''>   */
+</span>20 <span style=''>  def triggers: MessageTriggers[A]
+</span>21 <span style=''>
+</span>22 <span style=''>  /**
+</span>23 <span style=''>   * An output returned if the message is not recognized.
+</span>24 <span style=''>   * @return
+</span>25 <span style=''>   *   An output returned if the message is not recognized.
+</span>26 <span style=''>   */
+</span>27 <span style=''>  def notFound: A
+</span>28 <span style=''>
+</span>29 <span style=''>  /**
+</span>30 <span style=''>   * Finds a match for the given [[Message]] analyzing the [[MessagePusher::triggers]].
+</span>31 <span style=''>   * @param input
+</span>32 <span style=''>   *   the [[Message]] to control.
+</span>33 <span style=''>   * @return
+</span>34 <span style=''>   *   An output matching with the given message; [[MessagePusher::notFound]] otherwise.
+</span>35 <span style=''>   */
+</span>36 <span style=''>  def push(input: Message): A = {
+</span>37 <span style=''>    </span><span style='background: #AEF1AE'>triggers.lift(input).getOrElse(</span><span style='background: #F0ADAD'>notFound</span><span style='background: #AEF1AE'>)</span><span style=''>
+</span>38 <span style=''>  }
+</span>39 <span style=''>
+</span>40 <span style=''>  def push(input: Seq[Message]): A
+</span>41 <span style=''>}
+</span>42 <span style=''>
+</span>43 <span style=''>/**
+</span>44 <span style=''> * A [[MessagePusher]] implementation with [[String]] as concrete type for the user's output.
+</span>45 <span style=''> */
+</span>46 <span style=''>abstract class StringPusher extends MessagePusher[String] {
+</span>47 <span style=''>  override def notFound: String = </span><span style='background: #F0ADAD'>&quot;Nothing happened!&quot;</span><span style=''>
+</span>48 <span style=''>
+</span>49 <span style=''>  override def push(input: Seq[Message]): String =
+</span>50 <span style=''>    </span><span style='background: #F0ADAD'>input.map(push).reduceOption(_ + &quot;\n&quot; + _) getOrElse &quot;&quot;</span><span style=''>
+</span>51 <span style=''>}
+</span>52 <span style=''>
+</span>53 <span style=''>/**
+</span>54 <span style=''> * A [[StringPusher]] that exposes a [[Composable]] behavior, letting the user define base and
+</span>55 <span style=''> * additional [[MessageTriggers]].
+</span>56 <span style=''> */
+</span>57 <span style=''>abstract class ComposableStringPusher extends StringPusher with Composable[String]
+</span>58 <span style=''>
+</span>59 <span style=''>/**
+</span>60 <span style=''> * A mixin for [[MessagePusher]] s, that enables the possibility to define two levels of
+</span>61 <span style=''> * [[MessageTriggers]].
+</span>62 <span style=''> *
+</span>63 <span style=''> * This is commonly used when it is needed to define some base extensible triggers, that should be
+</span>64 <span style=''> * easily extended letting the user defining the extras. When the triggers are effectively used,
+</span>65 <span style=''> * extras will be privileged, as the extra should always overwrite the base.
+</span>66 <span style=''> */
+</span>67 <span style=''>trait Composable[A] extends MessagePusher[A] {
+</span>68 <span style=''>
+</span>69 <span style=''>  /**
+</span>70 <span style=''>   * The extra [[MessageTriggers]] of the pusher.
+</span>71 <span style=''>   * @return
+</span>72 <span style=''>   *   The extra [[MessageTriggers]].
+</span>73 <span style=''>   */
+</span>74 <span style=''>  def extra: MessageTriggers[A] = </span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style=''>
+</span>75 <span style=''>
+</span>76 <span style=''>  /**
+</span>77 <span style=''>   * The base [[MessageTriggers]] of the pusher.
+</span>78 <span style=''>   * @return
+</span>79 <span style=''>   */
+</span>80 <span style=''>  def base: MessageTriggers[A]
+</span>81 <span style=''>
+</span>82 <span style=''>  /**
+</span>83 <span style=''>   * All the triggers with the right order.
+</span>84 <span style=''>   * @return
+</span>85 <span style=''>   *   the chosen answer.
+</span>86 <span style=''>   */
+</span>87 <span style=''>  override def triggers: MessageTriggers[A] = </span><span style='background: #AEF1AE'>Seq(extra, base).reduce(_ orElse _)</span><span style=''>
+</span>88 <span style=''>}
+</span>89 <span style=''>
+</span>90 <span style=''>/**
+</span>91 <span style=''> * Companion object fot the [[MessagePusher]]. It contains utility wrappers for the matchers used in
+</span>92 <span style=''> * the various [[MessagePusher]], that are actually [[PartialFunction]] s.
+</span>93 <span style=''> */
+</span>94 <span style=''>object MessagePusher {
+</span>95 <span style=''>  type MessageTriggers[A]    = PartialFunction[Message, A]
+</span>96 <span style=''>  type StringMessageTriggers = MessageTriggers[String]
+</span>97 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          126
+        </td>
+        <td>
+          1192
+          -
+          1200
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.MessagePusher.notFound
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          MessagePusher.this.notFound
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          127
+        </td>
+        <td>
+          1161
+          -
+          1201
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          MessagePusher.this.triggers.lift.apply(input).getOrElse[A](MessagePusher.this.notFound)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          128
+        </td>
+        <td>
+          1441
+          -
+          1460
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Nothing happened!&quot;
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          129
+        </td>
+        <td>
+          1517
+          -
+          1572
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          input.map[String](((input: io.github.scalaquest.core.model.Message) =&gt; StringPusher.this.push(input))).reduceOption[String](((x$1: String, x$2: String) =&gt; x$1.+(&quot;\n&quot;).+(x$2))).getOrElse[String](&quot;&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          130
+        </td>
+        <td>
+          2390
+          -
+          2411
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.PartialFunction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.PartialFunction.empty[Any, Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          131
+        </td>
+        <td>
+          2664
+          -
+          2669
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Composable.extra
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Composable.this.extra
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          132
+        </td>
+        <td>
+          2671
+          -
+          2675
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Composable.base
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Composable.this.base
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          133
+        </td>
+        <td>
+          2684
+          -
+          2694
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.PartialFunction.orElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3.orElse[io.github.scalaquest.core.model.Message, A](x$4)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          134
+        </td>
+        <td>
+          2660
+          -
+          2695
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.reduce
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.Seq.apply[io.github.scalaquest.core.model.MessagePusher.MessageTriggers[A]](Composable.this.extra, Composable.this.base).reduce[PartialFunction[io.github.scalaquest.core.model.Message,A]](((x$3: PartialFunction[io.github.scalaquest.core.model.Message,A], x$4: PartialFunction[io.github.scalaquest.core.model.Message,A]) =&gt; x$3.orElse[io.github.scalaquest.core.model.Message, A](x$4)))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

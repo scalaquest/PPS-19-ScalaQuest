@@ -1,0 +1,171 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/parsing/scalog/dsl/package.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog
+</span>2 <span style=''>
+</span>3 <span style=''>/**
+</span>4 <span style=''> * This package includes some facility methods in order to create terms in a Prolog-like syntax.
+</span>5 <span style=''> *
+</span>6 <span style=''> * If you include implicit conversions and [[dsl.CompoundBuilder]] you can create terms as in this
+</span>7 <span style=''> * example:
+</span>8 <span style=''> * {{{
+</span>9 <span style=''> *   val hello = CompoundBuilder(&quot;hello&quot;)
+</span>10 <span style=''> *   val X = Variable(&quot;X&quot;)
+</span>11 <span style=''> *   (hello(X) --&gt; ListP(&quot;hello&quot;, X)).generate
+</span>12 <span style=''> * }}}
+</span>13 <span style=''> *
+</span>14 <span style=''> * Should result in the following Prolog clause being printed:
+</span>15 <span style=''> * {{{
+</span>16 <span style=''> *   hello(X) --&gt; [&quot;hello&quot;, X].
+</span>17 <span style=''> * }}}
+</span>18 <span style=''> */
+</span>19 <span style=''>package object dsl {
+</span>20 <span style=''>
+</span>21 <span style=''>  /** Enables the implicit conversion from `String` to `Atom` */
+</span>22 <span style=''>  implicit def stringToAtom(name: String): Atom = </span><span style='background: #AEF1AE'>Atom(name)</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>  /** Enables the implicit conversion from `Int` to `Number` */
+</span>25 <span style=''>  implicit def intToNumber(n: Int): Number = </span><span style='background: #AEF1AE'>Number(n)</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  /** Enables the implicit conversion from `Term` to `Fact` */
+</span>28 <span style=''>  implicit def termToFact(term: Term): Fact = </span><span style='background: #AEF1AE'>Fact(term)</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>  /** Enables the implicit conversion fron `Seq[Term]` to `ListP` */
+</span>31 <span style=''>  implicit def seqToListP(seq: Seq[Term]): ListP = </span><span style='background: #AEF1AE'>ListP(seq: _*)</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          415
+        </td>
+        <td>
+          648
+          -
+          658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Atom.apply(name)
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          416
+        </td>
+        <td>
+          769
+          -
+          778
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Number.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Number.apply(n)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          417
+        </td>
+        <td>
+          889
+          -
+          899
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Fact.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Fact.apply(term)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          418
+        </td>
+        <td>
+          1021
+          -
+          1035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.ListP.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ListP.apply((seq: _*))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

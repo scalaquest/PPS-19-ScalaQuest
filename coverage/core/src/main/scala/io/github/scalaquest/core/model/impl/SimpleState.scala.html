@@ -1,0 +1,114 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/impl/SimpleState.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.dictionary.VerbPrep
+</span>4 <span style=''>import io.github.scalaquest.core.model.{
+</span>5 <span style=''>  Action,
+</span>6 <span style=''>  ItemRef,
+</span>7 <span style=''>  MatchState,
+</span>8 <span style=''>  Message,
+</span>9 <span style=''>  Model,
+</span>10 <span style=''>  Player,
+</span>11 <span style=''>  RoomRef
+</span>12 <span style=''>}
+</span>13 <span style=''>
+</span>14 <span style=''>/**
+</span>15 <span style=''> * Extension for the model. Adds a base implementation of the [[Model.State]].
+</span>16 <span style=''> */
+</span>17 <span style=''>trait SimpleState extends Model {
+</span>18 <span style=''>
+</span>19 <span style=''>  override type S = SimpleState
+</span>20 <span style=''>
+</span>21 <span style=''>  case class SimpleState(
+</span>22 <span style=''>    actions: Map[VerbPrep, Action],
+</span>23 <span style=''>    matchState: SimpleMatchState,
+</span>24 <span style=''>    messages: Seq[Message]
+</span>25 <span style=''>  ) extends State
+</span>26 <span style=''>
+</span>27 <span style=''>  case class SimpleMatchState(
+</span>28 <span style=''>    player: SimplePlayer,
+</span>29 <span style=''>    rooms: Map[RoomRef, RM],
+</span>30 <span style=''>    items: Map[ItemRef, I],
+</span>31 <span style=''>    ended: Boolean = false
+</span>32 <span style=''>  ) extends MatchState[I, RM]
+</span>33 <span style=''>
+</span>34 <span style=''>  case class SimplePlayer(bag: Set[ItemRef], location: RoomRef) extends Player
+</span>35 <span style=''>
+</span>36 <span style=''>  /**
+</span>37 <span style=''>   * Companion object with a factory to build the [[State]] with the right constraints of the given
+</span>38 <span style=''>   * extension.
+</span>39 <span style=''>   */
+</span>40 <span style=''>  object State {
+</span>41 <span style=''>
+</span>42 <span style=''>    def apply(
+</span>43 <span style=''>      actions: Map[VerbPrep, Action],
+</span>44 <span style=''>      matchState: SimpleMatchState,
+</span>45 <span style=''>      messages: Seq[Message]
+</span>46 <span style=''>    ): SimpleState = </span><span style='background: #F0ADAD'>SimpleState(actions, matchState, messages)</span><span style=''>
+</span>47 <span style=''>  }
+</span>48 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          295
+        </td>
+        <td>
+          1052
+          -
+          1094
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleState.SimpleState.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleState.this.SimpleState.apply(actions, matchState, messages)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

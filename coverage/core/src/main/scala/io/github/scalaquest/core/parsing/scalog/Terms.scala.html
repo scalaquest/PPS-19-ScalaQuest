@@ -1,0 +1,311 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/parsing/scalog/Terms.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog
+</span>2 <span style=''>
+</span>3 <span style=''>/** A Prolog data object. */
+</span>4 <span style=''>sealed trait Term extends CodeGen {
+</span>5 <span style=''>
+</span>6 <span style=''>  /**
+</span>7 <span style=''>   * Template method for all infix operators.
+</span>8 <span style=''>   * @note
+</span>9 <span style=''>   *   All operators that use this method should be right associative.
+</span>10 <span style=''>   */
+</span>11 <span style=''>  protected def infixOp(op: String)(left: Term): Compound = </span><span style='background: #AEF1AE'>Compound(Atom(op), left, List(this))</span><span style=''>
+</span>12 <span style=''>
+</span>13 <span style=''>  /** Implementation of the infix `^` Prolog operator. */
+</span>14 <span style=''>  def ^:(left: Term): Compound = </span><span style='background: #AEF1AE'>infixOp(&quot;^&quot;)(left)</span><span style=''>
+</span>15 <span style=''>
+</span>16 <span style=''>  /** Implementation of the infix `/` Prolog operator. */
+</span>17 <span style=''>  def /:(left: Term): Compound = </span><span style='background: #F0ADAD'>infixOp(&quot;/&quot;)(left)</span><span style=''>
+</span>18 <span style=''>}
+</span>19 <span style=''>
+</span>20 <span style=''>/** A Prolog atom. */
+</span>21 <span style=''>case class Atom(name: String) extends Term {
+</span>22 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
+</span>23 <span style=''>}
+</span>24 <span style=''>
+</span>25 <span style=''>/** A Prolog number */
+</span>26 <span style=''>case class Number(n: Int) extends Term {
+</span>27 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>n.toString</span><span style=''>
+</span>28 <span style=''>}
+</span>29 <span style=''>
+</span>30 <span style=''>/** A Prolog variable. */
+</span>31 <span style=''>case class Variable(name: String) extends Term {
+</span>32 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
+</span>33 <span style=''>}
+</span>34 <span style=''>
+</span>35 <span style=''>/**
+</span>36 <span style=''> * A Prolog compound term.
+</span>37 <span style=''> * @param functor
+</span>38 <span style=''> *   the atom used as a functor
+</span>39 <span style=''> * @param arg1
+</span>40 <span style=''> *   the first mandatory term
+</span>41 <span style=''> * @param args
+</span>42 <span style=''> *   the other optional terms
+</span>43 <span style=''> */
+</span>44 <span style=''>case class Compound(functor: Atom, arg1: Term, args: List[Term] = List()) extends Term {
+</span>45 <span style=''>
+</span>46 <span style=''>  override def generate: String =
+</span>47 <span style=''>    s&quot;${functor.generate}(${(arg1 +: args).map(_.generate).mkString(&quot;,&quot;)})&quot;
+</span>48 <span style=''>}
+</span>49 <span style=''>
+</span>50 <span style=''>/** A Prolog list. */
+</span>51 <span style=''>case class ListP(terms: Term*) extends Term {
+</span>52 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>terms.map(_.generate).mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)</span><span style=''>
+</span>53 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          392
+        </td>
+        <td>
+          325
+          -
+          333
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Atom.apply(op)
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          393
+        </td>
+        <td>
+          341
+          -
+          351
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.List.apply[io.github.scalaquest.core.parsing.scalog.Term](this)
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          394
+        </td>
+        <td>
+          316
+          -
+          352
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Compound.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Compound.apply(Atom.apply(op), left, scala.`package`.List.apply[io.github.scalaquest.core.parsing.scalog.Term](this))
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          395
+        </td>
+        <td>
+          445
+          -
+          463
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Term.infixOp
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Term.this.infixOp(&quot;^&quot;)(left)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          396
+        </td>
+        <td>
+          556
+          -
+          574
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Term.infixOp
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Term.this.infixOp(&quot;/&quot;)(left)
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          397
+        </td>
+        <td>
+          679
+          -
+          683
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Atom.this.name
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          398
+        </td>
+        <td>
+          785
+          -
+          795
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Number.this.n.toString()
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          399
+        </td>
+        <td>
+          908
+          -
+          912
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Variable.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Variable.this.name
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          400
+        </td>
+        <td>
+          1396
+          -
+          1441
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ListP.this.terms.map[String](((x$2: io.github.scalaquest.core.parsing.scalog.Term) =&gt; x$2.generate)).mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

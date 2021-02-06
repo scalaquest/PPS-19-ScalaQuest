@@ -1,0 +1,336 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/common/pushing/CommonStringPusher.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.common.pushing
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.ComposableStringPusher
+</span>4 <span style=''>import io.github.scalaquest.core.model.MessagePusher.{MessageTriggers, StringMessageTriggers}
+</span>5 <span style=''>
+</span>6 <span style=''>import scala.annotation.tailrec
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * A [[ComposableStringPusher]] that have an implementation for [[base]].
+</span>10 <span style=''> *
+</span>11 <span style=''> * @param model
+</span>12 <span style=''> *   contains some implementation of [[base]].
+</span>13 <span style=''> */
+</span>14 <span style=''>abstract class CommonStringPusher(model: CommonMessages) extends ComposableStringPusher {
+</span>15 <span style=''>
+</span>16 <span style=''>  override def extra: MessageTriggers[String] = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>17 <span style=''>
+</span>18 <span style=''>  final def base: StringMessageTriggers = {
+</span>19 <span style=''>    case model.Inspected(room, items) =&gt;
+</span>20 <span style=''>      @tailrec
+</span>21 <span style=''>      def go(tail: List[CommonMessages#I], acc: String = &quot;&quot;): String = {
+</span>22 <span style=''>        tail match {
+</span>23 <span style=''>          case ::(head, Nil)  =&gt; s&quot;${acc}a ${head.name}.&quot;
+</span>24 <span style=''>          case ::(head, next) =&gt; </span><span style='background: #AEF1AE'>go(next, s&quot;${acc}a ${head.name}, &quot;)</span><span style=''>
+</span>25 <span style=''>          case Nil            =&gt; </span><span style='background: #F0ADAD'>&quot;nothing.&quot;</span><span style=''>
+</span>26 <span style=''>        }
+</span>27 <span style=''>      }
+</span>28 <span style=''>
+</span>29 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.name &lt; _.name)</span><span style=''>
+</span>30 <span style=''>      s&quot;The ${room.name} contains ${go(ordItems)}&quot;
+</span>31 <span style=''>
+</span>32 <span style=''>    case model.Eaten(item)     =&gt; s&quot;The ${item.name} has been eaten!&quot;
+</span>33 <span style=''>    case model.Taken(item)     =&gt; s&quot;The ${item.name} has been taken!&quot;
+</span>34 <span style=''>    case model.Closed(item)    =&gt; s&quot;The ${item.name} has been closed!&quot;
+</span>35 <span style=''>    case model.Opened(item)    =&gt; s&quot;The ${item.name} has been opened!&quot;
+</span>36 <span style=''>    case model.Navigated(room) =&gt; s&quot;You entered ${room.name}!&quot;
+</span>37 <span style=''>  }
+</span>38 <span style=''>}
+</span>39 <span style=''>
+</span>40 <span style=''>/**
+</span>41 <span style=''> * Object with some useful construct for create a [[CommonStringPusher]].
+</span>42 <span style=''> */
+</span>43 <span style=''>object CommonStringPusher {
+</span>44 <span style=''>  def apply(model: CommonMessages): CommonStringPusher = </span><span style='background: #AEF1AE'>new</span><span style=''> CommonStringPusher(model) {}
+</span>45 <span style=''>
+</span>46 <span style=''>  def apply(
+</span>47 <span style=''>    model: CommonMessages,
+</span>48 <span style=''>    _additionalTriggers: MessageTriggers[String]
+</span>49 <span style=''>  ): CommonStringPusher = {
+</span>50 <span style=''>    </span><span style='background: #F0ADAD'>new</span><span style=''> CommonStringPusher(model) {
+</span>51 <span style=''>      override def extra: MessageTriggers[String] = _additionalTriggers
+</span>52 <span style=''>    }
+</span>53 <span style=''>  }
+</span>54 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          267
+        </td>
+        <td>
+          547
+          -
+          568
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.PartialFunction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.PartialFunction.empty[Any, Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          274
+        </td>
+        <td>
+          612
+          -
+          612
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          268
+        </td>
+        <td>
+          855
+          -
+          890
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher.$anonfun.go
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          go(next, (&quot;&quot;.+(acc).+(&quot;a &quot;).+(head.name).+(&quot;, &quot;): String))
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          269
+        </td>
+        <td>
+          924
+          -
+          934
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;nothing.&quot;
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          270
+        </td>
+        <td>
+          997
+          -
+          1003
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.name
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          271
+        </td>
+        <td>
+          1006
+          -
+          1012
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.name
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          272
+        </td>
+        <td>
+          997
+          -
+          1012
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.StringOps.&lt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.augmentString(x$1.name).&lt;(x$2.name)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          273
+        </td>
+        <td>
+          975
+          -
+          1013
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.sortWith
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          items.toList.sortWith(((x$1: CommonStringPusher.this.model.I, x$2: CommonStringPusher.this.model.I) =&gt; scala.Predef.augmentString(x$1.name).&lt;(x$2.name)))
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          275
+        </td>
+        <td>
+          1585
+          -
+          1588
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher.$anon.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anon()
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          276
+        </td>
+        <td>
+          1740
+          -
+          1743
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher.$anon.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new $anon()
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

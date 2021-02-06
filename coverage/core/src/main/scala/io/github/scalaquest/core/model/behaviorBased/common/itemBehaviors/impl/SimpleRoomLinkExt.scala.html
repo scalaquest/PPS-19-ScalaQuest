@@ -1,0 +1,584 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/common/itemBehaviors/impl/SimpleRoomLinkExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Action.Common.Enter
+</span>4 <span style=''>import io.github.scalaquest.core.model.{Message, RoomRef}
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
+</span>6 <span style=''>import monocle.Lens
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * The trait makes possible to mix into StdCommonBehaviors the standard implementation of RoomLink.
+</span>10 <span style=''> */
+</span>11 <span style=''>trait SimpleRoomLinkExt extends CommonBase {
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * Standard implementation of the RoomLink.
+</span>15 <span style=''>   *
+</span>16 <span style=''>   * This is a behavior associated to an item that is a link between two rooms (a door, for
+</span>17 <span style=''>   * instance), and that could be opened to pass into it. The user can &quot;Enter&quot; into it, resulting
+</span>18 <span style=''>   * into move it into the connected Room. another room.
+</span>19 <span style=''>   * @param endRoom
+</span>20 <span style=''>   *   The room into which the user is projected after entering the object.
+</span>21 <span style=''>   * @param openable
+</span>22 <span style=''>   *   The Openable behavior associated to the roomLink. If not passed, the item can be entered
+</span>23 <span style=''>   *   without opening.
+</span>24 <span style=''>   * @param onEnterExtra
+</span>25 <span style=''>   *   Reaction to be executed into the State when entered, after the standard Reaction. It can be
+</span>26 <span style=''>   *   omitted.
+</span>27 <span style=''>   */
+</span>28 <span style=''>  case class SimpleRoomLink(
+</span>29 <span style=''>    endRoom: RM,
+</span>30 <span style=''>    openable: Option[Openable] = None,
+</span>31 <span style=''>    onEnterExtra: Option[Reaction] = None
+</span>32 <span style=''>  )(implicit
+</span>33 <span style=''>    playerLocationLens: Lens[S, RoomRef],
+</span>34 <span style=''>    messageLens: Lens[S, Seq[Message]]
+</span>35 <span style=''>  ) extends RoomLink
+</span>36 <span style=''>    with Delegate {
+</span>37 <span style=''>
+</span>38 <span style=''>    /**
+</span>39 <span style=''>     * If an openable is passed, it is passed as father behavior.
+</span>40 <span style=''>     * @return
+</span>41 <span style=''>     *   The father behavior triggers.
+</span>42 <span style=''>     */
+</span>43 <span style=''>    override def delegateTriggers: ItemTriggers =
+</span>44 <span style=''>      </span><span style='background: #AEF1AE'>openable.fold(PartialFunction.empty: ItemTriggers)(_.triggers)</span><span style=''>
+</span>45 <span style=''>
+</span>46 <span style=''>    override def receiverTriggers: ItemTriggers = {
+</span>47 <span style=''>      // &quot;Enter the item&quot;
+</span>48 <span style=''>      case (Enter, item, None, state)
+</span>49 <span style=''>          if </span><span style='background: #AEF1AE'>state.isInCurrentRoom(item) &amp;&amp; openable.fold(true)(_.isOpen)</span><span style=''> =&gt;
+</span>50 <span style=''>        </span><span style='background: #AEF1AE'>enterRoom()</span><span style=''>
+</span>51 <span style=''>    }
+</span>52 <span style=''>
+</span>53 <span style=''>    def enterRoom(): Reaction =
+</span>54 <span style=''>      </span><span style='background: #AEF1AE'>_.applyReactions(
+</span>55 <span style=''></span><span style='background: #AEF1AE'>        playerLocationLens.modify(_ =&gt; endRoom.ref),
+</span>56 <span style=''></span><span style='background: #AEF1AE'>        messageLens.modify(_ :+ Navigated(endRoom)),
+</span>57 <span style=''></span><span style='background: #AEF1AE'>        onEnterExtra.getOrElse(state =&gt; state)
+</span>58 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>    override def isAccessible: Boolean = </span><span style='background: #F0ADAD'>openable.fold(true)(_.isOpen)</span><span style=''>
+</span>61 <span style=''>  }
+</span>62 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          224
+        </td>
+        <td>
+          1600
+          -
+          1621
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.PartialFunction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.PartialFunction.empty[Any, Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          225
+        </td>
+        <td>
+          1637
+          -
+          1647
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel.ItemBehavior.triggers
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.triggers
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          226
+        </td>
+        <td>
+          1586
+          -
+          1648
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.fold
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.openable.fold[SimpleRoomLinkExt.this.ItemTriggers]((scala.PartialFunction.empty[Any, Nothing]: SimpleRoomLinkExt.this.ItemTriggers))(((x$1: SimpleRoomLinkExt.this.Openable) =&gt; x$1.triggers))
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          232
+        </td>
+        <td>
+          1700
+          -
+          1700
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleRoomLinkExt.SimpleRoomLink.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          227
+        </td>
+        <td>
+          1824
+          -
+          1828
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          228
+        </td>
+        <td>
+          1830
+          -
+          1838
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors.Openable.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          229
+        </td>
+        <td>
+          1810
+          -
+          1839
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.fold
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.openable.fold[Boolean](true)(((x$2: SimpleRoomLinkExt.this.Openable) =&gt; x$2.isOpen))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          230
+        </td>
+        <td>
+          1779
+          -
+          1839
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLinkExt.this.StateUtils(state).isInCurrentRoom(item).&amp;&amp;(SimpleRoomLink.this.openable.fold[Boolean](true)(((x$2: SimpleRoomLinkExt.this.Openable) =&gt; x$2.isOpen)))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          231
+        </td>
+        <td>
+          1851
+          -
+          1862
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleRoomLinkExt.SimpleRoomLink.enterRoom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.enterRoom()
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          240
+        </td>
+        <td>
+          1908
+          -
+          2086
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.impl.SimpleUtils.StateUtils.applyReactions
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLinkExt.this.StateUtils(x$3).applyReactions(SimpleRoomLink.this.playerLocationLens.modify(((x$4: io.github.scalaquest.core.model.RoomRef) =&gt; SimpleRoomLink.this.endRoom.ref)), SimpleRoomLink.this.messageLens.modify(((x$5: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$5.:+[io.github.scalaquest.core.model.Message](SimpleRoomLinkExt.this.Navigated.apply(SimpleRoomLink.this.endRoom)))), SimpleRoomLink.this.onEnterExtra.getOrElse[SimpleRoomLinkExt.this.Reaction](((state: SimpleRoomLinkExt.this.S) =&gt; state)))
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          233
+        </td>
+        <td>
+          1965
+          -
+          1976
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.endRoom.ref
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          234
+        </td>
+        <td>
+          1934
+          -
+          1977
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.playerLocationLens.modify(((x$4: io.github.scalaquest.core.model.RoomRef) =&gt; SimpleRoomLink.this.endRoom.ref))
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          235
+        </td>
+        <td>
+          2021
+          -
+          2028
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl.SimpleRoomLinkExt.SimpleRoomLink.endRoom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.endRoom
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          236
+        </td>
+        <td>
+          2011
+          -
+          2029
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonMessages.Navigated.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLinkExt.this.Navigated.apply(SimpleRoomLink.this.endRoom)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          237
+        </td>
+        <td>
+          2006
+          -
+          2029
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.:+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$5.:+[io.github.scalaquest.core.model.Message](SimpleRoomLinkExt.this.Navigated.apply(SimpleRoomLink.this.endRoom))
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          238
+        </td>
+        <td>
+          1987
+          -
+          2030
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.messageLens.modify(((x$5: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$5.:+[io.github.scalaquest.core.model.Message](SimpleRoomLinkExt.this.Navigated.apply(SimpleRoomLink.this.endRoom))))
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          239
+        </td>
+        <td>
+          2040
+          -
+          2078
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.onEnterExtra.getOrElse[SimpleRoomLinkExt.this.Reaction](((state: SimpleRoomLinkExt.this.S) =&gt; state))
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          241
+        </td>
+        <td>
+          2143
+          -
+          2147
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          242
+        </td>
+        <td>
+          2149
+          -
+          2157
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.CommonBehaviors.Openable.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          x$6.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          243
+        </td>
+        <td>
+          2129
+          -
+          2158
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.fold
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleRoomLink.this.openable.fold[Boolean](true)(((x$6: SimpleRoomLinkExt.this.Openable) =&gt; x$6.isOpen))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

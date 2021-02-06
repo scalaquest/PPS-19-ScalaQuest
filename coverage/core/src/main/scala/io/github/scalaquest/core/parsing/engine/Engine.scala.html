@@ -1,0 +1,128 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/parsing/engine/Engine.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine
+</span>4 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
+</span>5 <span style=''>
+</span>6 <span style=''>/**
+</span>7 <span style=''> * A data structure that contains the result of a Prolog query being evaluated as true.
+</span>8 <span style=''> */
+</span>9 <span style=''>trait Solution {
+</span>10 <span style=''>
+</span>11 <span style=''>  /** Returns the computed solution. */
+</span>12 <span style=''>  def body: Term
+</span>13 <span style=''>
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * Allows to retrieve the value of a given variable in the substitution.
+</span>16 <span style=''>   * @param variable
+</span>17 <span style=''>   *   the variable to look for
+</span>18 <span style=''>   * @return
+</span>19 <span style=''>   *   optionally, the value of the variable in the substitution.
+</span>20 <span style=''>   */
+</span>21 <span style=''>  def getVariable(variable: Variable): Option[Term]
+</span>22 <span style=''>}
+</span>23 <span style=''>
+</span>24 <span style=''>/**
+</span>25 <span style=''> * A generic Prolog engine. It allows to execute queries and collect the results.
+</span>26 <span style=''> *
+</span>27 <span style=''> * Example:
+</span>28 <span style=''> * {{{
+</span>29 <span style=''> *   val theory = Theory(
+</span>30 <span style=''> *     &quot;hello(mario).&quot; +
+</span>31 <span style=''> *     &quot;hello(luigi).&quot; +
+</span>32 <span style=''> *     &quot;hello(peach).&quot; +
+</span>33 <span style=''> *     &quot;hello(daisy).&quot;
+</span>34 <span style=''> *   )
+</span>35 <span style=''> *
+</span>36 <span style=''> *   val characters = for {
+</span>37 <span style=''> *     s &lt;- Engine(theory).solve(Compound(Atom(&quot;hello&quot;), Variable(&quot;X&quot;)))
+</span>38 <span style=''> *     x &lt;- s.getVariable(Variable(&quot;X&quot;))
+</span>39 <span style=''> *   } yield x
+</span>40 <span style=''> *
+</span>41 <span style=''> *   assert(characters == Seq(&quot;mario&quot;, &quot;luigi&quot;, &quot;peach&quot;, &quot;daisy&quot;)) // true
+</span>42 <span style=''> * }}}
+</span>43 <span style=''> */
+</span>44 <span style=''>trait Engine {
+</span>45 <span style=''>
+</span>46 <span style=''>  /**
+</span>47 <span style=''>   * Allows to query the engine for a term, it will return a sequence of solutions being evaluated
+</span>48 <span style=''>   * as true.
+</span>49 <span style=''>   * @param term
+</span>50 <span style=''>   *   the argument of the query
+</span>51 <span style=''>   * @return
+</span>52 <span style=''>   *   the sequence of positive solutions.
+</span>53 <span style=''>   */
+</span>54 <span style=''>  def solve(term: Term): Seq[Solution]
+</span>55 <span style=''>}
+</span>56 <span style=''>
+</span>57 <span style=''>object Engine {
+</span>58 <span style=''>
+</span>59 <span style=''>  /** Creates an [[Engine]] with the provided theory and libraries. */
+</span>60 <span style=''>  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
+</span>61 <span style=''>    </span><span style='background: #AEF1AE'>TuPrologEngine(theory, libraries)</span><span style=''>
+</span>62 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          331
+        </td>
+        <td>
+          1574
+          -
+          1607
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.apply(theory, libraries)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -1,0 +1,316 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/parsing/scalog/dsl/Extractors.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog.dsl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
+</span>4 <span style=''>
+</span>5 <span style=''>trait Extractors extends CompoundBase {
+</span>6 <span style=''>
+</span>7 <span style=''>  object extractor {
+</span>8 <span style=''>
+</span>9 <span style=''>    object toTerms extends CompoundExtractor[Term] {
+</span>10 <span style=''>
+</span>11 <span style=''>      override def unapplySeq(term: Term): Option[Seq[Term]] =
+</span>12 <span style=''>        term match {
+</span>13 <span style=''>          case Compound(f, t0, terms) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>Some(t0 +: terms)</span><span style=''>
+</span>14 <span style=''>          case _                                      =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>15 <span style=''>        }
+</span>16 <span style=''>    }
+</span>17 <span style=''>
+</span>18 <span style=''>    object toStrings extends CompoundExtractor[String] {
+</span>19 <span style=''>
+</span>20 <span style=''>      override def unapplySeq(term: Term): Option[Seq[String]] =
+</span>21 <span style=''>        term match {
+</span>22 <span style=''>          case Compound(f, Atom(t0), terms: List[Atom]) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt;
+</span>23 <span style=''>            </span><span style='background: #AEF1AE'>Some(t0 +: terms.map(_.name))</span><span style=''>
+</span>24 <span style=''>          case _ =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>25 <span style=''>        }
+</span>26 <span style=''>    }
+</span>27 <span style=''>  }
+</span>28 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          405
+        </td>
+        <td>
+          373
+          -
+          380
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBase.functor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Extractors.this.functor
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          406
+        </td>
+        <td>
+          368
+          -
+          380
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          f.==(Extractors.this.functor)
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          407
+        </td>
+        <td>
+          392
+          -
+          400
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.+:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          terms.+:[io.github.scalaquest.core.parsing.scalog.Term](rassoc$1)
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          408
+        </td>
+        <td>
+          384
+          -
+          401
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[List[io.github.scalaquest.core.parsing.scalog.Term]]({
+  final &lt;synthetic&gt; &lt;artifact&gt; val rassoc$1: io.github.scalaquest.core.parsing.scalog.Term = t0;
+  terms.+:[io.github.scalaquest.core.parsing.scalog.Term](rassoc$1)
+})
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          409
+        </td>
+        <td>
+          459
+          -
+          463
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          410
+        </td>
+        <td>
+          689
+          -
+          696
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBase.functor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Extractors.this.functor
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          411
+        </td>
+        <td>
+          684
+          -
+          696
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          f.==(Extractors.this.functor)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          412
+        </td>
+        <td>
+          720
+          -
+          740
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.+:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          terms.map[String](((x$1: io.github.scalaquest.core.parsing.scalog.Atom) =&gt; x$1.name)).+:[String](rassoc$2)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          413
+        </td>
+        <td>
+          712
+          -
+          741
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[List[String]]({
+  final &lt;synthetic&gt; &lt;artifact&gt; val rassoc$2: String = t0;
+  terms.map[String](((x$1: io.github.scalaquest.core.parsing.scalog.Atom) =&gt; x$1.name)).+:[String](rassoc$2)
+})
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          414
+        </td>
+        <td>
+          762
+          -
+          766
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

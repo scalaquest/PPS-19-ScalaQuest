@@ -1,0 +1,171 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/pipeline/lexer/SimpleLexer.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.lexer
+</span>2 <span style=''>
+</span>3 <span style=''>case class SimpleLexerResult(tokens: Seq[Token]) extends LexerResult
+</span>4 <span style=''>
+</span>5 <span style=''>case object SimpleLexer extends Lexer {
+</span>6 <span style=''>
+</span>7 <span style=''>  override def tokenize(rawSentence: String): LexerResult =
+</span>8 <span style=''>    </span><span style='background: #AEF1AE'>SimpleLexerResult((rawSentence.toLowerCase split &quot; &quot;).filter(_ != &quot;&quot;).toSeq)</span><span style=''>
+</span>9 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          8
+        </td>
+        <td>
+          442
+        </td>
+        <td>
+          244
+          -
+          277
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.split
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          rawSentence.toLowerCase().split(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          8
+        </td>
+        <td>
+          443
+        </td>
+        <td>
+          286
+          -
+          293
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.!=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.!=(&quot;&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          8
+        </td>
+        <td>
+          444
+        </td>
+        <td>
+          244
+          -
+          294
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.ArrayOps.filter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.refArrayOps[String](rawSentence.toLowerCase().split(&quot; &quot;)).filter(((x$1: String) =&gt; x$1.!=(&quot;&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          8
+        </td>
+        <td>
+          445
+        </td>
+        <td>
+          244
+          -
+          300
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.ArrayOps.toSeq
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.refArrayOps[String](scala.Predef.refArrayOps[String](rawSentence.toLowerCase().split(&quot; &quot;)).filter(((x$1: String) =&gt; x$1.!=(&quot;&quot;)))).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          8
+        </td>
+        <td>
+          446
+        </td>
+        <td>
+          225
+          -
+          301
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.lexer.SimpleLexerResult.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleLexerResult.apply(scala.Predef.refArrayOps[String](scala.Predef.refArrayOps[String](rawSentence.toLowerCase().split(&quot; &quot;)).filter(((x$1: String) =&gt; x$1.!=(&quot;&quot;)))).toSeq)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

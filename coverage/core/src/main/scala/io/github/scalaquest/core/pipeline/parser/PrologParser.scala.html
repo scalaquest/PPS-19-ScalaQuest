@@ -1,0 +1,1214 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/pipeline/parser/PrologParser.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.parser
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.{BaseItem, DecoratedItem, ItemDescription}
+</span>4 <span style=''>import io.github.scalaquest.core.parsing.engine.Engine
+</span>5 <span style=''>import io.github.scalaquest.core.parsing.scalog
+</span>6 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, ListP, Term, Variable}
+</span>7 <span style=''>import io.github.scalaquest.core.pipeline.lexer.LexerResult
+</span>8 <span style=''>
+</span>9 <span style=''>case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
+</span>10 <span style=''>
+</span>11 <span style=''>trait Helpers {
+</span>12 <span style=''>
+</span>13 <span style=''>  object dsl {
+</span>14 <span style=''>    import io.github.scalaquest.core.parsing.scalog.dsl._
+</span>15 <span style=''>
+</span>16 <span style=''>    val X         = </span><span style='background: #AEF1AE'>Variable(&quot;X&quot;)</span><span style=''>
+</span>17 <span style=''>    val imp       = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;imp&quot;).constructor</span><span style=''>
+</span>18 <span style=''>    val phrase    = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;phrase&quot;).constructor</span><span style=''>
+</span>19 <span style=''>    val sentence  = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;sentence&quot;).extractor.toTerms</span><span style=''>
+</span>20 <span style=''>    val `/`       = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;/&quot;).extractor.toStrings</span><span style=''>
+</span>21 <span style=''>    val decorated = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;decorated&quot;).extractor.toTerms</span><span style=''>
+</span>22 <span style=''>  }
+</span>23 <span style=''>
+</span>24 <span style=''>  object ItemDescription {
+</span>25 <span style=''>    import dsl.decorated
+</span>26 <span style=''>
+</span>27 <span style=''>    private def toItemDescription(term: Term): ItemDescription =
+</span>28 <span style=''>      term match {
+</span>29 <span style=''>        case Atom(name) =&gt; </span><span style='background: #AEF1AE'>BaseItem(name)</span><span style=''>
+</span>30 <span style=''>        case decorated(Atom(decoration), t) =&gt;
+</span>31 <span style=''>          </span><span style='background: #AEF1AE'>DecoratedItem(decoration, toItemDescription(t))</span><span style=''>
+</span>32 <span style=''>      }
+</span>33 <span style=''>
+</span>34 <span style=''>    def unapply(t: Term): Option[ItemDescription] =
+</span>35 <span style=''>      t match {
+</span>36 <span style=''>        case obj @ (_: Compound | _: Term) =&gt; </span><span style='background: #AEF1AE'>Some(toItemDescription(obj))</span><span style=''>
+</span>37 <span style=''>        case _                             =&gt; </span><span style='background: #F0ADAD'>None</span><span style=''>
+</span>38 <span style=''>      }
+</span>39 <span style=''>
+</span>40 <span style=''>  }
+</span>41 <span style=''>
+</span>42 <span style=''>  object Preposition {
+</span>43 <span style=''>    private final val EMPTY = </span><span style='background: #F0ADAD'>&quot;{}&quot;</span><span style=''>
+</span>44 <span style=''>
+</span>45 <span style=''>    def unapply(prep: String): Option[Option[String]] =
+</span>46 <span style=''>      prep match {
+</span>47 <span style=''>        case `EMPTY` =&gt; </span><span style='background: #AEF1AE'>Some(None)</span><span style=''>
+</span>48 <span style=''>        case x       =&gt; </span><span style='background: #AEF1AE'>Some(Some(x))</span><span style=''>
+</span>49 <span style=''>      }
+</span>50 <span style=''>  }
+</span>51 <span style=''>
+</span>52 <span style=''>  val i = </span><span style='background: #AEF1AE'>ItemDescription</span><span style=''>
+</span>53 <span style=''>  val p = </span><span style='background: #AEF1AE'>Preposition</span><span style=''>
+</span>54 <span style=''>}
+</span>55 <span style=''>
+</span>56 <span style=''>/**
+</span>57 <span style=''> * A [[Parser]] implementation that takes advantage of an
+</span>58 <span style=''> * [[io.github.scalaquest.core.parsing.engine.Engine]] in order to perform the syntactical analysis.
+</span>59 <span style=''> */
+</span>60 <span style=''>abstract class PrologParser extends Parser with Helpers {
+</span>61 <span style=''>
+</span>62 <span style=''>  /** The [[io.github.scalaquest.core.parsing.engine.Engine]] used. */
+</span>63 <span style=''>  protected def engine: Engine
+</span>64 <span style=''>
+</span>65 <span style=''>  override def parse(lexerResult: LexerResult): Option[ParserResult] = {
+</span>66 <span style=''>    import dsl._
+</span>67 <span style=''>    import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
+</span>68 <span style=''>    val tokens = </span><span style='background: #AEF1AE'>lexerResult.tokens.map(Atom)</span><span style=''>
+</span>69 <span style=''>    val query  = </span><span style='background: #AEF1AE'>phrase(imp(X), tokens)</span><span style=''>
+</span>70 <span style=''>
+</span>71 <span style=''>    </span><span style='background: #AEF1AE'>for {
+</span>72 <span style=''></span><span style='background: #AEF1AE'>      r &lt;- engine.solve(query).headOption
+</span>73 <span style=''></span><span style='background: #AEF1AE'>      x &lt;- r.getVariable(X)
+</span>74 <span style=''></span><span style='background: #AEF1AE'>      _ = println(x)
+</span>75 <span style=''></span><span style='background: #AEF1AE'>      ast &lt;- x match {
+</span>76 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject)) =&gt;
+</span>77 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
+</span>78 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =&gt;
+</span>79 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
+</span>80 <span style=''></span><span style='background: #AEF1AE'>        case sentence(
+</span>81 <span style=''></span><span style='background: #AEF1AE'>              `/`(verb, p(prep)),
+</span>82 <span style=''></span><span style='background: #AEF1AE'>              Atom(subject),
+</span>83 <span style=''></span><span style='background: #AEF1AE'>              i(directObj),
+</span>84 <span style=''></span><span style='background: #AEF1AE'>              i(indirectObj)
+</span>85 <span style=''></span><span style='background: #AEF1AE'>            ) =&gt;
+</span>86 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
+</span>87 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; </span><span style='background: #F0ADAD'>None</span><span style='background: #AEF1AE'>
+</span>88 <span style=''></span><span style='background: #AEF1AE'>      }
+</span>89 <span style=''></span><span style='background: #AEF1AE'>    } yield SimpleParserResult(ast)</span><span style=''>
+</span>90 <span style=''>  }
+</span>91 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          448
+        </td>
+        <td>
+          574
+          -
+          587
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Variable.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.Variable.apply(&quot;X&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          449
+        </td>
+        <td>
+          624
+          -
+          629
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;imp&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          450
+        </td>
+        <td>
+          608
+          -
+          642
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;imp&quot;)).constructor
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          451
+        </td>
+        <td>
+          679
+          -
+          687
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;phrase&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          452
+        </td>
+        <td>
+          663
+          -
+          700
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;phrase&quot;)).constructor
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          453
+        </td>
+        <td>
+          737
+          -
+          747
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;sentence&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          454
+        </td>
+        <td>
+          721
+          -
+          766
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Extractors.extractor.toTerms
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;sentence&quot;)).extractor.toTerms
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          455
+        </td>
+        <td>
+          803
+          -
+          806
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;/&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          456
+        </td>
+        <td>
+          787
+          -
+          827
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Extractors.extractor.toStrings
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;/&quot;)).extractor.toStrings
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          457
+        </td>
+        <td>
+          864
+          -
+          875
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;decorated&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          458
+        </td>
+        <td>
+          848
+          -
+          894
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Extractors.extractor.toTerms
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;decorated&quot;)).extractor.toTerms
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          459
+        </td>
+        <td>
+          1064
+          -
+          1078
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.BaseItem.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.model.BaseItem.apply(name)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          460
+        </td>
+        <td>
+          1162
+          -
+          1182
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Helpers.ItemDescription.toItemDescription
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ItemDescription.this.toItemDescription(t)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          461
+        </td>
+        <td>
+          1136
+          -
+          1183
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.DecoratedItem.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.model.DecoratedItem.apply(decoration, ItemDescription.this.toItemDescription(t))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          462
+        </td>
+        <td>
+          1312
+          -
+          1334
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Helpers.ItemDescription.toItemDescription
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ItemDescription.this.toItemDescription(obj)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          463
+        </td>
+        <td>
+          1307
+          -
+          1335
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[io.github.scalaquest.core.model.ItemDescription](ItemDescription.this.toItemDescription(obj))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          464
+        </td>
+        <td>
+          1382
+          -
+          1386
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          465
+        </td>
+        <td>
+          1454
+          -
+          1458
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;{}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          466
+        </td>
+        <td>
+          1564
+          -
+          1568
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          467
+        </td>
+        <td>
+          1559
+          -
+          1569
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[None.type](scala.None)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          468
+        </td>
+        <td>
+          1599
+          -
+          1606
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[String](x)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          469
+        </td>
+        <td>
+          1594
+          -
+          1607
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[Some[String]](scala.Some.apply[String](x))
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          470
+        </td>
+        <td>
+          1631
+          -
+          1646
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Helpers.ItemDescription
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Helpers.this.ItemDescription
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          471
+        </td>
+        <td>
+          1657
+          -
+          1668
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Helpers.Preposition
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Helpers.this.Preposition
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          472
+        </td>
+        <td>
+          2198
+          -
+          2202
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.Atom
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          473
+        </td>
+        <td>
+          2175
+          -
+          2203
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          lexerResult.tokens.map[io.github.scalaquest.core.parsing.scalog.Atom](io.github.scalaquest.core.parsing.scalog.Atom)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          474
+        </td>
+        <td>
+          2232
+          -
+          2233
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Helpers.dsl.X
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          PrologParser.this.dsl.X
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          475
+        </td>
+        <td>
+          2228
+          -
+          2234
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          PrologParser.this.dsl.imp.apply(PrologParser.this.dsl.X)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          476
+        </td>
+        <td>
+          2236
+          -
+          2242
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.seqToListP(tokens)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          477
+        </td>
+        <td>
+          2221
+          -
+          2243
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          PrologParser.this.dsl.phrase.apply(PrologParser.this.dsl.imp.apply(PrologParser.this.dsl.X), io.github.scalaquest.core.parsing.scalog.dsl.`package`.seqToListP(tokens))
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          491
+        </td>
+        <td>
+          2249
+          -
+          2957
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          PrologParser.this.engine.solve(query).headOption.flatMap[io.github.scalaquest.core.pipeline.parser.ParserResult](((r: io.github.scalaquest.core.parsing.engine.Solution) =&gt; r.getVariable(PrologParser.this.dsl.X).map[(io.github.scalaquest.core.parsing.scalog.Term, Unit)](((x: io.github.scalaquest.core.parsing.scalog.Term) =&gt; {
+  val x$1: Unit = scala.Predef.println(x);
+  scala.Tuple2.apply[io.github.scalaquest.core.parsing.scalog.Term, Unit](x, x$1)
+})).flatMap[io.github.scalaquest.core.pipeline.parser.ParserResult](((x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit)) =&gt; (x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit) @unchecked) match {
+  case (_1: io.github.scalaquest.core.parsing.scalog.Term, _2: Unit): (io.github.scalaquest.core.parsing.scalog.Term, Unit)((x @ _), _) =&gt; x match {
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive](AbstractSyntaxTree.Intransitive.apply(verb, prep, subject))
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((obj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive](AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj))
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive](AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj))
+  case _ =&gt; scala.None
+}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          478
+        </td>
+        <td>
+          2322
+          -
+          2323
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Helpers.dsl.X
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          PrologParser.this.dsl.X
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          480
+        </td>
+        <td>
+          2303
+          -
+          2303
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[io.github.scalaquest.core.parsing.scalog.Term, Unit](x, x$1)
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          490
+        </td>
+        <td>
+          2303
+          -
+          2957
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.getVariable(PrologParser.this.dsl.X).map[(io.github.scalaquest.core.parsing.scalog.Term, Unit)](((x: io.github.scalaquest.core.parsing.scalog.Term) =&gt; {
+  val x$1: Unit = scala.Predef.println(x);
+  scala.Tuple2.apply[io.github.scalaquest.core.parsing.scalog.Term, Unit](x, x$1)
+})).flatMap[io.github.scalaquest.core.pipeline.parser.ParserResult](((x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit)) =&gt; (x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit) @unchecked) match {
+  case (_1: io.github.scalaquest.core.parsing.scalog.Term, _2: Unit): (io.github.scalaquest.core.parsing.scalog.Term, Unit)((x @ _), _) =&gt; x match {
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive](AbstractSyntaxTree.Intransitive.apply(verb, prep, subject))
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((obj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive](AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj))
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive](AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj))
+  case _ =&gt; scala.None
+}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          479
+        </td>
+        <td>
+          2335
+          -
+          2345
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.println(x)
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          489
+        </td>
+        <td>
+          2352
+          -
+          2957
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x match {
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive](AbstractSyntaxTree.Intransitive.apply(verb, prep, subject))
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((obj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive](AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj))
+  case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive](AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj))
+  case _ =&gt; scala.None
+}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          481
+        </td>
+        <td>
+          2444
+          -
+          2496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTree.Intransitive.apply(verb, prep, subject)
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          2439
+          -
+          2497
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive](AbstractSyntaxTree.Intransitive.apply(verb, prep, subject))
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          483
+        </td>
+        <td>
+          2581
+          -
+          2636
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj)
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          484
+        </td>
+        <td>
+          2576
+          -
+          2637
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive](AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj))
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          485
+        </td>
+        <td>
+          2813
+          -
+          2889
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          486
+        </td>
+        <td>
+          2808
+          -
+          2890
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive](AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj))
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          487
+        </td>
+        <td>
+          2909
+          -
+          2913
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          488
+        </td>
+        <td>
+          2934
+          -
+          2957
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.SimpleParserResult.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleParserResult.apply(ast)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>
