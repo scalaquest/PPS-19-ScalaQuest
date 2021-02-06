@@ -1,4 +1,4 @@
-name: Opt-in
+name: Opt-in CI
 
 # A minimal version of the Continuous Integration workflow, triggerable on-demand
 # from feature branches when needed, by the use of keyword [lint], [build] or [test]
@@ -50,5 +50,5 @@ jobs:
       - name: Test sources and coverage check
         if: contains(github.event.head_commit.message, '[test]')
         run: |
-        ./gradlew check
-        ./gradlew checkScoverage
+          ./gradlew check
+          ./gradlew checkScoverage

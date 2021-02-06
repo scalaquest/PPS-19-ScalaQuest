@@ -100,14 +100,10 @@ jobs:
 
       - name: Push Scaladoc to gh-pages
         run: |
-          mkdir ./gh-pages/scaladoc
-          mkdir ./gh-pages/scaladoc/core
-          mkdir ./gh-pages/scaladoc/cli
+          mkdir ./gh-pages/scaladoc -p
           mv ./core/build/docs/scaladoc ./gh-pages/scaladoc/core
           mv ./cli/build/docs/scaladoc ./gh-pages/scaladoc/cli
-          mkdir ./gh-pages/coverage
-          mkdir ./gh-pages/coverage/core
-          mkdir ./gh-pages/coverage/cli
+          mkdir ./gh-pages/coverage -p
           mv ./core/build/reports/scoverage ./gh-pages/coverage/core
           mv ./cli/build/reports/scoverage ./gh-pages/coverage/cli
           cd ./gh-pages
