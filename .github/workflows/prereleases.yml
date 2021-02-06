@@ -1,4 +1,4 @@
-name: Opt-in pre-release
+name: Opt-in
 
 # When on a release branch is pushed a commit the [prerelease] keyword,
 # a new prerelease is automatically named and generated.
@@ -11,7 +11,7 @@ on:
 
 jobs:
   prerelease:
-    name: Opt-in pre-release
+    name: Pre-release
     if: contains(github.event.head_commit.message, '[prerelease]')
     runs-on: ubuntu-18.04
     steps:
