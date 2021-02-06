@@ -1,4 +1,4 @@
-name: Opt-in
+name: Opt-in CI
 
 # A minimal version of the Continuous Integration workflow, triggerable on-demand
 # from feature branches when needed, by the use of keyword [lint], [build] or [test]
