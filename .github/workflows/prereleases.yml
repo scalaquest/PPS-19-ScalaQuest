@@ -1,4 +1,4 @@
-name: Opt-in
+name: Opt-in pre
 
 # When on a release branch is pushed a commit the [prerelease] keyword,
 # a new prerelease is automatically named and generated.
