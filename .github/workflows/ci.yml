@@ -8,9 +8,11 @@ on:
     branches:
       - main
       - dev
+      - 'release/*'
+      - 'hotfix/*'
+
   pull_request:
     branches:
-      - main
       - dev
 
 jobs:
