@@ -11,3 +11,8 @@ buildscript { repositories { mavenCentral() }}
 repositories {
     jcenter()
 }
+
+dependencies {
+    // Used by Scoverage to detect Scala Standard Library version, being root-level
+    implementation("org.scala-lang:scala-library:_")
+}

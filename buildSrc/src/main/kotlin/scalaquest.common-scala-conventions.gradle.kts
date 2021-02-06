@@ -9,7 +9,7 @@ plugins {
     // Adds scoverage support
     id("org.scoverage")
 
-    // Support for semantic gis-sensitive semantic versioning
+    // Support for semantic git-sensitive semantic versioning
     id("org.danilopianini.git-sensitive-semantic-versioning")
 
     // Plugin used to enable ScalaTest inside Gradle
@@ -41,13 +41,13 @@ gitSemVer {
 
 tasks.register("generateVersionFile") {
     mkdir("build")
-    File(buildDir.toString() + "/version").writeText(version.toString())
+    File("$buildDir/version").writeText(version.toString())
 }
 
 spotless {
     // scala format with Scalafmt
     scala {
-        scalafmt("2.7.5").configFile(rootDir.absolutePath + "/.scalafmt.conf")
+        scalafmt("2.7.5").configFile("${rootDir.absolutePath}/.scalafmt.conf")
     }
 }
 
