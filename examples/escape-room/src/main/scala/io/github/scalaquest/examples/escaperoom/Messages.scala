@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.Message
-import io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonStringPusher
 
 object Messages {
   case object SuperStonksPowered extends Message

@@ -24,7 +24,7 @@ object EscapeRoom extends GameCLIApp {
   override def pipelineBuilder: Pipeline.PartialBuilder[State, Model] = defaultPipeline(source)
 
   override def state: State =
-    model.stateFactory(
+    model.stateBuilder(
       actions = verbToAction,
       rooms = House.refToRoom,
       items = refToItem,

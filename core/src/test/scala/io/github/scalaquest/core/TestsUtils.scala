@@ -2,8 +2,8 @@ package io.github.scalaquest.core
 
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
-import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
+import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedItem,
   Door,
@@ -23,13 +23,13 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
 object TestsUtils {
   val model: SimpleModel.type = SimpleModel;
 
-  val startRoom: SimpleRoom = model.roomFactory(
+  val startRoom: SimpleRoom = model.roomBuilder(
     "start room",
     Map(Direction.North -> targetRoom.ref),
     Set(door.ref, key.ref)
   )
 
-  val targetRoom: SimpleRoom = model.roomFactory(
+  val targetRoom: SimpleRoom = model.roomBuilder(
     "target room",
     Map(Direction.South -> startRoom.ref),
     Set()
@@ -72,7 +72,7 @@ object TestsUtils {
     doorItemRef  -> door
   )
 
-  val simpleState: SimpleState = model.stateFactory(
+  val simpleState: SimpleState = model.stateBuilder(
     actionsMap,
     bag = Set(appleItemRef),
     location = startRoom.ref,

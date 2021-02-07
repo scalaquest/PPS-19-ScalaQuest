@@ -106,7 +106,8 @@ trait Model { model: Model =>
      * A textual representation of the [[Item]].
      * @return
      */
-    def name: String = description.mkString
+    def name: String              = description.mkString
+    override def toString: String = name
 
     /**
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
@@ -176,6 +177,7 @@ trait Model { model: Model =>
      *   A textual description for the room.
      */
     def name: String
+    override def toString: String = name
 
     /**
      * The unique identifier of the [[Room]]. This is necessary, as passing from a state to another,
@@ -187,6 +189,8 @@ trait Model { model: Model =>
      * Identifies [[Room]] s near to the current one, at the cardinal points.
      */
     def neighbor(direction: Direction)(implicit state: S): Option[RM]
+
+    def neighbors(implicit state: S): Map[Direction, RM]
 
     /**
      * Identifies the [[Item]] s positioned into the current [[Room]].

@@ -20,10 +20,10 @@ object Items {
     )
   }
 
-  val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = doorKeyFactory(
-    doorDescription = i(d("living-room"), "door"),
-    keyDescription = i(d("living-room"), "key"),
-    room = livingRoom,
+  val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = doorKeyBuilder(
+    doorDesc = i(d("living-room"), "door"),
+    keyDesc = i(d("living-room"), "key"),
+    endRoom = livingRoom,
     onOpenExtra = Some(
       roomsLens.modify(
         _.updatedWith(kitchen.ref) {
@@ -33,7 +33,7 @@ object Items {
         }
       )
     ),
-    keyAdditionalBehaviors = Seq(SimpleTakeable())
+    keyAddBehaviors = Seq(SimpleTakeable())
   )
 
   val kitchenDoor: SimpleDoor = {

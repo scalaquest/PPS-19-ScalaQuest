@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.SimpleCommonBehaviors
-import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
+import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
+import io.github.scalaquest.core.model.behaviorBased.impl.builders.BuildersExt
 
 /**
  * This represents the Model with a standard implementation: items share an internal implementation
@@ -14,9 +14,8 @@ import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonIt
  */
 object SimpleModel
   extends BehaviorBasedModel
-  with SimpleCommonBehaviors
-  with SimpleCommonItems
-  with SimpleState
-  with SimpleGround
-  with SimpleRoom
-  with SimpleBuilders
+  with SimpleStateExt
+  with SimpleGroundExt
+  with SimpleRoomExt
+  with CommonsExt
+  with BuildersExt

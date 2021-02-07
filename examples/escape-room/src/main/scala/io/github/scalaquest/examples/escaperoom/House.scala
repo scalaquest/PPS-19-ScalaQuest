@@ -13,7 +13,7 @@ object House extends Environment[Room] {
     )
 
   def kitchen: Room =
-    model.roomFactory(
+    model.roomBuilder(
       "kitchen",
       Map(),
       Set(
@@ -24,7 +24,7 @@ object House extends Environment[Room] {
     )
 
   def livingRoom: Room =
-    model.roomFactory(
+    model.roomBuilder(
       "living room",
       Map(
         Direction.North -> bathroom.ref,
@@ -36,7 +36,7 @@ object House extends Environment[Room] {
     )
 
   def bathroom: Room =
-    model.roomFactory(
+    model.roomBuilder(
       "bathroom",
       Map(
         Direction.South -> livingRoom.ref
