@@ -1,13 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.impl
 
-import io.github.scalaquest.core.model.ItemDescription.dsl
-import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.SimpleCommonBehaviors
 import io.github.scalaquest.core.model.behaviorBased.common.items.SimpleCommonItems
-import io.github.scalaquest.core.model.impl.{SimpleRoom, SimpleState}
-import monocle.Lens
-import monocle.macros.GenLens
 
 /**
  * This represents the Model with a standard implementation: items share an internal implementation
@@ -23,53 +18,5 @@ object SimpleModel
   with SimpleCommonItems
   with SimpleState
   with SimpleGround
-  with SimpleRoom {
-
-  override implicit def playerBagLens: Lens[S, Set[ItemRef]]      = GenLens[S](_.matchState.player.bag)
-  override implicit def matchRoomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.matchState.rooms)
-  override implicit def itemsLens: Lens[S, Map[ItemRef, I]]       = GenLens[S](_.matchState.items)
-  override implicit def messageLens: Lens[S, Seq[Message]]        = GenLens[S](_.messages)
-
-  override implicit def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]] =
-    Lens[RM, Map[Direction, RoomRef]](get = _._neighbors())(set =
-      a => b => b.copy(_neighbors = () => a)
-    )
-
-  override implicit def playerLocationLens: Lens[S, RoomRef] =
-    GenLens[S](_.matchState.player.location)
-
-  override implicit def roomLens: Lens[RM, Set[ItemRef]] =
-    Lens[RM, Set[ItemRef]](get = _.items)(set = a => b => b.copy(_items = () => a))
-
-  def DoorWithKey(
-    doorDescription: ItemDescription,
-    keyDescription: ItemDescription,
-    room: RM,
-    onOpenExtra: Option[Reaction] = None,
-    onEnterExtra: Option[Reaction] = None,
-    doorAdditionalBehaviors: Seq[ItemBehavior] = Seq(),
-    keyAdditionalBehaviors: Seq[ItemBehavior] = Seq()
-  ): (Door, Key) = {
-
-    val key: Key = SimpleKey(keyDescription, ItemRef(keyDescription), keyAdditionalBehaviors: _*)
-
-    (
-      SimpleDoor(
-        doorDescription,
-        ItemRef(doorDescription),
-        SimpleRoomLink(
-          room,
-          Some(
-            SimpleOpenable(
-              requiredKey = Some(key),
-              onOpenExtra = onOpenExtra
-            )
-          ),
-          onEnterExtra
-        ),
-        doorAdditionalBehaviors: _*
-      ),
-      key
-    )
-  }
-}
+  with SimpleRoom
+  with SimpleBuilders

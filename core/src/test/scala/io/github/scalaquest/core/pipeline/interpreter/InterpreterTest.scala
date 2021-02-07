@@ -19,11 +19,11 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class InterpreterTest extends AnyWordSpec {
   "An Interpreter" when {
-    val interpreter = Interpreter.builder(SimpleModel)(refItemDictionary, SimpleGround)(simpleState)
+    val interpreter = Interpreter.builder(SimpleModel)(simpleState)
 
     "given an Intransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.North)))
-      val maybeExpReaction = SimpleGround.use(Go(Direction.North), simpleState)
+      val maybeExpReaction = SimpleGround.use(Go(Direction.North))(simpleState)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -33,7 +33,7 @@ class InterpreterTest extends AnyWordSpec {
     "given a Transitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Transitive(Take, appleItemRef))
       val stateItemInRoom  = simpleState.copyWithItemInLocation(apple)
-      val maybeExpReaction = apple.use(Take, stateItemInRoom, None)
+      val maybeExpReaction = apple.use(Take, None)(stateItemInRoom)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -44,7 +44,7 @@ class InterpreterTest extends AnyWordSpec {
       val resolverResult     = ResolverResult(Statement.Ditransitive(Open, doorItemRef, keyItemRef))
       val stateDoorInRoom    = simpleState.copyWithItemInLocation(door)
       val stateDoorKeyInRoom = stateDoorInRoom.copyWithItemInLocation(key)
-      val maybeExpReaction   = door.use(Open, stateDoorKeyInRoom, Some(key))
+      val maybeExpReaction   = door.use(Open, Some(key))(stateDoorKeyInRoom)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -72,7 +72,7 @@ class InterpreterTest extends AnyWordSpec {
   "An interpreterBuilder" should {
     import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
     "be of the right type" in {
-      val builder = Interpreter.builder(SimpleModel)(refItemDictionary, SimpleGround)
+      val builder = Interpreter.builder(SimpleModel)
       builder shouldBe a[Interpreter.Builder[_, _, _]]
 
       val interpreter = builder(simpleState)

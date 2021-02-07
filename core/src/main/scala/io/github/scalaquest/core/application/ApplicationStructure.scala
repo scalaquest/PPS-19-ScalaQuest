@@ -43,21 +43,15 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
     programSource[Id](Source.fromResource(resourceName).mkString)
   }
 
-  def defaultPipeline(source: String, ground: Ground): Pipeline.PartialBuilder[State, Model] = {
-
-    val interpreter: Builder[Model, State, Reaction] =
-      Interpreter.builder[Model](model)(refToItem, ground)
-
-    val reducer = Reducer.builder(model)
-
+  def defaultPipeline(source: String): Pipeline.PartialBuilder[State, Model] = {
     Pipeline
       .builderFrom[Model](model)
       .build(
         SimpleLexer,
         Parser(Engine(Theory(source), Set(DCGLibrary))),
         Resolver.builder(model),
-        interpreter,
-        reducer
+        Interpreter.builder(model),
+        Reducer.builder(model)
       )
   }
 

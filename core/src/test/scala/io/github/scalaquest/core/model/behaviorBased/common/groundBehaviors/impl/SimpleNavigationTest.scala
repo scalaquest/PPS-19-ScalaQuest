@@ -22,17 +22,17 @@ class SimpleNavigationTest extends AnyWordSpec {
       "A directional Action is provided" should {
         "move the player in the designed Room, if defined" in {
           for {
-            react <- SimpleGround.use(Go(Direction.North), simpleState) toRight fail(
+            react <- SimpleGround.use(Go(Direction.North))(simpleState) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(simpleState))
-            currRoom <- Right(modState.matchState.player.location)
-          } yield assert(targetRoom.ref == currRoom, "The player has reached the Room")
+            currRoom <- Right(modState.location)
+          } yield assert(targetRoom == currRoom, "The player has reached the Room")
         }
 
         "not move the player, if a designed room is not defined" in {
           assert(
-            SimpleGround.use(Go(Direction.South), simpleState).isEmpty,
+            SimpleGround.use(Go(Direction.South))(simpleState).isEmpty,
             "A reaction has been generated"
           )
         }

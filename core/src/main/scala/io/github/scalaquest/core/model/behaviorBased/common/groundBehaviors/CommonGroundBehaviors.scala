@@ -19,4 +19,10 @@ trait CommonGroundBehaviors extends BehaviorBasedModel {
    * Room.
    */
   abstract class Inspect extends GroundBehavior
+
+  /**
+   * A [[GroundBehavior]] that enables the possibility to know the which are the neighbor reachable
+   * rooms, and how to reach them, if doors are defined.
+   */
+  abstract class Orientate extends GroundBehavior
 }

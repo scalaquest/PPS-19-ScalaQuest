@@ -4,7 +4,8 @@ import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.impl.{
   SimpleInspectExt,
-  SimpleNavigationExt
+  SimpleNavigationExt,
+  SimpleOrientateExt
 }
 
 /**
@@ -12,4 +13,12 @@ import io.github.scalaquest.core.model.behaviorBased.common.groundBehaviors.impl
  * ScalaQuest Core. It requires the storyteller to implement all the required [[monocle.Lens]], used
  * by the implementation to access and re-generate the concrete [[Model.State]].
  */
-trait SimpleCommonGroundBehaviors extends CommonBase with SimpleNavigationExt with SimpleInspectExt
+trait SimpleCommonGroundBehaviors
+  extends CommonBase
+  with SimpleNavigationExt
+  with SimpleInspectExt
+  with SimpleOrientateExt {
+
+  def allSimpleCommonGroundBehaviors: Seq[GroundBehavior] =
+    Seq(SimpleNavigation(), SimpleInspect(), SimpleOrientate())
+}

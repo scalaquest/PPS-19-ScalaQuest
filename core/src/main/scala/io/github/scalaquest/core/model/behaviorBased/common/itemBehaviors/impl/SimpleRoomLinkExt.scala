@@ -26,12 +26,9 @@ trait SimpleRoomLinkExt extends CommonBase {
    *   omitted.
    */
   case class SimpleRoomLink(
-    endRoom: RM,
+    endRoom: Room,
     openable: Option[Openable] = None,
     onEnterExtra: Option[Reaction] = None
-  )(implicit
-    playerLocationLens: Lens[S, RoomRef],
-    messageLens: Lens[S, Seq[Message]]
   ) extends RoomLink
     with Delegate {
 
@@ -46,16 +43,17 @@ trait SimpleRoomLinkExt extends CommonBase {
     override def receiverTriggers: ItemTriggers = {
       // "Enter the item"
       case (Enter, item, None, state)
-          if state.isInCurrentRoom(item) && openable.fold(true)(_.isOpen) =>
+          if state.isInLocation(item) && openable.fold(true)(_.isOpen) =>
         enterRoom()
     }
 
     def enterRoom(): Reaction =
-      _.applyReactions(
-        playerLocationLens.modify(_ => endRoom.ref),
-        messageLens.modify(_ :+ Navigated(endRoom)),
-        onEnterExtra.getOrElse(state => state)
-      )
+      state =>
+        state.applyReactions(
+          locationLens.set(endRoom.ref),
+          messageLens.modify(_ :+ Navigated(state.rooms(endRoom.ref))),
+          onEnterExtra.getOrElse(state => state)
+        )
 
     override def isAccessible: Boolean = openable.fold(true)(_.isOpen)
   }

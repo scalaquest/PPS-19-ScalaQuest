@@ -22,14 +22,3 @@ trait ItemMessage[I <: Model#Item] extends Message {
 trait RoomMessage[RM <: Model#Room] extends Message {
   def room: RM
 }
-
-/**
- * A message that keeps track of a [[Model.Room]] and the [[Model.Item]] s contained into it.
- * @tparam I
- *   the concrete type for [[Model.Item]] s.
- * @tparam RM
- *   the concrete type for [[Model.Room]].
- */
-trait RoomCompositionMessage[I <: Model#Item, RM <: Model#Room] extends RoomMessage[RM] {
-  def items: Set[I]
-}

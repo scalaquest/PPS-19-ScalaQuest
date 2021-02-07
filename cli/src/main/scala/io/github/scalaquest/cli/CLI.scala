@@ -1,9 +1,7 @@
 package io.github.scalaquest.cli
 
-import io.github.scalaquest.core.model.{Message, Model, StringPusher}
+import io.github.scalaquest.core.model.{Model, StringPusher}
 import io.github.scalaquest.core.Game
-import monocle.Lens
-import monocle.macros.GenLens
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
 
@@ -37,7 +35,7 @@ object CLI {
         _         <- putStrLn(output)
         nextState <- UIO.succeed(model.messageLens.set(Seq())(updState))
         _ <-
-          if (nextState.matchState.ended) ZIO.unit
+          if (nextState.ended) ZIO.unit
           else UIO.succeed(nextState) flatMap gameLoop(game, pusher)
 
       } yield ()

@@ -25,12 +25,12 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
         "move the player in the designed room" in {
           for {
-            react <- targetItem.use(Enter, stateWithTargetInRoom, None) toRight fail(
+            react <- targetItem.use(Enter, None)(stateWithTargetInRoom) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(stateWithTargetInRoom))
           } yield assert(
-            modState.matchState.player.location == targetRoom.ref,
+            modState.location == targetRoom,
             "The player is not in the right location"
           )
         }
@@ -47,12 +47,12 @@ class SimpleRoomLinkTest extends AnyWordSpec {
 
         "move the player in the designed room" in {
           for {
-            react <- targetItem.use(Enter, stateWithOpenedTargetInRoom, None) toRight fail(
+            react <- targetItem.use(Enter, None)(stateWithOpenedTargetInRoom) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(stateWithOpenedTargetInRoom))
           } yield assert(
-            modState.matchState.player.location == targetRoom.ref,
+            modState.location == targetRoom,
             "The player is not in the right location"
           )
         }
@@ -67,7 +67,7 @@ class SimpleRoomLinkTest extends AnyWordSpec {
       "the user says 'enter the item'" should {
         "not move the player in the designed room" in {
           assert(
-            targetItem.use(Enter, stateWithClosedTargetInRoom, None).isEmpty,
+            targetItem.use(Enter, None)(stateWithClosedTargetInRoom).isEmpty,
             "A reaction has been generated"
           )
         }

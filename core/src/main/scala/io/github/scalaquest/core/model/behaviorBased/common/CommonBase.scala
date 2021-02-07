@@ -5,7 +5,7 @@ import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.Common
 import io.github.scalaquest.core.model.behaviorBased.common.items.CommonItems
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonMessages
-import io.github.scalaquest.core.model.impl.SimpleUtils
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleUtils
 
 /**
  * A base trait used to implement all the StdCommon* mixins. Integrates some additional

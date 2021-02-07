@@ -20,12 +20,12 @@ object Items {
     )
   }
 
-  val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = DoorWithKey(
+  val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = doorKeyFactory(
     doorDescription = i(d("living-room"), "door"),
     keyDescription = i(d("living-room"), "key"),
     room = livingRoom,
     onOpenExtra = Some(
-      matchRoomsLens.modify(
+      roomsLens.modify(
         _.updatedWith(kitchen.ref) {
           case Some(value) =>
             Some(roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(value))

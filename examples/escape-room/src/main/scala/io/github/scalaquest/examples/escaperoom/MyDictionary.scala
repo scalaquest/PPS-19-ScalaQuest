@@ -2,7 +2,15 @@ package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
 import io.github.scalaquest.core.dictionary.Dictionary
-import io.github.scalaquest.core.model.Action.Common.{Eat, Enter, Go, Inspect, Open, Take}
+import io.github.scalaquest.core.model.Action.Common.{
+  Eat,
+  Enter,
+  Go,
+  Inspect,
+  Open,
+  Orientate,
+  Take
+}
 import io.github.scalaquest.core.model.Direction.{East, North, South, West}
 
 object MyDictionary {
@@ -21,7 +29,7 @@ object MyDictionary {
         s._1.charAt(0).toString -> s._2,
         s._1                    -> s._2
       )
-    ).map((s) => Intransitive("go", Go(s._2), Some(s._1)))
+    ).map(s => Intransitive("go", Go(s._2), Some(s._1)))
 
   }
 
@@ -34,7 +42,8 @@ object MyDictionary {
       Transitive("open", Open),
       Transitive("enter", Enter),
       Ditransitive("enter", Enter, Some("with")),
-      Intransitive("inspect", Inspect)
+      Intransitive("inspect", Inspect),
+      Intransitive("orientate", Orientate)
     ) ++ gos
 
   println(myVerbs)

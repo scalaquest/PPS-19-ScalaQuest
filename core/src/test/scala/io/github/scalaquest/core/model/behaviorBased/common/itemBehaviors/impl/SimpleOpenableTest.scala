@@ -17,11 +17,11 @@ class SimpleOpenableTest extends AnyWordSpec {
   "An Openable behavior" when {
 
     val targetOpenable: SimpleState => Option[Openable] = state => {
-      val itemsRefsFromCurrRoom = state.itemRefsFromRoomRef(state.matchState.player.location)
-      val itemsFromCurrRoom     = state.itemsFromRefs(itemsRefsFromCurrRoom)
-      itemsFromCurrRoom.collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
-        openable
-      })
+      state.location
+        .items(state)
+        .collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
+          openable
+        })
     }
 
     "a key is required" when {
@@ -38,7 +38,7 @@ class SimpleOpenableTest extends AnyWordSpec {
 
         "let the item open only with the right Key" in {
           for {
-            react <- targetItem.use(Open, stateWKeyAndTarget, Some(targetKey)) toRight fail(
+            react <- targetItem.use(Open, Some(targetKey))(stateWKeyAndTarget) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(stateWKeyAndTarget))
@@ -47,16 +47,9 @@ class SimpleOpenableTest extends AnyWordSpec {
         }
 
         "not open without the right Key" in {
-          assert(targetItem.use(Open, stateWKeyAndTarget, None).isEmpty)
-          assert(
-            targetItem
-              .use(
-                Open,
-                stateWKeyAndTarget,
-                Some(SimpleKey(ItemDescription("key"), new ItemRef {}))
-              )
-              .isEmpty
-          )
+          val wrongKey = SimpleKey(ItemDescription("wrongkey"), new ItemRef {})
+          assert(targetItem.use(Open, None)(stateWKeyAndTarget).isEmpty)
+          assert(targetItem.use(Open, Some(wrongKey))(stateWKeyAndTarget).isEmpty)
         }
       }
     }
@@ -70,7 +63,7 @@ class SimpleOpenableTest extends AnyWordSpec {
       "the user says 'open the item'" should {
         "open without Key" in {
           for {
-            react <- targetItem.use(Open, stateWithTargetInRoom, None) toRight fail(
+            react <- targetItem.use(Open, None)(stateWithTargetInRoom) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(stateWithTargetInRoom))
@@ -79,15 +72,8 @@ class SimpleOpenableTest extends AnyWordSpec {
 
         }
         "not open with any Key" in {
-          assert(
-            targetItem
-              .use(
-                Open,
-                stateWithTargetInRoom,
-                Some(SimpleKey(ItemDescription("key"), ItemRef(ItemDescription("key"))))
-              )
-              .isEmpty
-          )
+          val wrongKey = SimpleKey(ItemDescription("wrongkey"), new ItemRef {})
+          assert(targetItem.use(Open, Some(wrongKey))(stateWithTargetInRoom).isEmpty)
         }
       }
     }

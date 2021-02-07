@@ -4,7 +4,6 @@ import io.github.scalaquest.core.application.Environment
 import io.github.scalaquest.core.model.Direction
 
 object House extends Environment[Room] {
-  import model.{Room => RoomFactory}
 
   override def allTheRooms: Set[Room] =
     Set(
@@ -14,7 +13,7 @@ object House extends Environment[Room] {
     )
 
   def kitchen: Room =
-    RoomFactory(
+    model.roomFactory(
       "kitchen",
       Map(),
       Set(
@@ -25,7 +24,7 @@ object House extends Environment[Room] {
     )
 
   def livingRoom: Room =
-    RoomFactory(
+    model.roomFactory(
       "living room",
       Map(
         Direction.North -> bathroom.ref,
@@ -37,7 +36,7 @@ object House extends Environment[Room] {
     )
 
   def bathroom: Room =
-    RoomFactory(
+    model.roomFactory(
       "bathroom",
       Map(
         Direction.South -> livingRoom.ref

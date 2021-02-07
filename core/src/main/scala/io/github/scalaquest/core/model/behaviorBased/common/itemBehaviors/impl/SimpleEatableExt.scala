@@ -19,12 +19,7 @@ trait SimpleEatableExt extends CommonBase {
    *   Reaction to be executed when the item has been successfully eaten, after the standard
    *   [[Reaction]]. It can be omitted.
    */
-  case class SimpleEatable(onEatExtra: Option[Reaction] = None)(implicit
-    playerBagLens: Lens[S, Set[ItemRef]],
-    matchRoomsLens: Lens[S, Map[RoomRef, RM]],
-    roomLens: Lens[RM, Set[ItemRef]],
-    messageLens: Lens[S, Seq[Message]]
-  ) extends Eatable {
+  case class SimpleEatable(onEatExtra: Option[Reaction] = None) extends Eatable {
 
     override def triggers: ItemTriggers = {
       // "Eat the item"
@@ -33,10 +28,12 @@ trait SimpleEatableExt extends CommonBase {
 
     def eat(item: I): Reaction =
       state => {
-        val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
+        // todo locationItemsLens??
+        val updLocation = roomItemsLens.modify(_ - item.ref)(state.location)
+
         state.applyReactions(
-          matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
-          playerBagLens.modify(_ - item.ref),
+          roomsLens.modify(_ + (updLocation.ref -> updLocation)),
+          bagLens.modify(_ - item.ref),
           messageLens.modify(_ :+ Eaten(item)),
           onEatExtra.getOrElse(state => state)
         )

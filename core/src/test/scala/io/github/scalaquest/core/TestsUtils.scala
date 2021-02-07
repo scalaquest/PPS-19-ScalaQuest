@@ -3,6 +3,7 @@ package io.github.scalaquest.core
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   BehaviorBasedItem,
   Door,
@@ -12,9 +13,7 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleDoor,
   SimpleGenericItem,
   SimpleKey,
-  SimpleMatchState,
   SimpleOpenable,
-  SimplePlayer,
   SimpleRoom,
   SimpleRoomLink,
   SimpleState,
@@ -22,14 +21,15 @@ import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
 }
 
 object TestsUtils {
+  val model: SimpleModel.type = SimpleModel;
 
-  val startRoom: SimpleRoom = Room(
+  val startRoom: SimpleRoom = model.roomFactory(
     "start room",
     Map(Direction.North -> targetRoom.ref),
     Set(door.ref, key.ref)
   )
 
-  val targetRoom: SimpleRoom = Room(
+  val targetRoom: SimpleRoom = model.roomFactory(
     "target room",
     Map(Direction.South -> startRoom.ref),
     Set()
@@ -72,13 +72,12 @@ object TestsUtils {
     doorItemRef  -> door
   )
 
-  val simpleState: SimpleState = SimpleState(
+  val simpleState: SimpleState = model.stateFactory(
     actionsMap,
-    matchState = SimpleMatchState(
-      player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.ref),
-      items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
-      rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom)
-    ),
+    bag = Set(appleItemRef),
+    location = startRoom.ref,
+    items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
+    rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom),
     messages = Seq()
   )
 }

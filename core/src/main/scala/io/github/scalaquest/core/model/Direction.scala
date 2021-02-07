@@ -12,4 +12,6 @@ object Direction {
   case object West  extends Direction
   case object Up    extends Direction
   case object Down  extends Direction
+
+  def all: Set[Direction] = Set(North, South, East, West, Up, Down)
 }

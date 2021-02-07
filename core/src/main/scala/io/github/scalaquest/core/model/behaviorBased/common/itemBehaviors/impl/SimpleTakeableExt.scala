@@ -1,7 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.Action.Common.Take
-import io.github.scalaquest.core.model.{ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.common.CommonBase
 import io.github.scalaquest.core.model.behaviorBased.common.itemBehaviors.{
   CommonBehaviors,
@@ -23,16 +22,11 @@ trait SimpleTakeableExt extends CommonBase {
    *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
    *   omitted.
    */
-  case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit
-    playerBagLens: Lens[S, Set[ItemRef]],
-    matchRoomsLens: Lens[S, Map[RoomRef, RM]],
-    roomLens: Lens[RM, Set[ItemRef]],
-    messageLens: Lens[S, Seq[Message]]
-  ) extends Takeable {
+  case class SimpleTakeable(onTakeExtra: Option[Reaction] = None) extends Takeable {
 
     override def triggers: ItemTriggers = {
       // "Take the item"
-      case (Take, item, None, state) if state.isInCurrentRoom(item) => take(item)
+      case (Take, item, None, state) if state.isInLocation(item) => take(item)
     }
 
     /**
@@ -46,12 +40,14 @@ trait SimpleTakeableExt extends CommonBase {
      */
     def take(item: I): Reaction =
       state => {
-        val updCurrRoom = roomLens.modify(_ - item.ref)(state.currentRoom)
+        // todo locationItemsLens??
+        val updLocation = roomItemsLens.modify(_ - item.ref)(state.location)
+
         state.applyReactions(
-          matchRoomsLens.modify(_ + (updCurrRoom.ref -> updCurrRoom)),
-          playerBagLens.modify(_ + item.ref),
+          roomsLens.modify(_ + (updLocation.ref -> updLocation)),
+          bagLens.modify(_ + item.ref),
           messageLens.modify(_ :+ Taken(item)),
-          onTakeExtra.getOrElse(state => state)
+          onTakeExtra.getOrElse(s => s)
         )
       }
   }

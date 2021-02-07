@@ -20,22 +20,16 @@ abstract class GameCLIApp extends CLIApp {
 }
 
 object EscapeRoom extends GameCLIApp {
-  import model.{SimplePlayer, SimpleState}
 
-  println(source)
-
-  override def pipelineBuilder: Pipeline.PartialBuilder[State, Model] =
-    defaultPipeline(source, model.SimpleGround)
+  override def pipelineBuilder: Pipeline.PartialBuilder[State, Model] = defaultPipeline(source)
 
   override def state: State =
-    SimpleState(
-      verbToAction,
-      model.SimpleMatchState(
-        SimplePlayer(Set(), House.kitchen.ref),
-        House.refToRoom,
-        refToItem
-      ),
-      Seq.empty
+    model.stateFactory(
+      actions = verbToAction,
+      rooms = House.refToRoom,
+      items = refToItem,
+      location = House.kitchen.ref,
+      messages = Seq.empty
     )
 
   override def messagePusher: StringPusher = Messages.defaultPusher

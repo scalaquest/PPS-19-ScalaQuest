@@ -34,8 +34,6 @@ trait SimpleOpenableExt extends CommonBase {
     requiredKey: Option[Key] = None,
     onOpenExtra: Option[Reaction] = None,
     onCloseExtra: Option[Reaction] = None
-  )(implicit
-    messageLens: Lens[S, Seq[Message]]
   ) extends Openable {
 
     override def isOpen: Boolean = _isOpen
@@ -43,12 +41,12 @@ trait SimpleOpenableExt extends CommonBase {
     override def triggers: ItemTriggers = {
       // "Open the item (with something)"
       case (Open, item, maybeKey, state)
-          if state.isInCurrentRoom(item) && canBeOpened(state, maybeKey) && !isOpen =>
+          if state.isInLocation(item) && canBeOpened(state, maybeKey) && !isOpen =>
         open(item)
 
       // "Close the item (with something)"
       case (Close, item, maybeKey, state)
-          if state.isInCurrentRoom(item) && canBeOpened(state, maybeKey) && isOpen =>
+          if state.isInLocation(item) && canBeOpened(state, maybeKey) && isOpen =>
         close(item)
     }
 

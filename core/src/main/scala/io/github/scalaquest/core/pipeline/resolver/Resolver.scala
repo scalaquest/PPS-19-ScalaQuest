@@ -79,7 +79,7 @@ object Resolver {
 
         override def items: PartialFunction[ItemDescription, ItemRef] =
           d =>
-            s.matchState.itemsInScope.filter(i => d.isSubset(i.description)).toList match {
+            s.scope.filter(i => d.isSubset(i.description)).toList match {
               case x :: Nil => x.ref
             }
       }

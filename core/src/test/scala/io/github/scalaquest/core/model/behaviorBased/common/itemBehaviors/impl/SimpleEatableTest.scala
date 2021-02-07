@@ -6,10 +6,7 @@ import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
   SimpleEatable,
   SimpleGenericItem,
-  itemsLens,
-  matchRoomsLens,
-  playerBagLens,
-  roomLens
+  itemsLens
 }
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -28,31 +25,31 @@ class SimpleEatableTest extends AnyWordSpec {
       "the user says 'eat the item'" should {
         "let the item disappear if it is in the current room" in {
           for {
-            react <- targetItem.use(Eat, stateItemInRoom, None) toRight fail(
+            react <- targetItem.use(Eat, None)(stateItemInRoom) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(stateItemInRoom))
           } yield assert(
-            !modState.currentRoom.items.contains(targetItem.ref),
+            !modState.location.items(modState).contains(targetItem),
             "The item is into the room yet"
           )
         }
 
         "let the item disappear if it is in the bag" in {
           for {
-            react <- targetItem.use(Eat, stateItemInBag, None) toRight fail(
+            react <- targetItem.use(Eat, None)(stateItemInBag) toRight fail(
               "Reaction not generated"
             )
             modState <- Right(react(stateItemInBag))
           } yield assert(
-            !modState.matchState.player.bag.contains(targetItem.ref),
+            !modState.bag.contains(targetItem),
             "The item is into the bag yet"
           )
         }
 
         "not work if the item is not in the current room or into the bag" in {
           assert(
-            targetItem.use(Eat, stateNoItemInRoom, None).isEmpty,
+            targetItem.use(Eat, None)(stateNoItemInRoom).isEmpty,
             "Generated a reaction when it shouldn't"
           )
         }

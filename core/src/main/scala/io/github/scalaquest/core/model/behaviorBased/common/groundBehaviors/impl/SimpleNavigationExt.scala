@@ -17,29 +17,21 @@ trait SimpleNavigationExt extends CommonBase {
    *   Reaction to be executed when the player successfully navigate in a new Room, using navigation
    *   Actions after the standard [[Reaction]]. It can be omitted.
    */
-  case class SimpleNavigation(onNavigateExtra: Option[Reaction] = None)(implicit
-    playerLocationLens: Lens[S, RoomRef],
-    messageLens: Lens[S, Seq[Message]]
-  ) extends Navigation {
+  case class SimpleNavigation(onNavigateExtra: Option[Reaction] = None) extends Navigation {
 
     override def triggers: GroundTriggers = {
       // "go <direction>"
-      case (Go(direction), state) if (for {
-            roomRef <- state.currentRoom.neighbor(direction)
-            room    <- state.roomFromRef(roomRef)
-          } yield movePlayer(room)).isDefined =>
-        (for {
-          roomRef <- state.currentRoom.neighbor(direction)
-          room    <- state.roomFromRef(roomRef)
-        } yield movePlayer(room)).getOrElse(state => state)
+      case (Go(direction), state) if state.locationNeighbor(direction).isDefined =>
+        movePlayer(state.locationNeighbor(direction).get)
     }
 
     def movePlayer(targetRoom: RM): Reaction =
-      state =>
+      state => {
         state.applyReactions(
-          playerLocationLens.set(targetRoom.ref),
+          locationLens.set(targetRoom.ref),
           messageLens.modify(_ :+ Navigated(targetRoom)),
           onNavigateExtra.getOrElse(s => s)
         )
+      }
   }
 }

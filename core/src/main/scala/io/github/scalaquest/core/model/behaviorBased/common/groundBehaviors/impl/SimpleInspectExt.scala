@@ -11,19 +11,17 @@ import monocle.Lens
  */
 trait SimpleInspectExt extends CommonBase {
 
-  case class SimpleInspect(onInspectExtra: Option[Reaction] = None)(implicit
-    messageLens: Lens[S, Seq[Message]]
-  ) extends Inspect {
+  case class SimpleInspect(onInspectExtra: Option[Reaction] = None) extends Inspect {
 
     override def triggers: GroundTriggers = {
       // "inspect"
-      case (Inspect, state) => inspectRoom(state.currentRoom)
+      case (Inspect, state) => inspectRoom(state.location)
     }
 
     def inspectRoom(targetRoom: RM): Reaction =
       state =>
         state.applyReactions(
-          messageLens.modify(_ :+ Inspected(targetRoom, state.itemsFromRefs(targetRoom.items))),
+          messageLens.modify(_ :+ Inspected(targetRoom, targetRoom.items(state))),
           onInspectExtra.getOrElse(s => s)
         )
   }
