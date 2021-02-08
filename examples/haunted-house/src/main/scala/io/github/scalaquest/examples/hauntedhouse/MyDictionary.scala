@@ -1,21 +1,27 @@
-package io.github.scalaquest.examples.escaperoom
+package io.github.scalaquest.examples.hauntedhouse
 
 import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
 import io.github.scalaquest.core.dictionary.Dictionary
-import io.github.scalaquest.core.model.Action.Common.{Eat, Enter, Go, Inspect, Open, Take}
-import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.Action.Common.{
+  Eat,
+  Enter,
+  Go,
+  Inspect,
+  Open,
+  Orientate,
+  Take
+}
+import io.github.scalaquest.core.model.Direction.{East, North, South, West}
 
 object MyDictionary {
 
   // Temporary solution
   def gos: Set[Verb] = {
     Set(
-      "north" -> Direction.North,
-      "south" -> Direction.South,
-      "east"  -> Direction.East,
-      "west"  -> Direction.West,
-      "up"    -> Direction.Up,
-      "down"  -> Direction.Down
+      "north" -> North,
+      "south" -> South,
+      "east"  -> East,
+      "west"  -> West
     ).flatMap(s =>
       Set(
         s._1.charAt(0).toString -> s._2,
@@ -33,6 +39,17 @@ object MyDictionary {
       Transitive("open", Open),
       Transitive("enter", Enter),
       Ditransitive("enter", Enter, Some("with")),
-      Intransitive("inspect", Inspect)
+      Intransitive("inspect", Inspect),
+      Intransitive("orientate", Orientate)
     ) ++ gos
+
+  def myItems: Set[Item] =
+    Set(
+      Items.redApple,
+      Items.greenApple,
+      Items.apple,
+      Items.livingRoomKey,
+      Items.livingRoomDoor,
+      Items.kitchenDoor
+    )
 }

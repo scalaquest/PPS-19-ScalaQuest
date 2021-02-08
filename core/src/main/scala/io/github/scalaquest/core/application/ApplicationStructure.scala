@@ -27,15 +27,17 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
   type G        = model.G
   type Reaction = model.Reaction
 
-  def dictionary: Dictionary[I]
+  def verbs: Set[Verb]
 
-  def refToItem: Map[ItemRef, I] = GeneratorK[List, I, Map[ItemRef, I]].generate(dictionary.items)
+  def items: Set[I]
+
+  def refToItem: Map[ItemRef, I] = GeneratorK[List, I, Map[ItemRef, I]].generate(items.toList)
 
   def verbToAction: Map[VerbPrep, Action] =
-    GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(dictionary.verbs)
+    GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(verbs.toList)
 
   def programSource[F[_]: Functor](base: F[String]): F[String] =
-    ProgramFromDictionary(dictionary).source(base)
+    ProgramFromDictionary(verbs, items).source(base)
 
   def programFromResource(resourceName: String): String = {
     type Id[X] = X
