@@ -1,11 +1,10 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
-import io.github.scalaquest.core.dictionary.Dictionary
 import io.github.scalaquest.core.model.Action.Common.{Eat, Enter, Go, Inspect, Open, Take}
 import io.github.scalaquest.core.model.Direction
 
-object MyDictionary {
+object Verbs {
 
   // Temporary solution
   def gos: Set[Verb] = {
@@ -24,7 +23,7 @@ object MyDictionary {
     ).map(s => Intransitive("go", Go(s._2), Some(s._1)))
   }
 
-  def myVerbs: Set[Verb] =
+  def allTheVerbs: Set[Verb] =
     Set(
       Transitive("take", Take),
       Transitive("eat", Eat),
