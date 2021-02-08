@@ -15,8 +15,6 @@ import io.github.scalaquest.core.model.Direction.{East, North, South, West}
 
 object MyDictionary {
 
-  def dictionary: Dictionary[Item] = Dictionary(myVerbs.toList, myItems.toList)
-
   // Temporary solution
   def gos: Set[Verb] = {
     Set(
