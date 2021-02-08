@@ -57,5 +57,6 @@ jobs:
           release_id: ${{ steps.create-release.outputs.id }}
           assets_path: |
             ./examples/escape-room/build/distributions
+            ./examples/haunted-house/build/distributions
             ./cli/build/libs
             ./core/build/libs
