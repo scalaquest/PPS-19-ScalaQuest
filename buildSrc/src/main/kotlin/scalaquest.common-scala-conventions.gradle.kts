@@ -65,6 +65,7 @@ dependencies {
     // The ScalaTest framework
     testImplementation("org.scalatest:scalatest_2.13:_")
 
-    // dependency required by the Maiflai Scalatest plugin to correctly generate HTML test reports
-    testRuntimeOnly("com.vladsch.flexmark:flexmark-all:_")
+    // Dependency required by the Maiflai Scalatest plugin to correctly generate HTML test reports.
+    // The version is hardcoded, as maiflai.scalatest requires this specific version
+    testRuntimeOnly("com.vladsch.flexmark:flexmark-all:0.35.10")
 }
