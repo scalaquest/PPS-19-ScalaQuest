@@ -8,6 +8,10 @@ object Pusher {
 
   val defaultPusher: CommonStringPusher = CommonStringPusher(
     model,
-    { case DeliciousMessage => "Delicious!" }
+    {
+      case DeliciousMessage => "Delicious!";
+      case model.Win        => "I've done it! I'm out, I'm saved. Bye!"
+      case model.Lose       => "On no! The apple was poisoned, I died, game over. Bye!"
+    }
   )
 }

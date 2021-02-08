@@ -23,7 +23,8 @@ object House extends Environment[RM] {
     Room(
       name = "living room",
       neighbors = Map(Direction.North -> bathroom.ref, Direction.Down -> basement.ref),
-      items = Set(Items.redApple.ref, Items.greenApple.ref, Items.doorway.ref)
+      items =
+        Set(Items.redApple.ref, Items.greenApple.ref, Items.doorway.ref, Items.basementHatch.ref)
     )
 
   def bathroom: RM =
