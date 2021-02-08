@@ -24,13 +24,12 @@ object MyDictionary {
       "south" -> South,
       "east"  -> East,
       "west"  -> West
-    ).flatMap((s) =>
+    ).flatMap(s =>
       Set(
         s._1.charAt(0).toString -> s._2,
         s._1                    -> s._2
       )
     ).map(s => Intransitive("go", Go(s._2), Some(s._1)))
-
   }
 
   def myVerbs: Set[Verb] =
@@ -45,8 +44,6 @@ object MyDictionary {
       Intransitive("inspect", Inspect),
       Intransitive("orientate", Orientate)
     ) ++ gos
-
-  println(myVerbs)
 
   def myItems: Set[Item] =
     Set(

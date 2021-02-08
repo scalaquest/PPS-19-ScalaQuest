@@ -16,6 +16,7 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
    */
   abstract class Openable extends ItemBehavior {
     def isOpen: Boolean
+    def consumeKey: Boolean
   }
 
   /**
@@ -32,6 +33,7 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
    */
   case class SimpleOpenable(
     requiredKey: Option[Key] = None,
+    consumeKey: Boolean = false,
     onOpenExtra: Option[Reaction] = None
   ) extends Openable {
     var _isOpen: Boolean = false
@@ -80,7 +82,16 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
     def open(item: I): Reaction =
       state => {
         _isOpen = true
-        state.applyReactions(
+
+        val keyConsumedState: S = requiredKey.fold(state)(k => {
+          val newLoc = roomItemsLens.modify(_ - k.ref)(state.location)
+          state.applyReactions(
+            roomsLens.modify(_ + (newLoc.ref -> newLoc)),
+            bagLens.modify(_ - k.ref)
+          )
+        })
+
+        keyConsumedState.applyReactions(
           messageLens.modify(_ :+ Opened(item)),
           onOpenExtra.getOrElse(state => state)
         )
@@ -92,7 +103,10 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
    */
   object Openable {
 
-    def apply(requiredKey: Option[Key] = None, onOpenExtra: Option[Reaction] = None): Openable =
-      SimpleOpenable(requiredKey, onOpenExtra)
+    def apply(
+      requiredKey: Option[Key] = None,
+      consumeKey: Boolean = false,
+      onOpenExtra: Option[Reaction] = None
+    ): Openable = SimpleOpenable(requiredKey, consumeKey, onOpenExtra)
   }
 }

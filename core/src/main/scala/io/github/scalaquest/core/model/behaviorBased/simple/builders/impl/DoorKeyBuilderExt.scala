@@ -9,6 +9,7 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
   def doorKeyBuilder(
     keyDesc: ItemDescription,
     keyAddBehaviors: Seq[ItemBehavior] = Seq(),
+    consumeKey: Boolean = false,
     doorDesc: ItemDescription,
     endRoom: RM,
     onOpenExtra: Option[Reaction] = None,
@@ -23,7 +24,13 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
       ref = ItemRef(doorDesc),
       SimpleRoomLink(
         endRoom = endRoom,
-        openable = Some(SimpleOpenable(requiredKey = Some(key), onOpenExtra = onOpenExtra)),
+        openable = Some(
+          SimpleOpenable(
+            consumeKey = consumeKey,
+            requiredKey = Some(key),
+            onOpenExtra = onOpenExtra
+          )
+        ),
         onEnterExtra = onEnterExtra
       ),
       doorAddBehaviors: _*

@@ -19,6 +19,7 @@ object Items {
   val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = doorKeyBuilder(
     doorDesc = i(d("living-room"), "door"),
     keyDesc = i(d("living-room"), "key"),
+    consumeKey = true,
     endRoom = livingRoom,
     onOpenExtra = Some(
       roomsLens.modify(
