@@ -40,6 +40,15 @@ trait SimpleRoomExt extends Model {
       _neighbors().map(x => x._1 -> state.rooms(x._2))
   }
 
+  object Room {
+
+    def apply(
+      name: String,
+      neighbors: => Map[Direction, RoomRef] = Map.empty,
+      items: => Set[ItemRef] = Set.empty
+    ): RM = SimpleRoom(name, () => items, () => neighbors, RoomRef(name))
+  }
+
   override def roomItemsLens: Lens[RM, Set[ItemRef]] =
     Lens[RM, Set[ItemRef]](get = _._items())(set =
       newItemsSet => oldRoom => oldRoom.copy(_items = () => newItemsSet)

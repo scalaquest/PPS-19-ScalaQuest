@@ -1,24 +1,19 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, targetRoom}
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.{Enter, Open}
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  SimpleDoor,
-  SimpleOpenable,
-  SimpleRoomLink,
-  SimpleState
-}
+import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 
 class RoomLinkTest extends AnyWordSpec {
+  import TestsUtils.model._
+  import TestsUtils._
 
   "A RoomLinkBehavior" when {
 
     "the item has not an openable behavior" when {
-      val roomLink              = SimpleRoomLink(targetRoom)
-      val doorDescription       = ItemDescription("door")
-      val targetItem            = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
+      val roomLink              = RoomLink(targetRoom, Direction.North)
+      val targetItem            = Door(ItemDescription("door"), roomLink)
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
@@ -38,7 +33,7 @@ class RoomLinkTest extends AnyWordSpec {
     }
 
     "the item is closed" when {
-      val roomLink                    = SimpleRoomLink(targetRoom, Some(SimpleOpenable()))
+      val roomLink                    = RoomLink(targetRoom, Direction.North, Some(SimpleOpenable()))
       val doorDescription             = ItemDescription("door")
       val targetItem                  = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
       val stateWithClosedTargetInRoom = simpleState.copyWithItemInLocation(targetItem)

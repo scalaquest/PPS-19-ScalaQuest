@@ -19,20 +19,16 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
   override def extra: MessageTriggers[String] = PartialFunction.empty
 
   final def base: StringMessageTriggers = {
-    case model.Inspected(room, items) =>
+    case model.Inspected(room, items, neighbors) =>
       @tailrec
-      def go(tail: List[CommonMessagesExt#I], acc: String = ""): String = {
+      def printItems(tail: List[CommonMessagesExt#I], acc: String = ""): String = {
         tail match {
           case ::(head, Nil)  => s"${acc}a ${head.toString}."
-          case ::(head, next) => go(next, s"${acc}a ${head.toString}, ")
+          case ::(head, next) => printItems(next, s"${acc}a ${head.toString}, ")
           case Nil            => "nothing."
         }
       }
 
-      val ordItems = items.toList.sortWith(_.toString < _.toString)
-      s"The ${room.name} contains ${go(ordItems)}"
-
-    case model.Oriented(room, neighbors) =>
       def printNeighbors(neighbors: Map[Direction, CommonMessagesExt#RM]): String = {
         neighbors match {
           case ns if ns.isEmpty => "I cannot go anywhere now."
@@ -42,12 +38,17 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
         }
       }
 
-      s"I am in the ${room.name}.\n${printNeighbors(neighbors)}"
+      val ordItems = items.toList.sortWith(_.toString < _.toString)
+
+      s"The ${room.name} contains ${printItems(ordItems)}\n${printNeighbors(neighbors)}"
 
     case model.Eaten(item)     => s"The ${item.toString} has been eaten!"
     case model.Taken(item)     => s"The ${item.toString} has been taken!"
     case model.Opened(item)    => s"The ${item.toString} has been opened!"
     case model.Navigated(room) => s"You entered ${room.toString}!"
+    case model.Print(msg)      => msg
+    case model.Win             => "You win!"
+    case model.Lose            => "You lose!"
   }
 }
 

@@ -1,22 +1,19 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.simpleState
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.Eat
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  SimpleEatable,
-  SimpleGenericItem,
-  itemsLens
-}
 import org.scalatest.wordspec.AnyWordSpec
 
 class EatableTest extends AnyWordSpec {
+  import TestsUtils._
+  import TestsUtils.model._
+
   "A Eatable behavior" when {
-    val eatable = SimpleEatable()
+    val eatable = Eatable()
 
     "applied to an item" when {
-      val itemDescription = ItemDescription("item")
-      val targetItem      = SimpleGenericItem(itemDescription, ItemRef(itemDescription), eatable)
+      val targetItem = GenericItem(ItemDescription("item"), Seq(eatable))
 
       val stateItemInRoom   = simpleState.copyWithItemInLocation(targetItem)
       val stateItemInBag    = simpleState.copyWithItemInBag(targetItem)

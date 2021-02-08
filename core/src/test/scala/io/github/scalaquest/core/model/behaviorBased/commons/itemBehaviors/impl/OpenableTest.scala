@@ -1,19 +1,14 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.simpleState
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.Open
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  Openable,
-  SimpleGenericItem,
-  SimpleKey,
-  SimpleOpenable,
-  SimpleState,
-  StateUtils
-}
 import org.scalatest.wordspec.AnyWordSpec
 
 class OpenableTest extends AnyWordSpec {
+  import TestsUtils._
+  import TestsUtils.model._
+
   "An Openable behavior" when {
 
     val targetOpenable: SimpleState => Option[Openable] = state => {
@@ -25,11 +20,9 @@ class OpenableTest extends AnyWordSpec {
     }
 
     "a key is required" when {
-      val keyDescription  = ItemDescription("key")
-      val targetKey       = SimpleKey(keyDescription, ItemRef(keyDescription))
-      val openable        = SimpleOpenable(requiredKey = Some(targetKey))
-      val itemDescription = ItemDescription("item")
-      val targetItem      = SimpleGenericItem(itemDescription, ItemRef(itemDescription), openable)
+      val targetKey  = Key(ItemDescription("key"))
+      val openable   = Openable(requiredKey = Some(targetKey))
+      val targetItem = GenericItem(ItemDescription("item"), Seq(openable))
 
       val stateWithTarget    = simpleState.copyWithItemInLocation(targetItem)
       val stateWKeyAndTarget = stateWithTarget.copyWithItemInBag(targetKey)
@@ -47,7 +40,7 @@ class OpenableTest extends AnyWordSpec {
         }
 
         "not open without the right Key" in {
-          val wrongKey = SimpleKey(ItemDescription("wrongkey"), new ItemRef {})
+          val wrongKey = Key(ItemDescription("wrongkey"))
           assert(targetItem.use(Open, None)(stateWKeyAndTarget).isEmpty)
           assert(targetItem.use(Open, Some(wrongKey))(stateWKeyAndTarget).isEmpty)
         }
@@ -72,7 +65,7 @@ class OpenableTest extends AnyWordSpec {
 
         }
         "not open with any Key" in {
-          val wrongKey = SimpleKey(ItemDescription("wrongkey"), new ItemRef {})
+          val wrongKey = Key(ItemDescription("wrongkey"))
           assert(targetItem.use(Open, Some(wrongKey))(stateWithTargetInRoom).isEmpty)
         }
       }

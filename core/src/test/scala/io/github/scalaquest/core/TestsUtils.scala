@@ -4,32 +4,18 @@ import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  BehaviorBasedItem,
-  Door,
-  GenericItem,
-  Key,
-  Room,
-  SimpleDoor,
-  SimpleGenericItem,
-  SimpleKey,
-  SimpleOpenable,
-  SimpleRoom,
-  SimpleRoomLink,
-  SimpleState,
-  SimpleTakeable
-}
 
 object TestsUtils {
   val model: SimpleModel.type = SimpleModel;
+  import SimpleModel._
 
-  val startRoom: SimpleRoom = model.roomBuilder(
+  val startRoom: RM = Room(
     "start room",
     Map(Direction.North -> targetRoom.ref),
     Set(door.ref, key.ref)
   )
 
-  val targetRoom: SimpleRoom = model.roomBuilder(
+  val targetRoom: RM = Room(
     "target room",
     Map(Direction.South -> startRoom.ref),
     Set()
@@ -63,7 +49,7 @@ object TestsUtils {
     SimpleDoor(
       ItemDescription("door"),
       doorItemRef,
-      SimpleRoomLink(targetRoom, Some(SimpleOpenable(requiredKey = Some(key))))
+      SimpleRoomLink(targetRoom, Direction.North, Some(SimpleOpenable(requiredKey = Some(key))))
     )
 
   val refItemDictionary: Map[ItemRef, BehaviorBasedItem] = Map(
@@ -72,7 +58,7 @@ object TestsUtils {
     doorItemRef  -> door
   )
 
-  val simpleState: SimpleState = model.stateBuilder(
+  val simpleState: S = State(
     actionsMap,
     bag = Set(appleItemRef),
     location = startRoom.ref,

@@ -29,7 +29,9 @@ trait KeyExt extends BehaviorBasedModel {
    */
   object Key {
 
-    def apply(description: ItemDescription, additionalBehaviors: ItemBehavior*): Key =
-      SimpleKey(description, ItemRef(description), additionalBehaviors: _*)
+    def apply(
+      description: ItemDescription,
+      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
+    ): Key = SimpleKey(description, ItemRef(description), additionalBehaviors: _*)
   }
 }

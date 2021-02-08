@@ -7,13 +7,13 @@ import io.github.scalaquest.core.pipeline.Pipeline
 
 abstract class GameCLIApp extends CLIApp {
 
-  def pipelineBuilder: Pipeline.PartialBuilder[State, Model]
-  def state: State
+  def pipelineBuilder: Pipeline.PartialBuilder[S, M]
+  def state: S
   def messagePusher: StringPusher
 
   def source: String = programFromResource("base.pl")
 
-  def game: Game[Model] = Game builderFrom model build pipelineBuilder
+  def game: Game[M] = Game builderFrom model build pipelineBuilder
 
   override def cli: CLI = CLI.builderFrom(model).build(state, game, messagePusher)
 
@@ -21,16 +21,16 @@ abstract class GameCLIApp extends CLIApp {
 
 object EscapeRoom extends GameCLIApp {
 
-  override def pipelineBuilder: Pipeline.PartialBuilder[State, Model] = defaultPipeline(source)
+  override def pipelineBuilder: Pipeline.PartialBuilder[S, M] = defaultPipeline(source)
 
-  override def state: State =
-    model.stateBuilder(
+  override def state: S =
+    model.State(
       actions = verbToAction,
       rooms = House.refToRoom,
       items = refToItem,
-      location = House.kitchen.ref,
+      location = House.basement.ref,
       messages = Seq.empty
     )
 
-  override def messagePusher: StringPusher = Messages.defaultPusher
+  override def messagePusher: StringPusher = Pusher.defaultPusher
 }

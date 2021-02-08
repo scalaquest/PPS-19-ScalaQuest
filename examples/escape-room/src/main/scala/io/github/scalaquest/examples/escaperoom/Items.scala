@@ -1,56 +1,71 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.examples.escaperoom.House.{kitchen, livingRoom}
-import io.github.scalaquest.examples.escaperoom.Messages.SuperStonksPowered
+import io.github.scalaquest.examples.escaperoom.House.livingRoom
+import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
 
 object Items {
+
+  def allTheItems: Set[I] =
+    Set(
+      Items.redApple,
+      Items.greenApple,
+      Items.coffer,
+      Items.hatchKey,
+      Items.hatch,
+      Items.doorway,
+      Items.crowbar
+    )
+
   import model._
 
-  val redApple: Food = {
+  val redApple: Food =
     Food(
       i(d("red"), "apple"),
-      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ SuperStonksPowered)(_)))
+      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ DeliciousMessage)(_)))
     )
-  }
 
-  val (livingRoomDoor, livingRoomKey): (SimpleModel.Door, SimpleModel.Key) = doorKeyBuilder(
-    doorDesc = i(d("living-room"), "door"),
-    keyDesc = i(d("living-room"), "key"),
+  val greenApple: Food =
+    Food(
+      i(d("green"), "apple"),
+      SimpleEatable(onEatExtra =
+        Some(
+          _.applyReactions(
+            messageLens.modify(_ :+ Lose),
+            matchEndedLens.set(true)
+          )
+        )
+      )
+    )
+
+  val (hatch, hatchKey): (Door, Key) = doorKeyBuilder(
+    doorDesc = i(d("iron"), "hatch"),
+    keyDesc = i(d("rusty"), "key"),
     consumeKey = true,
     endRoom = livingRoom,
-    onOpenExtra = Some(
-      roomsLens.modify(
-        _.updatedWith(kitchen.ref) {
-          case Some(value) =>
-            Some(roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(value))
-          case _ => None
-        }
-      )
-    ),
+    endRoomDirection = Direction.Up,
     keyAddBehaviors = Seq(SimpleTakeable())
   )
 
-  val kitchenDoor: Door = {
-    Door(
-      i(d("kitchen-room"), "door"),
-      SimpleRoomLink(kitchen)
-    )
-  }
+  val coffer: GenericItem = GenericItem(
+    i(d("brown"), "coffer"),
+    Seq(Openable(onOpenExtra = Some(state => {
+      val updLocation = roomItemsLens.modify(_ + hatchKey.ref)(state.location)
+      roomsLens.modify(_ + (updLocation.ref -> updLocation))(state)
+    })))
+  )
 
-  val apple: Food = {
-    Food(
-      i("apple"),
-      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ SuperStonksPowered)(_)))
+  val (doorway, crowbar): (GenericItem, Key) = openableWithKeyBuilder(
+    openableDesc = i(d("big"), "doorway"),
+    keyDesc = i(d("rusty", "heavy"), "crowbar"),
+    consumeKey = true,
+    keyAddBehaviors = Seq(SimpleTakeable()),
+    onOpenExtra = Some(
+      _.applyReactions(
+        messageLens.modify(_ :+ Win),
+        matchEndedLens.set(true)
+      )
     )
-  }
-
-  val greenApple: Food = {
-    Food(
-      i(d("green"), "apple"),
-      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ SuperStonksPowered)(_)))
-    )
-  }
+  )
 }

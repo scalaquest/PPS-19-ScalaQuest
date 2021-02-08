@@ -1,11 +1,12 @@
 package io.github.scalaquest.core.model.behaviorBased
 
+import io.github.scalaquest.core.TestsUtils
 import org.scalatest.wordspec.AnyWordSpec
-import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.Room
 
 class SimpleRoomTest extends AnyWordSpec {
+  import TestsUtils._
+
   "A Room" when {
     "someone accesses a neighbor" should {
       "return a Room if the direction has an associated Room" in {

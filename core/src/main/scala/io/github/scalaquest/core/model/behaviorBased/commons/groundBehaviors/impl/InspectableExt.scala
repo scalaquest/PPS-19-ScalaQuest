@@ -9,7 +9,7 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Inspectable behavior for the
  * Ground.
  */
-trait InspectExt extends BehaviorBasedModel with StateUtilsExt with CommonMessagesExt {
+trait InspectableExt extends BehaviorBasedModel with StateUtilsExt with CommonMessagesExt {
 
   /**
    * A [[GroundBehavior]] that enables the possibility to know the items present into the current
@@ -25,16 +25,19 @@ trait InspectExt extends BehaviorBasedModel with StateUtilsExt with CommonMessag
    */
   case class SimpleInspectable(onInspectExtra: Option[Reaction] = None) extends Inspectable {
 
-    override def triggers: GroundTriggers = { case (Inspect, state) =>
-      inspectRoom(state.location)
-    }
+    override def triggers: GroundTriggers = { case (Inspect, _) => inspectRoom }
 
-    def inspectRoom(targetRoom: RM): Reaction =
-      state =>
+    def inspectRoom: Reaction =
+      state => {
+        implicit val s: S = state
         state.applyReactions(
-          messageLens.modify(_ :+ Inspected(targetRoom, targetRoom.items(state))),
+          messageLens.modify(
+            _ :+ Inspected(state.location, state.location.items, state.location.neighbors)
+          ),
           onInspectExtra.getOrElse(s => s)
         )
+      }
+
   }
 
   /**

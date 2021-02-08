@@ -14,6 +14,6 @@ trait CommonGroundExt extends BehaviorBasedModel with CommonGroundBehaviorsExt {
     extends BehaviorBasedGround {
 
     override val behaviors: Seq[GroundBehavior] =
-      additionalBehaviors ++ Seq(Inspectable(), Navigable(), Orientable())
+      additionalBehaviors ++ Seq(Inspectable(), Navigable())
   }
 }

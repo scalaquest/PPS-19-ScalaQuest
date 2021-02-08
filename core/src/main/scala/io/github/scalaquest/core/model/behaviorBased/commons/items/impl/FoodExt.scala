@@ -12,7 +12,9 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
   /**
    * A [[BehaviorBasedItem]] that can be eaten by the player.
    */
-  trait Food extends BehaviorBasedItem
+  trait Food extends BehaviorBasedItem {
+    def foodBehavior: Eatable
+  }
 
   /**
    * Standard implementation of the [[Food]] Item.
@@ -34,7 +36,7 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
     def apply(
       description: ItemDescription,
       foodBehavior: Eatable,
-      additionalBehaviors: ItemBehavior*
+      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
     ): Food = SimpleFood(description, ItemRef(description), foodBehavior, additionalBehaviors: _*)
   }
 }

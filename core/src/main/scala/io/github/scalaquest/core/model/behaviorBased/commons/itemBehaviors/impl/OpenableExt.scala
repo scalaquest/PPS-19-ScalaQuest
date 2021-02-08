@@ -17,6 +17,9 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
   abstract class Openable extends ItemBehavior {
     def isOpen: Boolean
     def consumeKey: Boolean
+    def requiredKey: Option[Key]
+    def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
+    def open(item: I): Reaction
   }
 
   /**
@@ -43,7 +46,7 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
     override def triggers: ItemTriggers = {
       // "Open the item (with something)"
       case (Open, item, maybeKey, state)
-          if state.isInLocation(item) && canBeOpened(state, maybeKey) && !isOpen =>
+          if state.isInLocation(item) && canBeOpened(maybeKey)(state) && !isOpen =>
         open(item)
     }
 
@@ -67,7 +70,7 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
      *
      * False otherwise.
      */
-    def canBeOpened(state: S, usedKey: Option[I] = None): Boolean = {
+    override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
       usedKey match {
         case Some(key) => requiredKey.contains(key) && state.isInScope(key)
         case None      => requiredKey.fold(true)(state.isInBag(_))

@@ -1,28 +1,20 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  Room,
-  SimpleDoor,
-  SimpleEatable,
-  SimpleOpenable,
-  SimpleRoomLink,
-  SimpleTakeable
-}
+import io.github.scalaquest.core.TestsUtils
+import io.github.scalaquest.core.model.{Direction, ItemDescription}
 import org.scalatest.wordspec.AnyWordSpec
 
 class DoorTest extends AnyWordSpec {
+  import TestsUtils.model._
+
   "A Door" when {
-    val room                = SimpleModel.roomBuilder("room", Map(), Set())
-    val roomLinkBehavior    = SimpleRoomLink(room, Some(SimpleOpenable()))
-    val additionalBehaviors = Seq(SimpleTakeable(), SimpleEatable())
-    val door = SimpleDoor(
+    val room                = Room("room")
+    val roomLinkBehavior    = RoomLink(room, Direction.North, Some(Openable()))
+    val additionalBehaviors = Seq(Takeable(), Eatable())
+    val door = Door(
       ItemDescription("door"),
-      new ItemRef {},
       roomLinkBehavior,
-      additionalBehaviors.head,
-      additionalBehaviors(1)
+      Seq(additionalBehaviors.head, additionalBehaviors(1))
     )
 
     "instantiated" should {

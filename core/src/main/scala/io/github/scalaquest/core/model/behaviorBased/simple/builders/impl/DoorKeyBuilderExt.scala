@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.simple.builders.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 
 trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
 
@@ -12,20 +12,21 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
     consumeKey: Boolean = false,
     doorDesc: ItemDescription,
     endRoom: RM,
+    endRoomDirection: Direction,
     onOpenExtra: Option[Reaction] = None,
     onEnterExtra: Option[Reaction] = None,
     doorAddBehaviors: Seq[ItemBehavior] = Seq()
   ): (Door, Key) = {
 
-    val key = SimpleKey(keyDesc, ItemRef(keyDesc), keyAddBehaviors: _*)
+    val key = Key(keyDesc, keyAddBehaviors)
 
-    val door = SimpleDoor(
+    val door = Door(
       description = doorDesc,
-      ref = ItemRef(doorDesc),
-      SimpleRoomLink(
+      RoomLink(
         endRoom = endRoom,
+        endRoomDirection = endRoomDirection,
         openable = Some(
-          SimpleOpenable(
+          Openable(
             consumeKey = consumeKey,
             requiredKey = Some(key),
             onOpenExtra = onOpenExtra
@@ -33,7 +34,7 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
         ),
         onEnterExtra = onEnterExtra
       ),
-      doorAddBehaviors: _*
+      additionalBehaviors = doorAddBehaviors
     )
 
     (door, key)

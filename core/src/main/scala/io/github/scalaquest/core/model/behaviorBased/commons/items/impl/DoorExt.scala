@@ -15,6 +15,7 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
    */
   trait Door extends BehaviorBasedItem {
     def isOpen: Boolean
+    def doorBehavior: RoomLink
   }
 
   /**
@@ -38,7 +39,7 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
     def apply(
       description: ItemDescription,
       doorBehavior: RoomLink,
-      additionalBehaviors: ItemBehavior*
+      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
     ): Door = SimpleDoor(description, ItemRef(description), doorBehavior, additionalBehaviors: _*)
   }
 }

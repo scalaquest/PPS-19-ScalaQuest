@@ -21,7 +21,6 @@ object Action {
     case object Enter                   extends Action
     case object Eat                     extends Action
     case object Inspect                 extends Action
-    case object Orientate               extends Action
     case class Go(direction: Direction) extends Action
   }
 }

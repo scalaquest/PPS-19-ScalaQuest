@@ -1,16 +1,14 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.{simpleState, targetRoom}
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.Go
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  BehaviorBasedGround,
-  GroundBehavior,
-  Navigable
-}
 import org.scalatest.wordspec.AnyWordSpec
 
 class NavigableTest extends AnyWordSpec {
+  import TestsUtils._
+  import TestsUtils.model._
+
   "A Navigation Ground Behavior" when {
     val navigation = Navigable()
 

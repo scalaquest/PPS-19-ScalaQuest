@@ -20,17 +20,16 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
   import io.github.scalaquest.core.dictionary.generators.implicits.listToMapGenerator
   import io.github.scalaquest.core.dictionary.implicits.{itemToEntryGenerator, verbToEntryGenerator}
 
-  type Model    = model.type
-  type State    = model.S
-  type Item     = model.I
-  type Room     = model.RM
-  type Ground   = model.G
+  type M        = model.type
+  type S        = model.S
+  type I        = model.I
+  type RM       = model.RM
+  type G        = model.G
   type Reaction = model.Reaction
 
-  def dictionary: Dictionary[Item]
+  def dictionary: Dictionary[I]
 
-  def refToItem: Map[ItemRef, Item] =
-    GeneratorK[List, Item, Map[ItemRef, Item]].generate(dictionary.items)
+  def refToItem: Map[ItemRef, I] = GeneratorK[List, I, Map[ItemRef, I]].generate(dictionary.items)
 
   def verbToAction: Map[VerbPrep, Action] =
     GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(dictionary.verbs)
@@ -43,9 +42,9 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
     programSource[Id](Source.fromResource(resourceName).mkString)
   }
 
-  def defaultPipeline(source: String): Pipeline.PartialBuilder[State, Model] = {
+  def defaultPipeline(source: String): Pipeline.PartialBuilder[S, M] = {
     Pipeline
-      .builderFrom[Model](model)
+      .builderFrom[M](model)
       .build(
         SimpleLexer,
         Parser(Engine(Theory(source), Set(DCGLibrary))),

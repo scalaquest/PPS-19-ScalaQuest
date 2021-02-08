@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.pushing
 
 import io.github.scalaquest.core.TestsUtils.{apple, door, key, startRoom, targetRoom}
+import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
   Eaten,
@@ -16,11 +17,12 @@ class CommonStringPusherTest extends AnyWordSpec {
     val commonStringPusher = CommonStringPusher(SimpleModel)
 
     "handle Inspected messages" in {
-      val inspected = Inspected(startRoom, Set(key, door))
+      val inspected = Inspected(startRoom, Set(key, door), Map(Direction.North -> targetRoom))
       assert(
         commonStringPusher.push(
           inspected
-        ) == s"The ${startRoom.name} contains a ${door.name}, a ${key.name}."
+        ) == s"The ${startRoom.name} contains a ${door.name}, a ${key.name}.\n" +
+          s"There is a ${targetRoom.name} in direction ${Direction.North.toString}.\n"
       )
     }
 

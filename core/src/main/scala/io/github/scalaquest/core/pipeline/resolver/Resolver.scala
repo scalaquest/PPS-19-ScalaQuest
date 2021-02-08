@@ -40,8 +40,8 @@ object Resolver {
     def retrieveAction(verbPrep: VerbPrep): Either[String, Action] =
       actions lift verbPrep toRight s"Couldn't understand ${verbPrep._1}."
 
-    def retrieveItem(name: ItemDescription): Either[String, ItemRef] =
-      items lift name toRight s"Couldn't understand $name"
+    def retrieveItem(desc: ItemDescription): Either[String, ItemRef] =
+      items lift desc toRight s"Couldn't understand ${desc.mkString}"
 
     override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
       for {

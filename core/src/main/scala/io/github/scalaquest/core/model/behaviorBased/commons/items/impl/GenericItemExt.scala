@@ -30,7 +30,9 @@ trait GenericItemExt extends BehaviorBasedModel {
    */
   object GenericItem {
 
-    def apply(description: ItemDescription, additionalBehaviors: ItemBehavior*): GenericItem =
-      SimpleGenericItem(description, ItemRef(description), additionalBehaviors: _*)
+    def apply(
+      description: ItemDescription,
+      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
+    ): GenericItem = SimpleGenericItem(description, ItemRef(description), additionalBehaviors: _*)
   }
 }

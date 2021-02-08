@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.model.Action.Common.Enter
+import io.github.scalaquest.core.model.Action.Common.{Enter, Open}
+import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
@@ -35,6 +36,7 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
    */
   case class SimpleRoomLink(
     endRoom: Room,
+    endRoomDirection: Direction,
     openable: Option[Openable] = None,
     onEnterExtra: Option[Reaction] = None
   ) extends RoomLink
@@ -49,6 +51,14 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
       openable.fold(PartialFunction.empty: ItemTriggers)(_.triggers)
 
     override def receiverTriggers: ItemTriggers = {
+      // "Open the item (with something)"
+      case (Open, item, maybeKey, state)
+          if state
+            .isInLocation(item) && openable.fold(true)(
+            _.canBeOpened(maybeKey)(state)
+          ) && !isOpen && openable.isDefined =>
+        open(item)
+
       // "Enter the item"
       case (Enter, item, None, state)
           if state.isInLocation(item) && openable.fold(true)(_.isOpen) =>
@@ -63,6 +73,22 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
           onEnterExtra.getOrElse(state => state)
         )
 
+    def open(item: I): Reaction =
+      state => {
+        val addDirection = roomsLens.modify(
+          _.updatedWith(state.location.ref) {
+            case Some(room) =>
+              Some(roomDirectionsLens.modify(_ + (endRoomDirection -> endRoom.ref))(room))
+            case _ => None
+          }
+        )
+
+        state.applyReactions(
+          openable.get.open(item),
+          addDirection
+        )
+      }
+
     override def isOpen: Boolean = openable.fold(true)(_.isOpen)
   }
 
@@ -71,7 +97,11 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
    */
   object RoomLink {
 
-    def apply(endRoom: Room, openable: Option[Openable], onEnterExtra: Option[Reaction]): RoomLink =
-      SimpleRoomLink(endRoom, openable, onEnterExtra)
+    def apply(
+      endRoom: Room,
+      endRoomDirection: Direction,
+      openable: Option[Openable] = None,
+      onEnterExtra: Option[Reaction] = None
+    ): RoomLink = SimpleRoomLink(endRoom, endRoomDirection, openable, onEnterExtra)
   }
 }

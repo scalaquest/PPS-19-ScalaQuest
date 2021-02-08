@@ -1,23 +1,19 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils.simpleState
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.Take
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  SimpleGenericItem,
-  SimpleTakeable,
-  itemsLens
-}
-
 import org.scalatest.wordspec.AnyWordSpec
 
 class TakeableTest extends AnyWordSpec {
+  import TestsUtils._
+  import TestsUtils.model._
+
   "A Takeable behavior" when {
-    val takeable = SimpleTakeable()
 
     "applied to an item" when {
-      val itemDescription       = ItemDescription("item")
-      val targetItem            = SimpleGenericItem(itemDescription, ItemRef(itemDescription), takeable)
+      val targetItem = GenericItem(ItemDescription("item"), Seq(Takeable()))
+
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
       val stateWithoutTargetInRoom =
         itemsLens.modify(_ + (targetItem.ref -> targetItem))(simpleState)
