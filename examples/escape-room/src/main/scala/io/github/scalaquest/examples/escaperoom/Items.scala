@@ -2,7 +2,6 @@ package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.examples.escaperoom.House.{basement, livingRoom}
 import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
 
 object Items {
@@ -30,57 +29,32 @@ object Items {
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      SimpleEatable(onEatExtra =
-        Some(
-          _.applyReactions(
-            messageLens.modify(_ :+ Lose),
-            matchEndedLens.set(true)
-          )
+      SimpleEatable(
+        onEatExtra = Some(
+          _.applyReactions(messageLens.modify(_ :+ Lose), matchEndedLens.set(true))
         )
       )
     )
 
   val basementHatch: Door = Door(
     i(d("basement"), "hatch"),
-    RoomLink(basement, Direction.Down)
+    RoomLink(House.basement, Direction.Down)
   )
 
   val (hatch, hatchKey): (Door, Key) = doorKeyBuilder(
     doorDesc = i(d("iron"), "hatch"),
     keyDesc = i(d("old", "rusty"), "key"),
     consumeKey = true,
-    endRoom = livingRoom,
+    endRoom = House.livingRoom,
     endRoomDirection = Direction.Up,
-    keyAddBehaviors = Seq(SimpleTakeable()),
-    onOpenExtra = Some(state => {
-      state.applyReactions(
-        messageLens.set(
-          Seq(
-            Print(
-              "The key slides into the lock easily. With great effort, " +
-                "I open the hatch and glimpse a dusty living room above me."
-            )
-          )
-        )
-      )
-    })
+    keyAddBehaviors = Seq(SimpleTakeable())
   )
 
   val coffer: GenericItem = GenericItem(
     i(d("brown"), "coffer"),
     Seq(Openable(onOpenExtra = Some(state => {
       val updLocation = roomItemsLens.modify(_ + hatchKey.ref)(state.location)
-      state.applyReactions(
-        roomsLens.modify(_ + (updLocation.ref -> updLocation)),
-        messageLens.set(
-          Seq(
-            Print(
-              "The chest swung open. There is an old rusty key inside it. " +
-                "Maybe it could be useful."
-            )
-          )
-        )
-      )
+      roomsLens.modify(_ + (updLocation.ref -> updLocation))(state)
     })))
   )
 

@@ -22,7 +22,7 @@ abstract class GameCLIApp extends CLIApp {
 object EscapeRoom extends GameCLIApp {
 
   print(
-    "\nScalaQuest\n\nWelcome in the Escape Room Game! You have been kidnapped, and you woke up in a " +
+    "\n\nWelcome in the Escape Room Game! You have been kidnapped, and you woke up in a " +
       "gloomy basement. You have to get out of the house to save yourself!\n\n"
   )
 

@@ -31,7 +31,7 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
 
       def printNeighbors(neighbors: Map[Direction, CommonMessagesExt#RM]): String = {
         neighbors match {
-          case ns if ns.isEmpty => "I cannot go anywhere now."
+          case ns if ns.isEmpty => "You cannot go anywhere now."
           case ns =>
             ns.map(n => s"There is a ${n._2.toString} in direction ${n._1.toString}.\n")
               .fold("")(_ + _)
