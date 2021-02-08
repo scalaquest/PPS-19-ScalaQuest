@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.pipeline.reducer
 
 import io.github.scalaquest.core.TestsUtils.{apple, simpleState}
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.bagLens
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.bagLens
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.pipeline.interpreter.InterpreterResult
 import org.scalatest.wordspec.AnyWordSpec
 

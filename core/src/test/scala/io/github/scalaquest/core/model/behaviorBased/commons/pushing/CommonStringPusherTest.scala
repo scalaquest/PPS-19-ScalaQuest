@@ -1,9 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.pushing
 
 import io.github.scalaquest.core.TestsUtils.{apple, door, key, startRoom, targetRoom}
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
-  Closed,
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
   Eaten,
   Inspected,
   Navigated,
@@ -33,11 +32,6 @@ class CommonStringPusherTest extends AnyWordSpec {
     "handle Taken messages" in {
       val taken = Taken(key)
       assert(commonStringPusher.push(taken) == s"The ${key.name} has been taken!")
-    }
-
-    "handle Closed messages" in {
-      val closed = Closed(door)
-      assert(commonStringPusher.push(closed) == s"The ${door.name} has been closed!")
     }
 
     "handle Opened messages" in {

@@ -2,7 +2,7 @@ package io.github.scalaquest.examples
 
 import io.github.scalaquest.core.application.ApplicationStructure
 import io.github.scalaquest.core.dictionary.Dictionary
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder

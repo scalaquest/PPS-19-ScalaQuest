@@ -1,22 +1,18 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
-import io.github.scalaquest.core.model.{Direction, ItemRef}
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.examples.escaperoom.House.{kitchen, livingRoom}
 import io.github.scalaquest.examples.escaperoom.Messages.SuperStonksPowered
 
 object Items {
   import model._
 
-  val redApple: SimpleFood = {
-    val itemDescription = i(d("red"), "apple")
-    SimpleFood(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
-      )
+  val redApple: Food = {
+    Food(
+      i(d("red"), "apple"),
+      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ SuperStonksPowered)(_)))
     )
   }
 
@@ -36,35 +32,24 @@ object Items {
     keyAddBehaviors = Seq(SimpleTakeable())
   )
 
-  val kitchenDoor: SimpleDoor = {
-    val itemDescription = i(d("kitchen-room"), "door")
-    SimpleDoor(
-      itemDescription,
-      ItemRef(itemDescription),
+  val kitchenDoor: Door = {
+    Door(
+      i(d("kitchen-room"), "door"),
       SimpleRoomLink(kitchen)
     )
   }
 
-  val apple: SimpleFood = {
-    val itemDescription = i("apple")
-    SimpleFood(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
-      )
+  val apple: Food = {
+    Food(
+      i("apple"),
+      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ SuperStonksPowered)(_)))
     )
   }
 
-  val greenApple: SimpleFood = {
-
-    val itemDescription = i(d("green"), "apple")
-    SimpleFood(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
-      )
+  val greenApple: Food = {
+    Food(
+      i(d("green"), "apple"),
+      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ SuperStonksPowered)(_)))
     )
   }
 }

@@ -2,7 +2,7 @@ package io.github.scalaquest.core.pipeline.interpreter
 
 import io.github.scalaquest.core.TestsUtils.{apple, appleItemRef, refItemDictionary}
 import io.github.scalaquest.core.model.ItemRef
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import org.scalatest.wordspec.AnyWordSpec
 
 class RefToItemTest extends AnyWordSpec {

@@ -7,13 +7,12 @@ import io.github.scalaquest.core.TestsUtils.{
   doorItemRef,
   key,
   keyItemRef,
-  refItemDictionary,
   simpleState
 }
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.SimpleGround
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.CommonGround
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -23,7 +22,7 @@ class InterpreterTest extends AnyWordSpec {
 
     "given an Intransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.North)))
-      val maybeExpReaction = SimpleGround.use(Go(Direction.North))(simpleState)
+      val maybeExpReaction = CommonGround().use(Go(Direction.North))(simpleState)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)

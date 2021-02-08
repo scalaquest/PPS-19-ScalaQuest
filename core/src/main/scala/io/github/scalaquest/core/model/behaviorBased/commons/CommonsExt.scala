@@ -1,11 +1,14 @@
 package io.github.scalaquest.core.model.behaviorBased.commons
 
-import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.CommonSimpleGroundBehaviorsExt
-import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.CommonSimpleItemBehaviorsExt
-import io.github.scalaquest.core.model.behaviorBased.commons.items.CommonSimpleItemsExt
+import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CommonGroundExt
+import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.CommonGroundBehaviorsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.CommonItemBehaviorsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.items.CommonItemsExt
 
 trait CommonsExt
-  extends CommonBase
-  with CommonSimpleItemBehaviorsExt
-  with CommonSimpleItemsExt
-  with CommonSimpleGroundBehaviorsExt
+  extends BehaviorBasedModel
+  with CommonItemBehaviorsExt
+  with CommonItemsExt
+  with CommonGroundBehaviorsExt
+  with CommonGroundExt

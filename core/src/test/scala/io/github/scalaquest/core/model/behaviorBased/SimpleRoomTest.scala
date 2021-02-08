@@ -3,7 +3,7 @@ package io.github.scalaquest.core.model.behaviorBased
 import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.TestsUtils.{simpleState, startRoom, targetRoom}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.Room
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.Room
 
 class SimpleRoomTest extends AnyWordSpec {
   "A Room" when {

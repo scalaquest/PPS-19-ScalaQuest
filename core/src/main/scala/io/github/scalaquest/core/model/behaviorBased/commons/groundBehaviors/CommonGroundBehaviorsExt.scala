@@ -2,27 +2,19 @@ package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors
 
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.{
+  InspectExt,
+  NavigableExt,
+  OrientableExt
+}
 
 /**
- * When mixed into a [[Model]], it integrates into it the interfaces for some commonly used
- * GroundBehavior s (basically, intransitive actions). These should be implemented to be used.
+ * When mixed into a [[Model]], it enables the implementation for the common behaviors provided by
+ * ScalaQuest Core. It requires the storyteller to implement all the required [[monocle.Lens]], used
+ * by the implementation to access and re-generate the concrete [[Model.State]].
  */
-trait CommonGroundBehaviorsExt extends BehaviorBasedModel {
-
-  /**
-   * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
-   */
-  abstract class Navigation extends GroundBehavior
-
-  /**
-   * A [[GroundBehavior]] that enables the possibility to know the items present into the current
-   * Room.
-   */
-  abstract class Inspect extends GroundBehavior
-
-  /**
-   * A [[GroundBehavior]] that enables the possibility to know the which are the neighbor reachable
-   * rooms, and how to reach them, if doors are defined.
-   */
-  abstract class Orientate extends GroundBehavior
-}
+trait CommonGroundBehaviorsExt
+  extends BehaviorBasedModel
+  with NavigableExt
+  with InspectExt
+  with OrientableExt
