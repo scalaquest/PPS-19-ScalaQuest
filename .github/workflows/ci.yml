@@ -68,7 +68,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew clean test reportScoverage sonarqube
+        run: ./gradlew reportScoverage sonarqube # clean test reportScoverage sonarqube if single line
 
       - name: Check coverage
         if: contains(runner.os, 'Linux')
