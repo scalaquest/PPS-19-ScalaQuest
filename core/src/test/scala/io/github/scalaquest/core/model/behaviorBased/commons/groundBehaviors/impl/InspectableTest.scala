@@ -18,22 +18,21 @@ class InspectableTest extends AnyWordSpec {
       }
 
       "An inspect Action is provided" should {
-        "give the opportunity to the player to see all the visible items present in the designed Room," +
-          " and show if the player could move in any direction" in {
-            val targetResult =
-              Inspected(startRoom, Set(key, door), Map(Direction.North -> targetRoom))
+        "describe the room, the items in it, the neighbors" in {
+          val targetResult =
+            Inspected(startRoom, Set(key, door), Map(Direction.North -> targetRoom))
 
-            for {
-              react <- SimpleGround.use(Inspect)(simpleState) toRight fail(
-                "Reaction not generated"
-              )
-              modState <- Right(react(simpleState))
-
-            } yield assert(
-              modState.messages.last == targetResult,
-              "The player has reached the Room"
+          for {
+            react <- SimpleGround.use(Inspect)(simpleState) toRight fail(
+              "Reaction not generated"
             )
-          }
+            modState <- Right(react(simpleState))
+
+          } yield assert(
+            modState.messages.last == targetResult,
+            "The player has reached the Room"
+          )
+        }
       }
     }
   }
