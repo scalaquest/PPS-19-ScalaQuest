@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # right refs for sonarcloud
 
         # The project uses by default Java 11 (LTS) with scala 2.13
       - name: Set up JDK 11
@@ -57,4 +59,5 @@ jobs:
         run: ./gradlew check
 
       - name: Check coverage
+        if: contains(runner.os, 'Linux')
         run: ./gradlew checkScoverage
