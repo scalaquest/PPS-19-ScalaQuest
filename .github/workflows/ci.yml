@@ -64,10 +64,12 @@ jobs:
         run: ./gradlew check
 
       - name: SonarQube analysis
+        if: contains(runner.os, 'Linux')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew reportScoverage sonarqube --info
 
       - name: Check coverage
+        if: contains(runner.os, 'Linux')
         run: ./gradlew checkScoverage
