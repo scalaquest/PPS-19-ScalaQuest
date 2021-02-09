@@ -4,9 +4,9 @@ import cats.implicits.catsStdInstancesForList
 import cats.{Foldable, Monoid}
 
 /**
- * This package provides some useful utilities to create every data structure. Here it's possible to
- * create a generator of singlets or a single map entry, and, [[GeneratorK]] allows to create maps
- * with multiple entry. This package provides also a set of implicits methods.
+ * This package provides two type classes `Generator` and `GeneratorK`. They are composable wrappers
+ * around functions. In addition, there are facility methods that allow the creation of these type
+ * classes.
  *
  * For example:
  * {{{
@@ -28,10 +28,18 @@ import cats.{Foldable, Monoid}
  *   )
  * }}}
  */
-
 package object generators extends GeneratorImplicits {
 
+  /**
+   * Allows to fold a `F[A]`.
+   *
+   * Inspired by:
+   * [[https://typelevel.org/cats/typeclasses/monoid.html#example-usage-collapsing-a-list]].
+   */
   def combineAll[F[_]: Foldable, A: Monoid](as: F[A]): A = Foldable[F].fold(as)
 
+  /**
+   * Variadic argument function that wraps the non-variadic `combineAll` one.
+   */
   def combineAll[A: Monoid](a: A, as: A*): A = combineAll((a +: as).toList)
 }
