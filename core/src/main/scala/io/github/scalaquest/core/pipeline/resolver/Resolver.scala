@@ -35,13 +35,13 @@ object Resolver {
 
     def actions: PartialFunction[VerbPrep, Action]
 
-    def items: PartialFunction[ItemDescription, ItemRef]
+    def items: PartialFunction[ItemDescription, Either[String, ItemRef]]
 
     def retrieveAction(verbPrep: VerbPrep): Either[String, Action] =
       actions lift verbPrep toRight s"Couldn't understand ${verbPrep._1}."
 
     def retrieveItem(desc: ItemDescription): Either[String, ItemRef] =
-      items lift desc toRight s"Couldn't understand ${desc.mkString}"
+      (items lift desc toRight s"Couldn't understand ${desc.mkString}").flatten
 
     override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
       for {
@@ -77,10 +77,11 @@ object Resolver {
 
         override def actions: PartialFunction[VerbPrep, Action] = s.actions
 
-        override def items: PartialFunction[ItemDescription, ItemRef] =
+        override def items: PartialFunction[ItemDescription, Either[String, ItemRef]] =
           d =>
             s.scope.filter(i => d.isSubset(i.description)).toList match {
-              case x :: Nil => x.ref
+              case x :: Nil => Right(x.ref)
+              case x :: _   => Left(s"Which ${d.mkString}?")
             }
       }
 }
