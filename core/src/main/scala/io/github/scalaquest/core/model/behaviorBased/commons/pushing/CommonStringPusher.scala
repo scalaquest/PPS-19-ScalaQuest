@@ -33,8 +33,8 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
         neighbors match {
           case ns if ns.isEmpty => "You cannot go anywhere now."
           case ns =>
-            ns.map(n => s"There is a ${n._2.toString} in direction ${n._1.toString}.\n")
-              .fold("")(_ + _)
+            ns.map(n => s"There is a ${n._2.toString} in direction ${n._1.toString}.")
+              .fold("")(_ + "\n" + _)
         }
       }
 

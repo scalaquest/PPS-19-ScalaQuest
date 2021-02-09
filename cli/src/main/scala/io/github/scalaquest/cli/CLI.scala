@@ -26,6 +26,7 @@ object CLI {
       pusher: StringPusher
     )(startState: model.S): ZIO[Console, Exception, Unit] =
       for {
+        _           <- putStr("> ")
         input       <- getStrLn
         pipelineRes <- UIO.succeed((game send input)(startState))
         (output, updState) <- UIO.succeed(pipelineRes match {
