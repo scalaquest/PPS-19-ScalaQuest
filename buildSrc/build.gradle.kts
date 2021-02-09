@@ -27,6 +27,7 @@ dependencies {
     implementation("com.github.maiflai:gradle-scalatest:_")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:_")
     implementation("gradle.plugin.org.scoverage:gradle-scoverage:_")
+    implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:_")
 
     // Makes Detekt configurable
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")

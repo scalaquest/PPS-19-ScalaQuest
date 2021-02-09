@@ -17,10 +17,21 @@ plugins {
 
     // A scala linter-formatter
     id("com.diffplug.spotless")
+
+    id("org.sonarqube")
 }
 
 repositories {
     jcenter()
+}
+
+sonarqube {
+    properties {
+        property("sonar.sources", "src/main/scala")
+        property("sonar.tests", "src/test/scala")
+        property("sonar.junit.reportPaths", "build/test-results/test")
+        property("sonar.scala.coverage.reportPath", "build/reports/scoverage/scoverage.xml")
+    }
 }
 
 tasks.withType<ScalaCompile> {
