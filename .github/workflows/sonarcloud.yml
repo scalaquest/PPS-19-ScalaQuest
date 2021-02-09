@@ -8,7 +8,7 @@ on:
 
 jobs:
   sonarcloud:
-    name: Sonarqube analysis
+    name: Deliver analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
