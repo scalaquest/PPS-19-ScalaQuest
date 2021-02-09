@@ -45,6 +45,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
         # run it on the entire matrix would be overkill
       - name: Lint sources
         if: contains(runner.os, 'Linux')
@@ -55,6 +62,12 @@ jobs:
 
       - name: Test sources
         run: ./gradlew check
+
+      - name: SonarQube analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew reportScoverage sonarqube --info
 
       - name: Check coverage
         run: ./gradlew checkScoverage
