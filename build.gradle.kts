@@ -16,7 +16,7 @@ sonarqube {
         property("sonar.tests", "src/test/scala")
         property("sonar.junit.reportPaths", "build/test-results/test")
         property("sonar.scala.version", "2.13")
-        property("sonar.scala.coverage.reportPath", "build/reports/scoverage/scoverage.xml")
+        property("sonar.scala.coverage.reportPath", "build/reports/scoverage/scoverage.xml") // todo maybe in subprojects?
     }
 }
 
