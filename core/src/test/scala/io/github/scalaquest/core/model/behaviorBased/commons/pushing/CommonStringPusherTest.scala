@@ -18,12 +18,11 @@ class CommonStringPusherTest extends AnyWordSpec {
 
     "handle Inspected messages" in {
       val inspected = Inspected(startRoom, Set(key, door), Map(Direction.North -> targetRoom))
-      assert(
-        commonStringPusher.push(
-          inspected
-        ) == s"The ${startRoom.name} contains a ${door.name}, a ${key.name}.\n" +
-          s"There is a ${targetRoom.name} in direction ${Direction.North.toString}.\n"
-      )
+
+      val result = commonStringPusher.push(inspected)
+      val expResult = s"The ${startRoom.name} contains a ${door.name}, a ${key.name}.\n" +
+        s"There is a ${targetRoom.name} in direction ${Direction.North.toString}."
+      assert(result == expResult)
     }
 
     "handle Eaten messages" in {
