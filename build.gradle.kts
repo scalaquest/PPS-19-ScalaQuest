@@ -17,7 +17,7 @@ sonarqube {
         property("sonar.sources", "src/main/scala")
         property("sonar.tests", "src/test/scala")
         property("sonar.junit.reportPaths", "build/test-results/test")
-        property("sonar.scala.coverage.reportPath", "build/reports/scoverage/scoverage.xml")
+        property("sonar.scala.coverage.reportPaths", "build/reports/scoverage/scoverage.xml")
     }
 }
 

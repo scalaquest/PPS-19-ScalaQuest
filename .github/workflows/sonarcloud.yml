@@ -24,6 +24,16 @@ jobs:
         with:
           java-version: 11
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v2
         with:
@@ -31,8 +41,8 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-        # do not use cache for analysis
-      - run: |
+      - name: Generate analysis artifacts
+        run: |
           ./gradlew clean
           ./gradlew test
           ./gradlew reportScoverage
