@@ -5,8 +5,6 @@ on:
     branches:
       - main
       - dev
-      - 'release/*'
-      - 'hotfix/*'
 
 jobs:
   sonarcloud:
@@ -43,7 +41,6 @@ jobs:
 
       - name: Generate analysis artifacts
         run: |
-          ./gradlew clean
           ./gradlew test
           ./gradlew reportScoverage
 
