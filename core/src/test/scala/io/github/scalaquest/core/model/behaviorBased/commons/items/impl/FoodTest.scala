@@ -8,13 +8,13 @@ class FoodTest extends AnyWordSpec {
   import TestsUtils.model._
 
   "A Food is an item that" when {
-    val eatableBehaviour = Eatable()
-    val food             = Food(ItemDescription("food"), eatableBehaviour)
+    val eatableBehavior = Eatable()
+    val food            = Food(ItemDescription("food"), eatableBehavior, Seq(Takeable()))
 
     "instantiated" should {
       "have the eatable item" in {
         assert(
-          food.foodBehavior == eatableBehaviour,
+          food.foodBehavior == eatableBehavior,
           "behaviors are not correctly instantiated."
         )
       }

@@ -17,6 +17,7 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
    */
   abstract class RoomLink extends ItemBehavior {
     def isOpen: Boolean
+    def openable: Option[Openable]
   }
 
   /**

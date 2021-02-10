@@ -11,7 +11,7 @@ plugins {
     `java-library`
 }
 
-// todo libraries need 75% coverage at least. Temporarily set at 0 as cli test must be finished
+// libraries need 75% coverage at least
 scoverage {
-    minimumRate.set(0.toBigDecimal())
+    minimumRate.set(75.toBigDecimal())
 }

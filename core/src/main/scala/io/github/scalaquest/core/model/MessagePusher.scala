@@ -17,7 +17,7 @@ abstract class MessagePusher[A] {
    * @return
    *   A [[PartialFunction]] used to find a match for the given input.
    */
-  def triggers: MessageTriggers[A]
+  def triggers: MessageTriggers[A] = PartialFunction.empty
 
   /**
    * An output returned if the message is not recognized.
@@ -33,7 +33,7 @@ abstract class MessagePusher[A] {
    * @return
    *   An output matching with the given message; [[MessagePusher::notFound]] otherwise.
    */
-  def push(input: Message): A = {
+  final def push(input: Message): A = {
     triggers.lift(input).getOrElse(notFound)
   }
 

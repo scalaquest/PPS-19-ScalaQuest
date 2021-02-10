@@ -81,6 +81,8 @@ object Interpreter {
 
             case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
               directObj.use(action, Some(indirectObj)).toRight(s"I can't do that!")
+
+            case _ => Left(s"I can't do that!")
           }
         } yield InterpreterResult(model)(maybeReaction)
     }

@@ -1,6 +1,5 @@
 package io.github.scalaquest.core.pipeline
 
-import cats.data.Reader
 import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
 import io.github.scalaquest.core.pipeline.lexer.Lexer

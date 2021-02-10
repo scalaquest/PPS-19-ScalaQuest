@@ -4,7 +4,7 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 
-trait OpenableWithKeyExt extends BehaviorBasedModel with CommonsExt {
+trait OpKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
 
   def openableWithKeyBuilder(
     keyDesc: ItemDescription,
