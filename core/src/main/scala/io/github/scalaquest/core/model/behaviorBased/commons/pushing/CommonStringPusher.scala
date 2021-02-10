@@ -31,7 +31,7 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
 
       def printNeighbors(neighbors: Map[Direction, CommonMessagesExt#RM]): String = {
         neighbors match {
-          case ns if ns.isEmpty => "You cannot go anywhere now."
+          case ns if ns.isEmpty => "\nYou cannot go anywhere now."
           case ns =>
             ns.map(n => s"There is a ${n._2.toString} in direction ${n._1.toString}.")
               .fold("")(_ + "\n" + _)
@@ -40,7 +40,7 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
 
       val ordItems = items.toList.sortWith(_.toString < _.toString)
 
-      s"The ${room.name} contains ${printItems(ordItems)}\n${printNeighbors(neighbors)}"
+      s"The ${room.name} contains ${printItems(ordItems)}${printNeighbors(neighbors)}"
 
     case model.Eaten(item)     => s"The ${item.toString} has been eaten!"
     case model.Taken(item)     => s"The ${item.toString} has been taken!"

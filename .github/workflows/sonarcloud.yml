@@ -1,29 +1,19 @@
-name: CI
-
-# Continuous Integration workflow, which aims to assure correctness and
-# quality of the sources that converges into the stable branches (dev and main).
+name: SonarCloud
 
 on:
+  pull_request:
+    branches:
+      - main
+      - dev
   push:
     branches:
       - main
       - dev
 
-  pull_request:
-    branches:
-      - dev
-      - main
-
 jobs:
-  ci:
-    name: Lint, build and test
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ ubuntu-latest, macOS-latest, windows-latest ]
-
+  sonarcloud:
+    name: Deliver analysis
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -46,17 +36,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-        # run it on the entire matrix would be overkill
-      - name: Lint sources
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Generate analysis artifacts
+        run: |
+          ./gradlew test
+          ./gradlew reportScoverage
+
+      - name: Generate SonarCloud analysis
         if: contains(runner.os, 'Linux')
-        run: ./gradlew spotlessCheck
-
-      - name: Compile sources
-        run: ./gradlew assemble
-
-      - name: Test sources
-        run: ./gradlew check
-
-      - name: Check coverage
-        if: contains(runner.os, 'Linux')
-        run: ./gradlew checkScoverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonarqube --info
