@@ -5,6 +5,8 @@ import io.github.scalaquest.core.Game
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
 
+import java.io.IOException
+
 trait CLIApp extends zio.App {
   def cli: CLI
 
@@ -21,13 +23,19 @@ object CLI {
 
   class CLIBuilder[M <: Model](val model: M) {
 
+    private def readLine: ZIO[Console, IOException, String] =
+      for {
+        _  <- putStr("> ")
+        i  <- getStrLn
+        i2 <- if (i == "") readLine else ZIO.succeed(i)
+      } yield i2;
+
     private def gameLoop(
       game: Game[model.type],
       pusher: StringPusher
     )(startState: model.S): ZIO[Console, Exception, Unit] =
       for {
-        _           <- putStr("> ")
-        input       <- getStrLn
+        input       <- readLine
         pipelineRes <- UIO.succeed((game send input)(startState))
         (output, updState) <- UIO.succeed(pipelineRes match {
           case Left(err)       => (err, startState)
