@@ -51,9 +51,6 @@ jobs:
       - name: Test sources
         run: ./gradlew check
 
-      - name: Check coverage
-        run: ./gradlew checkScoverage
-
   Lint:
     runs-on: ubuntu-latest
 
@@ -79,3 +76,30 @@ jobs:
 
       - name: Lint sources
         run: ./gradlew spotlessCheck
+
+  Coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+        # The project uses by default Java 11 (LTS) with scala 2.13
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+        # runs also tests internally
+      - name: Check coverage
+        run: ./gradlew checkScoverage
