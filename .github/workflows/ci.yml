@@ -2,6 +2,8 @@ name: CI
 
 # Continuous Integration workflow, which aims to assure correctness and
 # quality of the sources that converges into the stable branches (dev and main).
+# The workflow is structure in multiple jobs, in order to parallelize what is possible,
+# to obtain a fail-fast behavior.
 
 on:
   push:
@@ -15,8 +17,7 @@ on:
       - main
 
 jobs:
-  ci:
-    name: Lint, build and test
+  Build:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -27,8 +28,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # right refs for sonarcloud
 
         # The project uses by default Java 11 (LTS) with scala 2.13
       - name: Set up JDK 11
@@ -46,17 +45,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-        # run it on the entire matrix would be overkill
-      - name: Lint sources
-        if: contains(runner.os, 'Linux')
-        run: ./gradlew spotlessCheck
-
-      - name: Compile sources
+      - name: Assemble sources
         run: ./gradlew assemble
 
       - name: Test sources
         run: ./gradlew check
 
       - name: Check coverage
-        if: contains(runner.os, 'Linux')
         run: ./gradlew checkScoverage
+
+  Lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+        # The project uses by default Java 11 (LTS) with scala 2.13
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Lint sources
+        run: ./gradlew spotlessCheck

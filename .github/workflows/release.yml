@@ -1,4 +1,4 @@
-name: Generate release
+name: Release
 
 # Generates a new release, after a release/* branch is successfully
 # merged into main. The tag name is inferred from the branch name.
@@ -10,14 +10,23 @@ on:
      - closed
 
 jobs:
-  release:
-    name: Generate release
+  Deploy:
     if: github.event.pull_request.merged == true # only merged pull requests must trigger this job
 
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Extract version from branch name (for release branches)
         if: startsWith(github.event.pull_request.head.ref, 'release/')
@@ -40,7 +49,7 @@ jobs:
           git tag ${{ env.RELEASE_VERSION }} -a -m "Release ${{ env.RELEASE_VERSION }}"
           git push --follow-tags
 
-      - name: Create Release
+      - name: Create release
         id: create-release
         uses: actions/create-release@v1
         env:
@@ -50,7 +59,7 @@ jobs:
           release_name: ${{ env.RELEASE_VERSION }}
           prerelease: false
 
-      - name: Merge main into dev branch
+      - name: Create "merge into dev" pull request
         uses: thomaseizinger/create-pull-request@1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -60,16 +69,6 @@ jobs:
           title: Merge main into dev branch
           body: |
             This PR merges the main branch back into dev. This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates, are also present on the dev branch.
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
 
       - name: Generate distributions
         run: ./gradlew distZip
