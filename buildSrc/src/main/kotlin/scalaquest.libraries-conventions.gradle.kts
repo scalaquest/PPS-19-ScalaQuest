@@ -13,5 +13,5 @@ plugins {
 
 // libraries need 75% coverage at least
 scoverage {
-    minimumRate.set(75.toBigDecimal())
+    minimumRate.set(0.75.toBigDecimal())
 }
