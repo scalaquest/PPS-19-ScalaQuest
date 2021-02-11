@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
-import monocle.Lens
+import monocle.{Lens, PLens}
 
 /**
  * A way to represent the basic linked concepts of the story, in an extendible way. Usage example:
@@ -13,12 +13,11 @@ import monocle.Lens
  *   ...
  * }}}
  */
-trait Model {
+trait Model { model: Model =>
   type S <: State
   type I <: Item
   type G <: Ground
   type RM <: Room
-
   type Reaction = S => S
 
   /**
@@ -28,6 +27,7 @@ trait Model {
    * the possible [[Action]] s.
    */
   abstract class State { self: S =>
+    implicit val s: S = self
 
     /**
      * All the possible [[Action]] s that can be used into the match, associated with the Verb that
@@ -38,11 +38,48 @@ trait Model {
     def actions: Map[VerbPrep, Action]
 
     /**
-     * The state of the game, in a vision scoped to the player capabilities.
+     * Represents the configuration of the match, in terms of [[Model.Room]] s and [[Model.Item]].
      * @return
-     *   The [[MatchState]] of the match.
+     *   a [[Set]] representing all [[Model.Room]] s of the match, and the [[Model.Item]] s in them.
      */
-    def matchState: MatchState[I, RM]
+    def rooms: Map[RoomRef, RM]
+
+    def ground: G
+
+    /**
+     * A [[Map]] with all the [[Model.Item]] s present in the match. For each [[ItemRef]] is found
+     * the specific [[Model.Item]] in the match.
+     * @return
+     */
+    def items: Map[ItemRef, I]
+
+    /**
+     * All the [[Model.Item]] that a Player could see.
+     * @return
+     */
+    def scope: Set[I] = bag ++ location.items
+
+    /**
+     * References to the [[Model.Item]] s that the player brings with him. In a concrete story, this
+     * is not necessarily a real bag: it is simply an intuitive term to refer to this set of items.
+     * @return
+     */
+    def bag: Set[I]
+
+    /**
+     * Reference for the [[Model.Room]] where the player is currently positioned.
+     * @return
+     *   The current location of the player, as a [[RoomRef]].
+     */
+    def location: RM
+
+    /**
+     * Indicates whether the match has reached the end. When true, the entire match ende after the
+     * current pipeline round.
+     * @return
+     *   True if the match has to end after the current round, false otherwise.
+     */
+    def ended: Boolean
 
     /**
      * A representation of the occurred events in a given the pipeline round. The storyteller can
@@ -69,7 +106,8 @@ trait Model {
      * A textual representation of the [[Item]].
      * @return
      */
-    def name: String = description.mkString
+    def name: String              = description.mkString
+    override def toString: String = name
 
     /**
      * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
@@ -91,7 +129,17 @@ trait Model {
      * @return
      *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
      */
-    def use(action: Action, state: S, sideItem: Option[I] = None): Option[Reaction]
+    def use(action: Action, sideItem: Option[I] = None)(implicit state: S): Option[Reaction]
+
+    /**
+     * Makes items comparable based on their refs only.
+     */
+    override def equals(obj: Any): Boolean = this.hashCode() == obj.hashCode()
+
+    /**
+     * Makes items comparable based on their refs only.
+     */
+    override def hashCode(): Int = ref.hashCode()
   }
 
   /**
@@ -111,7 +159,7 @@ trait Model {
      * @return
      *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
      */
-    def use(action: Action, state: S): Option[Reaction]
+    def use(action: Action)(implicit state: S): Option[Reaction]
   }
 
   /**
@@ -124,11 +172,12 @@ trait Model {
   abstract class Room { room: RM =>
 
     /**
-     * A textual identifier for the room.
+     * A textual description for the room.
      * @return
-     *   A textual identifier for the room.
+     *   A textual description for the room.
      */
     def name: String
+    override def toString: String = name
 
     /**
      * The unique identifier of the [[Room]]. This is necessary, as passing from a state to another,
@@ -139,19 +188,34 @@ trait Model {
     /**
      * Identifies [[Room]] s near to the current one, at the cardinal points.
      */
-    def neighbor(direction: Direction): Option[RoomRef]
+    def neighbor(direction: Direction)(implicit state: S): Option[RM]
+
+    def neighbors(implicit state: S): Map[Direction, RM]
 
     /**
      * Identifies the [[Item]] s positioned into the current [[Room]].
      * @return
      *   [[Item]] s positioned into the [[Room]] as a [[Set]]
      */
-    def items: Set[ItemRef]
+    def items(implicit state: S): Set[I]
+
+    /**
+     * Makes rooms comparable based on their refs only.
+     */
+    override def equals(obj: Any): Boolean = this.hashCode() == obj.hashCode()
+
+    /**
+     * Makes rooms comparable based on their refs only.
+     */
+    override def hashCode(): Int = ref.hashCode()
   }
 
-  /**
-   * Lens used to empty [[Message]] s after each pipeline round.
-   * @return
-   */
-  implicit def messageLens: Lens[S, Seq[Message]]
+  def messageLens: Lens[S, Seq[Message]]
+  def roomsLens: Lens[S, Map[RoomRef, RM]]
+  def itemsLens: Lens[S, Map[ItemRef, I]]
+  def matchEndedLens: Lens[S, Boolean]
+  def bagLens: Lens[S, Set[ItemRef]]
+  def locationLens: Lens[S, RoomRef]
+  def roomItemsLens: Lens[RM, Set[ItemRef]]
+  def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]]
 }

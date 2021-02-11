@@ -20,44 +20,39 @@ abstract class ApplicationStructure[M <: Model](val model: M) {
   import io.github.scalaquest.core.dictionary.generators.implicits.listToMapGenerator
   import io.github.scalaquest.core.dictionary.implicits.{itemToEntryGenerator, verbToEntryGenerator}
 
-  type Model    = model.type
-  type State    = model.S
-  type Item     = model.I
-  type Room     = model.RM
-  type Ground   = model.G
+  type M        = model.type
+  type S        = model.S
+  type I        = model.I
+  type RM       = model.RM
+  type G        = model.G
   type Reaction = model.Reaction
 
-  def dictionary: Dictionary[Item]
+  def verbs: Set[Verb]
 
-  def refToItem: Map[ItemRef, Item] =
-    GeneratorK[List, Item, Map[ItemRef, Item]].generate(dictionary.items)
+  def items: Set[I]
+
+  def refToItem: Map[ItemRef, I] = GeneratorK[List, I, Map[ItemRef, I]].generate(items.toList)
 
   def verbToAction: Map[VerbPrep, Action] =
-    GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(dictionary.verbs)
+    GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(verbs.toList)
 
   def programSource[F[_]: Functor](base: F[String]): F[String] =
-    ProgramFromDictionary(dictionary).source(base)
+    ProgramFromDictionary(verbs, items).source(base)
 
   def programFromResource(resourceName: String): String = {
     type Id[X] = X
     programSource[Id](Source.fromResource(resourceName).mkString)
   }
 
-  def defaultPipeline(source: String, ground: Ground): Pipeline.PartialBuilder[State, Model] = {
-
-    val interpreter: Builder[Model, State, Reaction] =
-      Interpreter.builder[Model](model)(refToItem, ground)
-
-    val reducer = Reducer.builder(model)
-
+  def defaultPipeline(source: String): Pipeline.PartialBuilder[S, M] = {
     Pipeline
-      .builderFrom[Model](model)
+      .builderFrom[M](model)
       .build(
         SimpleLexer,
         Parser(Engine(Theory(source), Set(DCGLibrary))),
         Resolver.builder(model),
-        interpreter,
-        reducer
+        Interpreter.builder(model),
+        Reducer.builder(model)
       )
   }
 

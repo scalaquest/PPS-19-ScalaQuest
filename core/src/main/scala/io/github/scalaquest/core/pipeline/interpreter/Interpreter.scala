@@ -64,31 +64,25 @@ object Interpreter {
    * @return
    *   A [[Builder]] of [[Interpreter]] instances, with the right type constraints.
    */
-  def builder[M <: Model](model: M)(
-    itemDict: Map[ItemRef, model.I],
-    ground: model.G
-  ): Builder[model.type, model.S, model.Reaction] =
+  def builder[M <: Model](model: M): Builder[model.type, model.S, model.Reaction] =
     state => {
-      val refToItem: RefToItem[model.I] = RefToItem(model)(itemDict)
+      implicit val s: model.S           = state
+      val refToItem: RefToItem[model.I] = RefToItem(model)(state.items)
 
       // shortcut for implementing the Interpreter, as it is a single method trait
       (resolverResult: ResolverResult) =>
         for {
           maybeReaction <- resolverResult.statement match {
             case Statement.Intransitive(action) =>
-              ground
-                .use(action, state)
-                .toRight(s"I can't do that!")
+              state.ground.use(action).toRight(s"I can't do that!")
 
             case Statement.Transitive(action, refToItem(item)) =>
-              item
-                .use(action, state)
-                .toRight(s"I can't do that!")
+              item.use(action).toRight(s"I can't do that!")
 
             case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
-              directObj
-                .use(action, state, Some(indirectObj))
-                .toRight(s"I can't do that!")
+              directObj.use(action, Some(indirectObj)).toRight(s"I can't do that!")
+
+            case _ => Left(s"I can't do that!")
           }
         } yield InterpreterResult(model)(maybeReaction)
     }

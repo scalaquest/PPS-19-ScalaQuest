@@ -10,3 +10,8 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
 }
+
+// libraries need 75% coverage at least
+scoverage {
+    minimumRate.set(0.75.toBigDecimal())
+}

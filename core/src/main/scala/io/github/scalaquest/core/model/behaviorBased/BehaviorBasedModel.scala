@@ -27,9 +27,11 @@ abstract class BehaviorBasedModel extends Model {
      * @return
      *   [[ItemBehavior]] s associated to the Item.
      */
-    def behaviors: Seq[ItemBehavior] = Seq()
+    def behaviors: Seq[ItemBehavior] = Seq.empty
 
-    override def use(action: Action, state: S, maybeSideItem: Option[I]): Option[Reaction] =
+    override def use(action: Action, maybeSideItem: Option[I])(implicit
+      state: S
+    ): Option[Reaction] =
       behaviors
         .map(_.triggers)
         .reduceOption(_ orElse _)
@@ -100,9 +102,9 @@ abstract class BehaviorBasedModel extends Model {
    * triggers) is implemented here.
    */
   abstract class BehaviorBasedGround extends Ground {
-    def behaviors: Seq[GroundBehavior] = Seq()
+    def behaviors: Seq[GroundBehavior] = Seq.empty
 
-    override def use(action: Action, state: S): Option[Reaction] =
+    override def use(action: Action)(implicit state: S): Option[Reaction] =
       behaviors
         .map(_.triggers)
         .reduceOption(_ orElse _)

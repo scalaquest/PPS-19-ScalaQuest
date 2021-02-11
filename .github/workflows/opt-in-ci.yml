@@ -1,27 +1,33 @@
-name: Opt-in CI
+name: Opt-in
+
+# A minimal version of the Continuous Integration workflow, triggerable on-demand
+# from feature branches when needed, by the use of keyword [lint], [build] or [coverage]
+# (or combination of them).
 
 on:
   push:
     branches:
-      # feature branches only
       - 'feature/*'
 
 jobs:
-  OptIn:
-    if: contains(github.event.head_commit.message, '[style]') || contains(github.event.head_commit.message, '[asm]')
+  ci:
+    name: Lint, assemble, coverage
+    if: |
+      contains(github.event.head_commit.message, '[lint]') ||
+      contains(github.event.head_commit.message, '[build]') ||
+      contains(github.event.head_commit.message, '[coverage]')
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # The project uses java 11 (LTS) with scala 2.13
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
 
-      # Use cache if available for Gradle
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
@@ -32,10 +38,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Syntax and Style Check with Spotless
-        if: contains(github.event.head_commit.message, '[style]')
+      - name: Lint sources
+        if: contains(github.event.head_commit.message, '[lint]')
         run: ./gradlew spotlessCheck
 
-      - name: Compile all Scala sources
-        if: contains(github.event.head_commit.message, '[asm]')
+      - name: Compile sources
+        if: contains(github.event.head_commit.message, '[assemble]')
         run: ./gradlew assemble
+
+      - name: Test sources and coverage check
+        if: contains(github.event.head_commit.message, '[coverage]')
+        run: |
+          ./gradlew check
+          ./gradlew checkScoverage

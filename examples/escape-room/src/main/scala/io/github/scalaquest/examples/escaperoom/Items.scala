@@ -1,82 +1,73 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.{Direction, ItemRef}
-import io.github.scalaquest.examples.escaperoom.House.{kitchen, livingRoom}
-import io.github.scalaquest.examples.escaperoom.Messages.SuperStonksPowered
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel._
+import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
 
 object Items {
+
+  def allTheItems: Set[I] =
+    Set(
+      Items.redApple,
+      Items.greenApple,
+      Items.coffer,
+      Items.hatchKey,
+      Items.hatch,
+      Items.doorway,
+      Items.crowbar,
+      Items.basementHatch
+    )
+
   import model._
 
-  val redApple: SimpleFood = {
-    val itemDescription = i(d("red"), "apple")
-    SimpleFood(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
-      )
+  val redApple: Food =
+    Food(
+      i(d("red"), "apple"),
+      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ DeliciousMessage)(_)))
     )
-  }
 
-  val livingRoomKey: SimpleKey = {
-    val itemDescription = i(d("livingroom"), "key")
-    SimpleKey(itemDescription, ItemRef(itemDescription), SimpleTakeable())
-  }
-
-  val livingRoomDoor: SimpleDoor = {
-    val itemDescription = i(d("livingroom"), "door")
-    SimpleDoor(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleRoomLink(
-        livingRoom,
-        Some(
-          SimpleOpenable(
-            requiredKey = Some(livingRoomKey),
-            onOpenExtra = Some(state => {
-              val newKitchen =
-                roomDirectionsLens.modify(_ + (Direction.East -> livingRoom.ref))(
-                  state.roomFromRef(kitchen.ref).get
-                )
-              matchRoomsLens.modify(_ + (newKitchen.ref -> newKitchen))(state)
-            })
-          )
+  val greenApple: Food =
+    Food(
+      i(d("green"), "apple"),
+      SimpleEatable(
+        onEatExtra = Some(
+          _.applyReactions(messageLens.modify(_ :+ Lose), matchEndedLens.set(true))
         )
       )
     )
-  }
 
-  val kitchenDoor: SimpleDoor = {
-    val itemDescription = i(d("kitchenroom"), "door")
-    SimpleDoor(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleRoomLink(kitchen)
-    )
-  }
+  val basementHatch: Door = Door(
+    i(d("basement"), "hatch"),
+    RoomLink(House.basement, Direction.Down)
+  )
 
-  val apple: SimpleFood = {
-    val itemDescription = i("apple")
-    SimpleFood(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
+  val (hatch, hatchKey): (Door, Key) = doorKeyBuilder(
+    doorDesc = i(d("iron"), "hatch"),
+    keyDesc = i(d("old", "rusty"), "key"),
+    consumeKey = true,
+    endRoom = House.livingRoom,
+    endRoomDirection = Direction.Up,
+    keyAddBehaviors = Seq(SimpleTakeable())
+  )
+
+  val coffer: GenericItem = GenericItem(
+    i(d("brown"), "coffer"),
+    Seq(Openable(onOpenExtra = Some(state => {
+      val updLocation = roomItemsLens.modify(_ + hatchKey.ref)(state.location)
+      roomsLens.modify(_ + (updLocation.ref -> updLocation))(state)
+    })))
+  )
+
+  val (doorway, crowbar): (GenericItem, Key) = openableWithKeyBuilder(
+    openableDesc = i(d("big"), "doorway"),
+    keyDesc = i(d("rusty", "heavy"), "crowbar"),
+    consumeKey = true,
+    keyAddBehaviors = Seq(SimpleTakeable()),
+    onOpenExtra = Some(
+      _.applyReactions(
+        messageLens.modify(_ :+ Win),
+        matchEndedLens.set(true)
       )
     )
-  }
-
-  val greenApple: SimpleFood = {
-
-    val itemDescription = i(d("green"), "apple")
-    SimpleFood(
-      itemDescription,
-      ItemRef(itemDescription),
-      SimpleEatable(onEatExtra =
-        Option(localState => messageLens.modify(_ :+ SuperStonksPowered)(localState))
-      )
-    )
-  }
+  )
 }

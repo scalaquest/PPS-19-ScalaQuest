@@ -2,34 +2,20 @@ package io.github.scalaquest.core
 
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{
-  BehaviorBasedItem,
-  Door,
-  GenericItem,
-  Key,
-  Room,
-  SimpleDoor,
-  SimpleGenericItem,
-  SimpleKey,
-  SimpleMatchState,
-  SimpleOpenable,
-  SimplePlayer,
-  SimpleRoom,
-  SimpleRoomLink,
-  SimpleState,
-  SimpleTakeable
-}
 
 object TestsUtils {
+  val model: SimpleModel.type = SimpleModel;
+  import SimpleModel._
 
-  val startRoom: SimpleRoom = Room(
+  val startRoom: RM = Room(
     "start room",
     Map(Direction.North -> targetRoom.ref),
     Set(door.ref, key.ref)
   )
 
-  val targetRoom: SimpleRoom = Room(
+  val targetRoom: RM = Room(
     "target room",
     Map(Direction.South -> startRoom.ref),
     Set()
@@ -63,7 +49,7 @@ object TestsUtils {
     SimpleDoor(
       ItemDescription("door"),
       doorItemRef,
-      SimpleRoomLink(targetRoom, Some(SimpleOpenable(requiredKey = Some(key))))
+      SimpleRoomLink(targetRoom, Direction.North, Some(SimpleOpenable(requiredKey = Some(key))))
     )
 
   val refItemDictionary: Map[ItemRef, BehaviorBasedItem] = Map(
@@ -72,13 +58,12 @@ object TestsUtils {
     doorItemRef  -> door
   )
 
-  val simpleState: SimpleState = SimpleState(
+  val simpleState: S = State(
     actionsMap,
-    matchState = SimpleMatchState(
-      player = SimplePlayer(bag = Set(appleItemRef), location = startRoom.ref),
-      items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
-      rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom)
-    ),
+    bag = Set(appleItemRef),
+    location = startRoom.ref,
+    items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
+    rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom),
     messages = Seq()
   )
 }

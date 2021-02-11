@@ -3,46 +3,33 @@ package io.github.scalaquest.examples.escaperoom
 import io.github.scalaquest.core.application.Environment
 import io.github.scalaquest.core.model.Direction
 
-object House extends Environment[Room] {
-  import model.{Room => RoomFactory}
+object House extends Environment[RM] {
+  import model.Room
 
-  override def allTheRooms: Set[Room] =
+  override def allTheRooms: Set[RM] =
     Set(
-      kitchen,
+      basement,
       livingRoom,
       bathroom
     )
 
-  def kitchen: Room =
-    RoomFactory(
-      "kitchen",
-      Map(),
-      Set(
-        Items.redApple.ref,
-        Items.livingRoomKey.ref,
-        Items.livingRoomDoor.ref
-      )
+  def basement: RM =
+    Room(
+      name = "basement",
+      items = Set(Items.coffer.ref, Items.crowbar.ref, Items.hatch.ref)
     )
 
-  def livingRoom: Room =
-    RoomFactory(
-      "living room",
-      Map(
-        Direction.North -> bathroom.ref,
-        Direction.West  -> kitchen.ref
-      ),
-      Set(
-        Items.kitchenDoor.ref
-      )
+  def livingRoom: RM =
+    Room(
+      name = "living room",
+      neighbors = Map(Direction.North -> bathroom.ref, Direction.Down -> basement.ref),
+      items =
+        Set(Items.redApple.ref, Items.greenApple.ref, Items.doorway.ref, Items.basementHatch.ref)
     )
 
-  def bathroom: Room =
-    RoomFactory(
+  def bathroom: RM =
+    Room(
       "bathroom",
-      Map(
-        Direction.South -> livingRoom.ref
-      ),
-      Set()
+      Map(Direction.South -> livingRoom.ref)
     )
-
 }
