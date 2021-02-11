@@ -27,6 +27,10 @@ tasks.withType<ScalaCompile> {
     scalaCompileOptions.additionalParameters = listOf("-feature", "-language:implicitConversions")
 }
 
+tasks.named<Test>("test") {
+    dependsOn += "scalatest"
+}
+
 group = "io.github.scalaquest"
 
 gitSemVer {
