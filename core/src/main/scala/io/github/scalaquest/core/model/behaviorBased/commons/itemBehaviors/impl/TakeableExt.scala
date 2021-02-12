@@ -14,7 +14,9 @@ trait TakeableExt extends BehaviorBasedModel with StateUtilsExt with CommonMessa
    * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
    * player.
    */
-  abstract class Takeable extends ItemBehavior
+  abstract class Takeable extends ItemBehavior {
+    def take(item: I): Reaction
+  }
 
   /**
    * Standard implementation of the Takeable.
@@ -40,9 +42,8 @@ trait TakeableExt extends BehaviorBasedModel with StateUtilsExt with CommonMessa
      *   A Reaction that removes the item from the current room, put it into the bag, executes the
      *   eventual extra reaction.
      */
-    def take(item: I): Reaction =
+    override def take(item: I): Reaction =
       state => {
-        // todo locationItemsLens??
         val updLocation = roomItemsLens.modify(_ - item.ref)(state.location)
 
         state.applyReactions(

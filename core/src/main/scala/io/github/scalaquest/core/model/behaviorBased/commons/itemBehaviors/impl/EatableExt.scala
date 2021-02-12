@@ -14,7 +14,9 @@ trait EatableExt extends BehaviorBasedModel with StateUtilsExt with CommonMessag
    * A [[ItemBehavior]] associated to an [[Item]] that can be eaten. After an item is eaten, it
    * should be removed from the player bag (or from the current room, if it was there).
    */
-  abstract class Eatable extends ItemBehavior
+  abstract class Eatable extends ItemBehavior {
+    def eat(item: I): Reaction
+  }
 
   /**
    * Standard implementation of the Eatable behavior.
@@ -32,7 +34,7 @@ trait EatableExt extends BehaviorBasedModel with StateUtilsExt with CommonMessag
       case (Eat, item, None, state) if state.isInScope(item) => eat(item)
     }
 
-    def eat(item: I): Reaction =
+    override def eat(item: I): Reaction =
       state => {
         // todo locationItemsLens??
         val updLocation = roomItemsLens.modify(_ - item.ref)(state.location)

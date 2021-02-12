@@ -18,6 +18,8 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
   abstract class RoomLink extends ItemBehavior {
     def isOpen: Boolean
     def openable: Option[Openable]
+    def endRoom: Room
+    def enterEndRoom: Reaction
   }
 
   /**
@@ -63,10 +65,10 @@ trait RoomLinkExt extends BehaviorBasedModel with StateUtilsExt with OpenableExt
       // "Enter the item"
       case (Enter, item, None, state)
           if state.isInLocation(item) && openable.fold(true)(_.isOpen) =>
-        enterRoom()
+        enterEndRoom
     }
 
-    def enterRoom(): Reaction =
+    override def enterEndRoom: Reaction =
       state =>
         state.applyReactions(
           locationLens.set(endRoom.ref),
