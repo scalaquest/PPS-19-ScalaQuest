@@ -8,30 +8,30 @@ class ItemsTest extends AnyWordSpec with Matchers {
 
   "The Items object" should {
     "contains a red non-dangerous apple" in {
-      val newState = Items.redApple.foodBehavior.eat(Items.redApple)(EscapeRoom.state)
+      val newState = Items.redApple.eatable.eat(EscapeRoom.state)
       assert(!newState.messages.contains(Lost))
     }
 
     "contains a green dangerous apple" in {
-      val newState = Items.greenApple.foodBehavior.eat(Items.greenApple)(EscapeRoom.state)
+      val newState = Items.greenApple.eatable.eat(EscapeRoom.state)
       assert(newState.messages.contains(Lost))
     }
 
     "contains a pair of complementary hatches, between living room and basement" in {
-      Items.hatch.doorBehavior.endRoom shouldBe House.livingRoom
-      Items.basementHatch.doorBehavior.endRoom shouldBe House.basement
+      Items.hatch.roomLink.endRoom shouldBe House.livingRoom
+      Items.basementHatch.roomLink.endRoom shouldBe House.basement
     }
 
     "contains a hatch key, that opens the hatch from the basement" in {
-      Items.hatch.doorBehavior.openable
+      Items.hatch.roomLink.openable
         .collectFirst({ op: Openable => op.requiredKey })
         .flatten shouldBe Some(Items.hatchKey)
     }
 
     "contains a coffer with the hatch key inside" in {
       val newState = Items.coffer.behaviors
-        .collectFirst({ case op: Openable => op.open(Items.coffer) })
-        .fold(EscapeRoom.state)(r => r(EscapeRoom.state))
+        .collectFirst({ case op: Openable => op.open })
+        .fold(EscapeRoom.state)(_(EscapeRoom.state))
 
       assert(newState.location.items(newState).contains(Items.hatchKey))
     }

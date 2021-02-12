@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.Take
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class TakeableTest extends AnyWordSpec {
@@ -12,7 +12,7 @@ class TakeableTest extends AnyWordSpec {
   "A Takeable behavior" when {
 
     "applied to an item" when {
-      val targetItem = GenericItem(ItemDescription("item"), Seq(Takeable()))
+      val targetItem = GenericItem(ItemDescription("item"), Seq(Takeable.builder()))
 
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
       val stateWithoutTargetInRoom =

@@ -13,7 +13,7 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
    * A [[BehaviorBasedItem]] that can be eaten by the player.
    */
   trait Food extends BehaviorBasedItem {
-    def foodBehavior: Eatable
+    def eatable: Eatable
   }
 
   /**
@@ -22,10 +22,11 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
   case class SimpleFood(
     description: ItemDescription,
     ref: ItemRef,
-    foodBehavior: Eatable,
-    additionalBehaviors: ItemBehavior*
+    eatableBuilder: I => Eatable,
+    addBehaviorsBuilders: I => ItemBehavior*
   ) extends Food {
-    override def behaviors: Seq[ItemBehavior] = foodBehavior +: additionalBehaviors
+    final override val eatable: Eatable       = eatableBuilder(this)
+    override def behaviors: Seq[ItemBehavior] = eatable +: addBehaviorsBuilders.map(_(this))
   }
 
   /**
@@ -35,8 +36,10 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
 
     def apply(
       description: ItemDescription,
-      foodBehavior: Eatable,
-      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
-    ): Food = SimpleFood(description, ItemRef(description), foodBehavior, additionalBehaviors: _*)
+      eatableBuilder: I => Eatable,
+      addBehaviorsBuilder: Seq[I => ItemBehavior] = Seq.empty
+    ): Food = {
+      SimpleFood(description, ItemRef(description), eatableBuilder, addBehaviorsBuilder: _*)
+    }
   }
 }

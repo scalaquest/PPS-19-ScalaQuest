@@ -19,9 +19,9 @@ trait KeyExt extends BehaviorBasedModel {
   case class SimpleKey(
     description: ItemDescription,
     ref: ItemRef,
-    additionalBehaviors: ItemBehavior*
+    addBehaviorsBuilder: I => ItemBehavior*
   ) extends Key {
-    override val behaviors: Seq[ItemBehavior] = additionalBehaviors
+    override val behaviors: Seq[ItemBehavior] = addBehaviorsBuilder.map(_(this))
   }
 
   /**
@@ -31,7 +31,7 @@ trait KeyExt extends BehaviorBasedModel {
 
     def apply(
       description: ItemDescription,
-      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
-    ): Key = SimpleKey(description, ItemRef(description), additionalBehaviors: _*)
+      addBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): Key = SimpleKey(description, ItemRef(description), addBehaviorsBuilders: _*)
   }
 }

@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Action.Common.Eat
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class EatableTest extends AnyWordSpec {
@@ -10,11 +10,9 @@ class EatableTest extends AnyWordSpec {
   import TestsUtils.model._
 
   "A Eatable behavior" when {
-    val eatable = Eatable()
 
     "applied to an item" when {
-      val targetItem = GenericItem(ItemDescription("item"), Seq(eatable))
-
+      val targetItem        = GenericItem(ItemDescription("item"), Seq(Eatable.builder()))
       val stateItemInRoom   = simpleState.copyWithItemInLocation(targetItem)
       val stateItemInBag    = simpleState.copyWithItemInBag(targetItem)
       val stateNoItemInRoom = itemsLens.modify(_ + (targetItem.ref -> targetItem))(simpleState)

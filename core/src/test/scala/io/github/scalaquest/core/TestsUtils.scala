@@ -6,7 +6,7 @@ import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 
 object TestsUtils {
-  val model: SimpleModel.type = SimpleModel;
+  val model: SimpleModel.type = SimpleModel
   import SimpleModel._
 
   val startRoom: RM = Room(
@@ -41,15 +41,17 @@ object TestsUtils {
   val apple: GenericItem = SimpleGenericItem(
     ItemDescription("apple", "big", "red", "juicy"),
     appleItemRef,
-    SimpleTakeable()
+    Takeable.builder(),
+    Eatable.builder()
   )
-  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef, SimpleTakeable())
+
+  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef, Takeable.builder())
 
   val door: Door =
     SimpleDoor(
       ItemDescription("door"),
       doorItemRef,
-      SimpleRoomLink(targetRoom, Direction.North, Some(SimpleOpenable(requiredKey = Some(key))))
+      RoomLink.builder(targetRoom, Direction.North, Some(Openable.builder(requiredKey = Some(key))))
     )
 
   val refItemDictionary: Map[ItemRef, BehaviorBasedItem] = Map(

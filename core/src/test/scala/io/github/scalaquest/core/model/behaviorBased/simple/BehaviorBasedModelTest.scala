@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.simple
 
 import io.github.scalaquest.core.TestsUtils
+import io.github.scalaquest.core.TestsUtils.model
 import io.github.scalaquest.core.model.Action.Common.{Go, Inspect, Open, Take}
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
@@ -11,8 +12,12 @@ class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
   import TestsUtils._
 
   "A BehaviorBasedItem" should {
+    val behavior = new ItemBehavior {
+      override def triggers: model.ItemTriggers = { case (Take, _, _, _) => Reactions.empty }
+    }
+
     val item = new BehaviorBasedItem {
-      override def behaviors: Seq[ItemBehavior] = Seq(Takeable())
+      override def behaviors: Seq[ItemBehavior] = Seq(behavior)
       override def description: ItemDescription = ItemDescription("item")
       override def ref: ItemRef                 = ItemRef(ItemDescription("item"))
     }
