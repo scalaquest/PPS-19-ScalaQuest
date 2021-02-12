@@ -41,5 +41,18 @@ class ItemsTest extends AnyWordSpec with Matchers {
         .collectFirst({ case op: Openable => op.requiredKey })
         .flatten shouldBe Some(Items.crowbar)
     }
+
+    "contains a set with all the items available" in {
+      Items.allTheItems shouldBe Set(
+        Items.redApple,
+        Items.greenApple,
+        Items.coffer,
+        Items.hatchKey,
+        Items.hatch,
+        Items.doorway,
+        Items.crowbar,
+        Items.basementHatch
+      )
+    }
   }
 }
