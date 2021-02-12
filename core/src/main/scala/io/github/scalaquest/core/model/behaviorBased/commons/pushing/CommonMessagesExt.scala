@@ -56,17 +56,17 @@ trait CommonMessagesExt extends BehaviorBasedModel {
   /**
    * A [[Message]] generated when player win the game.
    */
-  case object Win extends Message
+  case object Won extends Message
 
   /**
    * A [[Message]] generated when player lose the game.
    */
-  case object Lose extends Message
+  case object Lost extends Message
 
   /**
    * A general [[Message]] that print a [[msg]] something in console.
    * @param msg
    *   the printed message.
    */
-  case class Print(msg: String) extends Message
+  case class Printed(msg: String) extends Message
 }
