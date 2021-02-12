@@ -4,7 +4,10 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
-trait TakeExt extends BehaviorBasedModel with StateUtilsExt with CommonMessagesExt {
+private[reactions] trait TakeExt
+  extends BehaviorBasedModel
+  with StateUtilsExt
+  with CommonMessagesExt {
 
   private[reactions] def take(item: I): Reaction =
     state => {
@@ -13,7 +16,7 @@ trait TakeExt extends BehaviorBasedModel with StateUtilsExt with CommonMessagesE
       state.applyReactions(
         roomsLens.modify(_ + (updLocation.ref -> updLocation)),
         bagLens.modify(_ + item.ref),
-        messageLens.modify(_ :+ Taken(item))
+        messageLens.modify(_ :+ Messages.Taken(item))
       )
     }
 }

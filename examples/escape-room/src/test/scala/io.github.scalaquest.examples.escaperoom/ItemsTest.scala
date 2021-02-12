@@ -2,6 +2,7 @@ package io.github.scalaquest.examples.escaperoom
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import model.Messages._
 import model._
 
 class ItemsTest extends AnyWordSpec with Matchers {

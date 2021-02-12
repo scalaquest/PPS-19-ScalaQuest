@@ -5,7 +5,11 @@ import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
-trait OpenExt extends BehaviorBasedModel with KeyExt with StateUtilsExt with CommonMessagesExt {
+private[reactions] trait OpenExt
+  extends BehaviorBasedModel
+  with KeyExt
+  with StateUtilsExt
+  with CommonMessagesExt {
 
   private[reactions] def open(
     itemToOpen: I,
@@ -29,7 +33,7 @@ trait OpenExt extends BehaviorBasedModel with KeyExt with StateUtilsExt with Com
       }
 
       modState.applyReactions(
-        messageLens.modify(_ :+ Opened(itemToOpen))
+        messageLens.modify(_ :+ Messages.Opened(itemToOpen))
       )
 
     }

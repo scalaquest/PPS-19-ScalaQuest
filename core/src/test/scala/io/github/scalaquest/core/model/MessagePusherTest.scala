@@ -6,7 +6,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import io.github.scalaquest.core.TestsUtils
 
 class MessagePusherTest extends AnyWordSpec with Matchers {
-  import TestsUtils.model._
+  import TestsUtils.model.Messages._
 
   "A MessagePusher" should {
     val pusher = new MessagePusher[Int] {
@@ -33,7 +33,7 @@ class MessagePusherTest extends AnyWordSpec with Matchers {
 
   "A StringPusher" should {
     val pusher = new StringPusher {
-      override def triggers: MessageTriggers[String] = { case Printed(msg) => msg }
+      override def triggers: MessageTriggers[String] = { case Print(msg) => msg }
     }
 
     "return the empty message, if a match is not found" in {
@@ -41,11 +41,11 @@ class MessagePusherTest extends AnyWordSpec with Matchers {
     }
 
     "find a match for the given message, analyzing the triggers" in {
-      pusher.push(Printed("hello")) shouldBe "hello"
+      pusher.push(Print("hello")) shouldBe "hello"
     }
 
     "find a match for the given sequence of messages, analyzing the triggers" in {
-      pusher.push(Seq(Printed("hello"), Printed("hello"))) shouldBe "hello\nhello"
+      pusher.push(Seq(Print("hello"), Print("hello"))) shouldBe "hello\nhello"
     }
   }
 }

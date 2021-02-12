@@ -15,11 +15,12 @@ import scala.annotation.tailrec
  */
 abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesExt)
   extends ComposableStringPusher {
+  import model.Messages._
 
   override def extra: MessageTriggers[String] = PartialFunction.empty
 
   final def base: StringMessageTriggers = {
-    case model.Inspected(room, items, neighbors) =>
+    case Inspected(room, items, neighbors) =>
       @tailrec
       def printItems(tail: List[CommonMessagesExt#I], acc: String = ""): String = {
         tail match {
@@ -42,13 +43,13 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
 
       s"The ${room.name} contains ${printItems(ordItems)}${printNeighbors(neighbors)}"
 
-    case model.Eaten(item)     => s"The ${item.toString} has been eaten!"
-    case model.Taken(item)     => s"The ${item.toString} has been taken!"
-    case model.Opened(item)    => s"The ${item.toString} has been opened!"
-    case model.Navigated(room) => s"You entered ${room.toString}!"
-    case model.Printed(msg)    => msg
-    case model.Won             => "You win!"
-    case model.Lost            => "You lose!"
+    case Eaten(item)     => s"The ${item.toString} has been eaten!"
+    case Taken(item)     => s"The ${item.toString} has been taken!"
+    case Opened(item)    => s"The ${item.toString} has been opened!"
+    case Navigated(room) => s"You entered ${room.toString}!"
+    case Print(msg)      => msg
+    case Won             => "You win!"
+    case Lost            => "You lose!"
   }
 }
 
