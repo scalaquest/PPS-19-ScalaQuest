@@ -1,0 +1,838 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/DictionaryImplicits.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.dictionary.generators.{Generator, GeneratorK}
+</span>4 <span style=''>import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
+</span>5 <span style=''>import io.github.scalaquest.core.model.{Action, ItemRef, Model}
+</span>6 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Clause, Program}
+</span>7 <span style=''>
+</span>8 <span style=''>trait DictionaryImplicits {
+</span>9 <span style=''>
+</span>10 <span style=''>  object implicits {
+</span>11 <span style=''>    import cats.implicits.catsKernelStdSemilatticeForSet
+</span>12 <span style=''>    import generators.implicits.listGenerator
+</span>13 <span style=''>
+</span>14 <span style=''>    implicit def itemToEntryGenerator[I &lt;: Item]: Generator[I, Map[ItemRef, I]] =
+</span>15 <span style=''>      </span><span style='background: #F0ADAD'>Generator.makeEntry(i =&gt; i.ref -&gt; i)</span><span style=''>
+</span>16 <span style=''>
+</span>17 <span style=''>    implicit def verbToEntryGenerator: Generator[Verb, Map[VerbPrep, Action]] =
+</span>18 <span style=''>      </span><span style='background: #F0ADAD'>Generator.makeEntry(_.binding)</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>    /*
+</span>21 <span style=''>     * Temporary solution:
+</span>22 <span style=''>     * We had to declare these generators explicitly because Scala compiler
+</span>23 <span style=''>     * couldn't infer them implicitly, using listGenerator, in a similar way it
+</span>24 <span style=''>     * infers the map generators.
+</span>25 <span style=''>     */
+</span>26 <span style=''>    implicit def verbListToProgram: GeneratorK[List, Verb, Program] = </span><span style='background: #F0ADAD'>listGenerator[Verb, Program]</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>    implicit def itemListToProgram[I &lt;: Item]: GeneratorK[List, I, Program] =
+</span>29 <span style=''>      </span><span style='background: #F0ADAD'>listGenerator[I, Program]</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>    implicit def verbToProgram: Generator[Verb, Program] = </span><span style='background: #F0ADAD'>Generator.instance(v =&gt; Set(v.clause))</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>    implicit def itemToProgram: Generator[Item, Program] =
+</span>34 <span style=''>      </span><span style='background: #F0ADAD'>Generator.instance(i =&gt; {
+</span>35 <span style=''></span><span style='background: #F0ADAD'>        import io.github.scalaquest.core.parsing.scalog.dsl._
+</span>36 <span style=''></span><span style='background: #F0ADAD'>        val name      = CompoundBuilder(&quot;name&quot;).constructor
+</span>37 <span style=''></span><span style='background: #F0ADAD'>        val adjective = CompoundBuilder(&quot;adjective&quot;).constructor
+</span>38 <span style=''></span><span style='background: #F0ADAD'>
+</span>39 <span style=''></span><span style='background: #F0ADAD'>        def names: List[Clause]      = List(i.description.base.name).map(name(_))
+</span>40 <span style=''></span><span style='background: #F0ADAD'>        def adjectives: List[Clause] = i.description.decorators.toList.map(_.name).map(adjective(_))
+</span>41 <span style=''></span><span style='background: #F0ADAD'>
+</span>42 <span style=''></span><span style='background: #F0ADAD'>        (names ++ adjectives).toSet
+</span>43 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>44 <span style=''>  }
+</span>45 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          28
+        </td>
+        <td>
+          590
+          -
+          600
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](i.ref).-&gt;[I](i)
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          29
+        </td>
+        <td>
+          565
+          -
+          601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.Generator.makeEntry
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.Generator.makeEntry[I, io.github.scalaquest.core.model.ItemRef, I](((i: I) =&gt; scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](i.ref).-&gt;[I](i)))
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          30
+        </td>
+        <td>
+          709
+          -
+          718
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.Meaning.binding
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          x$1.binding
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          31
+        </td>
+        <td>
+          689
+          -
+          719
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.Generator.makeEntry
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.Generator.makeEntry[io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.dictionary.verbs.VerbPrep, io.github.scalaquest.core.model.Action](((x$1: io.github.scalaquest.core.dictionary.verbs.Verb) =&gt; x$1.binding))
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          32
+        </td>
+        <td>
+          1036
+          -
+          1036
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          cats.kernel.instances.SetInstances1.catsKernelStdSemilatticeForSet
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsKernelStdSemilatticeForSet[io.github.scalaquest.core.parsing.scalog.Clause]
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          33
+        </td>
+        <td>
+          1036
+          -
+          1036
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.DictionaryImplicits.implicits.verbToProgram
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          implicits.this.verbToProgram
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          34
+        </td>
+        <td>
+          1023
+          -
+          1051
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorImplicits.implicits.listGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          generators.`package`.implicits.listGenerator[io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.parsing.scalog.Program](cats.implicits.catsKernelStdSemilatticeForSet[io.github.scalaquest.core.parsing.scalog.Clause], implicits.this.verbToProgram)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          35
+        </td>
+        <td>
+          1150
+          -
+          1150
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          cats.kernel.instances.SetInstances1.catsKernelStdSemilatticeForSet
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsKernelStdSemilatticeForSet[io.github.scalaquest.core.parsing.scalog.Clause]
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          36
+        </td>
+        <td>
+          1150
+          -
+          1150
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.DictionaryImplicits.implicits.itemToProgram
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          implicits.this.itemToProgram
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          37
+        </td>
+        <td>
+          1137
+          -
+          1162
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorImplicits.implicits.listGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          generators.`package`.implicits.listGenerator[I, io.github.scalaquest.core.parsing.scalog.Program](cats.implicits.catsKernelStdSemilatticeForSet[io.github.scalaquest.core.parsing.scalog.Clause], implicits.this.itemToProgram)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          38
+        </td>
+        <td>
+          1251
+          -
+          1259
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.ClauseOps.clause
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          v.clause
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          39
+        </td>
+        <td>
+          1247
+          -
+          1260
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.Set.apply[io.github.scalaquest.core.parsing.scalog.Clause](v.clause)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          40
+        </td>
+        <td>
+          1223
+          -
+          1261
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.Generator.instance
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.Generator.instance[io.github.scalaquest.core.dictionary.verbs.Verb, scala.collection.immutable.Set[io.github.scalaquest.core.parsing.scalog.Clause]](((v: io.github.scalaquest.core.dictionary.verbs.Verb) =&gt; scala.Predef.Set.apply[io.github.scalaquest.core.parsing.scalog.Clause](v.clause)))
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          1328
+          -
+          1770
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.Generator.instance
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.Generator.instance[io.github.scalaquest.core.dictionary.Item, scala.collection.immutable.Set[io.github.scalaquest.core.parsing.scalog.Clause]](((i: io.github.scalaquest.core.dictionary.Item) =&gt; {
+  import io.github.scalaquest.core.parsing.scalog.dsl._;
+  val name: io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder#constructor.type = io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;name&quot;)).constructor;
+  val adjective: io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder#constructor.type = io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;adjective&quot;)).constructor;
+  def names: List[io.github.scalaquest.core.parsing.scalog.Clause] = scala.`package`.List.apply[String](model.this.ItemDescription.EnhancedItemDescription(i.description).base.name).map[io.github.scalaquest.core.parsing.scalog.Fact](((x$2: String) =&gt; io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(name.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$2)))));
+  def adjectives: List[io.github.scalaquest.core.parsing.scalog.Clause] = model.this.ItemDescription.EnhancedItemDescription(i.description).decorators.toList.map[String](((x$3: String) =&gt; io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$3).name)).map[io.github.scalaquest.core.parsing.scalog.Fact](((x$4: String) =&gt; io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(adjective.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$4)))));
+  names.++[io.github.scalaquest.core.parsing.scalog.Clause](adjectives).toSet[io.github.scalaquest.core.parsing.scalog.Clause]
+}))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          41
+        </td>
+        <td>
+          1456
+          -
+          1462
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;name&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          42
+        </td>
+        <td>
+          1440
+          -
+          1475
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;name&quot;)).constructor
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          43
+        </td>
+        <td>
+          1516
+          -
+          1527
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;adjective&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          44
+        </td>
+        <td>
+          1500
+          -
+          1540
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.CompoundBuilder.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(&quot;adjective&quot;)).constructor
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          45
+        </td>
+        <td>
+          1586
+          -
+          1599
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.description
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          i.description
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          46
+        </td>
+        <td>
+          1586
+          -
+          1609
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.BaseItem.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          model.this.ItemDescription.EnhancedItemDescription(i.description).base.name
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          47
+        </td>
+        <td>
+          1620
+          -
+          1621
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$2)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          48
+        </td>
+        <td>
+          1615
+          -
+          1622
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          name.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$2))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          49
+        </td>
+        <td>
+          1615
+          -
+          1622
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.termToFact
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(name.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$2)))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          50
+        </td>
+        <td>
+          1581
+          -
+          1623
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.List.apply[String](model.this.ItemDescription.EnhancedItemDescription(i.description).base.name).map[io.github.scalaquest.core.parsing.scalog.Fact](((x$2: String) =&gt; io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(name.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$2)))))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          51
+        </td>
+        <td>
+          1663
+          -
+          1676
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.description
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          i.description
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          52
+        </td>
+        <td>
+          1699
+          -
+          1705
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.Atom.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$3).name
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          53
+        </td>
+        <td>
+          1721
+          -
+          1722
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$4)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          54
+        </td>
+        <td>
+          1711
+          -
+          1723
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          adjective.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$4))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          55
+        </td>
+        <td>
+          1711
+          -
+          1723
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.termToFact
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(adjective.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$4)))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          56
+        </td>
+        <td>
+          1663
+          -
+          1724
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          model.this.ItemDescription.EnhancedItemDescription(i.description).decorators.toList.map[String](((x$3: String) =&gt; io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$3).name)).map[io.github.scalaquest.core.parsing.scalog.Fact](((x$4: String) =&gt; io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(adjective.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(x$4)))))
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          57
+        </td>
+        <td>
+          1735
+          -
+          1761
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toSet
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          names.++[io.github.scalaquest.core.parsing.scalog.Clause](adjectives).toSet[io.github.scalaquest.core.parsing.scalog.Clause]
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

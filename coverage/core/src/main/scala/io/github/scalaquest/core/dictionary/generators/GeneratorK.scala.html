@@ -1,0 +1,206 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/generators/GeneratorK.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.generators
+</span>2 <span style=''>
+</span>3 <span style=''>import cats.{Foldable, Functor, Monoid}
+</span>4 <span style=''>
+</span>5 <span style=''>class GeneratorK[F[_]: Functor: Foldable, A, +B: Monoid](implicit G: Generator[A, B])
+</span>6 <span style=''>  extends Generator[F[A], B] {
+</span>7 <span style=''>
+</span>8 <span style=''>  override def generate(a: F[A]): B = {
+</span>9 <span style=''>    val b = </span><span style='background: #F0ADAD'>Functor[F].map(a)(Generator[A, B].generate)</span><span style=''>
+</span>10 <span style=''>    </span><span style='background: #F0ADAD'>Foldable[F].fold(b)</span><span style=''>
+</span>11 <span style=''>  }
+</span>12 <span style=''>}
+</span>13 <span style=''>
+</span>14 <span style=''>object GeneratorK {
+</span>15 <span style=''>
+</span>16 <span style=''>  def apply[F[_], A, B](implicit G: GeneratorK[F, A, B]): GeneratorK[F, A, B] = G
+</span>17 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          72
+        </td>
+        <td>
+          275
+          -
+          275
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.evidence$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GeneratorK.this.evidence$1
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          73
+        </td>
+        <td>
+          286
+          -
+          310
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.Generator.generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          eta$0$1.generate(a)
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          74
+        </td>
+        <td>
+          268
+          -
+          311
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cats.Functor.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.Functor.apply[F](GeneratorK.this.evidence$1).map[A, B](a)({
+  &lt;synthetic&gt; val eta$0$1: io.github.scalaquest.core.dictionary.generators.Generator[A,B] = Generator.apply[A, B](GeneratorK.this.G);
+  ((a: A) =&gt; eta$0$1.generate(a))
+})
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          75
+        </td>
+        <td>
+          324
+          -
+          324
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.evidence$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GeneratorK.this.evidence$2
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          76
+        </td>
+        <td>
+          332
+          -
+          332
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.evidence$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GeneratorK.this.evidence$3
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          77
+        </td>
+        <td>
+          316
+          -
+          335
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          cats.Foldable.fold
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.Foldable.apply[F](GeneratorK.this.evidence$2).fold[B](b)(GeneratorK.this.evidence$3)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

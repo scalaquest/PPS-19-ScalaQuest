@@ -1,0 +1,314 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/itemBehaviors/impl/EatableExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>8 <span style=''>
+</span>9 <span style=''>/**
+</span>10 <span style=''> * The trait makes possible to mix into [[BehaviorBasedModel]] the Eatable behavior.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait EatableExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with StateUtilsExt
+</span>15 <span style=''>  with CommonMessagesExt
+</span>16 <span style=''>  with CommonReactionsExt {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be eaten. After an item is eaten, it
+</span>20 <span style=''>   * should be removed from the player bag (or from the current room, if it was there).
+</span>21 <span style=''>   */
+</span>22 <span style=''>  abstract class Eatable extends ItemBehavior {
+</span>23 <span style=''>    def eat: Reaction
+</span>24 <span style=''>  }
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * Standard implementation of the Eatable behavior.
+</span>28 <span style=''>   *
+</span>29 <span style=''>   * This is a behavior associated to an Item that can be eaten, if present in the bag or in the
+</span>30 <span style=''>   * room.
+</span>31 <span style=''>   * @param onEatExtra
+</span>32 <span style=''>   *   Reaction to be executed when the item has been successfully eaten, after the standard
+</span>33 <span style=''>   *   [[Reaction]]. It can be omitted.
+</span>34 <span style=''>   */
+</span>35 <span style=''>  case class SimpleEatable(onEatExtra: Option[Reaction] = None)(implicit subject: I)
+</span>36 <span style=''>    extends Eatable {
+</span>37 <span style=''>
+</span>38 <span style=''>    override def triggers: ItemTriggers = {
+</span>39 <span style=''>      // &quot;Eat the item&quot;
+</span>40 <span style=''>      case (Eat, item, None, state) if </span><span style='background: #AEF1AE'>state.isInScope(item)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>eat</span><span style=''>
+</span>41 <span style=''>    }
+</span>42 <span style=''>
+</span>43 <span style=''>    def eat: Reaction =
+</span>44 <span style=''>      </span><span style='background: #AEF1AE'>_.applyReactions(
+</span>45 <span style=''></span><span style='background: #AEF1AE'>        Reactions.eat(subject),
+</span>46 <span style=''></span><span style='background: #AEF1AE'>        onEatExtra.getOrElse(Reactions.empty)
+</span>47 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>
+</span>50 <span style=''>  /**
+</span>51 <span style=''>   * Companion object for [[Eatable]]. Shortcut for the standard implementation.
+</span>52 <span style=''>   */
+</span>53 <span style=''>  object Eatable {
+</span>54 <span style=''>    def builder(onEatExtra: Option[Reaction] = None): I =&gt; Eatable = </span><span style='background: #AEF1AE'>SimpleEatable(onEatExtra)(_)</span><span style=''>
+</span>55 <span style=''>  }
+</span>56 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          292
+        </td>
+        <td>
+          1470
+          -
+          1470
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          290
+        </td>
+        <td>
+          1535
+          -
+          1556
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInScope
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.StateUtils(state).isInScope(item)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          291
+        </td>
+        <td>
+          1560
+          -
+          1563
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.eat
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.eat
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          297
+        </td>
+        <td>
+          1601
+          -
+          1704
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.StateUtils(x$1).applyReactions(EatableExt.this.Reactions.eat(SimpleEatable.this.subject), SimpleEatable.this.onEatExtra.getOrElse[EatableExt.this.Reaction](EatableExt.this.Reactions.empty))
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          293
+        </td>
+        <td>
+          1641
+          -
+          1648
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          294
+        </td>
+        <td>
+          1627
+          -
+          1649
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.eat
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.Reactions.eat(SimpleEatable.this.subject)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          295
+        </td>
+        <td>
+          1680
+          -
+          1695
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.Reactions.empty
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          296
+        </td>
+        <td>
+          1659
+          -
+          1696
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.onEatExtra.getOrElse[EatableExt.this.Reaction](EatableExt.this.Reactions.empty)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          1891
+          -
+          1919
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.SimpleEatable.apply(onEatExtra)(x$2)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

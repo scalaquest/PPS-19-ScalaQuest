@@ -1,0 +1,670 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/simple/impl/SimpleRoomExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.{Direction, ItemRef, Model, RoomRef}
+</span>4 <span style=''>import monocle.Lens
+</span>5 <span style=''>
+</span>6 <span style=''>/**
+</span>7 <span style=''> * Extension for the model. Adds a base implementation of the [[Model.Room]].
+</span>8 <span style=''> */
+</span>9 <span style=''>trait SimpleRoomExt extends Model {
+</span>10 <span style=''>
+</span>11 <span style=''>  override type RM = SimpleRoom
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * A base implementation for [[Room]].
+</span>15 <span style=''>   * @param name
+</span>16 <span style=''>   *   the [[Room]] name.
+</span>17 <span style=''>   * @param _items
+</span>18 <span style=''>   *   the [[ItemRef]] that refers to the [[Model.Item]] contained by this [[SimpleRoom]].
+</span>19 <span style=''>   * @param _neighbors
+</span>20 <span style=''>   *   a [[Map]] with neighbors of this [[SimpleRoom]].
+</span>21 <span style=''>   * @param ref
+</span>22 <span style=''>   *   the [[RoomRef]] for this [[SimpleRoom]].
+</span>23 <span style=''>   */
+</span>24 <span style=''>  case class SimpleRoom(
+</span>25 <span style=''>    name: String,
+</span>26 <span style=''>    _items: () =&gt; Set[ItemRef],
+</span>27 <span style=''>    _neighbors: () =&gt; Map[Direction, RoomRef],
+</span>28 <span style=''>    ref: RoomRef
+</span>29 <span style=''>  ) extends Room {
+</span>30 <span style=''>
+</span>31 <span style=''>    override def neighbor(direction: Direction)(implicit state: S): Option[RM] =
+</span>32 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>33 <span style=''></span><span style='background: #AEF1AE'>        refInDirection &lt;- _neighbors().get(direction)
+</span>34 <span style=''></span><span style='background: #AEF1AE'>        room           &lt;- state.rooms.get(refInDirection)
+</span>35 <span style=''></span><span style='background: #AEF1AE'>      } yield room</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>    override def items(implicit state: S): Set[I] = </span><span style='background: #AEF1AE'>_items().flatMap(state.items.get)</span><span style=''>
+</span>38 <span style=''>
+</span>39 <span style=''>    override def neighbors(implicit state: S): Map[Direction, RM] =
+</span>40 <span style=''>      </span><span style='background: #AEF1AE'>_neighbors().map(x =&gt; x._1 -&gt; state.rooms(x._2))</span><span style=''>
+</span>41 <span style=''>  }
+</span>42 <span style=''>
+</span>43 <span style=''>  object Room {
+</span>44 <span style=''>
+</span>45 <span style=''>    def apply(
+</span>46 <span style=''>      name: String,
+</span>47 <span style=''>      neighbors: =&gt; Map[Direction, RoomRef] = Map.empty,
+</span>48 <span style=''>      items: =&gt; Set[ItemRef] = Set.empty
+</span>49 <span style=''>    ): RM = </span><span style='background: #AEF1AE'>SimpleRoom(name, () =&gt; items, () =&gt; neighbors, RoomRef(name))</span><span style=''>
+</span>50 <span style=''>  }
+</span>51 <span style=''>
+</span>52 <span style=''>  override def roomItemsLens: Lens[RM, Set[ItemRef]] =
+</span>53 <span style=''>    </span><span style='background: #AEF1AE'>Lens[RM, Set[ItemRef]](get = _._items())(set =
+</span>54 <span style=''></span><span style='background: #AEF1AE'>      newItemsSet =&gt; oldRoom =&gt; oldRoom.copy(_items = () =&gt; newItemsSet)
+</span>55 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>56 <span style=''>
+</span>57 <span style=''>  override def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]] =
+</span>58 <span style=''>    </span><span style='background: #AEF1AE'>Lens[RM, Map[Direction, RoomRef]](get = _._neighbors())(set =
+</span>59 <span style=''></span><span style='background: #AEF1AE'>      newNeighborsSet =&gt; oldRoom =&gt; oldRoom.copy(_neighbors = () =&gt; newNeighborsSet)
+</span>60 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>61 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          489
+        </td>
+        <td>
+          915
+          -
+          1051
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoom.this._neighbors.apply().get(direction).flatMap[SimpleRoomExt.this.RM](((refInDirection: io.github.scalaquest.core.model.RoomRef) =&gt; state.rooms.get(refInDirection).map[SimpleRoomExt.this.RM](((room: SimpleRoomExt.this.RM) =&gt; room))))
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          488
+        </td>
+        <td>
+          983
+          -
+          1051
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          state.rooms.get(refInDirection).map[SimpleRoomExt.this.RM](((room: SimpleRoomExt.this.RM) =&gt; room))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          490
+        </td>
+        <td>
+          1122
+          -
+          1137
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          eta$0$1.get(key)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          491
+        </td>
+        <td>
+          1105
+          -
+          1138
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoom.this._items.apply().flatMap[SimpleRoomExt.this.I]({
+  &lt;synthetic&gt; val eta$0$1: Map[io.github.scalaquest.core.model.ItemRef,SimpleRoomExt.this.I] = state.items;
+  ((key: io.github.scalaquest.core.model.ItemRef) =&gt; eta$0$1.get(key))
+})
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          492
+        </td>
+        <td>
+          1236
+          -
+          1240
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x._1
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          493
+        </td>
+        <td>
+          1256
+          -
+          1260
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x._2
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          494
+        </td>
+        <td>
+          1244
+          -
+          1261
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          state.rooms.apply(x._2)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          495
+        </td>
+        <td>
+          1236
+          -
+          1261
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](x._1).-&gt;[SimpleRoomExt.this.RM](state.rooms.apply(x._2))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          496
+        </td>
+        <td>
+          1214
+          -
+          1262
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoom.this._neighbors.apply().map[io.github.scalaquest.core.model.Direction, SimpleRoomExt.this.RM](((x: (io.github.scalaquest.core.model.Direction, io.github.scalaquest.core.model.RoomRef)) =&gt; scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](x._1).-&gt;[SimpleRoomExt.this.RM](state.rooms.apply(x._2))))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          497
+        </td>
+        <td>
+          1477
+          -
+          1490
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.RoomRef.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.model.RoomRef.apply(name)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          498
+        </td>
+        <td>
+          1430
+          -
+          1491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomExt.this.SimpleRoom.apply(name, (() =&gt; items), (() =&gt; neighbors), io.github.scalaquest.core.model.RoomRef.apply(name))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          499
+        </td>
+        <td>
+          1585
+          -
+          1595
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function0.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1._items.apply()
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          504
+        </td>
+        <td>
+          1556
+          -
+          1681
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.Lens.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          monocle.Lens.apply[SimpleRoomExt.this.RM, Set[io.github.scalaquest.core.model.ItemRef]](((x$1: SimpleRoomExt.this.RM) =&gt; x$1._items.apply()))(((newItemsSet: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; ((oldRoom: SimpleRoomExt.this.RM) =&gt; {
+  &lt;artifact&gt; val x$1: () =&gt; Set[io.github.scalaquest.core.model.ItemRef] @scala.reflect.internal.annotations.uncheckedBounds = (() =&gt; newItemsSet);
+  &lt;artifact&gt; val x$2: String = oldRoom.copy$default$1;
+  &lt;artifact&gt; val x$3: () =&gt; Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef] @scala.reflect.internal.annotations.uncheckedBounds = oldRoom.copy$default$3;
+  &lt;artifact&gt; val x$4: io.github.scalaquest.core.model.RoomRef = oldRoom.copy$default$4;
+  oldRoom.copy(x$2, x$1, x$3, x$4)
+})))
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          500
+        </td>
+        <td>
+          1643
+          -
+          1643
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy$default$1
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          501
+        </td>
+        <td>
+          1643
+          -
+          1643
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy$default$3
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          502
+        </td>
+        <td>
+          1643
+          -
+          1643
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy$default$4
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          503
+        </td>
+        <td>
+          1635
+          -
+          1675
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy(x$2, x$1, x$3, x$4)
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          505
+        </td>
+        <td>
+          1798
+          -
+          1812
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function0.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2._neighbors.apply()
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          510
+        </td>
+        <td>
+          1758
+          -
+          1910
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.Lens.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          monocle.Lens.apply[SimpleRoomExt.this.RM, Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](((x$2: SimpleRoomExt.this.RM) =&gt; x$2._neighbors.apply()))(((newNeighborsSet: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; ((oldRoom: SimpleRoomExt.this.RM) =&gt; {
+  &lt;artifact&gt; val x$1: () =&gt; Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef] @scala.reflect.internal.annotations.uncheckedBounds = (() =&gt; newNeighborsSet);
+  &lt;artifact&gt; val x$2: String = oldRoom.copy$default$1;
+  &lt;artifact&gt; val x$3: () =&gt; Set[io.github.scalaquest.core.model.ItemRef] @scala.reflect.internal.annotations.uncheckedBounds = oldRoom.copy$default$2;
+  &lt;artifact&gt; val x$4: io.github.scalaquest.core.model.RoomRef = oldRoom.copy$default$4;
+  oldRoom.copy(x$2, x$3, x$1, x$4)
+})))
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          506
+        </td>
+        <td>
+          1864
+          -
+          1864
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy$default$1
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          507
+        </td>
+        <td>
+          1864
+          -
+          1864
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy$default$2
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          508
+        </td>
+        <td>
+          1864
+          -
+          1864
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy$default$4
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          509
+        </td>
+        <td>
+          1856
+          -
+          1904
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.copy
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          oldRoom.copy(x$2, x$3, x$1, x$4)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

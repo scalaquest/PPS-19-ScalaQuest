@@ -41,18 +41,18 @@
 </span>17 <span style=''>      def partialBuilder: PartialBuilder[model.S, model.type]
 </span>18 <span style=''>
 </span>19 <span style=''>      override def send(input: String)(state: model.S): Either[String, model.S] =
-</span>20 <span style=''>        </span><span style='background: #F0ADAD'>partialBuilder(state) run input</span><span style=''>
+</span>20 <span style=''>        </span><span style='background: #AEF1AE'>partialBuilder(state) run input</span><span style=''>
 </span>21 <span style=''>    }
 </span>22 <span style=''>
 </span>23 <span style=''>    def build(
 </span>24 <span style=''>      _partialBuilder: PartialBuilder[model.S, model.type]
 </span>25 <span style=''>    ): Game[model.type] =
-</span>26 <span style=''>      </span><span style='background: #F0ADAD'>new</span><span style=''> GameWithPipeline {
+</span>26 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> GameWithPipeline {
 </span>27 <span style=''>        override def partialBuilder: PartialBuilder[model.S, model.type] = _partialBuilder
 </span>28 <span style=''>      }
 </span>29 <span style=''>  }
 </span>30 <span style=''>
-</span>31 <span style=''>  def builderFrom[M &lt;: Model](model: M): GameBuilder[M] = </span><span style='background: #F0ADAD'>new GameBuilder(model)</span><span style=''>
+</span>31 <span style=''>  def builderFrom[M &lt;: Model](model: M): GameBuilder[M] = </span><span style='background: #AEF1AE'>new GameBuilder(model)</span><span style=''>
 </span>32 <span style=''>}
 </span></pre>
           </div>
@@ -87,7 +87,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           GameWithPipeline.this.partialBuilder.apply(state).run(input)
         </td>
       </tr><tr>
@@ -111,7 +111,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           new $anon()
         </td>
       </tr><tr>
@@ -135,7 +135,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           new io.github.scalaquest.core.Game.GameBuilder[M](model)
         </td>
       </tr>

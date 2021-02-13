@@ -1,0 +1,437 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/application/ApplicationStructure.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.application
+</span>2 <span style=''>
+</span>3 <span style=''>import cats.Functor
+</span>4 <span style=''>import io.github.scalaquest.core.dictionary.Dictionary
+</span>5 <span style=''>import io.github.scalaquest.core.dictionary.generators.GeneratorK
+</span>6 <span style=''>import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
+</span>7 <span style=''>import io.github.scalaquest.core.model.{Action, ItemRef, Model}
+</span>8 <span style=''>import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
+</span>9 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline
+</span>10 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
+</span>12 <span style=''>import io.github.scalaquest.core.pipeline.lexer.SimpleLexer
+</span>13 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>14 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>15 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>16 <span style=''>
+</span>17 <span style=''>import scala.io.Source
+</span>18 <span style=''>
+</span>19 <span style=''>abstract class ApplicationStructure[M &lt;: Model](val model: M) {
+</span>20 <span style=''>  import io.github.scalaquest.core.dictionary.generators.implicits.listToMapGenerator
+</span>21 <span style=''>  import io.github.scalaquest.core.dictionary.implicits.{itemToEntryGenerator, verbToEntryGenerator}
+</span>22 <span style=''>
+</span>23 <span style=''>  type M        = model.type
+</span>24 <span style=''>  type S        = model.S
+</span>25 <span style=''>  type I        = model.I
+</span>26 <span style=''>  type RM       = model.RM
+</span>27 <span style=''>  type G        = model.G
+</span>28 <span style=''>  type Reaction = model.Reaction
+</span>29 <span style=''>
+</span>30 <span style=''>  def verbs: Set[Verb]
+</span>31 <span style=''>
+</span>32 <span style=''>  def items: Set[I]
+</span>33 <span style=''>
+</span>34 <span style=''>  def refToItem: Map[ItemRef, I] = </span><span style='background: #F0ADAD'>GeneratorK[List, I, Map[ItemRef, I]].generate(items.toList)</span><span style=''>
+</span>35 <span style=''>
+</span>36 <span style=''>  def verbToAction: Map[VerbPrep, Action] =
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(verbs.toList)</span><span style=''>
+</span>38 <span style=''>
+</span>39 <span style=''>  def programSource[F[_]: Functor](base: F[String]): F[String] =
+</span>40 <span style=''>    </span><span style='background: #F0ADAD'>ProgramFromDictionary(verbs, items).source(base)</span><span style=''>
+</span>41 <span style=''>
+</span>42 <span style=''>  def programFromResource(resourceName: String): String = {
+</span>43 <span style=''>    type Id[X] = X
+</span>44 <span style=''>    </span><span style='background: #F0ADAD'>programSource[Id](Source.fromResource(resourceName).mkString)</span><span style=''>
+</span>45 <span style=''>  }
+</span>46 <span style=''>
+</span>47 <span style=''>  def defaultPipeline(source: String): Pipeline.PartialBuilder[S, M] = {
+</span>48 <span style=''>    </span><span style='background: #F0ADAD'>Pipeline
+</span>49 <span style=''></span><span style='background: #F0ADAD'>      .builderFrom[M](model)
+</span>50 <span style=''></span><span style='background: #F0ADAD'>      .build(
+</span>51 <span style=''></span><span style='background: #F0ADAD'>        SimpleLexer,
+</span>52 <span style=''></span><span style='background: #F0ADAD'>        Parser(Engine(Theory(source), Set(DCGLibrary))),
+</span>53 <span style=''></span><span style='background: #F0ADAD'>        Resolver.builder(model),
+</span>54 <span style=''></span><span style='background: #F0ADAD'>        Interpreter.builder(model),
+</span>55 <span style=''></span><span style='background: #F0ADAD'>        Reducer.builder(model)
+</span>56 <span style=''></span><span style='background: #F0ADAD'>      )</span><span style=''>
+</span>57 <span style=''>  }
+</span>58 <span style=''>
+</span>59 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          4
+        </td>
+        <td>
+          1356
+          -
+          1356
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.DictionaryImplicits.implicits.itemToEntryGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.`package`.implicits.itemToEntryGenerator[ApplicationStructure.this.I]
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          5
+        </td>
+        <td>
+          1356
+          -
+          1356
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorImplicits.implicits.listToMapGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.`package`.implicits.listToMapGenerator[ApplicationStructure.this.I, io.github.scalaquest.core.model.ItemRef, ApplicationStructure.this.I](io.github.scalaquest.core.dictionary.`package`.implicits.itemToEntryGenerator[ApplicationStructure.this.I])
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          1392
+          -
+          1404
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ApplicationStructure.this.items.toList
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          7
+        </td>
+        <td>
+          1346
+          -
+          1405
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.apply[List, ApplicationStructure.this.I, Map[io.github.scalaquest.core.model.ItemRef,ApplicationStructure.this.I]](io.github.scalaquest.core.dictionary.generators.`package`.implicits.listToMapGenerator[ApplicationStructure.this.I, io.github.scalaquest.core.model.ItemRef, ApplicationStructure.this.I](io.github.scalaquest.core.dictionary.`package`.implicits.itemToEntryGenerator[ApplicationStructure.this.I])).generate(ApplicationStructure.this.items.toList)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          8
+        </td>
+        <td>
+          1465
+          -
+          1465
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.DictionaryImplicits.implicits.verbToEntryGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.`package`.implicits.verbToEntryGenerator
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          9
+        </td>
+        <td>
+          1465
+          -
+          1465
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorImplicits.implicits.listToMapGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.`package`.implicits.listToMapGenerator[io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.dictionary.verbs.VerbPrep, io.github.scalaquest.core.model.Action](io.github.scalaquest.core.dictionary.`package`.implicits.verbToEntryGenerator)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          1510
+          -
+          1522
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ApplicationStructure.this.verbs.toList
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          11
+        </td>
+        <td>
+          1455
+          -
+          1523
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.apply[List, io.github.scalaquest.core.dictionary.verbs.Verb, Map[io.github.scalaquest.core.dictionary.verbs.VerbPrep,io.github.scalaquest.core.model.Action]](io.github.scalaquest.core.dictionary.generators.`package`.implicits.listToMapGenerator[io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.dictionary.verbs.VerbPrep, io.github.scalaquest.core.model.Action](io.github.scalaquest.core.dictionary.`package`.implicits.verbToEntryGenerator)).generate(ApplicationStructure.this.verbs.toList)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          12
+        </td>
+        <td>
+          1594
+          -
+          1642
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.application.ProgramFromDictionary.source
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ProgramFromDictionary.apply[ApplicationStructure.this.I](ApplicationStructure.this.verbs, ApplicationStructure.this.items).source[F](base)(evidence$1)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          13
+        </td>
+        <td>
+          1752
+          -
+          1752
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.io.Source.fromResource$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.io.Source.fromResource$default$2
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          14
+        </td>
+        <td>
+          1745
+          -
+          1787
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.io.Source.fromResource(resourceName, scala.io.Source.fromResource$default$2)(io.this.Codec.fallbackSystemCodec).mkString
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          15
+        </td>
+        <td>
+          1744
+          -
+          1744
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cats.catsInstancesForId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.this.`package`.catsInstancesForId
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          16
+        </td>
+        <td>
+          1727
+          -
+          1788
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.application.ApplicationStructure.programSource
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ApplicationStructure.this.programSource[Id](scala.io.Source.fromResource(resourceName, scala.io.Source.fromResource$default$2)(io.this.Codec.fallbackSystemCodec).mkString)(cats.this.`package`.catsInstancesForId)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          17
+        </td>
+        <td>
+          1871
+          -
+          2108
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder.build
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          stabilizer$1.build(io.github.scalaquest.core.pipeline.lexer.SimpleLexer, eta$0$1, eta$1$1, eta$2$1, eta$3$1)(state)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

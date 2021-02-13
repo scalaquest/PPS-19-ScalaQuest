@@ -1,0 +1,393 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/verbs/ClauseOps.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.verbs
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.Fact
+</span>4 <span style=''>import io.github.scalaquest.core.parsing.scalog.dsl.{termToFact, intToNumber, stringToAtom}
+</span>5 <span style=''>
+</span>6 <span style=''>trait ClauseOps { self: BaseVerb =&gt;
+</span>7 <span style=''>
+</span>8 <span style=''>  def arity: Int
+</span>9 <span style=''>
+</span>10 <span style=''>  def clause: Fact =
+</span>11 <span style=''>    </span><span style='background: #F0ADAD'>prep</span><span style=''> match {
+</span>12 <span style=''>      case Some(value) =&gt; </span><span style='background: #F0ADAD'>verb(arity, name, value)</span><span style=''>
+</span>13 <span style=''>      case None        =&gt; </span><span style='background: #F0ADAD'>verb(arity, name)</span><span style=''>
+</span>14 <span style=''>    }
+</span>15 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          83
+        </td>
+        <td>
+          278
+          -
+          282
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.BaseVerb.prep
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ClauseOps.this.prep
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          84
+        </td>
+        <td>
+          322
+          -
+          327
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.ClauseOps.arity
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ClauseOps.this.arity
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          85
+        </td>
+        <td>
+          322
+          -
+          327
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.intToNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity)
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          86
+        </td>
+        <td>
+          329
+          -
+          333
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.BaseVerb.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ClauseOps.this.name
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          87
+        </td>
+        <td>
+          329
+          -
+          333
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name)
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          88
+        </td>
+        <td>
+          335
+          -
+          340
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(value)
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          89
+        </td>
+        <td>
+          317
+          -
+          341
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(value))
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          90
+        </td>
+        <td>
+          317
+          -
+          341
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.termToFact
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(value)))
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          91
+        </td>
+        <td>
+          373
+          -
+          378
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.ClauseOps.arity
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ClauseOps.this.arity
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          92
+        </td>
+        <td>
+          373
+          -
+          378
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.intToNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity)
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          93
+        </td>
+        <td>
+          380
+          -
+          384
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.BaseVerb.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ClauseOps.this.name
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          94
+        </td>
+        <td>
+          380
+          -
+          384
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.stringToAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name)
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          95
+        </td>
+        <td>
+          368
+          -
+          385
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.Constructor.constructor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name))
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          96
+        </td>
+        <td>
+          368
+          -
+          385
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.scalog.dsl.termToFact
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name)))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -1,0 +1,261 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/simple/impl/SimpleStateExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.dictionary.verbs.VerbPrep
+</span>4 <span style=''>import io.github.scalaquest.core.model._
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CommonGroundExt
+</span>7 <span style=''>import monocle.Lens
+</span>8 <span style=''>import monocle.macros.GenLens
+</span>9 <span style=''>
+</span>10 <span style=''>/**
+</span>11 <span style=''> * Extension for the model. Adds a base implementation of the [[Model.State]].
+</span>12 <span style=''> */
+</span>13 <span style=''>trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
+</span>14 <span style=''>
+</span>15 <span style=''>  override type S = SimpleState
+</span>16 <span style=''>
+</span>17 <span style=''>  case class SimpleState(
+</span>18 <span style=''>    actions: Map[VerbPrep, Action],
+</span>19 <span style=''>    rooms: Map[RoomRef, RM],
+</span>20 <span style=''>    items: Map[ItemRef, I],
+</span>21 <span style=''>    ground: G,
+</span>22 <span style=''>    _bag: Set[ItemRef],
+</span>23 <span style=''>    _location: RoomRef,
+</span>24 <span style=''>    messages: Seq[Message],
+</span>25 <span style=''>    ended: Boolean = false
+</span>26 <span style=''>  ) extends State {
+</span>27 <span style=''>    override def bag: Set[I]  = </span><span style='background: #AEF1AE'>_bag.flatMap(items.get)</span><span style=''>
+</span>28 <span style=''>    override def location: RM = </span><span style='background: #AEF1AE'>rooms(_location)</span><span style=''>
+</span>29 <span style=''>  }
+</span>30 <span style=''>
+</span>31 <span style=''>  object State {
+</span>32 <span style=''>
+</span>33 <span style=''>    def apply(
+</span>34 <span style=''>      actions: Map[VerbPrep, Action],
+</span>35 <span style=''>      rooms: Map[RoomRef, RM],
+</span>36 <span style=''>      items: Map[ItemRef, I],
+</span>37 <span style=''>      ground: G = CommonGround(),
+</span>38 <span style=''>      bag: Set[ItemRef] = Set.empty,
+</span>39 <span style=''>      location: RoomRef,
+</span>40 <span style=''>      welcomeMsg: Option[Messages.Welcome] = None,
+</span>41 <span style=''>      ended: Boolean = false
+</span>42 <span style=''>    ): S = </span><span style='background: #AEF1AE'>SimpleState(actions, rooms, items, ground, bag, location, Seq(welcomeMsg).flatten, ended)</span><span style=''>
+</span>43 <span style=''>  }
+</span>44 <span style=''>
+</span>45 <span style=''>  override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)
+</span>46 <span style=''>  override def itemsLens: Lens[S, Map[ItemRef, I]]  = GenLens[S](_.items)
+</span>47 <span style=''>  override def messageLens: Lens[S, Seq[Message]]   = GenLens[S](_.messages)
+</span>48 <span style=''>  override def matchEndedLens: Lens[S, Boolean]     = GenLens[S](_.ended)
+</span>49 <span style=''>  override def bagLens: Lens[S, Set[ItemRef]]       = GenLens[S](_._bag)
+</span>50 <span style=''>  override def locationLens: Lens[S, RoomRef]       = GenLens[S](_._location)
+</span>51 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          511
+        </td>
+        <td>
+          869
+          -
+          878
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleState.this.items.get(key)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          512
+        </td>
+        <td>
+          856
+          -
+          879
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleState.this._bag.flatMap[SimpleStateExt.this.I](((key: io.github.scalaquest.core.model.ItemRef) =&gt; SimpleState.this.items.get(key)))
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          513
+        </td>
+        <td>
+          918
+          -
+          927
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState._location
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleState.this._location
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          514
+        </td>
+        <td>
+          912
+          -
+          928
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleState.this.rooms.apply(SimpleState.this._location)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          515
+        </td>
+        <td>
+          1327
+          -
+          1327
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.Predef.$conforms
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.$conforms[Option[SimpleStateExt.this.Messages.Welcome]]
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          516
+        </td>
+        <td>
+          1311
+          -
+          1334
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.IterableOps.flatten
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.Seq.apply[Option[SimpleStateExt.this.Messages.Welcome]](welcomeMsg).flatten[io.github.scalaquest.core.model.Message](scala.Predef.$conforms[Option[SimpleStateExt.this.Messages.Welcome]])
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          517
+        </td>
+        <td>
+          1253
+          -
+          1342
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleStateExt.this.SimpleState.apply(actions, rooms, items, ground, bag, location, scala.`package`.Seq.apply[Option[SimpleStateExt.this.Messages.Welcome]](welcomeMsg).flatten[io.github.scalaquest.core.model.Message](scala.Predef.$conforms[Option[SimpleStateExt.this.Messages.Welcome]]), ended)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -64,11 +64,11 @@
 </span>40 <span style=''>  }
 </span>41 <span style=''>
 </span>42 <span style=''>  object Preposition {
-</span>43 <span style=''>    private final val EMPTY = </span><span style='background: #F0ADAD'>&quot;{}&quot;</span><span style=''>
+</span>43 <span style=''>    private final val empty = </span><span style='background: #F0ADAD'>&quot;{}&quot;</span><span style=''>
 </span>44 <span style=''>
 </span>45 <span style=''>    def unapply(prep: String): Option[Option[String]] =
 </span>46 <span style=''>      prep match {
-</span>47 <span style=''>        case `EMPTY` =&gt; </span><span style='background: #AEF1AE'>Some(None)</span><span style=''>
+</span>47 <span style=''>        case `empty` =&gt; </span><span style='background: #AEF1AE'>Some(None)</span><span style=''>
 </span>48 <span style=''>        case x       =&gt; </span><span style='background: #AEF1AE'>Some(Some(x))</span><span style=''>
 </span>49 <span style=''>      }
 </span>50 <span style=''>  }
@@ -95,24 +95,23 @@
 </span>71 <span style=''>    </span><span style='background: #AEF1AE'>for {
 </span>72 <span style=''></span><span style='background: #AEF1AE'>      r &lt;- engine.solve(query).headOption
 </span>73 <span style=''></span><span style='background: #AEF1AE'>      x &lt;- r.getVariable(X)
-</span>74 <span style=''></span><span style='background: #AEF1AE'>      _ = println(x)
-</span>75 <span style=''></span><span style='background: #AEF1AE'>      ast &lt;- x match {
-</span>76 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject)) =&gt;
-</span>77 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
-</span>78 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =&gt;
-</span>79 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
-</span>80 <span style=''></span><span style='background: #AEF1AE'>        case sentence(
-</span>81 <span style=''></span><span style='background: #AEF1AE'>              `/`(verb, p(prep)),
-</span>82 <span style=''></span><span style='background: #AEF1AE'>              Atom(subject),
-</span>83 <span style=''></span><span style='background: #AEF1AE'>              i(directObj),
-</span>84 <span style=''></span><span style='background: #AEF1AE'>              i(indirectObj)
-</span>85 <span style=''></span><span style='background: #AEF1AE'>            ) =&gt;
-</span>86 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
-</span>87 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; </span><span style='background: #F0ADAD'>None</span><span style='background: #AEF1AE'>
-</span>88 <span style=''></span><span style='background: #AEF1AE'>      }
-</span>89 <span style=''></span><span style='background: #AEF1AE'>    } yield SimpleParserResult(ast)</span><span style=''>
-</span>90 <span style=''>  }
-</span>91 <span style=''>}
+</span>74 <span style=''></span><span style='background: #AEF1AE'>      ast &lt;- x match {
+</span>75 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject)) =&gt;
+</span>76 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
+</span>77 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =&gt;
+</span>78 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
+</span>79 <span style=''></span><span style='background: #AEF1AE'>        case sentence(
+</span>80 <span style=''></span><span style='background: #AEF1AE'>              `/`(verb, p(prep)),
+</span>81 <span style=''></span><span style='background: #AEF1AE'>              Atom(subject),
+</span>82 <span style=''></span><span style='background: #AEF1AE'>              i(directObj),
+</span>83 <span style=''></span><span style='background: #AEF1AE'>              i(indirectObj)
+</span>84 <span style=''></span><span style='background: #AEF1AE'>            ) =&gt;
+</span>85 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
+</span>86 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; </span><span style='background: #F0ADAD'>None</span><span style='background: #AEF1AE'>
+</span>87 <span style=''></span><span style='background: #AEF1AE'>      }
+</span>88 <span style=''></span><span style='background: #AEF1AE'>    } yield SimpleParserResult(ast)</span><span style=''>
+</span>89 <span style=''>  }
+</span>90 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -130,7 +129,7 @@
           16
         </td>
         <td>
-          448
+          666
         </td>
         <td>
           574
@@ -154,7 +153,7 @@
           17
         </td>
         <td>
-          449
+          667
         </td>
         <td>
           624
@@ -178,7 +177,7 @@
           17
         </td>
         <td>
-          450
+          668
         </td>
         <td>
           608
@@ -202,7 +201,7 @@
           18
         </td>
         <td>
-          451
+          669
         </td>
         <td>
           679
@@ -226,7 +225,7 @@
           18
         </td>
         <td>
-          452
+          670
         </td>
         <td>
           663
@@ -250,7 +249,7 @@
           19
         </td>
         <td>
-          453
+          671
         </td>
         <td>
           737
@@ -274,7 +273,7 @@
           19
         </td>
         <td>
-          454
+          672
         </td>
         <td>
           721
@@ -298,7 +297,7 @@
           20
         </td>
         <td>
-          455
+          673
         </td>
         <td>
           803
@@ -322,7 +321,7 @@
           20
         </td>
         <td>
-          456
+          674
         </td>
         <td>
           787
@@ -346,7 +345,7 @@
           21
         </td>
         <td>
-          457
+          675
         </td>
         <td>
           864
@@ -370,7 +369,7 @@
           21
         </td>
         <td>
-          458
+          676
         </td>
         <td>
           848
@@ -394,7 +393,7 @@
           29
         </td>
         <td>
-          459
+          677
         </td>
         <td>
           1064
@@ -418,7 +417,7 @@
           31
         </td>
         <td>
-          460
+          678
         </td>
         <td>
           1162
@@ -442,7 +441,7 @@
           31
         </td>
         <td>
-          461
+          679
         </td>
         <td>
           1136
@@ -466,7 +465,7 @@
           36
         </td>
         <td>
-          462
+          680
         </td>
         <td>
           1312
@@ -490,7 +489,7 @@
           36
         </td>
         <td>
-          463
+          681
         </td>
         <td>
           1307
@@ -514,7 +513,7 @@
           37
         </td>
         <td>
-          464
+          682
         </td>
         <td>
           1382
@@ -538,7 +537,7 @@
           43
         </td>
         <td>
-          465
+          683
         </td>
         <td>
           1454
@@ -562,7 +561,7 @@
           47
         </td>
         <td>
-          466
+          684
         </td>
         <td>
           1564
@@ -586,7 +585,7 @@
           47
         </td>
         <td>
-          467
+          685
         </td>
         <td>
           1559
@@ -610,7 +609,7 @@
           48
         </td>
         <td>
-          468
+          686
         </td>
         <td>
           1599
@@ -634,7 +633,7 @@
           48
         </td>
         <td>
-          469
+          687
         </td>
         <td>
           1594
@@ -658,7 +657,7 @@
           52
         </td>
         <td>
-          470
+          688
         </td>
         <td>
           1631
@@ -682,7 +681,7 @@
           53
         </td>
         <td>
-          471
+          689
         </td>
         <td>
           1657
@@ -706,7 +705,7 @@
           68
         </td>
         <td>
-          472
+          690
         </td>
         <td>
           2198
@@ -730,7 +729,7 @@
           68
         </td>
         <td>
-          473
+          691
         </td>
         <td>
           2175
@@ -754,7 +753,7 @@
           69
         </td>
         <td>
-          474
+          692
         </td>
         <td>
           2232
@@ -778,7 +777,7 @@
           69
         </td>
         <td>
-          475
+          693
         </td>
         <td>
           2228
@@ -802,7 +801,7 @@
           69
         </td>
         <td>
-          476
+          694
         </td>
         <td>
           2236
@@ -826,7 +825,7 @@
           69
         </td>
         <td>
-          477
+          695
         </td>
         <td>
           2221
@@ -850,12 +849,12 @@
           72
         </td>
         <td>
-          491
+          707
         </td>
         <td>
           2249
           -
-          2957
+          2936
         </td>
         <td>
           Apply
@@ -867,24 +866,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          PrologParser.this.engine.solve(query).headOption.flatMap[io.github.scalaquest.core.pipeline.parser.ParserResult](((r: io.github.scalaquest.core.parsing.engine.Solution) =&gt; r.getVariable(PrologParser.this.dsl.X).map[(io.github.scalaquest.core.parsing.scalog.Term, Unit)](((x: io.github.scalaquest.core.parsing.scalog.Term) =&gt; {
-  val x$1: Unit = scala.Predef.println(x);
-  scala.Tuple2.apply[io.github.scalaquest.core.parsing.scalog.Term, Unit](x, x$1)
-})).flatMap[io.github.scalaquest.core.pipeline.parser.ParserResult](((x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit)) =&gt; (x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit) @unchecked) match {
-  case (_1: io.github.scalaquest.core.parsing.scalog.Term, _2: Unit): (io.github.scalaquest.core.parsing.scalog.Term, Unit)((x @ _), _) =&gt; x match {
+          PrologParser.this.engine.solve(query).headOption.flatMap[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((r: io.github.scalaquest.core.parsing.engine.Solution) =&gt; r.getVariable(PrologParser.this.dsl.X).flatMap[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((x: io.github.scalaquest.core.parsing.scalog.Term) =&gt; x match {
   case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive](AbstractSyntaxTree.Intransitive.apply(verb, prep, subject))
   case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((obj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive](AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj))
   case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive](AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj))
   case _ =&gt; scala.None
-}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))
-}))))
+}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))))))
         </td>
       </tr><tr>
         <td>
           73
         </td>
         <td>
-          478
+          696
         </td>
         <td>
           2322
@@ -908,36 +902,12 @@
           73
         </td>
         <td>
-          480
+          706
         </td>
         <td>
           2303
           -
-          2303
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Tuple2.apply[io.github.scalaquest.core.parsing.scalog.Term, Unit](x, x$1)
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          490
-        </td>
-        <td>
-          2303
-          -
-          2957
+          2936
         </td>
         <td>
           Apply
@@ -949,53 +919,24 @@
           
         </td>
         <td style="background: #AEF1AE">
-          r.getVariable(PrologParser.this.dsl.X).map[(io.github.scalaquest.core.parsing.scalog.Term, Unit)](((x: io.github.scalaquest.core.parsing.scalog.Term) =&gt; {
-  val x$1: Unit = scala.Predef.println(x);
-  scala.Tuple2.apply[io.github.scalaquest.core.parsing.scalog.Term, Unit](x, x$1)
-})).flatMap[io.github.scalaquest.core.pipeline.parser.ParserResult](((x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit)) =&gt; (x$2: (io.github.scalaquest.core.parsing.scalog.Term, Unit) @unchecked) match {
-  case (_1: io.github.scalaquest.core.parsing.scalog.Term, _2: Unit): (io.github.scalaquest.core.parsing.scalog.Term, Unit)((x @ _), _) =&gt; x match {
+          r.getVariable(PrologParser.this.dsl.X).flatMap[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((x: io.github.scalaquest.core.parsing.scalog.Term) =&gt; x match {
   case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive](AbstractSyntaxTree.Intransitive.apply(verb, prep, subject))
   case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((obj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive](AbstractSyntaxTree.Transitive.apply(verb, prep, subject, obj))
   case PrologParser.this.dsl.sentence.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (PrologParser.this.dsl./.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((verb @ _), PrologParser.this.p.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((prep @ _))), (name: String): io.github.scalaquest.core.parsing.scalog.Atom((subject @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), PrologParser.this.i.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; scala.Some.apply[io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive](AbstractSyntaxTree.Ditransitive.apply(verb, prep, subject, directObj, indirectObj))
   case _ =&gt; scala.None
-}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))
-}))
+}.map[io.github.scalaquest.core.pipeline.parser.SimpleParserResult](((ast: Product with io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree with java.io.Serializable) =&gt; SimpleParserResult.apply(ast)))))
         </td>
       </tr><tr>
         <td>
           74
         </td>
         <td>
-          479
+          705
         </td>
         <td>
-          2335
+          2331
           -
-          2345
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.println
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Predef.println(x)
-        </td>
-      </tr><tr>
-        <td>
-          75
-        </td>
-        <td>
-          489
-        </td>
-        <td>
-          2352
-          -
-          2957
+          2936
         </td>
         <td>
           Apply
@@ -1016,15 +957,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          76
         </td>
         <td>
-          481
+          697
         </td>
         <td>
-          2444
+          2423
           -
-          2496
+          2475
         </td>
         <td>
           Apply
@@ -1040,15 +981,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          76
         </td>
         <td>
-          482
+          698
         </td>
         <td>
-          2439
+          2418
           -
-          2497
+          2476
         </td>
         <td>
           Apply
@@ -1064,15 +1005,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          78
         </td>
         <td>
-          483
+          699
         </td>
         <td>
-          2581
+          2560
           -
-          2636
+          2615
         </td>
         <td>
           Apply
@@ -1088,15 +1029,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          78
         </td>
         <td>
-          484
+          700
         </td>
         <td>
-          2576
+          2555
           -
-          2637
+          2616
         </td>
         <td>
           Apply
@@ -1112,15 +1053,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          85
         </td>
         <td>
-          485
+          701
         </td>
         <td>
-          2813
+          2792
           -
-          2889
+          2868
         </td>
         <td>
           Apply
@@ -1136,15 +1077,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          85
         </td>
         <td>
-          486
+          702
         </td>
         <td>
-          2808
+          2787
           -
-          2890
+          2869
         </td>
         <td>
           Apply
@@ -1160,15 +1101,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          86
         </td>
         <td>
-          487
+          703
         </td>
         <td>
-          2909
+          2888
           -
-          2913
+          2892
         </td>
         <td>
           Select
@@ -1184,15 +1125,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          88
         </td>
         <td>
-          488
+          704
         </td>
         <td>
-          2934
+          2913
           -
-          2957
+          2936
         </td>
         <td>
           Apply

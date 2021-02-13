@@ -88,35 +88,29 @@
 </span>64 <span style=''>   * @return
 </span>65 <span style=''>   *   A [[Builder]] of [[Interpreter]] instances, with the right type constraints.
 </span>66 <span style=''>   */
-</span>67 <span style=''>  def builder[M &lt;: Model](model: M)(
-</span>68 <span style=''>    itemDict: Map[ItemRef, model.I],
-</span>69 <span style=''>    ground: model.G
-</span>70 <span style=''>  ): Builder[model.type, model.S, model.Reaction] =
-</span>71 <span style=''>    state =&gt; {
-</span>72 <span style=''>      val refToItem: RefToItem[model.I] = </span><span style='background: #AEF1AE'>RefToItem(model)(itemDict)</span><span style=''>
-</span>73 <span style=''>
-</span>74 <span style=''>      // shortcut for implementing the Interpreter, as it is a single method trait
-</span>75 <span style=''>      (resolverResult: ResolverResult) =&gt;
-</span>76 <span style=''>        </span><span style='background: #AEF1AE'>for {
-</span>77 <span style=''></span><span style='background: #AEF1AE'>          maybeReaction &lt;- resolverResult.statement match {
-</span>78 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Intransitive(action) =&gt;
-</span>79 <span style=''></span><span style='background: #AEF1AE'>              ground
-</span>80 <span style=''></span><span style='background: #AEF1AE'>                .use(action, state)
-</span>81 <span style=''></span><span style='background: #AEF1AE'>                .toRight(s&quot;Could not recognize action&quot;)
-</span>82 <span style=''></span><span style='background: #AEF1AE'>
-</span>83 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Transitive(action, refToItem(item)) =&gt;
-</span>84 <span style=''></span><span style='background: #AEF1AE'>              item
-</span>85 <span style=''></span><span style='background: #AEF1AE'>                .use(action, state)
-</span>86 <span style=''></span><span style='background: #AEF1AE'>                .toRight(s&quot;Couldn't recognize action on the given item&quot;)
-</span>87 <span style=''></span><span style='background: #AEF1AE'>
-</span>88 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =&gt;
-</span>89 <span style=''></span><span style='background: #AEF1AE'>              directObj
-</span>90 <span style=''></span><span style='background: #AEF1AE'>                .use(action, state, Some(indirectObj))
-</span>91 <span style=''></span><span style='background: #AEF1AE'>                .toRight(s&quot;Couldn't recognize action on the given item with the other item&quot;)
-</span>92 <span style=''></span><span style='background: #AEF1AE'>          }
-</span>93 <span style=''></span><span style='background: #AEF1AE'>        } yield InterpreterResult(model)(maybeReaction)</span><span style=''>
-</span>94 <span style=''>    }
-</span>95 <span style=''>}
+</span>67 <span style=''>  def builder[M &lt;: Model](model: M): Builder[model.type, model.S, model.Reaction] =
+</span>68 <span style=''>    state =&gt; {
+</span>69 <span style=''>      implicit val s: model.S           = state
+</span>70 <span style=''>      val refToItem: RefToItem[model.I] = </span><span style='background: #AEF1AE'>RefToItem(model)(state.items)</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>      // shortcut for implementing the Interpreter, as it is a single method trait
+</span>73 <span style=''>      (resolverResult: ResolverResult) =&gt;
+</span>74 <span style=''>        </span><span style='background: #AEF1AE'>for {
+</span>75 <span style=''></span><span style='background: #AEF1AE'>          maybeReaction &lt;- resolverResult.statement match {
+</span>76 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Intransitive(action) =&gt;
+</span>77 <span style=''></span><span style='background: #AEF1AE'>              state.ground.use(action).toRight(s&quot;I can't do that!&quot;)
+</span>78 <span style=''></span><span style='background: #AEF1AE'>
+</span>79 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Transitive(action, refToItem(item)) =&gt;
+</span>80 <span style=''></span><span style='background: #AEF1AE'>              item.use(action).toRight(s&quot;I can't do that!&quot;)
+</span>81 <span style=''></span><span style='background: #AEF1AE'>
+</span>82 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =&gt;
+</span>83 <span style=''></span><span style='background: #AEF1AE'>              directObj.use(action, Some(indirectObj)).toRight(s&quot;I can't do that!&quot;)
+</span>84 <span style=''></span><span style='background: #AEF1AE'>
+</span>85 <span style=''></span><span style='background: #AEF1AE'>            case _ =&gt; </span><span style='background: #F0ADAD'>Left(s&quot;I can't do that!&quot;)</span><span style='background: #AEF1AE'>
+</span>86 <span style=''></span><span style='background: #AEF1AE'>          }
+</span>87 <span style=''></span><span style='background: #AEF1AE'>        } yield InterpreterResult(model)(maybeReaction)</span><span style=''>
+</span>88 <span style=''>    }
+</span>89 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -131,15 +125,39 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          72
+          70
         </td>
         <td>
-          430
+          646
         </td>
         <td>
-          3073
+          3076
           -
-          3099
+          3087
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.State.items
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          state.items
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          647
+        </td>
+        <td>
+          3059
+          -
+          3088
         </td>
         <td>
           Apply
@@ -151,19 +169,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          RefToItem.apply[M](model)(itemDict)
+          RefToItem.apply[M](model)(state.items)
         </td>
       </tr><tr>
         <td>
-          77
+          75
         </td>
         <td>
-          431
+          648
         </td>
         <td>
-          3267
+          3256
           -
-          3291
+          3280
         </td>
         <td>
           Select
@@ -179,15 +197,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          75
         </td>
         <td>
-          438
+          656
         </td>
         <td>
-          3234
+          3223
           -
-          3996
+          3833
         </td>
         <td>
           Apply
@@ -200,22 +218,23 @@
         </td>
         <td style="background: #AEF1AE">
           resolverResult.statement match {
-  case (action: io.github.scalaquest.core.model.Action): io.github.scalaquest.core.pipeline.resolver.Statement.Intransitive((action @ _)) =&gt; ground.use(action, state).toRight[String]((&quot;Could not recognize action&quot;: String))
-  case (action: io.github.scalaquest.core.model.Action, obj: io.github.scalaquest.core.model.ItemRef): io.github.scalaquest.core.pipeline.resolver.Statement.Transitive((action @ _), refToItem.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((item @ _))) =&gt; item.use(action, state, item.use$default$3).toRight[String]((&quot;Couldn\'t recognize action on the given item&quot;: String))
-  case (action: io.github.scalaquest.core.model.Action, directObj: io.github.scalaquest.core.model.ItemRef, indirectObj: io.github.scalaquest.core.model.ItemRef): io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive((action @ _), refToItem.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), refToItem.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; directObj.use(action, state, scala.Some.apply[model.I](indirectObj)).toRight[String]((&quot;Couldn\'t recognize action on the given item with the other item&quot;: String))
+  case (action: io.github.scalaquest.core.model.Action): io.github.scalaquest.core.pipeline.resolver.Statement.Intransitive((action @ _)) =&gt; state.ground.use(action)(s).toRight[String]((&quot;I can\'t do that!&quot;: String))
+  case (action: io.github.scalaquest.core.model.Action, obj: io.github.scalaquest.core.model.ItemRef): io.github.scalaquest.core.pipeline.resolver.Statement.Transitive((action @ _), refToItem.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((item @ _))) =&gt; item.use(action, item.use$default$2)(s).toRight[String]((&quot;I can\'t do that!&quot;: String))
+  case (action: io.github.scalaquest.core.model.Action, directObj: io.github.scalaquest.core.model.ItemRef, indirectObj: io.github.scalaquest.core.model.ItemRef): io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive((action @ _), refToItem.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((directObj @ _)), refToItem.unapply(&lt;unapply-selector&gt;) &lt;unapply&gt; ((indirectObj @ _))) =&gt; directObj.use(action, scala.Some.apply[model.I](indirectObj))(s).toRight[String]((&quot;I can\'t do that!&quot;: String))
+  case _ =&gt; scala.`package`.Left.apply[String, Nothing]((&quot;I can\'t do that!&quot;: String))
 }.map[io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[model.Reaction]](((maybeReaction: model.Reaction) =&gt; InterpreterResult.apply[M](model)(maybeReaction)))
         </td>
       </tr><tr>
         <td>
-          81
+          77
         </td>
         <td>
-          432
+          649
         </td>
         <td>
-          3365
+          3354
           -
-          3463
+          3407
         </td>
         <td>
           Apply
@@ -227,43 +246,43 @@
           
         </td>
         <td style="background: #AEF1AE">
-          ground.use(action, state).toRight[String]((&quot;Could not recognize action&quot;: String))
+          state.ground.use(action)(s).toRight[String]((&quot;I can\'t do that!&quot;: String))
         </td>
       </tr><tr>
         <td>
-          85
+          80
         </td>
         <td>
-          433
+          650
         </td>
         <td>
-          3567
+          3494
           -
-          3567
+          3494
         </td>
         <td>
           Select
         </td>
         <td>
-          io.github.scalaquest.core.model.Model.Item.use$default$3
+          io.github.scalaquest.core.model.Model.Item.use$default$2
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          item.use$default$3
+          item.use$default$2
         </td>
       </tr><tr>
         <td>
-          86
+          80
         </td>
         <td>
-          434
+          651
         </td>
         <td>
-          3545
+          3489
           -
-          3658
+          3534
         </td>
         <td>
           Apply
@@ -275,19 +294,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          item.use(action, state, item.use$default$3).toRight[String]((&quot;Couldn\'t recognize action on the given item&quot;: String))
+          item.use(action, item.use$default$2)(s).toRight[String]((&quot;I can\'t do that!&quot;: String))
         </td>
       </tr><tr>
         <td>
-          90
+          83
         </td>
         <td>
-          435
+          652
         </td>
         <td>
-          3817
+          3669
           -
-          3834
+          3686
         </td>
         <td>
           Apply
@@ -303,15 +322,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          83
         </td>
         <td>
-          436
+          653
         </td>
         <td>
-          3771
+          3647
           -
-          3928
+          3716
         </td>
         <td>
           Apply
@@ -323,19 +342,43 @@
           
         </td>
         <td style="background: #AEF1AE">
-          directObj.use(action, state, scala.Some.apply[model.I](indirectObj)).toRight[String]((&quot;Couldn\'t recognize action on the given item with the other item&quot;: String))
+          directObj.use(action, scala.Some.apply[model.I](indirectObj))(s).toRight[String]((&quot;I can\'t do that!&quot;: String))
         </td>
       </tr><tr>
         <td>
-          93
+          85
         </td>
         <td>
-          437
+          654
         </td>
         <td>
-          3957
+          3740
           -
-          3996
+          3765
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Left.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Left.apply[String, Nothing]((&quot;I can\'t do that!&quot;: String))
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          655
+        </td>
+        <td>
+          3794
+          -
+          3833
         </td>
         <td>
           Apply

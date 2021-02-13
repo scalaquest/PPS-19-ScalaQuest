@@ -1,0 +1,175 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/verbs/Meaning.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.verbs
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Action
+</span>4 <span style=''>
+</span>5 <span style=''>trait Meaning {
+</span>6 <span style=''>  def action: Action
+</span>7 <span style=''>
+</span>8 <span style=''>  def binding: (VerbPrep, Action)
+</span>9 <span style=''>}
+</span>10 <span style=''>
+</span>11 <span style=''>trait PairUtils extends Meaning { self: BaseVerb =&gt;
+</span>12 <span style=''>  override def binding: (VerbPrep, Action) = </span><span style='background: #F0ADAD'>(name, prep) -&gt; action</span><span style=''>
+</span>13 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          97
+        </td>
+        <td>
+          272
+          -
+          276
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.BaseVerb.name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          PairUtils.this.name
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          98
+        </td>
+        <td>
+          278
+          -
+          282
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.BaseVerb.prep
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          PairUtils.this.prep
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          99
+        </td>
+        <td>
+          271
+          -
+          283
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[String, Option[String]](PairUtils.this.name, PairUtils.this.prep)
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          100
+        </td>
+        <td>
+          287
+          -
+          293
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.verbs.Meaning.action
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          PairUtils.this.action
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          101
+        </td>
+        <td>
+          271
+          -
+          293
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.ArrowAssoc[(String, Option[String])](scala.Tuple2.apply[String, Option[String]](PairUtils.this.name, PairUtils.this.prep)).-&gt;[io.github.scalaquest.core.model.Action](PairUtils.this.action)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

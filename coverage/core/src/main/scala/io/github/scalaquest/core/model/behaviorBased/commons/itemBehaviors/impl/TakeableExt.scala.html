@@ -1,0 +1,323 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/itemBehaviors/impl/TakeableExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>8 <span style=''>
+</span>9 <span style=''>/**
+</span>10 <span style=''> * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait TakeableExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with StateUtilsExt
+</span>15 <span style=''>  with CommonMessagesExt
+</span>16 <span style=''>  with CommonReactionsExt {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
+</span>20 <span style=''>   * player.
+</span>21 <span style=''>   */
+</span>22 <span style=''>  abstract class Takeable extends ItemBehavior {
+</span>23 <span style=''>    def take: Reaction
+</span>24 <span style=''>  }
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * Standard implementation of the Takeable.
+</span>28 <span style=''>   *
+</span>29 <span style=''>   * The behavior of an Item that could be put into the Bag of the player from the current room.
+</span>30 <span style=''>   * @param onTakeExtra
+</span>31 <span style=''>   *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
+</span>32 <span style=''>   *   omitted.
+</span>33 <span style=''>   */
+</span>34 <span style=''>  case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit subject: I)
+</span>35 <span style=''>    extends Takeable {
+</span>36 <span style=''>
+</span>37 <span style=''>    override def triggers: ItemTriggers = {
+</span>38 <span style=''>      // &quot;Take the item&quot;
+</span>39 <span style=''>      case (Take, item, None, state) if </span><span style='background: #AEF1AE'>state.isInLocation(item)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>take</span><span style=''>
+</span>40 <span style=''>    }
+</span>41 <span style=''>
+</span>42 <span style=''>    /**
+</span>43 <span style=''>     * Returns a Reaction that removes the item from the current room, put it into the bag, executes
+</span>44 <span style=''>     * the eventual extra reaction.
+</span>45 <span style=''>     * @return
+</span>46 <span style=''>     *   A Reaction that removes the item from the current room, put it into the bag, executes the
+</span>47 <span style=''>     *   eventual extra reaction.
+</span>48 <span style=''>     */
+</span>49 <span style=''>    def take: Reaction =
+</span>50 <span style=''>      </span><span style='background: #AEF1AE'>_.applyReactions(
+</span>51 <span style=''></span><span style='background: #AEF1AE'>        Reactions.take(subject),
+</span>52 <span style=''></span><span style='background: #AEF1AE'>        onTakeExtra.getOrElse(Reactions.empty)
+</span>53 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>54 <span style=''>
+</span>55 <span style=''>  }
+</span>56 <span style=''>
+</span>57 <span style=''>  /**
+</span>58 <span style=''>   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
+</span>59 <span style=''>   */
+</span>60 <span style=''>  object Takeable {
+</span>61 <span style=''>
+</span>62 <span style=''>    def builder(onTakeExtra: Option[Reaction] = None): I =&gt; Takeable =
+</span>63 <span style=''>      </span><span style='background: #AEF1AE'>SimpleTakeable(onTakeExtra)(_)</span><span style=''>
+</span>64 <span style=''>  }
+</span>65 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          357
+        </td>
+        <td>
+          1374
+          -
+          1374
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          355
+        </td>
+        <td>
+          1441
+          -
+          1465
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.StateUtils(state).isInLocation(item)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          356
+        </td>
+        <td>
+          1469
+          -
+          1473
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.take
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          362
+        </td>
+        <td>
+          1813
+          -
+          1918
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.StateUtils(x$1).applyReactions(TakeableExt.this.Reactions.take(SimpleTakeable.this.subject), SimpleTakeable.this.onTakeExtra.getOrElse[TakeableExt.this.Reaction](TakeableExt.this.Reactions.empty))
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          358
+        </td>
+        <td>
+          1854
+          -
+          1861
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          359
+        </td>
+        <td>
+          1839
+          -
+          1862
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.Reactions.take(SimpleTakeable.this.subject)
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          360
+        </td>
+        <td>
+          1894
+          -
+          1909
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.Reactions.empty
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          361
+        </td>
+        <td>
+          1872
+          -
+          1910
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.onTakeExtra.getOrElse[TakeableExt.this.Reaction](TakeableExt.this.Reactions.empty)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          363
+        </td>
+        <td>
+          2117
+          -
+          2147
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.SimpleTakeable.apply(onTakeExtra)(x$2)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

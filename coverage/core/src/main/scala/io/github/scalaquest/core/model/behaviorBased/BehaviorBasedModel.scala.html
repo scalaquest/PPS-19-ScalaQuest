@@ -51,95 +51,105 @@
 </span>27 <span style=''>     * @return
 </span>28 <span style=''>     *   [[ItemBehavior]] s associated to the Item.
 </span>29 <span style=''>     */
-</span>30 <span style=''>    def behaviors: Seq[ItemBehavior] = </span><span style='background: #F0ADAD'>Seq()</span><span style=''>
+</span>30 <span style=''>    def behaviors: Seq[ItemBehavior] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
 </span>31 <span style=''>
-</span>32 <span style=''>    override def use(action: Action, state: S, maybeSideItem: Option[I]): Option[Reaction] =
-</span>33 <span style=''>      </span><span style='background: #AEF1AE'>behaviors.map(_.triggers).reduce(</span><span style='background: #F0ADAD'>_ orElse _</span><span style='background: #AEF1AE'>).lift((action, this, maybeSideItem, state))</span><span style=''>
-</span>34 <span style=''>  }
-</span>35 <span style=''>
-</span>36 <span style=''>  /**
-</span>37 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations
-</span>38 <span style=''>   * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
-</span>39 <span style=''>   * [[ItemBehavior]] is based into this construct.
-</span>40 <span style=''>   */
-</span>41 <span style=''>  type ItemTriggers = PartialFunction[(Action, I, Option[I], S), Reaction]
-</span>42 <span style=''>
-</span>43 <span style=''>  /**
-</span>44 <span style=''>   * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
-</span>45 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
+</span>32 <span style=''>    override def use(action: Action, maybeSideItem: Option[I])(implicit
+</span>33 <span style=''>      state: S
+</span>34 <span style=''>    ): Option[Reaction] =
+</span>35 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
+</span>36 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
+</span>37 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(</span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style='background: #AEF1AE'>)
+</span>39 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, this, maybeSideItem, state))</span><span style=''>
+</span>40 <span style=''>  }
+</span>41 <span style=''>
+</span>42 <span style=''>  /**
+</span>43 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations
+</span>44 <span style=''>   * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
+</span>45 <span style=''>   * [[ItemBehavior]] is based into this construct.
 </span>46 <span style=''>   */
-</span>47 <span style=''>  abstract class ItemBehavior {
-</span>48 <span style=''>    def triggers: ItemTriggers = </span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style=''>
-</span>49 <span style=''>  }
-</span>50 <span style=''>
-</span>51 <span style=''>  /**
-</span>52 <span style=''>   * A mixin for [[ItemBehavior]], that enables the possibility implement the delegation pattern for
-</span>53 <span style=''>   * them. It means that the receiver behavior (the one that mixes in [[Delegate]] ) can owe
-</span>54 <span style=''>   * internally another one, inheriting its [[ItemTriggers]]. If the receiver overwrites some of the
-</span>55 <span style=''>   * delegate triggers, the receiver ones have the priority, and the delegate ones are not executed.
-</span>56 <span style=''>   */
-</span>57 <span style=''>  trait Delegate extends ItemBehavior {
-</span>58 <span style=''>
-</span>59 <span style=''>    /**
-</span>60 <span style=''>     * Should be overrode with the delegate [[ItemBehavior]] 's [[ItemTriggers]].
-</span>61 <span style=''>     *
-</span>62 <span style=''>     * @return
-</span>63 <span style=''>     *   The delegate [[ItemBehavior]] 's [[ItemTriggers]].
-</span>64 <span style=''>     */
-</span>65 <span style=''>    def delegateTriggers: ItemTriggers
-</span>66 <span style=''>
-</span>67 <span style=''>    /**
-</span>68 <span style=''>     * Should be overrode with the [[ItemTriggers]] of the receiver (the behavior that mixes in
-</span>69 <span style=''>     * [[Delegate]] ).
-</span>70 <span style=''>     *
-</span>71 <span style=''>     * @return
-</span>72 <span style=''>     *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
-</span>73 <span style=''>     */
-</span>74 <span style=''>    def receiverTriggers: ItemTriggers = </span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style=''>
-</span>75 <span style=''>
-</span>76 <span style=''>    /**
-</span>77 <span style=''>     * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
-</span>78 <span style=''>     * receiver overwrites some of the delegate triggers, the receiver ones have the priority, and
-</span>79 <span style=''>     * the delegate ones are not executed.
-</span>80 <span style=''>     *
-</span>81 <span style=''>     * @return
-</span>82 <span style=''>     *   The combined triggers.
-</span>83 <span style=''>     */
-</span>84 <span style=''>    final override def triggers: ItemTriggers =
-</span>85 <span style=''>      </span><span style='background: #AEF1AE'>Seq(receiverTriggers, delegateTriggers).reduce(_ orElse _)</span><span style=''>
-</span>86 <span style=''>  }
-</span>87 <span style=''>
-</span>88 <span style=''>  override type G = BehaviorBasedGround
-</span>89 <span style=''>
-</span>90 <span style=''>  /**
-</span>91 <span style=''>   * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
-</span>92 <span style=''>   * combinations.
-</span>93 <span style=''>   *
-</span>94 <span style=''>   * A Ground that exploit the behavioral mechanism should extend this partial implementation. This
-</span>95 <span style=''>   * because the handling of use* functions following this style (by exploring the available
-</span>96 <span style=''>   * triggers) is implemented here.
-</span>97 <span style=''>   */
-</span>98 <span style=''>  abstract class BehaviorBasedGround extends Ground {
-</span>99 <span style=''>    def behaviors: Seq[GroundBehavior] = </span><span style='background: #F0ADAD'>Seq()</span><span style=''>
-</span>100 <span style=''>
-</span>101 <span style=''>    override def use(action: Action, state: S): Option[Reaction] =
-</span>102 <span style=''>      </span><span style='background: #AEF1AE'>behaviors.map(_.triggers).reduce(_ orElse _).lift((action, state))</span><span style=''>
-</span>103 <span style=''>  }
-</span>104 <span style=''>
-</span>105 <span style=''>  /**
-</span>106 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations action-state,
-</span>107 <span style=''>   * responding with a [[Reaction]]. The [[GroundBehavior]] is based into this construct.
-</span>108 <span style=''>   */
-</span>109 <span style=''>  type GroundTriggers = PartialFunction[(Action, S), Reaction]
-</span>110 <span style=''>
-</span>111 <span style=''>  /**
-</span>112 <span style=''>   * Makes a [[BehaviorBasedGround]] react to specific [[GroundTriggers]] with a [[Reaction]]. The
-</span>113 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
-</span>114 <span style=''>   */
-</span>115 <span style=''>  abstract class GroundBehavior {
-</span>116 <span style=''>    def triggers: GroundTriggers = </span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style=''>
-</span>117 <span style=''>  }
-</span>118 <span style=''>}
+</span>47 <span style=''>  type ItemTriggers = PartialFunction[(Action, I, Option[I], S), Reaction]
+</span>48 <span style=''>
+</span>49 <span style=''>  /**
+</span>50 <span style=''>   * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
+</span>51 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
+</span>52 <span style=''>   */
+</span>53 <span style=''>  abstract class ItemBehavior {
+</span>54 <span style=''>    def triggers: ItemTriggers = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>55 <span style=''>  }
+</span>56 <span style=''>
+</span>57 <span style=''>  /**
+</span>58 <span style=''>   * A mixin for [[ItemBehavior]], that enables the possibility implement the delegation pattern for
+</span>59 <span style=''>   * them. It means that the receiver behavior (the one that mixes in [[Delegate]] ) can owe
+</span>60 <span style=''>   * internally another one, inheriting its [[ItemTriggers]]. If the receiver overwrites some of the
+</span>61 <span style=''>   * delegate triggers, the receiver ones have the priority, and the delegate ones are not executed.
+</span>62 <span style=''>   */
+</span>63 <span style=''>  trait Delegate extends ItemBehavior {
+</span>64 <span style=''>
+</span>65 <span style=''>    /**
+</span>66 <span style=''>     * Should be overrode with the delegate [[ItemBehavior]] 's [[ItemTriggers]].
+</span>67 <span style=''>     *
+</span>68 <span style=''>     * @return
+</span>69 <span style=''>     *   The delegate [[ItemBehavior]] 's [[ItemTriggers]].
+</span>70 <span style=''>     */
+</span>71 <span style=''>    def delegateTriggers: ItemTriggers
+</span>72 <span style=''>
+</span>73 <span style=''>    /**
+</span>74 <span style=''>     * Should be overrode with the [[ItemTriggers]] of the receiver (the behavior that mixes in
+</span>75 <span style=''>     * [[Delegate]] ).
+</span>76 <span style=''>     *
+</span>77 <span style=''>     * @return
+</span>78 <span style=''>     *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
+</span>79 <span style=''>     */
+</span>80 <span style=''>    def receiverTriggers: ItemTriggers = </span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style=''>
+</span>81 <span style=''>
+</span>82 <span style=''>    /**
+</span>83 <span style=''>     * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
+</span>84 <span style=''>     * receiver overwrites some of the delegate triggers, the receiver ones have the priority, and
+</span>85 <span style=''>     * the delegate ones are not executed.
+</span>86 <span style=''>     *
+</span>87 <span style=''>     * @return
+</span>88 <span style=''>     *   The combined triggers.
+</span>89 <span style=''>     */
+</span>90 <span style=''>    final override def triggers: ItemTriggers =
+</span>91 <span style=''>      </span><span style='background: #AEF1AE'>Seq(receiverTriggers, delegateTriggers).reduce(_ orElse _)</span><span style=''>
+</span>92 <span style=''>  }
+</span>93 <span style=''>
+</span>94 <span style=''>  override type G = BehaviorBasedGround
+</span>95 <span style=''>
+</span>96 <span style=''>  /**
+</span>97 <span style=''>   * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
+</span>98 <span style=''>   * combinations.
+</span>99 <span style=''>   *
+</span>100 <span style=''>   * A Ground that exploit the behavioral mechanism should extend this partial implementation. This
+</span>101 <span style=''>   * because the handling of use* functions following this style (by exploring the available
+</span>102 <span style=''>   * triggers) is implemented here.
+</span>103 <span style=''>   */
+</span>104 <span style=''>  abstract class BehaviorBasedGround extends Ground {
+</span>105 <span style=''>    def behaviors: Seq[GroundBehavior] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
+</span>106 <span style=''>
+</span>107 <span style=''>    override def use(action: Action)(implicit state: S): Option[Reaction] =
+</span>108 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
+</span>109 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
+</span>110 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
+</span>111 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(</span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style='background: #AEF1AE'>)
+</span>112 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, state))</span><span style=''>
+</span>113 <span style=''>  }
+</span>114 <span style=''>
+</span>115 <span style=''>  /**
+</span>116 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations action-state,
+</span>117 <span style=''>   * responding with a [[Reaction]]. The [[GroundBehavior]] is based into this construct.
+</span>118 <span style=''>   */
+</span>119 <span style=''>  type GroundTriggers = PartialFunction[(Action, S), Reaction]
+</span>120 <span style=''>
+</span>121 <span style=''>  /**
+</span>122 <span style=''>   * Makes a [[BehaviorBasedGround]] react to specific [[GroundTriggers]] with a [[Reaction]]. The
+</span>123 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
+</span>124 <span style=''>   */
+</span>125 <span style=''>  abstract class GroundBehavior {
+</span>126 <span style=''>    def triggers: GroundTriggers = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>127 <span style=''>  }
+</span>128 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -157,36 +167,36 @@
           30
         </td>
         <td>
-          138
+          183
         </td>
         <td>
           1111
           -
-          1116
+          1120
         </td>
         <td>
-          Apply
+          TypeApply
         </td>
         <td>
-          scala.collection.SeqFactory.Delegate.apply
+          scala.collection.SeqFactory.Delegate.empty
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          scala.`package`.Seq.apply[Nothing]()
+          scala.`package`.Seq.empty[Nothing]
         </td>
       </tr><tr>
         <td>
-          33
+          36
         </td>
         <td>
-          139
+          184
         </td>
         <td>
-          1231
+          1264
           -
-          1241
+          1274
         </td>
         <td>
           Select
@@ -202,15 +212,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          37
         </td>
         <td>
-          140
+          185
         </td>
         <td>
-          1250
+          1298
           -
-          1260
+          1308
         </td>
         <td>
           Apply
@@ -221,20 +231,44 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           x$2.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.I, Option[BehaviorBasedModel.this.I], BehaviorBasedModel.this.S), BehaviorBasedModel.this.Reaction](x$3)
         </td>
       </tr><tr>
         <td>
-          33
+          38
         </td>
         <td>
-          141
+          186
         </td>
         <td>
-          1267
+          1329
           -
-          1303
+          1350
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.PartialFunction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.PartialFunction.empty[Any, Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          187
+        </td>
+        <td>
+          1366
+          -
+          1402
         </td>
         <td>
           Apply
@@ -250,15 +284,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          39
         </td>
         <td>
-          142
+          188
         </td>
         <td>
-          1217
+          1241
           -
-          1304
+          1403
         </td>
         <td>
           Apply
@@ -270,19 +304,43 @@
           
         </td>
         <td style="background: #AEF1AE">
-          BehaviorBasedItem.this.behaviors.map[BehaviorBasedModel.this.ItemTriggers](((x$1: BehaviorBasedModel.this.ItemBehavior) =&gt; x$1.triggers)).reduce[BehaviorBasedModel.this.ItemTriggers](((x$2: BehaviorBasedModel.this.ItemTriggers, x$3: BehaviorBasedModel.this.ItemTriggers) =&gt; x$2.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.I, Option[BehaviorBasedModel.this.I], BehaviorBasedModel.this.S), BehaviorBasedModel.this.Reaction](x$3))).lift.apply(scala.Tuple4.apply[io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.I], BehaviorBasedModel.this.S](action, this, maybeSideItem, state))
+          BehaviorBasedItem.this.behaviors.map[BehaviorBasedModel.this.ItemTriggers](((x$1: BehaviorBasedModel.this.ItemBehavior) =&gt; x$1.triggers)).reduceOption[BehaviorBasedModel.this.ItemTriggers](((x$2: BehaviorBasedModel.this.ItemTriggers, x$3: BehaviorBasedModel.this.ItemTriggers) =&gt; x$2.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.I, Option[BehaviorBasedModel.this.I], BehaviorBasedModel.this.S), BehaviorBasedModel.this.Reaction](x$3))).getOrElse[BehaviorBasedModel.this.ItemTriggers](scala.PartialFunction.empty[Any, Nothing]).lift.apply(scala.Tuple4.apply[io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.I], BehaviorBasedModel.this.S](action, this, maybeSideItem, state))
         </td>
       </tr><tr>
         <td>
-          48
+          54
         </td>
         <td>
-          143
+          189
         </td>
         <td>
-          1853
+          1952
           -
-          1874
+          1973
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.PartialFunction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.PartialFunction.empty[Any, Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          190
+        </td>
+        <td>
+          2936
+          -
+          2957
         </td>
         <td>
           TypeApply
@@ -298,39 +356,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          91
         </td>
         <td>
-          144
+          191
         </td>
         <td>
-          2837
+          3329
           -
-          2858
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.PartialFunction.empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          scala.PartialFunction.empty[Any, Nothing]
-        </td>
-      </tr><tr>
-        <td>
-          85
-        </td>
-        <td>
-          145
-        </td>
-        <td>
-          3230
-          -
-          3246
+          3345
         </td>
         <td>
           Select
@@ -346,15 +380,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          91
         </td>
         <td>
-          146
+          192
         </td>
         <td>
-          3248
+          3347
           -
-          3264
+          3363
         </td>
         <td>
           Select
@@ -370,15 +404,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          91
         </td>
         <td>
-          147
+          193
         </td>
         <td>
-          3273
+          3372
           -
-          3283
+          3382
         </td>
         <td>
           Apply
@@ -394,15 +428,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          91
         </td>
         <td>
-          148
+          194
         </td>
         <td>
-          3226
+          3325
           -
-          3284
+          3383
         </td>
         <td>
           Apply
@@ -418,39 +452,39 @@
         </td>
       </tr><tr>
         <td>
-          99
+          105
         </td>
         <td>
-          149
+          195
         </td>
         <td>
-          3783
+          3882
           -
-          3788
+          3891
         </td>
         <td>
-          Apply
+          TypeApply
         </td>
         <td>
-          scala.collection.SeqFactory.Delegate.apply
+          scala.collection.SeqFactory.Delegate.empty
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          scala.`package`.Seq.apply[Nothing]()
+          scala.`package`.Seq.empty[Nothing]
         </td>
       </tr><tr>
         <td>
-          102
+          109
         </td>
         <td>
-          150
+          196
         </td>
         <td>
-          3877
+          3998
           -
-          3887
+          4008
         </td>
         <td>
           Select
@@ -466,15 +500,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          110
         </td>
         <td>
-          151
+          197
         </td>
         <td>
-          3896
+          4032
           -
-          3906
+          4042
         </td>
         <td>
           Apply
@@ -490,15 +524,39 @@
         </td>
       </tr><tr>
         <td>
-          102
+          111
         </td>
         <td>
-          152
+          198
         </td>
         <td>
-          3913
+          4063
           -
-          3928
+          4084
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.PartialFunction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.PartialFunction.empty[Any, Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          112
+        </td>
+        <td>
+          199
+        </td>
+        <td>
+          4100
+          -
+          4115
         </td>
         <td>
           Apply
@@ -514,15 +572,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          112
         </td>
         <td>
-          153
+          200
         </td>
         <td>
-          3863
+          3975
           -
-          3929
+          4116
         </td>
         <td>
           Apply
@@ -534,19 +592,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          BehaviorBasedGround.this.behaviors.map[BehaviorBasedModel.this.GroundTriggers](((x$6: BehaviorBasedModel.this.GroundBehavior) =&gt; x$6.triggers)).reduce[BehaviorBasedModel.this.GroundTriggers](((x$7: BehaviorBasedModel.this.GroundTriggers, x$8: BehaviorBasedModel.this.GroundTriggers) =&gt; x$7.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.S), BehaviorBasedModel.this.Reaction](x$8))).lift.apply(scala.Tuple2.apply[io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.S](action, state))
+          BehaviorBasedGround.this.behaviors.map[BehaviorBasedModel.this.GroundTriggers](((x$6: BehaviorBasedModel.this.GroundBehavior) =&gt; x$6.triggers)).reduceOption[BehaviorBasedModel.this.GroundTriggers](((x$7: BehaviorBasedModel.this.GroundTriggers, x$8: BehaviorBasedModel.this.GroundTriggers) =&gt; x$7.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.S), BehaviorBasedModel.this.Reaction](x$8))).getOrElse[BehaviorBasedModel.this.GroundTriggers](scala.PartialFunction.empty[Any, Nothing]).lift.apply(scala.Tuple2.apply[io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.S](action, state))
         </td>
       </tr><tr>
         <td>
-          116
+          126
         </td>
         <td>
-          154
+          201
         </td>
         <td>
-          4435
+          4622
           -
-          4456
+          4643
         </td>
         <td>
           TypeApply
@@ -557,7 +615,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.PartialFunction.empty[Any, Nothing]
         </td>
       </tr>

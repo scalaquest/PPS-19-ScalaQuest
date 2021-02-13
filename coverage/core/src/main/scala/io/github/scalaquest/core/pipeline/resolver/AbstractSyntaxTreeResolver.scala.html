@@ -1,0 +1,470 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/pipeline/resolver/AbstractSyntaxTreeResolver.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.resolver
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.dictionary.verbs.VerbPrep
+</span>4 <span style=''>import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef}
+</span>5 <span style=''>import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
+</span>6 <span style=''>
+</span>7 <span style=''>abstract class AbstractSyntaxTreeResolver extends Resolver {
+</span>8 <span style=''>
+</span>9 <span style=''>  def actions(v: VerbPrep): Either[String, Action]
+</span>10 <span style=''>
+</span>11 <span style=''>  def items(d: ItemDescription): Either[String, ItemRef]
+</span>12 <span style=''>
+</span>13 <span style=''>  override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
+</span>14 <span style=''>    </span><span style='background: #AEF1AE'>for {
+</span>15 <span style=''></span><span style='background: #AEF1AE'>      statement &lt;- parserResult.tree match {
+</span>16 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Intransitive(verb, prep, _) =&gt;
+</span>17 <span style=''></span><span style='background: #AEF1AE'>          for {
+</span>18 <span style=''></span><span style='background: #AEF1AE'>            action &lt;- actions((verb, prep))
+</span>19 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Intransitive(action)
+</span>20 <span style=''></span><span style='background: #AEF1AE'>
+</span>21 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Transitive(verb, prep, _, obj) =&gt;
+</span>22 <span style=''></span><span style='background: #AEF1AE'>          for {
+</span>23 <span style=''></span><span style='background: #AEF1AE'>            action  &lt;- actions((verb, prep))
+</span>24 <span style=''></span><span style='background: #AEF1AE'>            itemRef &lt;- items(obj)
+</span>25 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Transitive(action, itemRef)
+</span>26 <span style=''></span><span style='background: #AEF1AE'>
+</span>27 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Ditransitive(verb, prep, _, directObj, indirectObj) =&gt;
+</span>28 <span style=''></span><span style='background: #AEF1AE'>          for {
+</span>29 <span style=''></span><span style='background: #AEF1AE'>            action          &lt;- actions((verb, prep))
+</span>30 <span style=''></span><span style='background: #AEF1AE'>            directItemRef   &lt;- items(directObj)
+</span>31 <span style=''></span><span style='background: #AEF1AE'>            indirectItemRef &lt;- items(indirectObj)
+</span>32 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
+</span>33 <span style=''></span><span style='background: #AEF1AE'>
+</span>34 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; Left(&quot;The statement is wrong.&quot;)
+</span>35 <span style=''></span><span style='background: #AEF1AE'>      }
+</span>36 <span style=''></span><span style='background: #AEF1AE'>    } yield ResolverResult(statement)</span><span style=''>
+</span>37 <span style=''>  }
+</span>38 <span style=''>
+</span>39 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          711
+        </td>
+        <td>
+          559
+          -
+          576
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.ParserResult.tree
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          parserResult.tree
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          726
+        </td>
+        <td>
+          534
+          -
+          1407
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          parserResult.tree match {
+  case (verb: String, prep: Option[String], subject: String): io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Intransitive((verb @ _), (prep @ _), _) =&gt; AbstractSyntaxTreeResolver.this.actions(scala.Tuple2.apply[String, Option[String]](verb, prep)).map[io.github.scalaquest.core.pipeline.resolver.Statement.Intransitive](((action: io.github.scalaquest.core.model.Action) =&gt; Statement.Intransitive.apply(action)))
+  case (verb: String, prep: Option[String], subject: String, obj: io.github.scalaquest.core.model.ItemDescription): io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Transitive((verb @ _), (prep @ _), _, (obj @ _)) =&gt; AbstractSyntaxTreeResolver.this.actions(scala.Tuple2.apply[String, Option[String]](verb, prep)).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Transitive](((action: io.github.scalaquest.core.model.Action) =&gt; AbstractSyntaxTreeResolver.this.items(obj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Transitive](((itemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Transitive.apply(action, itemRef)))))
+  case (verb: String, prep: Option[String], subject: String, directObj: io.github.scalaquest.core.model.ItemDescription, indirectObj: io.github.scalaquest.core.model.ItemDescription): io.github.scalaquest.core.pipeline.parser.AbstractSyntaxTree.Ditransitive((verb @ _), (prep @ _), _, (directObj @ _), (indirectObj @ _)) =&gt; AbstractSyntaxTreeResolver.this.actions(scala.Tuple2.apply[String, Option[String]](verb, prep)).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((action: io.github.scalaquest.core.model.Action) =&gt; AbstractSyntaxTreeResolver.this.items(directObj).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((directItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; AbstractSyntaxTreeResolver.this.items(indirectObj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((indirectItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Ditransitive.apply(action, directItemRef, indirectItemRef)))))))
+  case _ =&gt; scala.`package`.Left.apply[String, Nothing](&quot;The statement is wrong.&quot;)
+}.map[io.github.scalaquest.core.pipeline.resolver.ResolverResult](((statement: Product with io.github.scalaquest.core.pipeline.resolver.Statement with java.io.Serializable) =&gt; ResolverResult.apply(statement)))
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          712
+        </td>
+        <td>
+          694
+          -
+          706
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[String, Option[String]](verb, prep)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          714
+        </td>
+        <td>
+          658
+          -
+          756
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTreeResolver.this.actions(scala.Tuple2.apply[String, Option[String]](verb, prep)).map[io.github.scalaquest.core.pipeline.resolver.Statement.Intransitive](((action: io.github.scalaquest.core.model.Action) =&gt; Statement.Intransitive.apply(action)))
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          713
+        </td>
+        <td>
+          726
+          -
+          756
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.resolver.Statement.Intransitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Statement.Intransitive.apply(action)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          715
+        </td>
+        <td>
+          871
+          -
+          883
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[String, Option[String]](verb, prep)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          718
+        </td>
+        <td>
+          834
+          -
+          974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTreeResolver.this.actions(scala.Tuple2.apply[String, Option[String]](verb, prep)).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Transitive](((action: io.github.scalaquest.core.model.Action) =&gt; AbstractSyntaxTreeResolver.this.items(obj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Transitive](((itemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Transitive.apply(action, itemRef)))))
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          717
+        </td>
+        <td>
+          897
+          -
+          974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTreeResolver.this.items(obj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Transitive](((itemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Transitive.apply(action, itemRef)))
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          716
+        </td>
+        <td>
+          937
+          -
+          974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.resolver.Statement.Transitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Statement.Transitive.apply(action, itemRef)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          719
+        </td>
+        <td>
+          1118
+          -
+          1130
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[String, Option[String]](verb, prep)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          723
+        </td>
+        <td>
+          1073
+          -
+          1310
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTreeResolver.this.actions(scala.Tuple2.apply[String, Option[String]](verb, prep)).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((action: io.github.scalaquest.core.model.Action) =&gt; AbstractSyntaxTreeResolver.this.items(directObj).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((directItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; AbstractSyntaxTreeResolver.this.items(indirectObj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((indirectItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Ditransitive.apply(action, directItemRef, indirectItemRef)))))))
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          722
+        </td>
+        <td>
+          1144
+          -
+          1310
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTreeResolver.this.items(directObj).flatMap[String, io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((directItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; AbstractSyntaxTreeResolver.this.items(indirectObj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((indirectItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Ditransitive.apply(action, directItemRef, indirectItemRef)))))
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          721
+        </td>
+        <td>
+          1192
+          -
+          1310
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Either.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          AbstractSyntaxTreeResolver.this.items(indirectObj).map[io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive](((indirectItemRef: io.github.scalaquest.core.model.ItemRef) =&gt; Statement.Ditransitive.apply(action, directItemRef, indirectItemRef)))
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          720
+        </td>
+        <td>
+          1248
+          -
+          1310
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.resolver.Statement.Ditransitive.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Statement.Ditransitive.apply(action, directItemRef, indirectItemRef)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          724
+        </td>
+        <td>
+          1330
+          -
+          1361
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Left.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.Left.apply[String, Nothing](&quot;The statement is wrong.&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          725
+        </td>
+        <td>
+          1382
+          -
+          1407
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.resolver.ResolverResult.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ResolverResult.apply(statement)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

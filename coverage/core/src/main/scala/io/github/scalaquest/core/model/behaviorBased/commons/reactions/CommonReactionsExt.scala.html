@@ -1,0 +1,275 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/reactions/CommonReactionsExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.{
+</span>5 <span style=''>  EatExt,
+</span>6 <span style=''>  EmptyExt,
+</span>7 <span style=''>  EnterExt,
+</span>8 <span style=''>  FinishGameExt,
+</span>9 <span style=''>  InspectLocationExt,
+</span>10 <span style=''>  NavigateExt,
+</span>11 <span style=''>  OpenExt,
+</span>12 <span style=''>  TakeExt
+</span>13 <span style=''>}
+</span>14 <span style=''>
+</span>15 <span style=''>trait CommonReactionsExt
+</span>16 <span style=''>  extends BehaviorBasedModel
+</span>17 <span style=''>  with EatExt
+</span>18 <span style=''>  with EnterExt
+</span>19 <span style=''>  with InspectLocationExt
+</span>20 <span style=''>  with FinishGameExt
+</span>21 <span style=''>  with NavigateExt
+</span>22 <span style=''>  with OpenExt
+</span>23 <span style=''>  with EmptyExt
+</span>24 <span style=''>  with TakeExt { self =&gt;
+</span>25 <span style=''>
+</span>26 <span style=''>  object Reactions {
+</span>27 <span style=''>    def eat(item: I): Reaction             = </span><span style='background: #AEF1AE'>self.eat(item)</span><span style=''>
+</span>28 <span style=''>    def empty: Reaction                    = </span><span style='background: #AEF1AE'>self.empty</span><span style=''>
+</span>29 <span style=''>    def enter(room: RM): Reaction          = </span><span style='background: #AEF1AE'>self.enter(room)</span><span style=''>
+</span>30 <span style=''>    def take(item: I): Reaction            = </span><span style='background: #AEF1AE'>self.take(item)</span><span style=''>
+</span>31 <span style=''>    def inspectLocation: Reaction          = </span><span style='background: #AEF1AE'>self.inspectLocation</span><span style=''>
+</span>32 <span style=''>    def navigate(room: RM): Reaction       = </span><span style='background: #AEF1AE'>self.navigate(room)</span><span style=''>
+</span>33 <span style=''>    def finishGame(win: Boolean): Reaction = </span><span style='background: #F0ADAD'>self.finishGame(win)</span><span style=''>
+</span>34 <span style=''>
+</span>35 <span style=''>    def open(
+</span>36 <span style=''>      itemToOpen: I,
+</span>37 <span style=''>      requiredKey: Option[Key],
+</span>38 <span style=''>      iskeyConsumable: Boolean
+</span>39 <span style=''>    ): Reaction = </span><span style='background: #AEF1AE'>self.open(itemToOpen, requiredKey, iskeyConsumable)</span><span style=''>
+</span>40 <span style=''>  }
+</span>41 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          398
+        </td>
+        <td>
+          608
+          -
+          622
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.EatExt.eat
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.eat(item)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          399
+        </td>
+        <td>
+          668
+          -
+          678
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.EmptyExt.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.empty
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          400
+        </td>
+        <td>
+          724
+          -
+          740
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.EnterExt.enter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.enter(room)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          401
+        </td>
+        <td>
+          786
+          -
+          801
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.TakeExt.take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.take(item)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          402
+        </td>
+        <td>
+          847
+          -
+          867
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.InspectLocationExt.inspectLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.inspectLocation
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          403
+        </td>
+        <td>
+          913
+          -
+          932
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.NavigateExt.navigate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.navigate(room)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          404
+        </td>
+        <td>
+          978
+          -
+          998
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.FinishGameExt.finishGame
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          CommonReactionsExt.this.finishGame(win)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          405
+        </td>
+        <td>
+          1116
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.OpenExt.open
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.open(itemToOpen, requiredKey, iskeyConsumable)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -1,110 +1,148 @@
 <scoverage 
-statement-count="24" statements-invoked="0" statement-rate="0.00" branch-rate="0.00" version="1.0" timestamp="1612609952819">
+statement-count="35" statements-invoked="35" statement-rate="100.00" branch-rate="100.00" version="1.0" timestamp="1613217277888">
     <packages>
-        <package name="io.github.scalaquest.cli" statement-count="24" statements-invoked="0" statement-rate="0.00">
+        <package name="io.github.scalaquest.cli" statement-count="35" statements-invoked="35" statement-rate="100.00">
             <classes>
                 <class 
-                name="io.github.scalaquest.cli.CLI.CLIBuilder" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" statement-count="22" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                name="io.github.scalaquest.cli.CLI.CLIBuilder" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" statement-count="24" statements-invoked="24" statement-rate="100.00" branch-rate="100.00">
                     <methods>
                         <method 
-                        name="io.github.scalaquest.cli/CLIBuilder/start" statement-count="6" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                        name="io.github.scalaquest.cli/CLIBuilder/start" statement-count="8" statements-invoked="8" statement-rate="100.00" branch-rate="100.00">
                             <statements>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1524" end="1538" line="50" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1688" end="1702" line="57" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1512" end="1538" line="50" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1676" end="1702" line="57" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1605" end="1607" line="52" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1741" end="1776" line="58" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1552" end="1607" line="51" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1855" end="1857" line="60" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1480" end="1607" line="50" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1790" end="1857" line="59" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1397" end="1400" line="46" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1716" end="1857" line="58" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1636" end="1857" line="57" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="start" start="1553" end="1556" line="53" branch="false" invocation-count="1" ignored="false">
 </statement>
                             </statements>
 </method>
                         <method 
-                        name="io.github.scalaquest.cli/CLIBuilder/gameLoop" statement-count="16" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                        name="io.github.scalaquest.cli/CLIBuilder/gameLoop" statement-count="16" statements-invoked="16" statement-rate="100.00" branch-rate="100.00">
                             <statements>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="813" end="842" line="32" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="971" end="1000" line="39" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="885" end="885" line="33" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1043" end="1043" line="40" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1116" end="1154" line="38" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1274" end="1312" line="45" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1183" end="1209" line="40" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1341" end="1356" line="47" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1211" end="1219" line="40" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1358" end="1366" line="47" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1211" end="1219" line="40" branch="true" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1358" end="1366" line="47" branch="true" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1266" end="1288" line="41" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1413" end="1435" line="48" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1235" end="1288" line="41" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1382" end="1435" line="48" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1235" end="1288" line="41" branch="true" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1382" end="1435" line="48" branch="true" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1304" end="1306" line="43" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1451" end="1453" line="50" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1164" end="1306" line="39" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1322" end="1453" line="46" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1091" end="1306" line="38" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1249" end="1453" line="45" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1053" end="1306" line="37" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1211" end="1453" line="44" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="852" end="1306" line="33" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="1010" end="1453" line="40" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="786" end="1306" line="32" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="944" end="1453" line="39" branch="false" invocation-count="1" ignored="false">
 </statement>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="740" end="1306" line="31" branch="false" invocation-count="0" ignored="false">
-</statement>
-                            </statements>
-</method>
-                    </methods>
-</class>
-                <class 
-                name="io.github.scalaquest.cli.CLIApp" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" statement-count="1" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
-                    <methods>
-                        <method 
-                        name="io.github.scalaquest.cli/CLIApp/run" statement-count="1" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
-                            <statements>
-                                <statement 
-                                package="io.github.scalaquest.cli" class="CLIApp" class-type="Trait" full-class-name="io.github.scalaquest.cli.CLIApp" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="run" start="372" end="390" line="13" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIBuilder" class-type="Class" full-class-name="io.github.scalaquest.cli.CLI.CLIBuilder" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="gameLoop" start="898" end="1453" line="38" branch="false" invocation-count="1" ignored="false">
 </statement>
                             </statements>
 </method>
                     </methods>
 </class>
                 <class 
-                name="io.github.scalaquest.cli.CLI" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" statement-count="1" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                name="io.github.scalaquest.cli.CLIApp" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" statement-count="1" statements-invoked="1" statement-rate="100.00" branch-rate="100.00">
                     <methods>
                         <method 
-                        name="io.github.scalaquest.cli/CLI/builderFrom" statement-count="1" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                        name="io.github.scalaquest.cli/CLIApp/run" statement-count="1" statements-invoked="1" statement-rate="100.00" branch-rate="100.00">
                             <statements>
                                 <statement 
-                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="builderFrom" start="517" end="541" line="22" branch="false" invocation-count="0" ignored="false">
+                                package="io.github.scalaquest.cli" class="CLIApp" class-type="Trait" full-class-name="io.github.scalaquest.cli.CLIApp" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="run" start="342" end="360" line="13" branch="false" invocation-count="1" ignored="false">
+</statement>
+                            </statements>
+</method>
+                    </methods>
+</class>
+                <class 
+                name="io.github.scalaquest.cli.CLI" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" statement-count="10" statements-invoked="10" statement-rate="100.00" branch-rate="100.00">
+                    <methods>
+                        <method 
+                        name="io.github.scalaquest.cli/CLI/builderFrom" statement-count="1" statements-invoked="1" statement-rate="100.00" branch-rate="100.00">
+                            <statements>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="builderFrom" start="487" end="511" line="22" branch="false" invocation-count="1" ignored="false">
+</statement>
+                            </statements>
+</method>
+                        <method 
+                        name="io.github.scalaquest.cli/CLI/readLine" statement-count="9" statements-invoked="9" statement-rate="100.00" branch-rate="100.00">
+                            <statements>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="594" end="598" line="26" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="637" end="644" line="28" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="646" end="654" line="28" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="646" end="654" line="28" branch="true" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="660" end="674" line="28" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="660" end="674" line="28" branch="true" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="627" end="689" line="28" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="606" end="689" line="27" branch="false" invocation-count="1" ignored="false">
+</statement>
+                                <statement 
+                                package="io.github.scalaquest.cli" class="CLI" class-type="Object" full-class-name="io.github.scalaquest.cli.CLI" source="/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli/src/main/scala/io/github/scalaquest/cli/CLI.scala" method="readLine" start="569" end="689" line="26" branch="false" invocation-count="1" ignored="false">
 </statement>
                             </statements>
 </method>

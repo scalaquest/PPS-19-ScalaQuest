@@ -1,0 +1,400 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/reactions/impl/EatExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>6 <span style=''>
+</span>7 <span style=''>private[reactions] trait EatExt
+</span>8 <span style=''>  extends BehaviorBasedModel
+</span>9 <span style=''>  with StateUtilsExt
+</span>10 <span style=''>  with CommonMessagesExt {
+</span>11 <span style=''>
+</span>12 <span style=''>  private[reactions] def eat(item: I): Reaction =
+</span>13 <span style=''>    state =&gt; {
+</span>14 <span style=''>      val updLocation = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ - item.ref)(state.location)</span><span style=''>
+</span>15 <span style=''>
+</span>16 <span style=''>      </span><span style='background: #AEF1AE'>state.applyReactions(
+</span>17 <span style=''></span><span style='background: #AEF1AE'>        roomsLens.modify(_ + (updLocation.ref -&gt; updLocation)),
+</span>18 <span style=''></span><span style='background: #AEF1AE'>        bagLens.modify(_ - item.ref),
+</span>19 <span style=''></span><span style='background: #AEF1AE'>        messageLens.modify(_ :+ Messages.Eaten(item))
+</span>20 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>21 <span style=''>    }
+</span>22 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          406
+        </td>
+        <td>
+          541
+          -
+          549
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          item.ref
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          407
+        </td>
+        <td>
+          537
+          -
+          549
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.-
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.-(item.ref)
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          408
+        </td>
+        <td>
+          551
+          -
+          565
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.State.location
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          state.location
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          409
+        </td>
+        <td>
+          516
+          -
+          566
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatExt.this.roomItemsLens.modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(item.ref))).apply(state.location)
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          419
+        </td>
+        <td>
+          574
+          -
+          759
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatExt.this.StateUtils(state).applyReactions(EatExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,EatExt.this.RM]) =&gt; x$2.+[EatExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[EatExt.this.RM](updLocation)))), EatExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.-(item.ref))), EatExt.this.messageLens.modify(((x$4: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$4.:+[io.github.scalaquest.core.model.Message](EatExt.this.Messages.Eaten.apply(item)))))
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          410
+        </td>
+        <td>
+          626
+          -
+          656
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[EatExt.this.RM](updLocation)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          411
+        </td>
+        <td>
+          621
+          -
+          657
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.+[EatExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[EatExt.this.RM](updLocation))
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          412
+        </td>
+        <td>
+          604
+          -
+          658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,EatExt.this.RM]) =&gt; x$2.+[EatExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[EatExt.this.RM](updLocation))))
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          413
+        </td>
+        <td>
+          687
+          -
+          695
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          item.ref
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          414
+        </td>
+        <td>
+          683
+          -
+          695
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.-
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3.-(item.ref)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          415
+        </td>
+        <td>
+          668
+          -
+          696
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.-(item.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          416
+        </td>
+        <td>
+          730
+          -
+          750
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt.Messages.Eaten.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatExt.this.Messages.Eaten.apply(item)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          417
+        </td>
+        <td>
+          725
+          -
+          750
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.:+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$4.:+[io.github.scalaquest.core.model.Message](EatExt.this.Messages.Eaten.apply(item))
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          418
+        </td>
+        <td>
+          706
+          -
+          751
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatExt.this.messageLens.modify(((x$4: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$4.:+[io.github.scalaquest.core.model.Message](EatExt.this.Messages.Eaten.apply(item))))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

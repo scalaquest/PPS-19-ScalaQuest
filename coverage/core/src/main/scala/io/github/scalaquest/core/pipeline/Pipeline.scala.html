@@ -24,47 +24,46 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline
 </span>2 <span style=''>
-</span>3 <span style=''>import cats.data.Reader
-</span>4 <span style=''>import io.github.scalaquest.core.model.Model
-</span>5 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
-</span>6 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
-</span>7 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
-</span>8 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
-</span>9 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
-</span>10 <span style=''>
-</span>11 <span style=''>abstract class Pipeline[M &lt;: Model](val model: M) {
-</span>12 <span style=''>  def run(rawSentence: String): Either[String, model.S]
-</span>13 <span style=''>}
-</span>14 <span style=''>
-</span>15 <span style=''>object Pipeline {
-</span>16 <span style=''>
-</span>17 <span style=''>  type PartialBuilder[S &lt;: Model#State, M &lt;: Model] = S =&gt; Pipeline[M]
-</span>18 <span style=''>
-</span>19 <span style=''>  def builderFrom[M &lt;: Model](model: M) = </span><span style='background: #F0ADAD'>new PipelineBuilder[M](model)</span><span style=''>
-</span>20 <span style=''>
-</span>21 <span style=''>  class PipelineBuilder[M &lt;: Model](val model: M) {
-</span>22 <span style=''>
-</span>23 <span style=''>    def build(
-</span>24 <span style=''>      lexer: Lexer,
-</span>25 <span style=''>      parser: Parser,
-</span>26 <span style=''>      resolver: Resolver.Builder[model.S],
-</span>27 <span style=''>      interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
-</span>28 <span style=''>      reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
-</span>29 <span style=''>    )(state: model.S): Pipeline[model.type] =
-</span>30 <span style=''>      </span><span style='background: #F0ADAD'>new</span><span style=''> Pipeline[model.type](model) {
-</span>31 <span style=''>
-</span>32 <span style=''>        override def run(rawSentence: String): Either[String, model.S] =
-</span>33 <span style=''>          </span><span style='background: #F0ADAD'>for {
-</span>34 <span style=''></span><span style='background: #F0ADAD'>            lr  &lt;- Right(lexer tokenize rawSentence)
-</span>35 <span style=''></span><span style='background: #F0ADAD'>            pr  &lt;- (parser parse lr) toRight &quot;Couldn't understand input.&quot;
-</span>36 <span style=''></span><span style='background: #F0ADAD'>            rr  &lt;- resolver(state) resolve pr
-</span>37 <span style=''></span><span style='background: #F0ADAD'>            ir  &lt;- interpreterBuilder(state) interpret rr
-</span>38 <span style=''></span><span style='background: #F0ADAD'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
-</span>39 <span style=''></span><span style='background: #F0ADAD'>          } yield rdr.state</span><span style=''>
-</span>40 <span style=''>      }
-</span>41 <span style=''>  }
-</span>42 <span style=''>
-</span>43 <span style=''>}
+</span>3 <span style=''>import io.github.scalaquest.core.model.Model
+</span>4 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>5 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
+</span>6 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>7 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>8 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>9 <span style=''>
+</span>10 <span style=''>abstract class Pipeline[M &lt;: Model](val model: M) {
+</span>11 <span style=''>  def run(rawSentence: String): Either[String, model.S]
+</span>12 <span style=''>}
+</span>13 <span style=''>
+</span>14 <span style=''>object Pipeline {
+</span>15 <span style=''>
+</span>16 <span style=''>  type PartialBuilder[S &lt;: Model#State, M &lt;: Model] = S =&gt; Pipeline[M]
+</span>17 <span style=''>
+</span>18 <span style=''>  def builderFrom[M &lt;: Model](model: M) = </span><span style='background: #AEF1AE'>new PipelineBuilder[M](model)</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>  class PipelineBuilder[M &lt;: Model](val model: M) {
+</span>21 <span style=''>
+</span>22 <span style=''>    def build(
+</span>23 <span style=''>      lexer: Lexer,
+</span>24 <span style=''>      parser: Parser,
+</span>25 <span style=''>      resolver: Resolver.Builder[model.S],
+</span>26 <span style=''>      interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
+</span>27 <span style=''>      reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
+</span>28 <span style=''>    )(state: model.S): Pipeline[model.type] =
+</span>29 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> Pipeline[model.type](model) {
+</span>30 <span style=''>
+</span>31 <span style=''>        override def run(rawSentence: String): Either[String, model.S] =
+</span>32 <span style=''>          </span><span style='background: #AEF1AE'>for {
+</span>33 <span style=''></span><span style='background: #AEF1AE'>            lr  &lt;- Right(lexer tokenize rawSentence)
+</span>34 <span style=''></span><span style='background: #AEF1AE'>            pr  &lt;- (parser parse lr) toRight &quot;Couldn't understand input.&quot;
+</span>35 <span style=''></span><span style='background: #AEF1AE'>            </span><span style='background: #F0ADAD'>rr  &lt;- resolver(state) resolve pr
+</span>36 <span style=''></span><span style='background: #F0ADAD'>            ir  &lt;- interpreterBuilder(state) interpret rr
+</span>37 <span style=''></span><span style='background: #F0ADAD'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
+</span>38 <span style=''></span><span style='background: #F0ADAD'>          } yield rdr.state</span><span style=''>
+</span>39 <span style=''>      }
+</span>40 <span style=''>  }
+</span>41 <span style=''>
+</span>42 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -79,15 +78,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          19
+          18
         </td>
         <td>
-          419
+          635
         </td>
         <td>
-          652
+          628
           -
-          681
+          657
         </td>
         <td>
           Apply
@@ -98,20 +97,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           new io.github.scalaquest.core.pipeline.Pipeline.PipelineBuilder[M](model)
         </td>
       </tr><tr>
         <td>
-          30
+          29
         </td>
         <td>
-          429
+          645
         </td>
         <td>
-          1047
+          1023
           -
-          1050
+          1026
         </td>
         <td>
           Apply
@@ -122,20 +121,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           new $anon()
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
-          420
+          636
         </td>
         <td>
-          1196
+          1172
           -
-          1222
+          1198
         </td>
         <td>
           Apply
@@ -146,20 +145,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           lexer.tokenize(rawSentence)
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
-          428
+          644
         </td>
         <td>
-          1165
+          1141
           -
-          1487
+          1463
         </td>
         <td>
           Apply
@@ -170,20 +169,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.lexer.LexerResult](lexer.tokenize(rawSentence)).flatMap[String, PipelineBuilder.this.model.S](((lr: io.github.scalaquest.core.pipeline.lexer.LexerResult) =&gt; parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, PipelineBuilder.this.model.S](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))))))
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
-          421
+          637
         </td>
         <td>
-          1269
+          1245
           -
-          1297
+          1273
         </td>
         <td>
           Literal
@@ -194,20 +193,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           &quot;Couldn\'t understand input.&quot;
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
-          427
+          643
         </td>
         <td>
-          1236
+          1212
           -
-          1487
+          1463
         </td>
         <td>
           Apply
@@ -218,20 +217,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, PipelineBuilder.this.model.S](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))))
         </td>
       </tr><tr>
         <td>
-          36
+          35
         </td>
         <td>
-          426
+          642
         </td>
         <td>
-          1310
+          1286
           -
-          1487
+          1463
         </td>
         <td>
           Apply
@@ -247,15 +246,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
-          425
+          641
         </td>
         <td>
-          1356
+          1332
           -
-          1487
+          1463
         </td>
         <td>
           Apply
@@ -271,15 +270,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          422
+          638
         </td>
         <td>
-          1427
+          1403
           -
-          1458
+          1434
         </td>
         <td>
           Apply
@@ -295,15 +294,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          424
+          640
         </td>
         <td>
-          1414
+          1390
           -
-          1487
+          1463
         </td>
         <td>
           Apply
@@ -319,15 +318,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          38
         </td>
         <td>
-          423
+          639
         </td>
         <td>
-          1478
+          1454
           -
-          1487
+          1463
         </td>
         <td>
           Select

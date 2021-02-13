@@ -1,0 +1,183 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/items/impl/FoodExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt
+</span>6 <span style=''>
+</span>7 <span style=''>/**
+</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Food Item.
+</span>9 <span style=''> */
+</span>10 <span style=''>trait FoodExt extends BehaviorBasedModel with EatableExt {
+</span>11 <span style=''>
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   * A [[BehaviorBasedItem]] that can be eaten by the player.
+</span>14 <span style=''>   */
+</span>15 <span style=''>  trait Food extends BehaviorBasedItem {
+</span>16 <span style=''>    def eatable: Eatable
+</span>17 <span style=''>  }
+</span>18 <span style=''>
+</span>19 <span style=''>  /**
+</span>20 <span style=''>   * Standard implementation of the [[Food]] Item.
+</span>21 <span style=''>   */
+</span>22 <span style=''>  case class SimpleFood(
+</span>23 <span style=''>    description: ItemDescription,
+</span>24 <span style=''>    ref: ItemRef,
+</span>25 <span style=''>    eatableBuilder: I =&gt; Eatable,
+</span>26 <span style=''>    addBehaviorsBuilders: I =&gt; ItemBehavior*
+</span>27 <span style=''>  ) extends Food {
+</span>28 <span style=''>    final override val eatable: Eatable       = </span><span style='background: #AEF1AE'>eatableBuilder(this)</span><span style=''>
+</span>29 <span style=''>    override def behaviors: Seq[ItemBehavior] = eatable </span><span style='background: #F0ADAD'>+: addBehaviorsBuilders.map(_(this))</span><span style=''>
+</span>30 <span style=''>  }
+</span>31 <span style=''>
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * Companion object for [[Food]]. Makes the initialization more succinct.
+</span>34 <span style=''>   */
+</span>35 <span style=''>  object Food {
+</span>36 <span style=''>
+</span>37 <span style=''>    def apply(
+</span>38 <span style=''>      description: ItemDescription,
+</span>39 <span style=''>      eatableBuilder: I =&gt; Eatable,
+</span>40 <span style=''>      addBehaviorsBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>41 <span style=''>    ): Food = {
+</span>42 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), eatableBuilder, addBehaviorsBuilder: _*)</span><span style=''>
+</span>43 <span style=''>    }
+</span>44 <span style=''>  }
+</span>45 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          369
+        </td>
+        <td>
+          883
+          -
+          903
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleFood.this.eatableBuilder.apply(this)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          370
+        </td>
+        <td>
+          960
+          -
+          996
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.+:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SimpleFood.this.addBehaviorsBuilders.map[FoodExt.this.ItemBehavior](((x$1: FoodExt.this.I =&gt; FoodExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[FoodExt.this.ItemBehavior](rassoc$1)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          371
+        </td>
+        <td>
+          1302
+          -
+          1322
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.ItemRef.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.model.ItemRef.apply(description)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          372
+        </td>
+        <td>
+          1278
+          -
+          1364
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.FoodExt.SimpleFood.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          FoodExt.this.SimpleFood.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), eatableBuilder, (addBehaviorsBuilder: _*))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

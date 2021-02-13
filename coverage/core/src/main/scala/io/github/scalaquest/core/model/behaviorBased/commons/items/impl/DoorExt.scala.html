@@ -1,0 +1,209 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/items/impl/DoorExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Door Item.
+</span>10 <span style=''> */
+</span>11 <span style=''>trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * A [[BehaviorBasedItem]] that should work as a link between two different [[Room]] s.
+</span>15 <span style=''>   */
+</span>16 <span style=''>  trait Door extends BehaviorBasedItem {
+</span>17 <span style=''>    def isOpen: Boolean
+</span>18 <span style=''>    def roomLink: RoomLink
+</span>19 <span style=''>  }
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * Standard implementation of the common [[Door]].
+</span>23 <span style=''>   */
+</span>24 <span style=''>  case class SimpleDoor(
+</span>25 <span style=''>    description: ItemDescription,
+</span>26 <span style=''>    ref: ItemRef,
+</span>27 <span style=''>    roomLinkBuilder: I =&gt; RoomLink,
+</span>28 <span style=''>    addBehaviorsBuilders: I =&gt; ItemBehavior*
+</span>29 <span style=''>  ) extends Door {
+</span>30 <span style=''>    override val roomLink: RoomLink           = </span><span style='background: #AEF1AE'>roomLinkBuilder(this)</span><span style=''>
+</span>31 <span style=''>    override val behaviors: Seq[ItemBehavior] = roomLink </span><span style='background: #AEF1AE'>+: addBehaviorsBuilders.map(_(this))</span><span style=''>
+</span>32 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>roomLink.isOpen</span><span style=''>
+</span>33 <span style=''>  }
+</span>34 <span style=''>
+</span>35 <span style=''>  /**
+</span>36 <span style=''>   * Companion object for [[Door]]. Makes the initialization more succinct.
+</span>37 <span style=''>   */
+</span>38 <span style=''>  object Door {
+</span>39 <span style=''>
+</span>40 <span style=''>    def apply(
+</span>41 <span style=''>      description: ItemDescription,
+</span>42 <span style=''>      roomLinkBuilder: I =&gt; RoomLink,
+</span>43 <span style=''>      addBehaviorsBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>44 <span style=''>    ): Door =
+</span>45 <span style=''>      </span><span style='background: #AEF1AE'>SimpleDoor(description, ItemRef(description), roomLinkBuilder, addBehaviorsBuilders: _*)</span><span style=''>
+</span>46 <span style=''>  }
+</span>47 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          364
+        </td>
+        <td>
+          1041
+          -
+          1062
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleDoor.this.roomLinkBuilder.apply(this)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          365
+        </td>
+        <td>
+          1120
+          -
+          1156
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.+:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleDoor.this.addBehaviorsBuilders.map[DoorExt.this.ItemBehavior](((x$1: DoorExt.this.I =&gt; DoorExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[DoorExt.this.ItemBehavior](rassoc$1)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          366
+        </td>
+        <td>
+          1205
+          -
+          1220
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleDoor.this.roomLink.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          367
+        </td>
+        <td>
+          1527
+          -
+          1547
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.ItemRef.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.model.ItemRef.apply(description)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          368
+        </td>
+        <td>
+          1503
+          -
+          1591
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.DoorExt.SimpleDoor.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          DoorExt.this.SimpleDoor.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), roomLinkBuilder, (addBehaviorsBuilders: _*))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

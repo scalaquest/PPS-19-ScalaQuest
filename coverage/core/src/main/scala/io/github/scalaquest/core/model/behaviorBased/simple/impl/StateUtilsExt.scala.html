@@ -1,0 +1,820 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/simple/impl/StateUtilsExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.{Direction, Model}
+</span>4 <span style=''>
+</span>5 <span style=''>/**
+</span>6 <span style=''> * Integrates some additional functionalities for state inspection and re-generation, by the use of
+</span>7 <span style=''> * [[monocle.Lens]].
+</span>8 <span style=''> */
+</span>9 <span style=''>trait StateUtilsExt extends Model {
+</span>10 <span style=''>
+</span>11 <span style=''>  implicit class StateUtils(state: S) {
+</span>12 <span style=''>    implicit val s: S = </span><span style='background: #AEF1AE'>state</span><span style=''>
+</span>13 <span style=''>
+</span>14 <span style=''>    def isInBag(item: I): Boolean = </span><span style='background: #AEF1AE'>state.bag.contains(item)</span><span style=''>
+</span>15 <span style=''>
+</span>16 <span style=''>    def isInLocation(item: I): Boolean = </span><span style='background: #AEF1AE'>state.location.items.contains(item)</span><span style=''>
+</span>17 <span style=''>
+</span>18 <span style=''>    def isInScope(item: I): Boolean = </span><span style='background: #AEF1AE'>state.isInLocation(item) || state.isInBag(item)</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>    // shortcuts
+</span>21 <span style=''>    def locationNeighbor(direction: Direction): Option[RM] = </span><span style='background: #AEF1AE'>state.location.neighbor(direction)</span><span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>    def locationNeighbors: Set[RM] =
+</span>24 <span style=''>      </span><span style='background: #F0ADAD'>Direction.all.map(d =&gt; state.locationNeighbor(d)).collect({ case Some(room) =&gt; room })</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>    def locationItems: Set[I] = </span><span style='background: #F0ADAD'>state.location.items</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>    def copyWithItemInLocation(item: I): S = {
+</span>29 <span style=''>      val stateWithTarget    = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>30 <span style=''>      val currRoomWithTarget = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ + item.ref)(state.location)</span><span style=''>
+</span>31 <span style=''>      </span><span style='background: #AEF1AE'>roomsLens.modify(_ + (currRoomWithTarget.ref -&gt; currRoomWithTarget))(stateWithTarget)</span><span style=''>
+</span>32 <span style=''>    }
+</span>33 <span style=''>
+</span>34 <span style=''>    def copyWithItemInBag(item: I): S = {
+</span>35 <span style=''>      val stateWithTarget = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>36 <span style=''>      </span><span style='background: #AEF1AE'>bagLens.modify(_ + item.ref)(stateWithTarget)</span><span style=''>
+</span>37 <span style=''>    }
+</span>38 <span style=''>
+</span>39 <span style=''>    def applyReactions(reactions: Reaction*): S = </span><span style='background: #AEF1AE'>Function.chain(reactions.toList)(this.state)</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>  }
+</span>42 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          518
+        </td>
+        <td>
+          356
+          -
+          361
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          519
+        </td>
+        <td>
+          399
+          -
+          423
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetOps.contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.bag.contains(item)
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          520
+        </td>
+        <td>
+          466
+          -
+          501
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetOps.contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.location.items(StateUtils.this.s).contains(item)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          521
+        </td>
+        <td>
+          541
+          -
+          546
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          522
+        </td>
+        <td>
+          569
+          -
+          588
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.StateUtils(StateUtils.this.state).isInBag(item)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          523
+        </td>
+        <td>
+          541
+          -
+          588
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.StateUtils(StateUtils.this.state).isInLocation(item).||(StateUtilsExt.this.StateUtils(StateUtils.this.state).isInBag(item))
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          524
+        </td>
+        <td>
+          691
+          -
+          691
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.s
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          525
+        </td>
+        <td>
+          668
+          -
+          702
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.neighbor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.location.neighbor(direction)(StateUtils.this.s)
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          526
+        </td>
+        <td>
+          770
+          -
+          795
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.locationNeighbor
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          StateUtilsExt.this.StateUtils(StateUtils.this.state).locationNeighbor(d)
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          527
+        </td>
+        <td>
+          805
+          -
+          805
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          528
+        </td>
+        <td>
+          747
+          -
+          833
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.collect
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.Direction.all.map[Option[StateUtilsExt.this.RM]](((d: io.github.scalaquest.core.model.Direction) =&gt; StateUtilsExt.this.StateUtils(StateUtils.this.state).locationNeighbor(d))).collect[StateUtilsExt.this.RM](({
+  @SerialVersionUID(value = 0) final &lt;synthetic&gt; class $anonfun extends scala.runtime.AbstractPartialFunction[Option[StateUtilsExt.this.RM],StateUtilsExt.this.RM] with java.io.Serializable {
+    def &lt;init&gt;(): &lt;$anon: Option[StateUtilsExt.this.RM] =&gt; StateUtilsExt.this.RM&gt; = {
+      $anonfun.super.&lt;init&gt;();
+      ()
+    };
+    final override def applyOrElse[A1 &lt;: Option[StateUtilsExt.this.RM], B1 &gt;: StateUtilsExt.this.RM](x1: A1, default: A1 =&gt; B1): B1 = ((x1.asInstanceOf[Option[StateUtilsExt.this.RM]]: Option[StateUtilsExt.this.RM]): Option[StateUtilsExt.this.RM] @unchecked) match {
+      case (value: StateUtilsExt.this.RM): Some[StateUtilsExt.this.RM]((room @ _)) =&gt; room
+      case (defaultCase$ @ _) =&gt; default.apply(x1)
+    };
+    final def isDefinedAt(x1: Option[StateUtilsExt.this.RM]): Boolean = ((x1.asInstanceOf[Option[StateUtilsExt.this.RM]]: Option[StateUtilsExt.this.RM]): Option[StateUtilsExt.this.RM] @unchecked) match {
+      case (value: StateUtilsExt.this.RM): Some[StateUtilsExt.this.RM]((room @ _)) =&gt; true
+      case (defaultCase$ @ _) =&gt; false
+    }
+  };
+  new $anonfun()
+}: PartialFunction[Option[StateUtilsExt.this.RM],StateUtilsExt.this.RM]))
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          529
+        </td>
+        <td>
+          882
+          -
+          882
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          StateUtils.this.s
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          530
+        </td>
+        <td>
+          867
+          -
+          887
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.items
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          StateUtils.this.state.location.items(StateUtils.this.s)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          531
+        </td>
+        <td>
+          989
+          -
+          1005
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          532
+        </td>
+        <td>
+          984
+          -
+          1006
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item))
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          533
+        </td>
+        <td>
+          1008
+          -
+          1013
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          534
+        </td>
+        <td>
+          967
+          -
+          1014
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.itemsLens.modify(((x$1: Map[io.github.scalaquest.core.model.ItemRef,StateUtilsExt.this.I]) =&gt; x$1.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)))).apply(StateUtils.this.state)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          535
+        </td>
+        <td>
+          1071
+          -
+          1079
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          item.ref
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          536
+        </td>
+        <td>
+          1067
+          -
+          1079
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.+(item.ref)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          537
+        </td>
+        <td>
+          1081
+          -
+          1095
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.State.location
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state.location
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          538
+        </td>
+        <td>
+          1046
+          -
+          1096
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.roomItemsLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(item.ref))).apply(StateUtils.this.state.location)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          539
+        </td>
+        <td>
+          1103
+          -
+          1188
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.roomsLens.modify(((x$3: Map[io.github.scalaquest.core.model.RoomRef,StateUtilsExt.this.RM]) =&gt; x$3.+[StateUtilsExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](currRoomWithTarget.ref).-&gt;[StateUtilsExt.this.RM](currRoomWithTarget)))).apply(stateWithTarget)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          540
+        </td>
+        <td>
+          1288
+          -
+          1304
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          541
+        </td>
+        <td>
+          1283
+          -
+          1305
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$4.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          542
+        </td>
+        <td>
+          1307
+          -
+          1312
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtils.this.state
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          543
+        </td>
+        <td>
+          1266
+          -
+          1313
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.itemsLens.modify(((x$4: Map[io.github.scalaquest.core.model.ItemRef,StateUtilsExt.this.I]) =&gt; x$4.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)))).apply(StateUtils.this.state)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          544
+        </td>
+        <td>
+          1320
+          -
+          1365
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StateUtilsExt.this.bagLens.modify(((x$5: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$5.+(item.ref))).apply(stateWithTarget)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          545
+        </td>
+        <td>
+          1438
+          -
+          1454
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          reactions.toList
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          546
+        </td>
+        <td>
+          1456
+          -
+          1466
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.state
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          this.state
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          547
+        </td>
+        <td>
+          1423
+          -
+          1467
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Function.chain[StateUtilsExt.this.S](reactions.toList).apply(this.state)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

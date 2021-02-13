@@ -1,0 +1,283 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/generators/GeneratorImplicits.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.generators
+</span>2 <span style=''>
+</span>3 <span style=''>import cats.implicits.{catsKernelStdMonoidForMap, catsStdInstancesForList}
+</span>4 <span style=''>import cats.kernel.{Monoid, Semigroup}
+</span>5 <span style=''>
+</span>6 <span style=''>/**
+</span>7 <span style=''> * Mix-in to inherit implicit generators for collections.
+</span>8 <span style=''> */
+</span>9 <span style=''>trait GeneratorImplicits {
+</span>10 <span style=''>
+</span>11 <span style=''>  object implicits {
+</span>12 <span style=''>
+</span>13 <span style=''>    implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
+</span>14 <span style=''>      </span><span style='background: #F0ADAD'>new GeneratorK[List, A, B]</span><span style=''>
+</span>15 <span style=''>
+</span>16 <span style=''>    implicit def listToMapGenerator[T, K, V](implicit
+</span>17 <span style=''>      G: Generator[T, Map[K, V]]
+</span>18 <span style=''>    ): GeneratorK[List, T, Map[K, V]] = {
+</span>19 <span style=''>      implicit def keepSemigroup[A]: Semigroup[A] = </span><span style='background: #F0ADAD'>Semigroup.instance((a, _) =&gt; a)</span><span style=''>
+</span>20 <span style=''>
+</span>21 <span style=''>      </span><span style='background: #F0ADAD'>new GeneratorK[List, T, Map[K, V]]</span><span style=''>
+</span>22 <span style=''>    }
+</span>23 <span style=''>
+</span>24 <span style=''>  }
+</span>25 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          63
+        </td>
+        <td>
+          394
+          -
+          394
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cats.instances.ListInstances.catsStdInstancesForList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsStdInstancesForList
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          64
+        </td>
+        <td>
+          394
+          -
+          394
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cats.instances.ListInstances.catsStdInstancesForList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsStdInstancesForList
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          65
+        </td>
+        <td>
+          394
+          -
+          420
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new io.github.scalaquest.core.dictionary.generators.GeneratorK[List,A,B]()(cats.implicits.catsStdInstancesForList, cats.implicits.catsStdInstancesForList, evidence$1, G)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          66
+        </td>
+        <td>
+          603
+          -
+          634
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cats.kernel.Semigroup.instance
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.kernel.Semigroup.instance[A](((a: A, x$1: A) =&gt; a))
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          67
+        </td>
+        <td>
+          642
+          -
+          642
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cats.instances.ListInstances.catsStdInstancesForList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsStdInstancesForList
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          642
+          -
+          642
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cats.instances.ListInstances.catsStdInstancesForList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsStdInstancesForList
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          69
+        </td>
+        <td>
+          642
+          -
+          642
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorImplicits.implicits.keepSemigroup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          keepSemigroup[V]
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          70
+        </td>
+        <td>
+          642
+          -
+          642
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          cats.kernel.instances.MapInstances1.catsKernelStdMonoidForMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          cats.implicits.catsKernelStdMonoidForMap[K, V](keepSemigroup[V])
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          71
+        </td>
+        <td>
+          642
+          -
+          676
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          io.github.scalaquest.core.dictionary.generators.GeneratorK.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new io.github.scalaquest.core.dictionary.generators.GeneratorK[List,T,Map[K,V]]()(cats.implicits.catsStdInstancesForList, cats.implicits.catsStdInstancesForList, cats.implicits.catsKernelStdMonoidForMap[K, V](keepSemigroup[V]), G)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>
