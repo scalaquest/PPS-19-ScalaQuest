@@ -1,17 +1,39 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.cli.CLI.readLine
-import io.github.scalaquest.core.model.{RoomRef}
+import io.github.scalaquest.core.model.RoomRef
 import zio.test._
 import zio.test.Assertion._
 import zio.test.environment._
 import zio.test.junit.JUnitRunnableSpec
 import CLITestHelper._
+import zio.ZIO
+import zio.console.Console
 
 class CLITest extends JUnitRunnableSpec {
 
+  case class TestCLI(start: ZIO[Console, Exception, Unit]) extends CLI
+
   def spec =
     suite("CLI tests")(
+      suite("CLIApp")(
+        testM("it returns code 0 if CLI ends with no errors") {
+          val app = new CLIApp {
+            override def cli: CLI = TestCLI(ZIO.succeed("ok"))
+          }
+          for {
+            ret <- app.run(List())
+          } yield assert(ret.code)(equalTo(0))
+        },
+        testM("it returns code != 0 if CLI ends with errors") {
+          val app = new CLIApp {
+            override def cli: CLI = TestCLI(ZIO.fail(new Exception))
+          }
+          for {
+            ret <- app.run(List())
+          } yield assert(ret.code)(not(equalTo(0)))
+        }
+      ),
       suite("readLine")(
         testM("it correctly prints a prompt") {
           for {
