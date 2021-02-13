@@ -10,27 +10,17 @@ class TriggerPusherTest extends AnyWordSpec with Matchers {
 
   "A TriggerPusher" should {
     val pusher = new TriggerPusher[Int] {
-      override def notFound: Int = -1
-
-      override def combine(x: Int, y: Int): Int = x + y
-
-      override def empty: Int = 0
-    }
-
-    "have some defined Message triggers" in {
-      pusher.triggers shouldBe PartialFunction.empty
-    }
-
-    "find a match for the given message, analyzing the triggers" in {
-      pusher.push(new Message {}) shouldBe -1
+      override def notFound: Int                  = -1
+      override def combine(x: Int, y: Int): Int   = x + y
+      override def triggers: MessageTriggers[Int] = { case Printed(_) => 1 }
     }
 
     "print not found, it the message cannot be handled" in {
-      pusher.push(new Message {}) shouldBe pusher.notFound
+      pusher.push(Seq(new Message {})) shouldBe pusher.notFound
     }
 
     "find a match for the given sequence of messages, analyzing the triggers" in {
-      pusher.push(Seq(new Message {}, new Message {})) shouldBe -2
+      pusher.push(Seq(Printed("example"), Printed("example"))) shouldBe 2
     }
   }
 
@@ -40,11 +30,7 @@ class TriggerPusherTest extends AnyWordSpec with Matchers {
     }
 
     "return the empty message, if a match is not found" in {
-      pusher.push(new Message {}) shouldBe pusher.notFound
-    }
-
-    "find a match for the given message, analyzing the triggers" in {
-      pusher.push(Printed("hello")) shouldBe "hello"
+      pusher.push(Seq(new Message {})) shouldBe pusher.notFound
     }
 
     "find a match for the given sequence of messages, analyzing the triggers" in {

@@ -39,15 +39,14 @@ abstract class TriggerPusher[A] extends MessagePusher[A] {
    * @return
    *   An output matching with the given message; [[TriggerPusher::notFound]] otherwise.
    */
-  final def push(input: Message): A = {
-    triggers.lift(input).getOrElse(notFound)
+  private final def eval(input: Message): Option[A] = {
+    triggers.lift(input)
   }
 
   def combine(x: A, y: A): A
 
-  def empty: A
-
-  final def push(input: Seq[Message]): A = input.map(push).reduceOption(combine).getOrElse(empty)
+  final def push(input: Seq[Message]): A =
+    input.flatMap(eval).reduceOption(combine).getOrElse(notFound)
 }
 
 /**
@@ -58,7 +57,6 @@ abstract class StringPusher extends TriggerPusher[String] {
 
   override def combine(x: String, y: String): String = x + "\n" + y
 
-  override def empty: String = ""
 }
 
 /**
