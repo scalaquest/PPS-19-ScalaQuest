@@ -12,13 +12,10 @@ object CLITestHelper {
 
   def state: State =
     State(
-      Map(),
-      Map(),
-      Map(),
-      SimpleModel.CommonGround(),
-      Set(),
-      RoomRef("1"),
-      Seq()
+      actions = Map.empty,
+      rooms = Map.empty,
+      items = Map.empty,
+      location = RoomRef("1")
     )
 
   def gameRight: TestGame[SimpleModel.type] =

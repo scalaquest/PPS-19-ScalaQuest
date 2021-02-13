@@ -35,7 +35,7 @@ object EscapeRoom extends GameCLIApp {
       rooms = House.refToRoom,
       items = refToItem,
       location = House.basement.ref,
-      welcomeMsg = model.Messages.Welcome(welcome)
+      welcomeMsg = Some(model.Messages.Welcome(welcome))
     )
 
   override def messagePusher: StringPusher = Pusher.defaultPusher

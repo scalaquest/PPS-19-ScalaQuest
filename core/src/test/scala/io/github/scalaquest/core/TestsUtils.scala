@@ -69,7 +69,6 @@ object TestsUtils {
     bag = Set(appleItemRef),
     location = startRoom.ref,
     items = Map(appleItemRef -> apple, keyItemRef -> key, doorItemRef -> door),
-    rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom),
-    messages = Seq()
+    rooms = Map(startRoom.ref -> startRoom, targetRoom.ref -> targetRoom)
   )
 }
