@@ -1,46 +1,35 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.behaviorBased.impl.SimpleModel.{Room => RoomFactory}
-import io.github.scalaquest.core.model.{Direction, RoomRef}
+import io.github.scalaquest.core.application.Environment
+import io.github.scalaquest.core.model.Direction
 
-object House {
+object House extends Environment[RM] {
+  import model.Room
 
-  def kitchen: Room =
-    RoomFactory(
-      "kitchen",
-      Map(
-        Direction.East -> livingRoom.ref
-      ),
-      Set(
-        items.head._1
-      )
-    )
-
-  def livingRoom: Room =
-    RoomFactory(
-      "living room",
-      Map(
-      ),
-      Set()
-    )
-
-  def bathroom: Room =
-    RoomFactory(
-      "bathroom",
-      Map(
-      ),
-      Set()
-    )
-
-  def allTheRooms: Set[Room] =
+  override def allTheRooms: Set[RM] =
     Set(
-      kitchen,
+      basement,
       livingRoom,
       bathroom
     )
 
-  def checkRooms: Boolean = allTheRooms.groupBy(_.ref).size == allTheRooms.size
+  def basement: RM =
+    Room(
+      name = "basement",
+      items = Set(Items.coffer.ref, Items.crowbar.ref, Items.hatch.ref)
+    )
 
-  def genMap: Map[RoomRef, Room] = allTheRooms.map(r => r.ref -> r).toMap
+  def livingRoom: RM =
+    Room(
+      name = "living room",
+      neighbors = Map(Direction.North -> bathroom.ref, Direction.Down -> basement.ref),
+      items =
+        Set(Items.redApple.ref, Items.greenApple.ref, Items.doorway.ref, Items.basementHatch.ref)
+    )
 
+  def bathroom: RM =
+    Room(
+      "bathroom",
+      Map(Direction.South -> livingRoom.ref)
+    )
 }

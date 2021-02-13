@@ -1,46 +1,42 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.{Message, RoomRef, StringPusher}
+import io.github.scalaquest.core.model.StringPusher
 import io.github.scalaquest.core.Game
-import io.github.scalaquest.core.model.behaviorBased.common.pushing.CommonStringPusher
-import io.github.scalaquest.examples.escaperoom.MyPipeline.pipelineFactory
+import io.github.scalaquest.core.pipeline.Pipeline
 
-object Config {
-  import myModel.{SimplePlayer, SimpleState}
+abstract class GameCLIApp extends CLIApp {
 
-  def player: myModel.SimplePlayer = SimplePlayer(Set(), House.kitchen.ref)
+  def pipelineBuilder: Pipeline.PartialBuilder[S, M]
+  def state: S
+  def messagePusher: StringPusher
 
-  case object SuperStonksPowered extends Message
-  case class Print(msg: String)  extends Message
+  def source: String = programFromResource("base.pl")
 
-  case class TextualMessage(msg: String) extends Message
-  def rooms: Map[RoomRef, Room] = House.genMap
+  def game: Game[M] = Game builderFrom model build pipelineBuilder
 
-  def state: SimpleState =
-    SimpleState(
-      actions,
-      myModel.SimpleMatchState(
-        player,
-        rooms,
-        items
-      ),
-      Seq.empty[Message]
-    )
+  override def cli: CLI = CLI.builderFrom(model).build(state, game, messagePusher)
 
-  val defaultPusher: CommonStringPusher = CommonStringPusher(
-    myModel,
-    { case SuperStonksPowered =>
-      "Became SuperStonks \n" +
-        "                                                                                \n                                                                                \n                                              **                  \n                  **..                      ////                  \n              *///(/*****                 ///////                 \n            ,,,,*/(//((/**              /////////.                \n            ////((#(*,***/.           .*//////////                \n            (#((###(///*/(               ////// .*,               \n            ((######(/#(#,              ./////,                   \n             ((##%%%%#(/                //////                    \n             #((##(#%.                 */////                     \n        &%&&@&&&//(#*.%*               /////*                     \n   &&&&&&&&&&&&@@%//( &%&&&&%&,       //////                      \n  (&&&&&&&&&&&&&&&&&/,&%&&&&&&%%,    ,/////,                      \n   #%&@&&&&&&@@&&&&&&%&%&&&&&&&&%    //////                       \n   ##%&@&&&&&@@&&&%&&&&&&&&&&&&&&&  //////                        \n   .#%%&&&&&@&@@&&&&&&&&&&&&&@&&&&% ,////*                        \n    (#%&&&&&&/@&&&&&&&&&@@&&&@@@&&%%.      "
-    }
-  )
-
-  def game: Game[Model]           = Game builderFrom myModel build pipelineFactory
-  def messagePusher: StringPusher = defaultPusher
-  def cli: CLI                    = CLI.builderFrom(myModel).build(state, game, messagePusher)
 }
 
-object EscapeRoom extends CLIApp {
-  override def cli: CLI = Config.cli
+object EscapeRoom extends GameCLIApp {
+
+  override def pipelineBuilder: Pipeline.PartialBuilder[S, M] = defaultPipeline(source)
+
+  val welcome: String =
+    """
+    |Welcome in the Escape Room Game! You have been kidnapped, and you woke up in a
+    |gloomy basement. You have to get out of the house to save yourself!
+    |""".stripMargin
+
+  override def state: S =
+    model.State(
+      actions = verbToAction,
+      rooms = House.refToRoom,
+      items = refToItem,
+      location = House.basement.ref,
+      welcomeMsg = Some(model.Messages.Welcome(welcome))
+    )
+
+  override def messagePusher: StringPusher = Pusher.defaultPusher
 }

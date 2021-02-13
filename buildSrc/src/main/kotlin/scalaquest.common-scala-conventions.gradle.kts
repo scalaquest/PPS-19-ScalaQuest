@@ -9,7 +9,7 @@ plugins {
     // Adds scoverage support
     id("org.scoverage")
 
-    // Support for semantic gis-sensitive semantic versioning
+    // Support for semantic git-sensitive semantic versioning
     id("org.danilopianini.git-sensitive-semantic-versioning")
 
     // Plugin used to enable ScalaTest inside Gradle
@@ -27,6 +27,10 @@ tasks.withType<ScalaCompile> {
     scalaCompileOptions.additionalParameters = listOf("-feature", "-language:implicitConversions")
 }
 
+tasks.named<Test>("test") {
+    dependsOn += "scalatest"
+}
+
 group = "io.github.scalaquest"
 
 gitSemVer {
@@ -41,13 +45,13 @@ gitSemVer {
 
 tasks.register("generateVersionFile") {
     mkdir("build")
-    File(buildDir.toString() + "/version").writeText(version.toString())
+    File("$buildDir/version").writeText(version.toString())
 }
 
 spotless {
     // scala format with Scalafmt
     scala {
-        scalafmt("2.7.5").configFile(rootDir.absolutePath + "/.scalafmt.conf")
+        scalafmt("2.7.5").configFile("${rootDir.absolutePath}/.scalafmt.conf")
     }
 }
 
@@ -59,9 +63,13 @@ dependencies {
     implementation("com.github.julien-truffaut:monocle-core_2.13:_")
     implementation("com.github.julien-truffaut:monocle-macro_2.13:_")
 
+    // Cats
+    implementation("org.typelevel:cats-core_2.13:2.3.1")
+
     // The ScalaTest framework
     testImplementation("org.scalatest:scalatest_2.13:_")
 
-    // dependency required by the Maiflai Scalatest plugin to correctly generate HTML test reports
-    testRuntimeOnly("com.vladsch.flexmark:flexmark-all:_")
+    // Dependency required by the Maiflai Scalatest plugin to correctly generate HTML test reports.
+    // The version is hardcoded, as maiflai.scalatest requires this specific version
+    testRuntimeOnly("com.vladsch.flexmark:flexmark-all:0.35.10")
 }

@@ -1,8 +1,7 @@
 package io.github.scalaquest.core.pipeline.resolver
 
-import io.github.scalaquest.core.dictionary.VerbPrep
 import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Model}
-import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
+import io.github.scalaquest.core.pipeline.parser.ParserResult
 
 /**
  * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and
@@ -31,56 +30,18 @@ object Resolver {
 
   type Builder[S] = S => Resolver
 
-  abstract class SimpleResolver extends Resolver {
-
-    def actions: PartialFunction[VerbPrep, Action]
-
-    def items: PartialFunction[ItemDescription, ItemRef]
-
-    def retrieveAction(verbPrep: VerbPrep): Either[String, Action] =
-      actions lift verbPrep toRight s"Couldn't understand ${verbPrep._1}."
-
-    def retrieveItem(name: ItemDescription): Either[String, ItemRef] =
-      items lift name toRight s"Couldn't understand $name"
-
-    override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
-      for {
-        statement <- parserResult.tree match {
-          case AbstractSyntaxTree.Intransitive(verb, prep, _) =>
-            for {
-              action <- retrieveAction((verb, prep))
-            } yield Statement.Intransitive(action)
-
-          case AbstractSyntaxTree.Transitive(verb, prep, _, obj) =>
-            for {
-              action  <- retrieveAction((verb, prep))
-              itemRef <- retrieveItem(obj)
-            } yield Statement.Transitive(action, itemRef)
-
-          case AbstractSyntaxTree.Ditransitive(verb, prep, _, directObj, indirectObj) =>
-            for {
-              action          <- retrieveAction((verb, prep))
-              directItemRef   <- retrieveItem(directObj)
-              indirectItemRef <- retrieveItem(indirectObj)
-            } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
-
-          case _ => Left("The statement is wrong.")
-        }
-      } yield ResolverResult(statement)
-    }
-
-  }
-
   def builder[M <: Model](implicit model: M): Builder[model.S] =
     s =>
-      new SimpleResolver {
+      new AbstractSyntaxTreeResolver {
 
-        override def actions: PartialFunction[VerbPrep, Action] = s.actions
+        override def actions(v: (String, Option[String])): Either[String, Action] =
+          s.actions get v toRight s"I couldn't understand what you said."
 
-        override def items: PartialFunction[ItemDescription, ItemRef] =
-          d =>
-            s.matchState.itemsInScope.filter(i => d.isSubset(i.description)).toList match {
-              case x :: Nil => x.ref
-            }
+        override def items(d: ItemDescription): Either[String, ItemRef] =
+          s.scope.filter(i => d.isSubset(i.description)).toList match {
+            case x :: Nil => Right(x.ref)
+            case _ :: _   => Left(s"Which ${d.mkString} are you talking about?")
+            case _        => Left(s"I can't see any ${d.mkString}.")
+          }
       }
 }

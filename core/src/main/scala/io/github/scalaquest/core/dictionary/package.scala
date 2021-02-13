@@ -1,16 +1,7 @@
 package io.github.scalaquest.core
 
-import io.github.scalaquest.core.parsing.scalog.dsl.{CompoundBuilder, stringToAtom}
+import io.github.scalaquest.core.model.Model
 
-package object dictionary {
-
-  val verb = CompoundBuilder("verb").constructor
-
-  type Verb = BaseVerb with ClauseUtils with Meaning
-
-  type VerbPrep = (String, Option[String])
-
-  val programSeparator = "\n"
-  type Program = String
-
+package object dictionary extends DictionaryImplicits {
+  type Item = Model#Item
 }
