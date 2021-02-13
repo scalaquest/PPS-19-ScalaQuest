@@ -23,22 +23,18 @@ object Items {
   val redApple: Food =
     Food(
       i(d("red"), "apple"),
-      SimpleEatable(onEatExtra = Some(messageLens.modify(_ :+ DeliciousMessage)(_)))
+      Eatable.builder(onEatExtra = Some(messageLens.modify(_ :+ DeliciousMessage)(_)))
     )
 
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      SimpleEatable(
-        onEatExtra = Some(
-          _.applyReactions(messageLens.modify(_ :+ Lost), matchEndedLens.set(true))
-        )
-      )
+      Eatable.builder(onEatExtra = Some(Reactions.finishGame(false)))
     )
 
   val basementHatch: Door = Door(
     i(d("basement"), "hatch"),
-    RoomLink(House.basement, Direction.Down)
+    RoomLink.builder(House.basement, Direction.Down)
   )
 
   val (hatch, hatchKey): (Door, Key) = doorKeyBuilder(
@@ -47,12 +43,12 @@ object Items {
     consumeKey = true,
     endRoom = House.livingRoom,
     endRoomDirection = Direction.Up,
-    keyAddBehaviors = Seq(SimpleTakeable())
+    keyAddBehaviorsBuilders = Seq(Takeable.builder())
   )
 
   val coffer: GenericItem = GenericItem(
     i(d("brown"), "coffer"),
-    Seq(Openable(onOpenExtra = Some(state => {
+    Seq(Openable.builder(onOpenExtra = Some(state => {
       val updLocation = roomItemsLens.modify(_ + hatchKey.ref)(state.location)
       roomsLens.modify(_ + (updLocation.ref -> updLocation))(state)
     })))
@@ -62,12 +58,7 @@ object Items {
     openableDesc = i(d("big"), "doorway"),
     keyDesc = i(d("rusty", "heavy"), "crowbar"),
     consumeKey = true,
-    keyAddBehaviors = Seq(SimpleTakeable()),
-    onOpenExtra = Some(
-      _.applyReactions(
-        messageLens.modify(_ :+ Won),
-        matchEndedLens.set(true)
-      )
-    )
+    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
+    onOpenExtra = Some(Reactions.finishGame(true))
   )
 }

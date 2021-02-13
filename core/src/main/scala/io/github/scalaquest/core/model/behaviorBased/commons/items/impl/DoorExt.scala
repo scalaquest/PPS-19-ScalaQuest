@@ -15,7 +15,7 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
    */
   trait Door extends BehaviorBasedItem {
     def isOpen: Boolean
-    def doorBehavior: RoomLink
+    def roomLink: RoomLink
   }
 
   /**
@@ -24,11 +24,12 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
   case class SimpleDoor(
     description: ItemDescription,
     ref: ItemRef,
-    doorBehavior: RoomLink,
-    additionalBehaviors: ItemBehavior*
+    roomLinkBuilder: I => RoomLink,
+    addBehaviorsBuilders: I => ItemBehavior*
   ) extends Door {
-    override def behaviors: Seq[ItemBehavior] = doorBehavior +: additionalBehaviors
-    override def isOpen: Boolean              = doorBehavior.isOpen
+    override val roomLink: RoomLink           = roomLinkBuilder(this)
+    override val behaviors: Seq[ItemBehavior] = roomLink +: addBehaviorsBuilders.map(_(this))
+    override def isOpen: Boolean              = roomLink.isOpen
   }
 
   /**
@@ -38,8 +39,9 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
 
     def apply(
       description: ItemDescription,
-      doorBehavior: RoomLink,
-      additionalBehaviors: Seq[ItemBehavior] = Seq.empty
-    ): Door = SimpleDoor(description, ItemRef(description), doorBehavior, additionalBehaviors: _*)
+      roomLinkBuilder: I => RoomLink,
+      addBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): Door =
+      SimpleDoor(description, ItemRef(description), roomLinkBuilder, addBehaviorsBuilders: _*)
   }
 }

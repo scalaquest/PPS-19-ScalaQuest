@@ -37,9 +37,9 @@ trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
       ground: G = CommonGround(),
       bag: Set[ItemRef] = Set.empty,
       location: RoomRef,
-      messages: Seq[Message] = Seq.empty,
+      welcomeMsg: Option[Messages.Welcome] = None,
       ended: Boolean = false
-    ): S = SimpleState(actions, rooms, items, ground, bag, location, messages, ended)
+    ): S = SimpleState(actions, rooms, items, ground, bag, location, Seq(welcomeMsg).flatten, ended)
   }
 
   override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)

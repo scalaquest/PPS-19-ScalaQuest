@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.Action.Common.Open
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -11,17 +11,18 @@ class OpenableTest extends AnyWordSpec {
 
   "An Openable behavior" when {
 
-    val targetOpenable: SimpleState => Option[Openable] = state => {
-      state.location
-        .items(state)
-        .collectFirst({ case SimpleGenericItem(_, _, openable: Openable) =>
-          openable
-        })
-    }
+    def targetOpenable: SimpleState => Option[Openable] =
+      state => {
+        state.location
+          .items(state)
+          .map(_.behaviors.headOption)
+          .collect({ case Some(beh) => beh })
+          .collectFirst({ case o: Openable => o })
+      }
 
     "a key is required" when {
       val targetKey  = Key(ItemDescription("key"))
-      val openable   = Openable(requiredKey = Some(targetKey))
+      val openable   = Openable.builder(requiredKey = Some(targetKey))
       val targetItem = GenericItem(ItemDescription("item"), Seq(openable))
 
       val stateWithTarget    = simpleState.copyWithItemInLocation(targetItem)
@@ -48,7 +49,7 @@ class OpenableTest extends AnyWordSpec {
     }
 
     "a key is not required" when {
-      val openable              = SimpleOpenable()
+      val openable              = Openable.builder()
       val itemDescription       = ItemDescription("item")
       val targetItem            = SimpleGenericItem(itemDescription, ItemRef(itemDescription), openable)
       val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)

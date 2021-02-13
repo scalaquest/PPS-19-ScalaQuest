@@ -1,22 +1,19 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+import io.github.scalaquest.core.TestsUtils
+import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.{
-  SimpleEatable,
-  SimpleGenericItem,
-  SimpleTakeable
-}
 
 class GenericItemTest extends AnyWordSpec {
+  import TestsUtils.model._
+
   "A GenericItem" when {
-    val someBehaviors = Seq(SimpleTakeable(), SimpleEatable())
-    val genericItem = SimpleGenericItem(
+    val genericItem = GenericItem(
       ItemDescription("item"),
-      new ItemRef {},
-      someBehaviors.head,
-      someBehaviors(1)
+      Seq(Takeable.builder(), Eatable.builder())
     )
+
+    val someBehaviors = Seq(Takeable.builder()(genericItem), Eatable.builder()(genericItem))
 
     "instantiated" should {
       "take whatever number of behaviors" in {

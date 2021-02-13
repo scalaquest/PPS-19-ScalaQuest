@@ -4,7 +4,7 @@ import io.github.scalaquest.core.model.{Message, StringPusher}
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonStringPusher
 
 object Pusher {
-  import model._
+  import model.Messages._
 
   // Example for a custom message
   case object DeliciousMessage extends Message

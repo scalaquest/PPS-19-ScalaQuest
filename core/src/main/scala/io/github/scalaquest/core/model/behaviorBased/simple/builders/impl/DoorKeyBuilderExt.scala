@@ -8,25 +8,25 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
 
   def doorKeyBuilder(
     keyDesc: ItemDescription,
-    keyAddBehaviors: Seq[ItemBehavior] = Seq.empty,
+    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
     consumeKey: Boolean = false,
     doorDesc: ItemDescription,
     endRoom: RM,
     endRoomDirection: Direction,
     onOpenExtra: Option[Reaction] = None,
     onEnterExtra: Option[Reaction] = None,
-    doorAddBehaviors: Seq[ItemBehavior] = Seq.empty
+    doorAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
   ): (Door, Key) = {
 
-    val key = Key(keyDesc, keyAddBehaviors)
+    val key = Key(keyDesc, keyAddBehaviorsBuilders)
 
     val door = Door(
       description = doorDesc,
-      RoomLink(
+      RoomLink.builder(
         endRoom = endRoom,
         endRoomDirection = endRoomDirection,
-        openable = Some(
-          Openable(
+        openableBuilder = Some(
+          Openable.builder(
             consumeKey = consumeKey,
             requiredKey = Some(key),
             onOpenExtra = onOpenExtra
@@ -34,7 +34,7 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
         ),
         onEnterExtra = onEnterExtra
       ),
-      additionalBehaviors = doorAddBehaviors
+      addBehaviorsBuilders = doorAddBehaviorsBuilders
     )
 
     (door, key)

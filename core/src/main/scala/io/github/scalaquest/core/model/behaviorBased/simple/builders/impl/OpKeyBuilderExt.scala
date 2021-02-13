@@ -8,18 +8,18 @@ trait OpKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
 
   def openableWithKeyBuilder(
     keyDesc: ItemDescription,
-    keyAddBehaviors: Seq[ItemBehavior] = Seq.empty,
+    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
     consumeKey: Boolean = false,
     openableDesc: ItemDescription,
     onOpenExtra: Option[Reaction] = None,
-    addOpenableItemBehaviors: Seq[ItemBehavior] = Seq.empty
+    addOpenableItemBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
   ): (GenericItem, Key) = {
 
-    val key = Key(keyDesc, keyAddBehaviors)
+    val key = Key(keyDesc, keyAddBehaviorsBuilders)
 
     val openableItem = GenericItem(
       description = openableDesc,
-      additionalBehaviors = addOpenableItemBehaviors :+ Openable(
+      addBehaviorsBuilder = addOpenableItemBehaviorsBuilders :+ Openable.builder(
         consumeKey = consumeKey,
         requiredKey = Some(key),
         onOpenExtra = onOpenExtra

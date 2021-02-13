@@ -8,18 +8,18 @@ class DoorTest extends AnyWordSpec {
   import TestsUtils.model._
 
   "A Door" should {
-    val room                = Room("room")
-    val roomLinkBehavior    = RoomLink(room, Direction.North, Some(Openable()))
-    val additionalBehaviors = Seq(Takeable(), Eatable())
+    val room             = Room("room")
+    val roomLinkBehavior = RoomLink.builder(room, Direction.North, Some(Openable.builder()))
     val door = Door(
       ItemDescription("door"),
       roomLinkBehavior,
-      Seq(additionalBehaviors.head, additionalBehaviors(1))
+      Seq(Takeable.builder(), Eatable.builder())
     )
+    val additionalBehaviors = Seq(Takeable.builder()(door), Eatable.builder()(door))
 
     "take a RoomLink Behavior and save it as the first behavior" in {
       assert(
-        door.behaviors.head == door.doorBehavior,
+        door.behaviors.head == door.roomLink,
         "the roomLink is not in the first position."
       )
     }

@@ -1,13 +1,25 @@
-package io.github.scalaquest.examples.escaperoom
+package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 
-import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
-import io.github.scalaquest.core.model.Action.Common.{Eat, Enter, Go, Inspect, Open, Take}
+import io.github.scalaquest.core.dictionary.verbs.{
+  BaseVerb,
+  Ditransitive,
+  Intransitive,
+  Transitive,
+  Verb
+}
 import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
+  Eat,
+  Enter,
+  Go,
+  Inspect,
+  Open,
+  Take
+}
 
-object Verbs {
+object CommonVerbs {
 
-  // Temporary solution
-  def gos: Set[Verb] = {
+  private def gos: Set[Verb] = {
     Set(
       "north" -> Direction.North,
       "south" -> Direction.South,
@@ -23,7 +35,7 @@ object Verbs {
     ).map(s => Intransitive("go", Go(s._2), Some(s._1)))
   }
 
-  def allTheVerbs: Set[Verb] =
+  def apply(): Set[Verb] =
     Set(
       Transitive("take", Take),
       Transitive("eat", Eat),

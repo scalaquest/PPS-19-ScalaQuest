@@ -1,15 +1,21 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.model.Action.Common.Open
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
 import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into the [[BehaviorBasedModel]] the Openable behavior.
  */
-trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with CommonMessagesExt {
+trait OpenableExt
+  extends BehaviorBasedModel
+  with StateUtilsExt
+  with KeyExt
+  with CommonMessagesExt
+  with CommonReactionsExt {
 
   /**
    * A [[ItemBehavior]] associated to an [[Item]] that can be opened a single time.
@@ -19,7 +25,7 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
     def consumeKey: Boolean
     def requiredKey: Option[Key]
     def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
-    def open(item: I): Reaction
+    def open: Reaction
   }
 
   /**
@@ -38,7 +44,8 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
     requiredKey: Option[Key] = None,
     consumeKey: Boolean = false,
     onOpenExtra: Option[Reaction] = None
-  ) extends Openable {
+  )(implicit subject: I)
+    extends Openable {
     var _isOpen: Boolean = false
 
     override def isOpen: Boolean = _isOpen
@@ -47,7 +54,7 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
       // "Open the item (with something)"
       case (Open, item, maybeKey, state)
           if state.isInLocation(item) && canBeOpened(maybeKey)(state) && !isOpen =>
-        open(item)
+        open
     }
 
     /**
@@ -82,21 +89,13 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
      * @return
      *   A Reaction that sets the Item in an open state and executes eventual extra actions.
      */
-    def open(item: I): Reaction =
+    def open: Reaction =
       state => {
         _isOpen = true
 
-        val keyConsumedState: S = requiredKey.fold(state)(k => {
-          val newLoc = roomItemsLens.modify(_ - k.ref)(state.location)
-          state.applyReactions(
-            roomsLens.modify(_ + (newLoc.ref -> newLoc)),
-            bagLens.modify(_ - k.ref)
-          )
-        })
-
-        keyConsumedState.applyReactions(
-          messageLens.modify(_ :+ Opened(item)),
-          onOpenExtra.getOrElse(state => state)
+        state.applyReactions(
+          Reactions.open(subject, requiredKey, consumeKey),
+          onOpenExtra.getOrElse(Reactions.empty)
         )
       }
   }
@@ -106,10 +105,10 @@ trait OpenableExt extends BehaviorBasedModel with StateUtilsExt with KeyExt with
    */
   object Openable {
 
-    def apply(
+    def builder(
       requiredKey: Option[Key] = None,
-      consumeKey: Boolean = false,
+      consumeKey: Boolean = true,
       onOpenExtra: Option[Reaction] = None
-    ): Openable = SimpleOpenable(requiredKey, consumeKey, onOpenExtra)
+    ): I => Openable = SimpleOpenable(requiredKey, consumeKey, onOpenExtra)(_)
   }
 }
