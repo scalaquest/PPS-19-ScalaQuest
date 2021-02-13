@@ -1,7 +1,11 @@
 package io.github.scalaquest.core
 
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
-import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
+  Go,
+  Open,
+  Take
+}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.{Action, Direction, ItemDescription, ItemRef}
 

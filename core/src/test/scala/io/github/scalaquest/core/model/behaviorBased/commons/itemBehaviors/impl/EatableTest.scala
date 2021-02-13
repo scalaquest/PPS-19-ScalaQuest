@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.Action.Common.Eat
 import io.github.scalaquest.core.model.ItemDescription
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
 import org.scalatest.wordspec.AnyWordSpec
 
 class EatableTest extends AnyWordSpec {

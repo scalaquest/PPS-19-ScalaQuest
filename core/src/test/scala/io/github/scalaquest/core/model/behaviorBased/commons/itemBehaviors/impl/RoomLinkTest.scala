@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.Action.Common.{Enter, Open}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{Enter, Open}
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 

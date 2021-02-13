@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.model.Action.Common.{Enter, Open}
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{Enter, Open}
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 

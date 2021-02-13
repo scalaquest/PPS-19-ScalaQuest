@@ -9,8 +9,12 @@ import io.github.scalaquest.core.TestsUtils.{
   keyItemRef,
   simpleState
 }
-import io.github.scalaquest.core.model.Action.Common.{Go, Open, Take}
 import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
+  Go,
+  Open,
+  Take
+}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.CommonGround
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}

@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
-import io.github.scalaquest.core.model.Action.Common.Inspect
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt

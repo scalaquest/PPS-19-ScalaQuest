@@ -1,8 +1,12 @@
 package io.github.scalaquest.core.model.behaviorBased.simple
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.TestsUtils.model
-import io.github.scalaquest.core.model.Action.Common.{Go, Inspect, Open, Take}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
+  Go,
+  Inspect,
+  Open,
+  Take
+}
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
