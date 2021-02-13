@@ -9,23 +9,27 @@ import model.Messages._
 class PusherTest extends AnyWordSpec with Matchers {
   "The default pusher object" should {
     "handle the hatch opened message" in {
-      assert(Pusher.defaultPusher.push(Opened(Items.hatch)) !== "")
+      Pusher.defaultPusher.push(
+        Seq(Opened(Items.hatch))
+      ) should not be Pusher.defaultPusher.notFound
     }
 
     "handle the doorway opened message" in {
-      assert(Pusher.defaultPusher.push(Opened(Items.doorway)) !== "")
+      Pusher.defaultPusher.push(
+        Seq(Opened(Items.doorway))
+      ) should not be Pusher.defaultPusher.notFound
     }
 
     "handle the delicious message" in {
-      assert(Pusher.defaultPusher.push(DeliciousMessage) !== "")
+      Pusher.defaultPusher.push(Seq(DeliciousMessage)) should not be Pusher.defaultPusher.notFound
     }
 
     "handle the won message" in {
-      assert(Pusher.defaultPusher.push(Won) !== "")
+      Pusher.defaultPusher.push(Seq(Won)) should not be Pusher.defaultPusher.notFound
     }
 
     "handle the lost message" in {
-      assert(Pusher.defaultPusher.push(Lost) !== "")
+      Pusher.defaultPusher.push(Seq(Lost)) should not be Pusher.defaultPusher.notFound
     }
   }
 }

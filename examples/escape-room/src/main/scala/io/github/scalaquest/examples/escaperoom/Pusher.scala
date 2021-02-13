@@ -1,6 +1,6 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.Message
+import io.github.scalaquest.core.model.{Message, StringPusher}
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonStringPusher
 
 object Pusher {
@@ -9,7 +9,7 @@ object Pusher {
   // Example for a custom message
   case object DeliciousMessage extends Message
 
-  val defaultPusher: CommonStringPusher = CommonStringPusher(
+  val defaultPusher: StringPusher = CommonStringPusher(
     model,
     {
       case DeliciousMessage => "Delicious!"
