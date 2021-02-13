@@ -78,6 +78,11 @@ jobs:
         run: ./gradlew spotlessCheck
 
   Coverage:
+    if: |
+      contains(github.ref, 'release') ||
+      contains(github.ref, 'main') ||
+      contains(github.ref, 'hotfix')
+
     runs-on: ubuntu-latest
 
     steps:
@@ -101,8 +106,4 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Check coverage
-        if: |
-          contains(github.ref, "release") ||
-          contains(github.ref, "main") ||
-          contains(github.ref, "hotfix")
         run: ./gradlew checkScoverage
