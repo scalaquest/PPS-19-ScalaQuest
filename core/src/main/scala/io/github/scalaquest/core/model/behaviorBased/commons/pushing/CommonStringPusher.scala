@@ -48,6 +48,7 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
     case Opened(item)    => s"The ${item.toString} has been opened!"
     case Navigated(room) => s"You entered ${room.toString}!"
     case Print(msg)      => msg
+    case Welcome(msg)    => msg
     case Won             => "You win!"
     case Lost            => "You lose!"
   }

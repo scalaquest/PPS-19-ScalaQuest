@@ -1,6 +1,6 @@
 package io.github.scalaquest.cli
 
-import io.github.scalaquest.core.model.{MessagePusher, Model, StringPusher, TriggerPusher}
+import io.github.scalaquest.core.model.{MessagePusher, Model}
 import io.github.scalaquest.core.Game
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
@@ -54,8 +54,9 @@ object CLI {
 
         override def start: ZIO[Console, Exception, Unit] =
           for {
-            _ <- putStrLn(pusher push state.messages)
-            _ <- gameLoop(game, pusher)(state)
+            _         <- putStrLn(pusher push state.messages)
+            initState <- UIO.succeed(model.messageLens.set(Seq())(state))
+            _         <- gameLoop(game, pusher)(initState)
           } yield ()
       }
   }

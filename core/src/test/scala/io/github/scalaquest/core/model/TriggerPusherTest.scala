@@ -12,7 +12,7 @@ class TriggerPusherTest extends AnyWordSpec with Matchers {
     val pusher = new TriggerPusher[Int] {
       override def notFound: Int                  = -1
       override def combine(x: Int, y: Int): Int   = x + y
-      override def triggers: MessageTriggers[Int] = { case Printed(_) => 1 }
+      override def triggers: MessageTriggers[Int] = { case Print(_) => 1 }
     }
 
     "print not found, it the message cannot be handled" in {
@@ -20,7 +20,7 @@ class TriggerPusherTest extends AnyWordSpec with Matchers {
     }
 
     "find a match for the given sequence of messages, analyzing the triggers" in {
-      pusher.push(Seq(Printed("example"), Print("example"))) shouldBe 2
+      pusher.push(Seq(Print("example"), Print("example"))) shouldBe 2
     }
   }
 

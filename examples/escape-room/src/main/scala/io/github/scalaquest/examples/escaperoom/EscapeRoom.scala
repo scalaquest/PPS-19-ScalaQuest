@@ -21,12 +21,13 @@ abstract class GameCLIApp extends CLIApp {
 
 object EscapeRoom extends GameCLIApp {
 
-  print(
-    "\n\nWelcome in the Escape Room Game! You have been kidnapped, and you woke up in a " +
-      "gloomy basement. You have to get out of the house to save yourself!\n\n"
-  )
-
   override def pipelineBuilder: Pipeline.PartialBuilder[S, M] = defaultPipeline(source)
+
+  val welcome: String =
+    """
+    |Welcome in the Escape Room Game! You have been kidnapped, and you woke up in a
+    |gloomy basement. You have to get out of the house to save yourself!
+    |""".stripMargin
 
   override def state: S =
     model.State(
@@ -34,7 +35,7 @@ object EscapeRoom extends GameCLIApp {
       rooms = House.refToRoom,
       items = refToItem,
       location = House.basement.ref,
-      messages = Seq.empty
+      welcomeMsg = model.Messages.Welcome(welcome)
     )
 
   override def messagePusher: StringPusher = Pusher.defaultPusher

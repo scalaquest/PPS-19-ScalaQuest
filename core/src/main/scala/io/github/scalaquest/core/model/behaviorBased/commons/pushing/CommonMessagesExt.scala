@@ -10,6 +10,8 @@ trait CommonMessagesExt extends BehaviorBasedModel {
 
   object Messages {
 
+    case class Welcome(msg: String) extends Message
+
     /**
      * A [[Message]] generated when the user inspects the room.
      * @param room
