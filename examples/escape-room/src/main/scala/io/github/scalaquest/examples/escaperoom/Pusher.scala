@@ -19,8 +19,8 @@ object Pusher {
       case Opened(item) if item == Items.coffer =>
         "The chest swung open. There is an old rusty key inside it. " +
           "Maybe it could be useful."
-      case Win  => "Great! You are out of the house now and you win! Bye!"
-      case Lose => "On no! The apple was poisoned, you died, game over. Bye!"
+      case Won  => "Great! You are out of the house now and you win! Bye!"
+      case Lost => "On no! The apple was poisoned, you died, game over. Bye!"
     }
   )
 }

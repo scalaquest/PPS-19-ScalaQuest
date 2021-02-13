@@ -36,7 +36,7 @@ class TriggerPusherTest extends AnyWordSpec with Matchers {
 
   "A StringPusher" should {
     val pusher = new StringPusher {
-      override def triggers: MessageTriggers[String] = { case Print(msg) => msg }
+      override def triggers: MessageTriggers[String] = { case Printed(msg) => msg }
     }
 
     "return the empty message, if a match is not found" in {
@@ -44,11 +44,11 @@ class TriggerPusherTest extends AnyWordSpec with Matchers {
     }
 
     "find a match for the given message, analyzing the triggers" in {
-      pusher.push(Print("hello")) shouldBe "hello"
+      pusher.push(Printed("hello")) shouldBe "hello"
     }
 
     "find a match for the given sequence of messages, analyzing the triggers" in {
-      pusher.push(Seq(Print("hello"), Print("hello"))) shouldBe "hello\nhello"
+      pusher.push(Seq(Printed("hello"), Printed("hello"))) shouldBe "hello\nhello"
     }
   }
 }

@@ -31,7 +31,7 @@ object Items {
       i(d("green"), "apple"),
       SimpleEatable(
         onEatExtra = Some(
-          _.applyReactions(messageLens.modify(_ :+ Lose), matchEndedLens.set(true))
+          _.applyReactions(messageLens.modify(_ :+ Lost), matchEndedLens.set(true))
         )
       )
     )
@@ -65,7 +65,7 @@ object Items {
     keyAddBehaviors = Seq(SimpleTakeable()),
     onOpenExtra = Some(
       _.applyReactions(
-        messageLens.modify(_ :+ Win),
+        messageLens.modify(_ :+ Won),
         matchEndedLens.set(true)
       )
     )
