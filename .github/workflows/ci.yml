@@ -79,9 +79,9 @@ jobs:
 
   Coverage:
     if: |
-      contains(github.ref, 'release') ||
       contains(github.ref, 'main') ||
-      contains(github.ref, 'hotfix')
+      contains(github.event.pull_request.head.ref, 'release') ||
+      contains(github.event.pull_request.head.ref, 'hotfix')
 
     runs-on: ubuntu-latest
 
