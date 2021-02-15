@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.parsing.engine
 
-import alice.tuprolog.{Library => TuPrologLibrary}
 import alice.tuprolog.lib.{DCGLibrary => TuPrologDCGLibrary}
+import alice.tuprolog.{Library => TuPrologLibrary}
 
 /** Representation of a Prolog library */
 abstract class BaseLibrary

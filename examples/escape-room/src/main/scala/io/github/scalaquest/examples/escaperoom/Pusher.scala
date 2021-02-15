@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.{Message, StringPusher}
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonStringPusher
+import io.github.scalaquest.core.model.{Message, StringPusher}
 
 object Pusher {
   import model.Messages._

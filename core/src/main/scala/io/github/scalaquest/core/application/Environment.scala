@@ -1,7 +1,6 @@
 package io.github.scalaquest.core.application
 
-import io.github.scalaquest.core.model.RoomRef
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.model.{Model, RoomRef}
 
 abstract class Environment[RM <: Model#Room] {
   def allTheRooms: Set[RM]

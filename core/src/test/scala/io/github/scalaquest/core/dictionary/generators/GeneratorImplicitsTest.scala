@@ -8,8 +8,8 @@ class GeneratorImplicitsTest extends AnyWordSpec with Matchers {
   "Using the implicits" when {
     "calling a new generatorK from a list" should {
       "return an instance" in {
-        import implicits.listGenerator
         import cats.Monoid
+        import implicits.listGenerator
         implicit val generator = Generator.instance((x: Int) => x)
         implicit val monoid    = Monoid.instance[Int](0, _ + _)
         val generatorK         = GeneratorK[List, Int, Int]

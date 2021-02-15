@@ -5,8 +5,8 @@ import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 
 class KeyTest extends AnyWordSpec {
-  import TestsUtils.model._
   import TestsUtils._
+  import TestsUtils.model._
 
   "A Key" when {
     val key       = Key(ItemDescription("key"), Seq(Takeable.builder(), Eatable.builder()))

@@ -24,7 +24,18 @@ repositories {
 }
 
 tasks.withType<ScalaCompile> {
-    scalaCompileOptions.additionalParameters = listOf("-feature", "-language:implicitConversions")
+    scalaCompileOptions.additionalParameters = listOf(
+            "-feature",
+            "-language:implicitConversions",
+            "-language:higherKinds",
+            "-Xfatal-warnings",
+            "-Xlint",
+            "-Wunused:implicits",
+            "-Wunused:imports",
+            "-Wunused:locals",
+            "-Wunused:params",
+            "-Wunused:privates"
+    )
 }
 
 tasks.named<Test>("test") {
