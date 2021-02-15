@@ -31,6 +31,7 @@ object CommonVerbs {
       Transitive("open", Open),
       Transitive("enter", Enter),
       Ditransitive("enter", Enter, Some("with")),
-      Intransitive("inspect", Inspect)
+      Intransitive("inspect", Inspect),
+      Intransitive("inspect", InspectBag, Some("bag"))
     ) ++ gos
 }

@@ -9,5 +9,6 @@ object CommonActions {
   case object Enter                   extends Action
   case object Eat                     extends Action
   case object Inspect                 extends Action
+  case object InspectBag              extends Action
   case class Go(direction: Direction) extends Action
 }

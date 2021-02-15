@@ -21,6 +21,8 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      */
     case class Inspected(room: RM, items: Set[I], neighbors: Map[Direction, RM]) extends Message
 
+    case class InspectedBag(items: Set[I]) extends Message
+
     /**
      * A [[Message]] generated when the user navigate into a new the room.
      * @param room

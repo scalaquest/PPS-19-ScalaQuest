@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.InspectBag
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
@@ -10,7 +10,7 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Inspectable behavior for the
  * Ground.
  */
-trait InspectableExt
+trait InspectableBagExt
   extends BehaviorBasedModel
   with StateUtilsExt
   with CommonMessagesExt
@@ -20,32 +20,33 @@ trait InspectableExt
    * A [[GroundBehavior]] that enables the possibility to know the items present into the current
    * Room.
    */
-  abstract class Inspectable extends GroundBehavior
+  abstract class InspectableBag extends GroundBehavior
 
   /**
-   * A standard implementation for [[Inspectable]].
+   * A standard implementation for [[InspectableBag]].
+   *
    * @param onInspectExtra
    *   [[Reaction]] to be executed when the player succdessfully inspected the room. It can be
    *   omitted.
    */
-  case class SimpleInspectable(onInspectExtra: Option[Reaction] = None) extends Inspectable {
+  case class SimpleInspectableBag(onInspectExtra: Option[Reaction] = None) extends InspectableBag {
 
-    override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
+    override def triggers: GroundTriggers = { case (InspectBag, _) => inspectBag }
 
-    def inspectLocation: Reaction =
+    def inspectBag: Reaction =
       _.applyReactions(
-        Reactions.inspectLocation,
+        Reactions.inspectBag,
         onInspectExtra.getOrElse(Reactions.empty)
       )
   }
 
   /**
-   * Companion object for [[Inspectable]]. Shortcut for the standard implementation.
+   * Companion object for [[InspectableBag]]. Shortcut for the standard implementation.
    */
-  object Inspectable {
+  object InspectableBag {
 
-    def apply(onInspectExtra: Option[Reaction] = None): Inspectable =
-      SimpleInspectable(onInspectExtra)
+    def apply(onInspectExtra: Option[Reaction] = None): InspectableBag =
+      SimpleInspectableBag(onInspectExtra)
   }
 
 }

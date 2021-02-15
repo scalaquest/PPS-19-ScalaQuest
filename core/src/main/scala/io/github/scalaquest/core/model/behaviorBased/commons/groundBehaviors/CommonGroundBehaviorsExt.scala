@@ -2,7 +2,8 @@ package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.{
-  InspectableExt,
+  InspectableBagExt,
+  InspectableLocationExt,
   NavigableExt
 }
 
@@ -11,4 +12,8 @@ import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.imp
  * ScalaQuest Core. It requires the storyteller to implement all the required [[monocle.Lens]], used
  * by the implementation to access and re-generate the concrete State.
  */
-trait CommonGroundBehaviorsExt extends BehaviorBasedModel with NavigableExt with InspectableExt
+trait CommonGroundBehaviorsExt
+  extends BehaviorBasedModel
+  with NavigableExt
+  with InspectableLocationExt
+  with InspectableBagExt

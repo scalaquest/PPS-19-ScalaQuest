@@ -12,7 +12,8 @@ trait CommonReactionsExt
   with NavigateExt
   with OpenExt
   with EmptyExt
-  with TakeExt { self =>
+  with TakeExt
+  with InspectBagExt { self =>
 
   object Reactions {
     def eat(item: I): Reaction             = self.eat(item)
@@ -22,6 +23,7 @@ trait CommonReactionsExt
     def inspectLocation: Reaction          = self.inspectLocation
     def navigate(room: RM): Reaction       = self.navigate(room)
     def finishGame(win: Boolean): Reaction = self.finishGame(win)
+    def inspectBag: Reaction               = self.inspectBag
 
     def open(
       itemToOpen: I,
