@@ -11,7 +11,7 @@ import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
 import org.scalatest.wordspec.AnyWordSpec
 
-class InspectableTest extends AnyWordSpec {
+class InspectableLocationTest extends AnyWordSpec {
 
   "An Inspect Ground Behavior" when {
     val inspection = InspectableLocation()
