@@ -3,10 +3,9 @@ package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.Reaction
 
 /**
- * A [[Reaction]] generated that return items contained in the bag.
+ * A Reaction generated that return items contained in the bag.
  */
 private[reactions] trait InspectBagExt
   extends BehaviorBasedModel

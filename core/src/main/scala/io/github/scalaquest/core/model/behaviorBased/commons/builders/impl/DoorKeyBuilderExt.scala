@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders.impl
+package io.github.scalaquest.core.model.behaviorBased.commons.builders.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt

@@ -1,7 +1,7 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders
+package io.github.scalaquest.core.model.behaviorBased.commons.builders
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.simple.builders.impl.{
+import io.github.scalaquest.core.model.behaviorBased.commons.builders.impl.{
   DoorKeyBuilderExt,
   OpKeyBuilderExt
 }

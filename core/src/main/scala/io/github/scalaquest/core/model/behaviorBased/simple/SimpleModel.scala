@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.simple
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.builders.BuildersExt
+import io.github.scalaquest.core.model.behaviorBased.commons.builders.BuildersExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.{SimpleRoomExt, SimpleStateExt}
 
 /**

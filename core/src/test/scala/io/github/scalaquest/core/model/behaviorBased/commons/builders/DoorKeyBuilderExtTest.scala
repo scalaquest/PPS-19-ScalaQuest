@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders
+package io.github.scalaquest.core.model.behaviorBased.commons.builders
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.{Direction, ItemDescription}
