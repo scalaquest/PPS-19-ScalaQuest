@@ -15,3 +15,7 @@ plugins {
 scoverage {
     minimumRate.set(0.toBigDecimal())
 }
+
+tasks.withType<JavaExec> {
+    standardInput = System.`in`
+}

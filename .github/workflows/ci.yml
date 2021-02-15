@@ -78,6 +78,11 @@ jobs:
         run: ./gradlew spotlessCheck
 
   Coverage:
+    if: |
+      contains(github.ref, 'main') ||
+      contains(github.event.pull_request.head.ref, 'release') ||
+      contains(github.event.pull_request.head.ref, 'hotfix')
+
     runs-on: ubuntu-latest
 
     steps:
@@ -100,6 +105,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-        # runs also tests internally
       - name: Check coverage
         run: ./gradlew checkScoverage

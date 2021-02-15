@@ -17,7 +17,7 @@ class DoorKeyBuilderExtTest extends AnyWordSpec {
     )
 
     "return a tuple with a working key-door pair" in {
-      assert(door.doorBehavior.openable.get.requiredKey.get == key, "The key do not matches")
+      assert(door.roomLink.openable.get.requiredKey.get == key, "The key do not matches")
     }
   }
 }

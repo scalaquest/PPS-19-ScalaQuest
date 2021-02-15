@@ -14,7 +14,7 @@ on:
       - dev
 
 jobs:
-  Delivery:
+  Scanner:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

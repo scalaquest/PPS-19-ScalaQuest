@@ -1,15 +1,20 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
-import io.github.scalaquest.core.model.Action.Common.Inspect
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Inspectable behavior for the
  * Ground.
  */
-trait InspectableExt extends BehaviorBasedModel with StateUtilsExt with CommonMessagesExt {
+trait InspectableExt
+  extends BehaviorBasedModel
+  with StateUtilsExt
+  with CommonMessagesExt
+  with CommonReactionsExt {
 
   /**
    * A [[GroundBehavior]] that enables the possibility to know the items present into the current
@@ -25,19 +30,13 @@ trait InspectableExt extends BehaviorBasedModel with StateUtilsExt with CommonMe
    */
   case class SimpleInspectable(onInspectExtra: Option[Reaction] = None) extends Inspectable {
 
-    override def triggers: GroundTriggers = { case (Inspect, _) => inspectRoom }
+    override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
 
-    def inspectRoom: Reaction =
-      state => {
-        implicit val s: S = state
-        state.applyReactions(
-          messageLens.modify(
-            _ :+ Inspected(state.location, state.location.items, state.location.neighbors)
-          ),
-          onInspectExtra.getOrElse(s => s)
-        )
-      }
-
+    def inspectLocation: Reaction =
+      _.applyReactions(
+        Reactions.inspectLocation,
+        onInspectExtra.getOrElse(Reactions.empty)
+      )
   }
 
   /**

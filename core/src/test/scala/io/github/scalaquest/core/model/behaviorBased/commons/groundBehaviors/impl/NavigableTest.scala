@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.Action.Common.Go
 import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
 import org.scalatest.wordspec.AnyWordSpec
 
 class NavigableTest extends AnyWordSpec {

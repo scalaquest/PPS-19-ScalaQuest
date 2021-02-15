@@ -1,6 +1,6 @@
 package io.github.scalaquest.cli
 
-import io.github.scalaquest.core.model.{Model, StringPusher}
+import io.github.scalaquest.core.model.{MessagePusher, Model}
 import io.github.scalaquest.core.Game
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
@@ -21,18 +21,18 @@ object CLI {
 
   def builderFrom[M <: Model](implicit model: M) = new CLIBuilder[M](model)
 
-  class CLIBuilder[M <: Model](val model: M) {
+  def readLine: ZIO[Console, IOException, String] =
+    for {
+      _  <- putStr("> ")
+      i  <- getStrLn
+      i2 <- if (i == "") readLine else ZIO.succeed(i)
+    } yield i2;
 
-    private def readLine: ZIO[Console, IOException, String] =
-      for {
-        _  <- putStr("> ")
-        i  <- getStrLn
-        i2 <- if (i == "") readLine else ZIO.succeed(i)
-      } yield i2;
+  class CLIBuilder[M <: Model](val model: M) {
 
     private def gameLoop(
       game: Game[model.type],
-      pusher: StringPusher
+      pusher: MessagePusher[String]
     )(startState: model.S): ZIO[Console, Exception, Unit] =
       for {
         input       <- readLine
@@ -49,13 +49,14 @@ object CLI {
 
       } yield ()
 
-    def build(state: model.S, game: Game[model.type], pusher: StringPusher): CLI =
+    def build(state: model.S, game: Game[model.type], pusher: MessagePusher[String]): CLI =
       new CLI() {
 
         override def start: ZIO[Console, Exception, Unit] =
           for {
-            _ <- putStrLn(pusher push state.messages)
-            _ <- gameLoop(game, pusher)(state)
+            _         <- putStrLn(pusher push state.messages)
+            initState <- UIO.succeed(model.messageLens.set(Seq())(state))
+            _         <- gameLoop(game, pusher)(initState)
           } yield ()
       }
   }

@@ -6,10 +6,11 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class KeyTest extends AnyWordSpec {
   import TestsUtils.model._
+  import TestsUtils._
 
   "A Key" when {
-    val behaviors = Seq(Takeable(), Eatable())
-    val key       = Key(ItemDescription("key"), Seq(behaviors.head, behaviors(1)))
+    val key       = Key(ItemDescription("key"), Seq(Takeable.builder(), Eatable.builder()))
+    val behaviors = Seq(Takeable.builder()(key), Eatable.builder()(key))
 
     "instantiated" should {
       "take whatever number of behaviors" in {
@@ -18,7 +19,7 @@ class KeyTest extends AnyWordSpec {
     }
 
     "associated to an Openable behavior" should {
-      val openable = Openable(requiredKey = Some(key))
+      val openable = Openable.builder(requiredKey = Some(key))(apple)
 
       "be used as the key for the opening" in {
         assert(openable.requiredKey.contains(key), "The key could not be used for opening")
