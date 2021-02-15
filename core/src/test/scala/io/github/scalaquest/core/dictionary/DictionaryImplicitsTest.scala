@@ -17,7 +17,8 @@ class DictionaryImplicitsTest extends AnyWordSpec with Matchers {
     ItemRef(itemDescription)
   )
 
-  val verb = Transitive("eat", Action.Common.Eat)
+  case object testAction extends Action
+  val verb = Transitive("eat", testAction)
 
   "Implicits" should {
     import implicits._
