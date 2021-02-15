@@ -16,9 +16,11 @@ import io.github.scalaquest.core.pipeline.resolver.Resolver
 
 import scala.io.Source
 
-abstract class ApplicationStructure[M <: Model](val model: M) {
+trait ApplicationStructure[MM <: Model] {
   import io.github.scalaquest.core.dictionary.generators.implicits.listToMapGenerator
   import io.github.scalaquest.core.dictionary.implicits.{itemToEntryGenerator, verbToEntryGenerator}
+
+  val model: MM
 
   type M        = model.type
   type S        = model.S
