@@ -1,6 +1,5 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
-import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.TestsUtils.model.{
   BehaviorBasedGround,
   GroundBehavior,

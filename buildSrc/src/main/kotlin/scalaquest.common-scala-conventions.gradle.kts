@@ -29,10 +29,10 @@ tasks.withType<ScalaCompile> {
             "-language:implicitConversions",
             "-language:higherKinds",
             "-Xfatal-warnings",
-            // "-Wunused:implicits",
-            // "-Wunused:imports",
+            "-Wunused:implicits",
+            "-Wunused:imports",
             "-Wunused:locals",
-            // "-Wunused:params",
+            "-Wunused:params",
             "-Wunused:privates"
     )
 }
