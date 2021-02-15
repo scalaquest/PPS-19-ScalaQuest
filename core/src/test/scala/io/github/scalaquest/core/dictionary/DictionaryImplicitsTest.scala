@@ -48,13 +48,13 @@ class DictionaryImplicitsTest extends AnyWordSpec with Matchers {
       )
     }
     "provide a Program Monoid instance" in {
-      val program1 = Set(
+      val program1: Program = Set(
         Fact(Compound(Atom("name"), Atom("item")))
       )
-      val program2 = Set(
+      val program2: Program = Set(
         Fact(Compound(Atom("adjective"), Atom("red")))
       )
-      combineAll(program1, program2) shouldBe Set(
+      combineAll(program1, program2)(implicits.programMonoid) shouldBe Set(
         Fact(Compound(Atom("name"), Atom("item"))),
         Fact(Compound(Atom("adjective"), Atom("red")))
       )
