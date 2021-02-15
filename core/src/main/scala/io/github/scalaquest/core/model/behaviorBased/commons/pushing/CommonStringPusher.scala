@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.pushing
 
-import io.github.scalaquest.core.model.{ComposableStringPusher, Direction}
 import io.github.scalaquest.core.model.TriggerPusher.{MessageTriggers, StringMessageTriggers}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+import io.github.scalaquest.core.model.{ComposableStringPusher, Direction}
 
 import scala.annotation.tailrec
 

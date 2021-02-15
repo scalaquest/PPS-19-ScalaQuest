@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.dictionary.generators
 
-import io.github.scalaquest.core.dictionary.generators.Generator.{instance, makeEntry}
+import io.github.scalaquest.core.dictionary.generators.Generator.makeEntry
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

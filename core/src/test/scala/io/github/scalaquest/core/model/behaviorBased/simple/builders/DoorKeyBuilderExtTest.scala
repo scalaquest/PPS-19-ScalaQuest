@@ -5,8 +5,8 @@ import io.github.scalaquest.core.model.{Direction, ItemDescription}
 import org.scalatest.wordspec.AnyWordSpec
 
 class DoorKeyBuilderExtTest extends AnyWordSpec {
-  import TestsUtils.model._
   import TestsUtils._
+  import TestsUtils.model._
 
   "A DoorKeyBuilder" should {
     val (door, key) = doorKeyBuilder(

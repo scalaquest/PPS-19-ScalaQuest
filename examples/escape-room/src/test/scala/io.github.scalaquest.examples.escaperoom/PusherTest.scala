@@ -1,10 +1,9 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
+import model.Messages._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import model._
-import model.Messages._
 
 class PusherTest extends AnyWordSpec with Matchers {
   "The default pusher object" should {

@@ -1,15 +1,19 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.cli.CLI.readLine
+import io.github.scalaquest.cli.CLITestHelper._
 import io.github.scalaquest.core.model.RoomRef
-import zio.test._
-import zio.test.Assertion._
-import zio.test.environment._
-import zio.test.junit.JUnitRunnableSpec
-import CLITestHelper._
 import zio.ZIO
 import zio.console.Console
+import zio.test.Assertion._
+import zio.test._
+import zio.test.environment._
+import zio.test.junit.JUnitRunnableSpec
 
+import scala.annotation.nowarn
+
+// Suppress weird warning
+@nowarn("msg=pure expression")
 class CLITest extends JUnitRunnableSpec {
 
   case class TestCLI(start: ZIO[Console, Exception, Unit]) extends CLI

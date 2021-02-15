@@ -4,7 +4,7 @@ import io.github.scalaquest.core.dictionary.generators.{Generator, combineAll}
 import io.github.scalaquest.core.dictionary.verbs.{Transitive, Verb, VerbPrep}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef}
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Fact, Number, Program}
+import io.github.scalaquest.core.parsing.scalog._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

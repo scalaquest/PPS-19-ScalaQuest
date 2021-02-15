@@ -27,28 +27,25 @@ class ItemDescriptionTest extends AnyWordSpec with Matchers {
   }
   "Item description dsl" when {
     import ItemDescription.dsl._
-    val apple       = i("apple")
-    val redApple    = i(d("red"), "apple")
-    val redBigApple = i(d("red", "big"), "apple")
-    val wrongApple  = ItemDescription("red", "big", "apple")
-    val rightApple  = ItemDescription("apple", "big", "red")
+    val apple                  = i("apple")
+    val redApple               = i(d("red"), "apple")
+    val brownSmallSlipperyRock = i(d("brown", "small", "slippery"), "rock")
     "provided only the base item" should {
       "create a base item" in {
-        i("apple") shouldBe BaseItem("apple")
+        apple shouldBe BaseItem("apple")
       }
     }
     "provided a decorator" should {
       "create a decorated item" in {
-        i(d("red"), "apple") shouldBe DecoratedItem("red", BaseItem("apple"))
+        redApple shouldBe DecoratedItem("red", BaseItem("apple"))
       }
     }
     "provided multiple decorators" should {
       "create a nested decorated item" in {
-        val matcher = DecoratedItem(
+        brownSmallSlipperyRock shouldBe DecoratedItem(
           "brown",
           DecoratedItem("small", DecoratedItem("slippery", BaseItem("rock")))
         )
-        i(d("brown", "small", "slippery"), "rock") shouldBe matcher
       }
     }
   }

@@ -47,8 +47,7 @@ trait RoomLinkExt
     endRoomDirection: Direction,
     openable: Option[Openable] = None,
     onEnterExtra: Option[Reaction] = None
-  )(implicit subject: I)
-    extends RoomLink
+  ) extends RoomLink
     with Delegate {
 
     /**
@@ -106,7 +105,6 @@ trait RoomLinkExt
       openableBuilder: Option[I => Openable] = None,
       onEnterExtra: Option[Reaction] = None
     ): I => RoomLink =
-      item =>
-        SimpleRoomLink(endRoom, endRoomDirection, openableBuilder.map(_(item)), onEnterExtra)(item)
+      item => SimpleRoomLink(endRoom, endRoomDirection, openableBuilder.map(_(item)), onEnterExtra)
   }
 }

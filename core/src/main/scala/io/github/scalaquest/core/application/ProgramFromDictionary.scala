@@ -1,12 +1,12 @@
 package io.github.scalaquest.core.application
 
-import cats.{Functor, Monoid}
-import io.github.scalaquest.core.dictionary.generators.{Generator, GeneratorK, combineAll}
-import io.github.scalaquest.core.dictionary.verbs.Verb
-import io.github.scalaquest.core.dictionary.{Dictionary, Item}
-import io.github.scalaquest.core.parsing.scalog.{Clause, Program}
-import io.github.scalaquest.core.dictionary.implicits.{verbToProgram, itemToProgram, programMonoid}
+import cats.Functor
+import io.github.scalaquest.core.dictionary.Item
 import io.github.scalaquest.core.dictionary.generators.implicits.listGenerator
+import io.github.scalaquest.core.dictionary.generators.{GeneratorK, combineAll}
+import io.github.scalaquest.core.dictionary.implicits.{itemToProgram, programMonoid, verbToProgram}
+import io.github.scalaquest.core.dictionary.verbs.Verb
+import io.github.scalaquest.core.parsing.scalog.Program
 
 case class ProgramFromDictionary[I <: Item](verbs: Set[Verb], items: Set[I]) {
 

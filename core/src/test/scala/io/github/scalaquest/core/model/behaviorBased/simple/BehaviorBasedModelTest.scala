@@ -8,12 +8,12 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
   Take
 }
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
-  import TestsUtils.model._
   import TestsUtils._
+  import TestsUtils.model._
 
   "A BehaviorBasedItem" should {
     val behavior = new ItemBehavior {

@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.model.{ItemRef, Model}
+import io.github.scalaquest.core.model.Model
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 
 /**

@@ -1,7 +1,7 @@
 package io.github.scalaquest.cli
 
-import io.github.scalaquest.core.model.{Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import io.github.scalaquest.core.model.{Message, RoomRef}
 
 object CLITestHelper {
 

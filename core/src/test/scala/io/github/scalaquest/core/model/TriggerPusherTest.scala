@@ -1,9 +1,9 @@
 package io.github.scalaquest.core.model
 
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.TriggerPusher.MessageTriggers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import io.github.scalaquest.core.TestsUtils
 
 class TriggerPusherTest extends AnyWordSpec with Matchers {
   import TestsUtils.model.Messages._
