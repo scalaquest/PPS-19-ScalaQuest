@@ -1,21 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 
-import io.github.scalaquest.core.dictionary.verbs.{
-  BaseVerb,
-  Ditransitive,
-  Intransitive,
-  Transitive,
-  Verb
-}
+import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
-  Eat,
-  Enter,
-  Go,
-  Inspect,
-  Open,
-  Take
-}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions._
 
 object CommonVerbs {
 

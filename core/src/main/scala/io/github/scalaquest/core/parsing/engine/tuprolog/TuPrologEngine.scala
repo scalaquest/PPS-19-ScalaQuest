@@ -9,11 +9,13 @@ import alice.tuprolog.{
   Term => TuPrologTerm,
   Theory => TuPrologTheory
 }
-import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
 import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
+import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
 import io.github.scalaquest.core.parsing.scalog
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Term, Variable}
+import io.github.scalaquest.core.parsing.scalog._
+
+import scala.annotation.nowarn
 
 /**
  * Engine implementation that uses a tuProlog engine under the hood.
@@ -56,6 +58,7 @@ object TuPrologEngine {
       .map(_.toTerm)
   }
 
+  @nowarn("msg=exhaustive")
   /**
    * @note
    *   this will fail if called with a Struct with no arguments.
@@ -98,6 +101,7 @@ private[tuprolog] object implicits {
 
   implicit class EnhancedTuPrologTerm(tuPrologTerm: TuPrologTerm) {
 
+    @nowarn("msg=match.*exhaustive")
     def toTerm: Term =
       tuPrologTerm match {
         case number: tuprolog.Number => buildNumber(number)

@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.parsing.engine.tuprolog
 
-import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 import io.github.scalaquest.core.parsing.engine._
+import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Variable}
 import org.scalatest.Inspectors._
 import org.scalatest.wordspec.AnyWordSpec

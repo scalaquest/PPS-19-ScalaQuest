@@ -1,8 +1,8 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.StringPusher
 import io.github.scalaquest.core.Game
+import io.github.scalaquest.core.model.StringPusher
 import io.github.scalaquest.core.pipeline.Pipeline
 
 abstract class GameCLIApp extends CLIApp {

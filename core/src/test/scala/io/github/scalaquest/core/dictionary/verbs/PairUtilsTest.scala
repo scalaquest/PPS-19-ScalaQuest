@@ -10,11 +10,11 @@ class PairUtilsTest extends AnyWordSpec with Matchers {
   "The binding" should {
     "have no preposition" in {
       val verb = Transitive("get", TestAction, None)
-      verb.binding shouldBe (("get", None), TestAction)
+      verb.binding shouldBe (("get", None) -> TestAction)
     }
     "have a preposition" in {
       val verb = Transitive("pick", TestAction, Some("up"))
-      verb.binding shouldBe (("pick", Some("up")), TestAction)
+      verb.binding shouldBe (("pick", Some("up")) -> TestAction)
     }
   }
 }

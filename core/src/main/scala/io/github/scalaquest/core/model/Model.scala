@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
-import monocle.{Lens, PLens}
+import monocle.Lens
 
 /**
  * A way to represent the basic linked concepts of the story, in an extendible way. Usage example:

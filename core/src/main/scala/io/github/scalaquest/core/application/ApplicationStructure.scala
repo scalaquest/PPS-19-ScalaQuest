@@ -1,14 +1,12 @@
 package io.github.scalaquest.core.application
 
 import cats.Functor
-import io.github.scalaquest.core.dictionary.Dictionary
 import io.github.scalaquest.core.dictionary.generators.GeneratorK
 import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
 import io.github.scalaquest.core.model.{Action, ItemRef, Model}
 import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
 import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
-import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
 import io.github.scalaquest.core.pipeline.lexer.SimpleLexer
 import io.github.scalaquest.core.pipeline.parser.Parser
 import io.github.scalaquest.core.pipeline.reducer.Reducer

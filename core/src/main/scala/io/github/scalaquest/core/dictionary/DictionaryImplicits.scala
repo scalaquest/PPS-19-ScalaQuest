@@ -1,9 +1,9 @@
 package io.github.scalaquest.core.dictionary
 
 import cats.Monoid
-import io.github.scalaquest.core.dictionary.generators.{Generator, GeneratorK}
+import io.github.scalaquest.core.dictionary.generators.Generator
 import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
-import io.github.scalaquest.core.model.{Action, ItemRef, Model}
+import io.github.scalaquest.core.model.{Action, ItemRef}
 import io.github.scalaquest.core.parsing.scalog.{Clause, Program}
 
 /**

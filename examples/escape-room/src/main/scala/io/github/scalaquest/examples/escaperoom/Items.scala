@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
 
 object Items {
