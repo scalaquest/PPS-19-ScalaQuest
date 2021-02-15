@@ -13,13 +13,13 @@ trait DictionaryImplicits {
 
   object implicits {
 
-    /** Generator from an `Item` to an entry `(ItemRef, Item)`. */
-    implicit def itemToEntryGenerator[I <: Item]: Generator[I, Map[ItemRef, I]] =
-      Generator.makeEntry(i => i.ref -> i)
-
     /** Generator from a `Verb` to an entry `(VerbPrep, Action)`. */
     implicit def verbToEntryGenerator: Generator[Verb, Map[VerbPrep, Action]] =
       Generator.makeEntry(_.binding)
+
+    /** Generator from an `Item` to an entry `(ItemRef, Item)`. */
+    implicit def itemToEntryGenerator[I <: Item]: Generator[I, Map[ItemRef, I]] =
+      Generator.makeEntry(i => i.ref -> i)
 
     /** Generator from a `Verb` to a `Program`. */
     implicit def verbToProgram: Generator[Verb, Program] = Generator.instance(v => Set(v.clause))
