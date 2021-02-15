@@ -101,6 +101,7 @@ private[tuprolog] object implicits {
 
   implicit class EnhancedTuPrologTerm(tuPrologTerm: TuPrologTerm) {
 
+    @nowarn("msg=match.*exhaustive")
     def toTerm: Term =
       tuPrologTerm match {
         case number: tuprolog.Number => buildNumber(number)
