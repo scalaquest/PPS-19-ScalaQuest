@@ -1,7 +1,7 @@
 package io.github.scalaquest.cli
 
-import io.github.scalaquest.core.model.{MessagePusher, Model}
 import io.github.scalaquest.core.Game
+import io.github.scalaquest.core.model.{MessagePusher, Model}
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
 

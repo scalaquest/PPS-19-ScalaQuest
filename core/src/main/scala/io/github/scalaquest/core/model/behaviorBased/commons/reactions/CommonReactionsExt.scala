@@ -1,16 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.reactions
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.{
-  EatExt,
-  EmptyExt,
-  EnterExt,
-  FinishGameExt,
-  InspectLocationExt,
-  NavigateExt,
-  OpenExt,
-  TakeExt
-}
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl._
 
 trait CommonReactionsExt
   extends BehaviorBasedModel

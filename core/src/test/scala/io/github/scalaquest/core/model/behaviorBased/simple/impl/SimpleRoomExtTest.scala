@@ -5,8 +5,8 @@ import io.github.scalaquest.core.model.Direction
 import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleRoomExtTest extends AnyWordSpec {
-  import TestsUtils.model._
   import TestsUtils._
+  import TestsUtils.model._
 
   "A Room" should {
     val room  = Room("room", Map(Direction.North -> targetRoom.ref), Set.empty)

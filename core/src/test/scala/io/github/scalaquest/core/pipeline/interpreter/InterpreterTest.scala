@@ -1,14 +1,6 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.TestsUtils.{
-  apple,
-  appleItemRef,
-  door,
-  doorItemRef,
-  key,
-  keyItemRef,
-  simpleState
-}
+import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
   Go,

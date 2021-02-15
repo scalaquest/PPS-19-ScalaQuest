@@ -1,8 +1,13 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import TestsUtils.{door, key, simpleState, startRoom, targetRoom}
-import TestsUtils.model.{BehaviorBasedGround, GroundBehavior, Inspectable, Messages}
+import io.github.scalaquest.core.TestsUtils.model.{
+  BehaviorBasedGround,
+  GroundBehavior,
+  Inspectable,
+  Messages
+}
+import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
 import org.scalatest.wordspec.AnyWordSpec

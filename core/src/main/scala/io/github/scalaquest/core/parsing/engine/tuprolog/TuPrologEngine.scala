@@ -9,12 +9,11 @@ import alice.tuprolog.{
   Term => TuPrologTerm,
   Theory => TuPrologTheory
 }
-import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
 import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
 import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
+import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
 import io.github.scalaquest.core.parsing.scalog
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Term, Variable}
-import io.github.scalaquest.core.dictionary.generators.Generator
+import io.github.scalaquest.core.parsing.scalog._
 
 import scala.annotation.nowarn
 

@@ -6,8 +6,8 @@ import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.wordspec.AnyWordSpec
 
 class RoomLinkTest extends AnyWordSpec {
-  import TestsUtils.model._
   import TestsUtils._
+  import TestsUtils.model._
 
   "A RoomLinkBehavior" when {
 

@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.simple.builders.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
-import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.{Direction, ItemDescription}
 
 trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
 

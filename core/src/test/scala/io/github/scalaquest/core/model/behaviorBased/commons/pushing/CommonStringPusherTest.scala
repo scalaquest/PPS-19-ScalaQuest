@@ -1,10 +1,9 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.pushing
 
-import io.github.scalaquest.core.TestsUtils.{apple, door, key, startRoom, targetRoom}
+import io.github.scalaquest.core.TestsUtils.model.Messages._
+import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import io.github.scalaquest.core.TestsUtils.model.Messages._
-
 import org.scalatest.wordspec.AnyWordSpec
 
 class CommonStringPusherTest extends AnyWordSpec {

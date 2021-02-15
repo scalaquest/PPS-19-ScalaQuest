@@ -1,6 +1,5 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 
-import io.github.scalaquest.core.dictionary.verbs.Verb
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

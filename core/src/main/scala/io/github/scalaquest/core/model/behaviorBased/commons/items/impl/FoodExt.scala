@@ -1,8 +1,8 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt
+import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Food Item.
