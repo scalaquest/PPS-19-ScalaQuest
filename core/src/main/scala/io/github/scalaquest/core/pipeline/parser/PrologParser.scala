@@ -6,6 +6,8 @@ import io.github.scalaquest.core.parsing.scalog
 import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, ListP, Term, Variable}
 import io.github.scalaquest.core.pipeline.lexer.LexerResult
 
+import scala.annotation.nowarn
+
 case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
 
 trait Helpers {
@@ -24,6 +26,8 @@ trait Helpers {
   object ItemDescription {
     import dsl.decorated
 
+    @nowarn("msg=not all missing cases are reported")
+    @nowarn("msg=match.*exhaustive")
     private def toItemDescription(term: Term): ItemDescription =
       term match {
         case Atom(name) => BaseItem(name)

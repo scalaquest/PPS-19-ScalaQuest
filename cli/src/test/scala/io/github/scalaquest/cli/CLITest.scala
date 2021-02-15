@@ -10,6 +10,10 @@ import CLITestHelper._
 import zio.ZIO
 import zio.console.Console
 
+import scala.annotation.nowarn
+
+// Suppress weird warning
+@nowarn("msg=pure expression")
 class CLITest extends JUnitRunnableSpec {
 
   case class TestCLI(start: ZIO[Console, Exception, Unit]) extends CLI

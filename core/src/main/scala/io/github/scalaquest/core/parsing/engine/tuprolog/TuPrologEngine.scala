@@ -14,6 +14,9 @@ import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryExceptio
 import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
 import io.github.scalaquest.core.parsing.scalog
 import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Number, Term, Variable}
+import io.github.scalaquest.core.dictionary.generators.Generator
+
+import scala.annotation.nowarn
 
 /**
  * Engine implementation that uses a tuProlog engine under the hood.
@@ -56,6 +59,7 @@ object TuPrologEngine {
       .map(_.toTerm)
   }
 
+  @nowarn("msg=exhaustive")
   /**
    * @note
    *   this will fail if called with a Struct with no arguments.
