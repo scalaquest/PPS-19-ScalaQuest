@@ -4,6 +4,9 @@ import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, T
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions._
 
+/**
+ * [[Verb]] s already implemented in the game.
+ */
 object CommonVerbs {
 
   private def gos: Set[Verb] = {

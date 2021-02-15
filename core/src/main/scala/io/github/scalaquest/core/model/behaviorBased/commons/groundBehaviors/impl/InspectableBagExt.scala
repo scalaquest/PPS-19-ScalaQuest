@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Inspectable behavior for the
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableBag behavior for the
  * Ground.
  */
 trait InspectableBagExt
@@ -17,8 +17,7 @@ trait InspectableBagExt
   with CommonReactionsExt {
 
   /**
-   * A [[GroundBehavior]] that enables the possibility to know the items present into the current
-   * Room.
+   * A [[GroundBehavior]] that enables the possibility to know the items present into the Bag.
    */
   abstract class InspectableBag extends GroundBehavior
 
@@ -26,14 +25,14 @@ trait InspectableBagExt
    * A standard implementation for [[InspectableBag]].
    *
    * @param onInspectExtra
-   *   [[Reaction]] to be executed when the player succdessfully inspected the room. It can be
+   *   [[Reaction]] to be executed when the player successfully inspected the bag. It can be
    *   omitted.
    */
   case class SimpleInspectableBag(onInspectExtra: Option[Reaction] = None) extends InspectableBag {
 
     override def triggers: GroundTriggers = { case (InspectBag, _) => inspectBag }
 
-    def inspectBag: Reaction =
+    private def inspectBag: Reaction =
       _.applyReactions(
         Reactions.inspectBag,
         onInspectExtra.getOrElse(Reactions.empty)

@@ -7,8 +7,8 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Inspectable behavior for the
- * Ground.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableLocation behavior
+ * for the Ground.
  */
 trait InspectableLocationExt
   extends BehaviorBasedModel
@@ -18,7 +18,7 @@ trait InspectableLocationExt
 
   /**
    * A [[GroundBehavior]] that enables the possibility to know the items present into the current
-   * Room.
+   * [[Room]].
    */
   abstract class InspectableLocation extends GroundBehavior
 
@@ -26,7 +26,7 @@ trait InspectableLocationExt
    * A standard implementation for [[InspectableLocation]].
    *
    * @param onInspectExtra
-   *   [[Reaction]] to be executed when the player succdessfully inspected the room. It can be
+   *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
    *   omitted.
    */
   case class SimpleInspectableLocation(onInspectExtra: Option[Reaction] = None)
@@ -34,7 +34,7 @@ trait InspectableLocationExt
 
     override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
 
-    def inspectLocation: Reaction =
+    private def inspectLocation: Reaction =
       _.applyReactions(
         Reactions.inspectLocation,
         onInspectExtra.getOrElse(Reactions.empty)

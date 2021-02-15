@@ -2,6 +2,9 @@ package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 
 import io.github.scalaquest.core.model.{Action, Direction}
 
+/**
+ * [[Action]] s already implemented in the game.
+ */
 object CommonActions {
   case object Take                    extends Action
   case object Open                    extends Action
