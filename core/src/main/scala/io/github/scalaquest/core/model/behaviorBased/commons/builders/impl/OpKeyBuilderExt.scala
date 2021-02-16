@@ -11,8 +11,7 @@ trait OpKeyBuilderExt extends BehaviorBasedModel with CommonItemsExt {
 
   def openableBuilder(
     keyDesc: ItemDescription,
-    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
-  )(
+    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
     consumeKey: Boolean = false,
     openableDesc: ItemDescription,
     onOpenExtra: Option[Reaction] = None,

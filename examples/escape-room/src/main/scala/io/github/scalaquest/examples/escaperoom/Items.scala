@@ -39,8 +39,7 @@ object Items {
 
   val (hatch, hatchKey): (Door, Key) = lockedDoorBuilder(
     keyAddBehaviorsBuilders = Seq(Takeable.builder()),
-    keyDesc = i(d("old", "rusty"), "key")
-  )(
+    keyDesc = i(d("old", "rusty"), "key"),
     doorDesc = i(d("iron"), "hatch"),
     consumeKey = true,
     endRoom = House.livingRoom,
@@ -57,8 +56,7 @@ object Items {
 
   val (doorway, crowbar): (GenericItem, Key) = openableBuilder(
     keyDesc = i(d("rusty", "heavy"), "crowbar"),
-    keyAddBehaviorsBuilders = Seq(Takeable.builder())
-  )(
+    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
     openableDesc = i(d("big"), "doorway"),
     consumeKey = true,
     onOpenExtra = Some(Reactions.finishGame(true))

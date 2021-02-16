@@ -11,8 +11,7 @@ trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonItemsExt {
 
   def lockedDoorBuilder(
     keyDesc: ItemDescription,
-    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
-  )(
+    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
     consumeKey: Boolean = false,
     doorDesc: ItemDescription,
     endRoom: RM,

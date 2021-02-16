@@ -10,8 +10,7 @@ class DoorKeyBuilderExtTest extends AnyWordSpec {
 
   "A DoorKeyBuilder" should {
     val (door, key) = lockedDoorBuilder(
-      keyDesc = ItemDescription("key")
-    )(
+      keyDesc = ItemDescription("key"),
       doorDesc = ItemDescription("door"),
       endRoom = targetRoom,
       endRoomDirection = Direction.North

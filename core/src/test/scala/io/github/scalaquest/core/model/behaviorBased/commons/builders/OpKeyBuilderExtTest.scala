@@ -9,8 +9,7 @@ class OpKeyBuilderExtTest extends AnyWordSpec {
 
   "A OpKeyBuilder" should {
     val (openableItem, key) = openableBuilder(
-      keyDesc = ItemDescription("key")
-    )(
+      keyDesc = ItemDescription("key"),
       openableDesc = ItemDescription("door")
     )
 
