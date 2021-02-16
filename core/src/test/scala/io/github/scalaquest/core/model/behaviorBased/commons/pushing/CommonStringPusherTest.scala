@@ -18,6 +18,12 @@ class CommonStringPusherTest extends AnyWordSpec with Matchers {
       commonStringPusher.push(Seq(inspected)) should not be commonStringPusher.notFound
     }
 
+    "handle InspectedBag messages" in {
+      val inspectedBag =
+        InspectedBag(Set.empty)
+      commonStringPusher.push(Seq(inspectedBag)) should not be commonStringPusher.notFound
+    }
+
     "handle Eaten messages" in {
       val eaten = Eaten(apple)
       commonStringPusher.push(Seq(eaten)) should not be commonStringPusher.notFound
@@ -51,6 +57,14 @@ class CommonStringPusherTest extends AnyWordSpec with Matchers {
     "handle Welcome messages" in {
       val welcome = Welcome("hello?")
       commonStringPusher.push(Seq(welcome)) should not be commonStringPusher.notFound
+    }
+
+    "handle Won messages" in {
+      commonStringPusher.push(Seq(Won)) should not be commonStringPusher.notFound
+    }
+
+    "handle Lost messages" in {
+      commonStringPusher.push(Seq(Lost)) should not be commonStringPusher.notFound
     }
 
     "handle FailedToEnter messages" in {

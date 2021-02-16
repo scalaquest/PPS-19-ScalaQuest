@@ -9,7 +9,7 @@ import io.github.scalaquest.core.model.{Direction, ItemDescription}
  */
 trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonItemsExt {
 
-  def LockedDoorBuilder(
+  def lockedDoorBuilder(
     keyDesc: ItemDescription,
     keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
   )(

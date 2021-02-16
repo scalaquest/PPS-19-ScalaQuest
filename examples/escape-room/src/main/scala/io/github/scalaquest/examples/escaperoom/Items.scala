@@ -37,7 +37,7 @@ object Items {
     RoomLink.builder(House.basement, Direction.Down)
   )
 
-  val (hatch, hatchKey): (Door, Key) = LockedDoorBuilder(
+  val (hatch, hatchKey): (Door, Key) = lockedDoorBuilder(
     keyAddBehaviorsBuilders = Seq(Takeable.builder()),
     keyDesc = i(d("old", "rusty"), "key")
   )(
@@ -55,7 +55,7 @@ object Items {
     })))
   )
 
-  val (doorway, crowbar): (GenericItem, Key) = OpenableBuilder(
+  val (doorway, crowbar): (GenericItem, Key) = openableBuilder(
     keyDesc = i(d("rusty", "heavy"), "crowbar"),
     keyAddBehaviorsBuilders = Seq(Takeable.builder())
   )(
