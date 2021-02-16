@@ -53,12 +53,6 @@ object Interpreter {
    * It generates a [[Builder]] with the right type constraints.
    * @param model
    *   The concrete instance of the [[Model]] in use.
-   * @param itemDict
-   *   A [[Map]] that indicates the [[ItemRef]] of each ot the [[Model.Item]] in use. The
-   *   [[Model.Item]] type must be derived from the `model` passed as parameter.
-   * @param ground
-   *   The [[Model.Ground]] instance of the match. The [[Model.Ground]] type must be derived from
-   *   the `model` passed as parameter.
    * @tparam M
    *   The concrete type of the [[Model]] in use.
    * @return
@@ -68,21 +62,22 @@ object Interpreter {
     state => {
       implicit val s: model.S           = state
       val refToItem: RefToItem[model.I] = RefToItem(model)(state.items)
+      val actionNotFound: String        = "I can't do that!"
 
       // shortcut for implementing the Interpreter, as it is a single method trait
       (resolverResult: ResolverResult) =>
         for {
           maybeReaction <- resolverResult.statement match {
             case Statement.Intransitive(action) =>
-              state.ground.use(action).toRight(s"I can't do that!")
+              state.ground.use(action).toRight(actionNotFound)
 
             case Statement.Transitive(action, refToItem(item)) =>
-              item.use(action).toRight(s"I can't do that!")
+              item.use(action).toRight(actionNotFound)
 
             case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =>
-              directObj.use(action, Some(indirectObj)).toRight(s"I can't do that!")
+              directObj.use(action, Some(indirectObj)).toRight(actionNotFound)
 
-            case _ => Left(s"I can't do that!")
+            case _ => Left(actionNotFound)
           }
         } yield InterpreterResult(model)(maybeReaction)
     }
