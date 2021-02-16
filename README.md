@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./logo.png" width="150">
+    <img src="./logo.png" width="80">
 </div>
 <h1 align="center">ScalaQuest</h1>
 
