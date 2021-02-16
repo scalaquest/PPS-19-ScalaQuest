@@ -9,9 +9,10 @@ import io.github.scalaquest.core.model.behaviorBased.commons.items.CommonItemsEx
  */
 trait OpKeyBuilderExt extends BehaviorBasedModel with CommonItemsExt {
 
-  def openableWithKeyBuilder(
+  def OpenableBuilder(
     keyDesc: ItemDescription,
-    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
+    keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
+  )(
     consumeKey: Boolean = false,
     openableDesc: ItemDescription,
     onOpenExtra: Option[Reaction] = None,

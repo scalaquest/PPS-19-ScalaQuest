@@ -37,13 +37,14 @@ object Items {
     RoomLink.builder(House.basement, Direction.Down)
   )
 
-  val (hatch, hatchKey): (Door, Key) = doorKeyBuilder(
+  val (hatch, hatchKey): (Door, Key) = LockedDoorBuilder(
+    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
+    keyDesc = i(d("old", "rusty"), "key")
+  )(
     doorDesc = i(d("iron"), "hatch"),
-    keyDesc = i(d("old", "rusty"), "key"),
     consumeKey = true,
     endRoom = House.livingRoom,
-    endRoomDirection = Direction.Up,
-    keyAddBehaviorsBuilders = Seq(Takeable.builder())
+    endRoomDirection = Direction.Up
   )
 
   val coffer: GenericItem = GenericItem(
@@ -54,11 +55,12 @@ object Items {
     })))
   )
 
-  val (doorway, crowbar): (GenericItem, Key) = openableWithKeyBuilder(
-    openableDesc = i(d("big"), "doorway"),
+  val (doorway, crowbar): (GenericItem, Key) = OpenableBuilder(
     keyDesc = i(d("rusty", "heavy"), "crowbar"),
+    keyAddBehaviorsBuilders = Seq(Takeable.builder())
+  )(
+    openableDesc = i(d("big"), "doorway"),
     consumeKey = true,
-    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
     onOpenExtra = Some(Reactions.finishGame(true))
   )
 }
