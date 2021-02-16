@@ -28,12 +28,13 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
       val ordItems = items.toList.sortWith(_.toString < _.toString)
       s"The bag contains ${printItems(ordItems)}"
 
-    case Eaten(item)         => s"The ${item.toString} has been eaten!"
-    case Taken(item)         => s"The ${item.toString} has been taken!"
-    case Opened(item)        => s"The ${item.toString} has been opened!"
-    case AlreadyOpened(item) => s"The ${item.toString} is already opened!"
-    case FailedToOpen(item)  => s"The ${item.toString} failed to open!"
-    case Navigated(room)     => s"You entered ${room.toString}!"
+    case Eaten(item)         => s"The $item has been eaten!"
+    case Taken(item)         => s"The $item has been taken!"
+    case Opened(item)        => s"The $item has been opened!"
+    case AlreadyOpened(item) => s"The $item is already opened!"
+    case FailedToOpen(item)  => s"The $item failed to open!"
+    case FailedToEnter(item) => s"The $item is locked! You cannot enter now."
+    case Navigated(room)     => s"You entered $room!"
     case Print(msg)          => msg
     case Welcome(msg)        => msg
     case Won                 => "You win!"

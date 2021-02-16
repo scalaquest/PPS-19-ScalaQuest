@@ -35,6 +35,8 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      */
     case class Navigated(room: RM) extends Message
 
+    case class FailedToEnter(item: I) extends Message
+
     /**
      * A [[Message]] generated when the user wants to know its current position, and the neighbor
      * rooms of the current one.

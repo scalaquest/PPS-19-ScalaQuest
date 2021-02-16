@@ -52,5 +52,10 @@ class CommonStringPusherTest extends AnyWordSpec with Matchers {
       val welcome = Welcome("hello?")
       commonStringPusher.push(Seq(welcome)) should not be commonStringPusher.notFound
     }
+
+    "handle FailedToEnter messages" in {
+      val failedToEnter = FailedToEnter(door)
+      commonStringPusher.push(Seq(failedToEnter)) should not be commonStringPusher.notFound
+    }
   }
 }
