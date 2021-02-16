@@ -1,4 +1,7 @@
-# ScalaQuest
+<div align="center">
+    <img src="./logo.png" width="150">
+</div>
+<h1 align="center">ScalQuest</h1>
 
 ![CI](https://github.com/scalaquest/PPS-19-ScalaQuest/workflows/CI/badge.svg)
 ![Coverage](https://sonarcloud.io/api/project_badges/measure?project=scalaquest_PPS-19-ScalaQuest&metric=coverage)
