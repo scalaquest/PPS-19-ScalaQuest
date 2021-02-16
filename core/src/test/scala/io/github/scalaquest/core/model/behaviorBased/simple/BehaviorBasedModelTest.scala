@@ -42,7 +42,7 @@ class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
 
   "A BehaviorBasedGround" should {
     val ground = new BehaviorBasedGround {
-      override def behaviors: Seq[GroundBehavior] = Seq(Inspectable())
+      override def behaviors: Seq[GroundBehavior] = Seq(InspectableLocation())
     }
 
     "respond to use calls with a Reaction, if a match is found" in {

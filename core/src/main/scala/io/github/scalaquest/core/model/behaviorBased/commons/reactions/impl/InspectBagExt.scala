@@ -5,18 +5,17 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessa
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * A Reaction generated that return the visible items and the neighbor rooms.
+ * A Reaction generated that return items contained in the bag.
  */
-private[reactions] trait InspectLocationExt
+private[reactions] trait InspectBagExt
   extends BehaviorBasedModel
   with StateUtilsExt
   with CommonMessagesExt {
 
-  private[reactions] def inspectLocation: Reaction =
+  private[reactions] def inspectBag: Reaction =
     state => {
-      implicit val s: S = state
       messageLens.modify(
-        _ :+ Messages.Inspected(state.location, state.location.items, state.location.neighbors)
+        _ :+ Messages.InspectedBag(state.bag)
       )(state)
     }
 }

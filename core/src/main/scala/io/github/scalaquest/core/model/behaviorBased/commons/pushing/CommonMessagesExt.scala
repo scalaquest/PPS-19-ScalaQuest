@@ -22,11 +22,20 @@ trait CommonMessagesExt extends BehaviorBasedModel {
     case class Inspected(room: RM, items: Set[I], neighbors: Map[Direction, RM]) extends Message
 
     /**
+     * A [[Message]] generated when the user inspects the bag.
+     * @param items
+     *   The items contained in the bag.
+     */
+    case class InspectedBag(items: Set[I]) extends Message
+
+    /**
      * A [[Message]] generated when the user navigate into a new the room.
      * @param room
      *   The new current position of the player, as a [[BehaviorBasedModel.Room]].
      */
     case class Navigated(room: RM) extends Message
+
+    case class FailedToEnter(item: I) extends Message
 
     /**
      * A [[Message]] generated when the user wants to know its current position, and the neighbor
@@ -51,6 +60,10 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      *   The opened item.
      */
     case class Opened(item: I) extends Message
+
+    case class FailedToOpen(item: I) extends Message
+
+    case class AlreadyOpened(item: I) extends Message
 
     /**
      * A [[ItemBehavior]] associated to an [[Item]] that can be taken a single time.

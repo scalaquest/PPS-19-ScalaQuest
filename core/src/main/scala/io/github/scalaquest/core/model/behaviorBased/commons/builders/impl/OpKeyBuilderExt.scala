@@ -1,12 +1,15 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders.impl
+package io.github.scalaquest.core.model.behaviorBased.commons.builders.impl
 
 import io.github.scalaquest.core.model.ItemDescription
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.items.CommonItemsExt
 
-trait OpKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
+/**
+ * A convenient implementation for an openble item, and if present, a key connected to it.
+ */
+trait OpKeyBuilderExt extends BehaviorBasedModel with CommonItemsExt {
 
-  def openableWithKeyBuilder(
+  def openableBuilder(
     keyDesc: ItemDescription,
     keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
     consumeKey: Boolean = false,

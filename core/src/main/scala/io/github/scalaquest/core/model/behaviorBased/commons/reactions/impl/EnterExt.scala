@@ -4,6 +4,9 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
+/**
+ * A Reaction used to enter in a new Room.
+ */
 private[reactions] trait EnterExt
   extends BehaviorBasedModel
   with StateUtilsExt
