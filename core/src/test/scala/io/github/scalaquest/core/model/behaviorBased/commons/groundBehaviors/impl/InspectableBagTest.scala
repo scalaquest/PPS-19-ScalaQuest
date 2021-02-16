@@ -11,56 +11,40 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
   Eat,
   InspectBag
 }
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class InspectableBagTest extends AnyWordSpec {
+class InspectableBagTest extends AnyWordSpec with Matchers {
 
-  "An inspect bag Behavior" when {
-    val inspection = InspectableBag()
+  "An inspectableBag Behavior" when {
+    val inspectable = InspectableBag()
 
     case object SimpleGround extends BehaviorBasedGround {
-      override val behaviors: Seq[GroundBehavior] = Seq(inspection)
+      override val behaviors: Seq[GroundBehavior] = Seq(inspectable)
     }
 
-    "applied to a bag with some object" must {
-      "describe the objects presents in the bag" in {
-
-        val targetResult =
-          Messages.InspectedBag(Set(apple))
-
+    "applied to a bag with some object" should {
+      "describe the items in the bag" in {
         for {
-          react <- SimpleGround.use(InspectBag)(simpleState) toRight fail(
-            "Reaction not generated"
-          )
+          react    <- SimpleGround.use(InspectBag)(simpleState) toRight fail("Reaction not generated")
           modState <- Right(react(simpleState))
-
-        } yield modState.messages.last shouldBe targetResult
+        } yield modState.messages.last shouldBe Messages.InspectedBag(Set(apple))
       }
-
     }
 
-    "applied to a empty bag" must {
-      "return that the bag is empty" in {
-
-        val targetResult =
-          Messages.InspectedBag(Set.empty)
+    "applied to a empty bag" should {
+      "describe the bag as empty" in {
 
         for {
-          appleEaten <- apple.use(Eat, None)(simpleState) toRight fail(
+          appleEatenReact <- apple.use(Eat, None)(simpleState) toRight fail(
             "Reaction not generated"
           )
-
-          react <- SimpleGround.use(InspectBag)(appleEaten(simpleState)) toRight fail(
-            "Reaction not generated"
-          )
-          modState <- Right(react(appleEaten(simpleState)))
-
-        } yield modState.messages.last shouldBe targetResult
-
+          inspectedBagReact <- SimpleGround.use(InspectBag)(
+            appleEatenReact(simpleState)
+          ) toRight fail("Reaction not generated")
+          modState <- Right(inspectedBagReact(appleEatenReact(simpleState)))
+        } yield modState.messages.last shouldBe Messages.InspectedBag(Set.empty)
       }
     }
-
   }
-
 }
