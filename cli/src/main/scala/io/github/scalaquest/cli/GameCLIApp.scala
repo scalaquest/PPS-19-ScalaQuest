@@ -1,15 +1,16 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.core.Game
+import io.github.scalaquest.core.application.{DictionaryProvider, PipelineProvider}
 import io.github.scalaquest.core.model.{MessagePusher, Model}
 import io.github.scalaquest.core.pipeline.Pipeline
 
-abstract class GameCLIApp[M0 <: Model](val model: M0) extends CLIApp {
+abstract class GameCLIApp[M0 <: Model](val model: M0)
+  extends CLIApp
+  with PipelineProvider[M0]
+  with DictionaryProvider[M0] {
 
-  type M = model.type
-  type S = model.S
-
-  def pipelineBuilder: Pipeline.PartialBuilder[S, M]
+  def pipelineBuilder: Pipeline.PartialBuilder[S, M] = makePipeline
 
   def state: S
 
