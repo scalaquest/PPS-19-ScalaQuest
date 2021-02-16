@@ -16,10 +16,6 @@
 ![Coverage](https://sonarcloud.io/api/project_badges/measure?project=scalaquest_PPS-19-ScalaQuest&metric=coverage)
 ![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=scalaquest_PPS-19-ScalaQuest&metric=sqale_index)
 
-</div>
-
-<div align="center">
-
 ScalaQuest is an exam project for PPS and LSS courses in UNIBO, made by
 [Riccardo Maldini](https://www.riccardomaldini.it),
 [Filippo Nardini](https://github.com/lippo97),
