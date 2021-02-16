@@ -7,6 +7,6 @@ import io.github.scalaquest.core.model.behaviorBased.commons.builders.impl.{
 }
 
 /**
- * Utilities to easily build various parts, for the storyteller. todo can be articulated even more
+ * Utilities to easily build various parts, for the storyteller.
  */
-trait BuildersExt extends BehaviorBasedModel with DoorKeyBuilderExt with OpKeyBuilderExt
+trait CommonBuildersExt extends BehaviorBasedModel with DoorKeyBuilderExt with OpKeyBuilderExt
