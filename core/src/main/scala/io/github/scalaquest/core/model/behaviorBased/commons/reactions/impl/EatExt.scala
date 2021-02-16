@@ -4,6 +4,9 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
+/**
+ * A Reaction that eat the item.
+ */
 private[reactions] trait EatExt
   extends BehaviorBasedModel
   with StateUtilsExt
