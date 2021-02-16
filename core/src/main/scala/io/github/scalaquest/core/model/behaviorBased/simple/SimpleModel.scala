@@ -2,7 +2,6 @@ package io.github.scalaquest.core.model.behaviorBased.simple
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
-import io.github.scalaquest.core.model.behaviorBased.commons.builders.BuildersExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.{SimpleRoomExt, SimpleStateExt}
 
 /**
@@ -10,9 +9,4 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.{SimpleRoomExt,
  * based on behaviors, with some commonly used items and behaviors. The state uses a simple
  * implementation, that keeps track of the rooms' composition, and a bag for the player.
  */
-object SimpleModel
-  extends BehaviorBasedModel
-  with SimpleStateExt
-  with SimpleRoomExt
-  with CommonsExt
-  with BuildersExt
+object SimpleModel extends BehaviorBasedModel with SimpleStateExt with SimpleRoomExt with CommonsExt
