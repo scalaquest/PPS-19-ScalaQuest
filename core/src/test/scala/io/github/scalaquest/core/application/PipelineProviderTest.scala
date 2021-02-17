@@ -12,16 +12,14 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class PipelineProviderTest extends AnyWordSpec with Matchers {
 
-  def State: SimpleModel.State.type = SimpleModel.State
-  type State = SimpleModel.SimpleState
-
-  def state: State =
-    State(
+  def state: SimpleModel.S =
+    SimpleModel.State(
       actions = Map.empty,
       rooms = Map.empty,
       items = Map.empty,
       location = RoomRef("1")
     )
+
   val testAction = new Action {}
 
   val pipelineProvider = new PipelineProvider[SimpleModel.type] {
