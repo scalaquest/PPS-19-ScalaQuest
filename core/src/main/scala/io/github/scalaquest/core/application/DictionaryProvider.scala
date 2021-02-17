@@ -1,6 +1,7 @@
 package io.github.scalaquest.core.application
 
 import cats.Functor
+import io.github.scalaquest.core.dictionary.ProgramFromDictionary
 import io.github.scalaquest.core.dictionary.generators.GeneratorK
 import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
 import io.github.scalaquest.core.model.{Action, ItemRef, Model}

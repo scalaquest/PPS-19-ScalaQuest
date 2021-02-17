@@ -1,10 +1,9 @@
-package io.github.scalaquest.core.application
+package io.github.scalaquest.core.dictionary
 
 import cats.Functor
-import io.github.scalaquest.core.dictionary.Item
+import io.github.scalaquest.core.dictionary.implicits.{itemToProgram, programMonoid, verbToProgram}
 import io.github.scalaquest.core.dictionary.generators.implicits.listGenerator
 import io.github.scalaquest.core.dictionary.generators.{GeneratorK, combineAll}
-import io.github.scalaquest.core.dictionary.implicits.{itemToProgram, programMonoid, verbToProgram}
 import io.github.scalaquest.core.dictionary.verbs.Verb
 import io.github.scalaquest.core.parsing.scalog.Program
 
