@@ -35,6 +35,6 @@ continue in the game (e.g. [Zork](https://en.wikipedia.org/wiki/Zork)).
 ## Official documentation
 
 The official documentation of the project consists in:
-- [PPS Report](https://scalaquest.github.io/reports/reports/pps.html) and [LSS Report](https://scalaquest.github.io/reports/reports/lss.html). The previous links shows a web version of reports, auto-generated from the [report sources](https://github.com/scalaquest/reports). You can also consult them in a [PDF LaTeX](https://github.com/scalaquest/reports/releases/latest) format.
-- the official Scaladoc of the [Core](./scaladoc/core/index.html) and [CLI](./scaladoc/cli/index.html) modules;
-- the official Coverage reports for the [Core](./coverage/core/index.html) and [CLI](./coverage/cli/index.html) modules.
+- [PPS Report](https://scalaquest.github.io/Reports/reports/pps.html) and [LSS Report](https://scalaquest.github.io/Reports/reports/lss.html). The previous links shows a web version of reports, auto-generated from the [report sources](https://github.com/scalaquest/reports). You can also consult them in a [PDF LaTeX](https://github.com/scalaquest/reports/releases/latest) format.
+- the official Scaladoc of the [Core](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/index.html) and [CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/cli/index.html) modules;
+- the official Coverage reports for the [Core](https://scalaquest.github.io/PPS-19-ScalaQuest/coverage/core/index.html) and [CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/coverage/cli/index.html) modules.
