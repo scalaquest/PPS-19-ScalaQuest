@@ -9,8 +9,10 @@ import io.github.scalaquest.core.pipeline.parser.Parser
 import io.github.scalaquest.core.pipeline.reducer.Reducer
 import io.github.scalaquest.core.pipeline.resolver.Resolver
 
+/** A `PipelineProvider` that uses the default implementation of its components. */
 trait DefaultPipelineProvider[M0 <: Model] extends PipelineProvider[M0] {
 
+  /** The theory used to create the `Theory` for the `Engine`. */
   def baseTheory: String
 
   override def lexer: Lexer = SimpleLexer
