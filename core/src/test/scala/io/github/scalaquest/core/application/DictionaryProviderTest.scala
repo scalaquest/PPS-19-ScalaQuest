@@ -3,10 +3,11 @@ package io.github.scalaquest.core.application
 import io.github.scalaquest.core.dictionary.verbs.{Transitive, Verb}
 import io.github.scalaquest.core.model.{Action, ItemDescription}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import org.scalatest.PrivateMethodTester
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class DictionaryProviderTest extends AnyWordSpec with Matchers {
+class DictionaryProviderTest extends AnyWordSpec with Matchers with PrivateMethodTester {
 
   case object testAction extends Action
   val item: SimpleModel.GenericItem = SimpleModel.GenericItem(ItemDescription("item"))
@@ -19,9 +20,14 @@ class DictionaryProviderTest extends AnyWordSpec with Matchers {
 
       override val model: SimpleModel.type = SimpleModel
     }
-  "Base theory path" should {
-    "be statically defined" in {
+  "Base theory" should {
+    "its path statically defined" in {
       dictionaryProvider.baseTheoryPath shouldBe "base.pl"
+    }
+    "should contain prolog rules" in {
+      dictionaryProvider.baseTheory should include(
+        ":- load_library('alice.tuprolog.lib.DCGLibrary')."
+      )
     }
   }
   "Dynamic verb generation" should {
@@ -38,5 +44,4 @@ class DictionaryProviderTest extends AnyWordSpec with Matchers {
       )
     }
   }
-
 }

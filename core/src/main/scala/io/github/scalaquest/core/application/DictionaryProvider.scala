@@ -25,7 +25,7 @@ trait DictionaryProvider[M0 <: Model] extends ApplicationStructure[M0] {
     GeneratorK[List, Verb, Map[VerbPrep, Action]].generate(verbs.toList)
 
   private final def programSource[F[_]: Functor](base: F[String]): F[String] =
-    ProgramFromDictionary(verbs, items).source(base)
+    ProgramFromDictionary(verbs, items).generateSource(base)
 
   private final def programFromResource(resourceName: String): String = {
     type Id[X] = X
