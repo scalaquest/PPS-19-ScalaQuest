@@ -55,6 +55,9 @@ trait OpenableExt
       case (Open, item, maybeKey, state)
           if state.isInLocation(item) && canBeOpened(maybeKey)(state) && !isOpen =>
         open
+
+      case (Open, _, _, _) if !isOpen => failToOpen
+      case (Open, _, _, _) if isOpen  => alreadyOpened
     }
 
     /**
@@ -79,8 +82,8 @@ trait OpenableExt
      */
     override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
       usedKey match {
-        case Some(key) => requiredKey.contains(key) && state.isInScope(key)
-        case None      => requiredKey.fold(true)(state.isInBag(_))
+        case Some(key) => requiredKey.contains(key)
+        case None      => requiredKey.fold(true)(_ => false)
       }
     }
 
@@ -98,6 +101,12 @@ trait OpenableExt
           onOpenExtra.getOrElse(Reactions.empty)
         )
       }
+
+    def failToOpen: Reaction =
+      state => messageLens.modify(_ :+ Messages.FailedToOpen(subject))(state)
+
+    def alreadyOpened: Reaction =
+      state => messageLens.modify(_ :+ Messages.AlreadyOpened(subject))(state)
   }
 
   /**

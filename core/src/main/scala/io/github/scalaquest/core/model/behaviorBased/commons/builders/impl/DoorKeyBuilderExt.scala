@@ -1,12 +1,15 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders.impl
+package io.github.scalaquest.core.model.behaviorBased.commons.builders.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.items.CommonItemsExt
 import io.github.scalaquest.core.model.{Direction, ItemDescription}
 
-trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonsExt {
+/**
+ * A convenient implementation for a room, and if present, a key connected to it.
+ */
+trait DoorKeyBuilderExt extends BehaviorBasedModel with CommonItemsExt {
 
-  def doorKeyBuilder(
+  def lockedDoorBuilder(
     keyDesc: ItemDescription,
     keyAddBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty,
     consumeKey: Boolean = false,

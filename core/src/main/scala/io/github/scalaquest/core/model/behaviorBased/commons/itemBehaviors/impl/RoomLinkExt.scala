@@ -47,7 +47,8 @@ trait RoomLinkExt
     endRoomDirection: Direction,
     openable: Option[Openable] = None,
     onEnterExtra: Option[Reaction] = None
-  ) extends RoomLink
+  )(implicit subject: I)
+    extends RoomLink
     with Delegate {
 
     /**
@@ -66,7 +67,10 @@ trait RoomLinkExt
         open
 
       // "Enter the item"
-      case (Enter, i, None, s) if s.isInLocation(i) && openable.fold(true)(_.isOpen) => enter
+      case (Enter, _, None, s) if s.isInLocation(subject) && openable.fold(true)(_.isOpen) =>
+        enter
+      case (Enter, _, _, _) =>
+        messageLens.modify(_ :+ Messages.FailedToEnter(subject))
     }
 
     override def enter: Reaction =
@@ -86,7 +90,7 @@ trait RoomLinkExt
         )
 
         state.applyReactions(
-          openable.fold(Reactions.empty)(o => o.open),
+          openable.fold(Reactions.empty)(_.open),
           addDirection
         )
       }
@@ -105,6 +109,7 @@ trait RoomLinkExt
       openableBuilder: Option[I => Openable] = None,
       onEnterExtra: Option[Reaction] = None
     ): I => RoomLink =
-      item => SimpleRoomLink(endRoom, endRoomDirection, openableBuilder.map(_(item)), onEnterExtra)
+      item =>
+        SimpleRoomLink(endRoom, endRoomDirection, openableBuilder.map(_(item)), onEnterExtra)(item)
   }
 }

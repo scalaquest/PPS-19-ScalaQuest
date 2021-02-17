@@ -3,7 +3,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.im
 import io.github.scalaquest.core.TestsUtils.model.{
   BehaviorBasedGround,
   GroundBehavior,
-  Inspectable,
+  InspectableLocation,
   Messages
 }
 import io.github.scalaquest.core.TestsUtils._
@@ -11,10 +11,10 @@ import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
 import org.scalatest.wordspec.AnyWordSpec
 
-class InspectableTest extends AnyWordSpec {
+class InspectableLocationTest extends AnyWordSpec {
 
   "An Inspect Ground Behavior" when {
-    val inspection = Inspectable()
+    val inspection = InspectableLocation()
 
     "Applied to a Ground" when {
       case object SimpleGround extends BehaviorBasedGround {

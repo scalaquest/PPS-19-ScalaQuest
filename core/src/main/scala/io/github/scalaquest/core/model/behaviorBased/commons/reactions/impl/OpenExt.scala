@@ -5,6 +5,9 @@ import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
+/**
+ * A Reaction generated when a player open an openable Item.
+ */
 private[reactions] trait OpenExt
   extends BehaviorBasedModel
   with KeyExt

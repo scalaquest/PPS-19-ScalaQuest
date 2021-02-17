@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders
+package io.github.scalaquest.core.model.behaviorBased.commons.builders
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.{Direction, ItemDescription}
@@ -9,7 +9,7 @@ class DoorKeyBuilderExtTest extends AnyWordSpec {
   import TestsUtils.model._
 
   "A DoorKeyBuilder" should {
-    val (door, key) = doorKeyBuilder(
+    val (door, key) = lockedDoorBuilder(
       keyDesc = ItemDescription("key"),
       doorDesc = ItemDescription("door"),
       endRoom = targetRoom,

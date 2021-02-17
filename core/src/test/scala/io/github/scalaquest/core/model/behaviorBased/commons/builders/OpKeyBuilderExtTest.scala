@@ -1,4 +1,4 @@
-package io.github.scalaquest.core.model.behaviorBased.simple.builders
+package io.github.scalaquest.core.model.behaviorBased.commons.builders
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
@@ -8,7 +8,7 @@ class OpKeyBuilderExtTest extends AnyWordSpec {
   import TestsUtils.model._
 
   "A OpKeyBuilder" should {
-    val (openableItem, key) = openableWithKeyBuilder(
+    val (openableItem, key) = openableBuilder(
       keyDesc = ItemDescription("key"),
       openableDesc = ItemDescription("door")
     )

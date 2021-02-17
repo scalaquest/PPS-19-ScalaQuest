@@ -21,8 +21,8 @@ trait Model { model: Model =>
   type Reaction = S => S
 
   /**
-   * Represents a snapshot of the current game, at an higher level in comparison to [[MatchState]].
-   * The key fact is that this level of abstraction can handle also [[Message]] s, that is a
+   * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
+   * key fact is that this level of abstraction can handle also [[Message]] s, that is a
    * representation of the output to render to the user at the end of the pipeline round, and all
    * the possible [[Action]] s.
    */
@@ -44,6 +44,11 @@ trait Model { model: Model =>
      */
     def rooms: Map[RoomRef, RM]
 
+    /**
+     * The model's reference to the [[Ground]].
+     * @return
+     *   the model's instance of [[Ground]].
+     */
     def ground: G
 
     /**
@@ -91,7 +96,7 @@ trait Model { model: Model =>
   }
 
   /**
-   * Represents a single object against which the [[Player]] can interact.
+   * Represents a single object against which the Player can interact.
    */
   abstract class Item { item: I =>
 
@@ -166,8 +171,8 @@ trait Model { model: Model =>
    * A geographical portion of the match map.
    *
    * This is one of the basic block for the story build by the storyteller, as it is used to
-   * identify [[Player]] 's and [[Model.Item]] s' location, in a given moment of the story, and
-   * navigate across the match geography.
+   * identify Player 's and [[Model.Item]] s' location, in a given moment of the story, and navigate
+   * across the match geography.
    */
   abstract class Room { room: RM =>
 

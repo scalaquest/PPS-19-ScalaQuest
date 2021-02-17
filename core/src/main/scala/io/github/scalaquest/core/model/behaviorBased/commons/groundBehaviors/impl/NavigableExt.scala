@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigatable behavior for the
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigable behavior for the
  * [[BehaviorBasedModel.Ground]].
  */
 trait NavigableExt
