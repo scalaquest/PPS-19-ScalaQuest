@@ -5,7 +5,7 @@ import io.github.scalaquest.core.model.{Message, RoomRef}
 
 object CLITestHelper {
 
-  def model: SimpleModel.type = SimpleModel
+  val model: SimpleModel.type = SimpleModel
 
   def State: SimpleModel.State.type = SimpleModel.State
   type State = SimpleModel.SimpleState

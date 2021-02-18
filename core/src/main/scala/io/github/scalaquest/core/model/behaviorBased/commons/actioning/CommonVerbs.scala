@@ -9,7 +9,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
  */
 object CommonVerbs {
 
-  private def gos: Set[Verb] = {
+  private def movements: Set[Verb] = {
     Set(
       "north" -> Direction.North,
       "south" -> Direction.South,
@@ -17,12 +17,12 @@ object CommonVerbs {
       "west"  -> Direction.West,
       "up"    -> Direction.Up,
       "down"  -> Direction.Down
-    ).flatMap(s =>
+    ).flatMap { case (name, dir) =>
       Set(
-        s._1.charAt(0).toString -> s._2,
-        s._1                    -> s._2
+        name.charAt(0).toString -> dir,
+        name                    -> dir
       )
-    ).map(s => Intransitive("go", Go(s._2), Some(s._1)))
+    }.map { case (name, dir) => Intransitive("go", Go(dir), Some(name)) }
   }
 
   def apply(): Set[Verb] =
@@ -36,5 +36,5 @@ object CommonVerbs {
       Ditransitive("enter", Enter, Some("with")),
       Intransitive("inspect", Inspect),
       Intransitive("inspect", InspectBag, Some("bag"))
-    ) ++ gos
+    ) ++ movements
 }

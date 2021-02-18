@@ -1,27 +1,16 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.cli._
-import io.github.scalaquest.core.Game
+import io.github.scalaquest.cli.GameCLIApp
+import io.github.scalaquest.core.dictionary.verbs.Verb
 import io.github.scalaquest.core.model.StringPusher
-import io.github.scalaquest.core.pipeline.Pipeline
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonVerbs
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 
-abstract class GameCLIApp extends CLIApp {
+object EscapeRoom extends GameCLIApp(SimpleModel) {
 
-  def pipelineBuilder: Pipeline.PartialBuilder[S, M]
-  def state: S
-  def messagePusher: StringPusher
+  override def items: Set[I] = Items.allTheItems
 
-  def source: String = programFromResource("base.pl")
-
-  def game: Game[M] = Game builderFrom model build pipelineBuilder
-
-  override def cli: CLI = CLI.builderFrom(model).build(state, game, messagePusher)
-
-}
-
-object EscapeRoom extends GameCLIApp {
-
-  override def pipelineBuilder: Pipeline.PartialBuilder[S, M] = defaultPipeline(source)
+  override def verbs: Set[Verb] = CommonVerbs()
 
   val welcome: String =
     """
