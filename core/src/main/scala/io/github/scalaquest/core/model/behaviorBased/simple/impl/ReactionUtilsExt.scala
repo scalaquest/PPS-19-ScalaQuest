@@ -38,5 +38,7 @@ trait ReactionUtilsExt extends BehaviorBasedModel {
     private type U = S => S
 
     def apply(fs: U*): U = fs.reduceOption(_ andThen _) getOrElse identity[S]
+
+    def empty: U = identity[S]
   }
 }

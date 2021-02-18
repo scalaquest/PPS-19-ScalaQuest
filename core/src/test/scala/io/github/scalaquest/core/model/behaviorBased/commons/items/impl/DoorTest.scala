@@ -9,7 +9,7 @@ class DoorTest extends AnyWordSpec {
 
   "A Door" should {
     val room             = Room("room")
-    val roomLinkBehavior = RoomLink.builder(room, Direction.North, Some(Openable.builder()))
+    val roomLinkBehavior = RoomLink.builder(room, Direction.North, Some(Openable.unlockedBuilder()))
     val door = Door(
       ItemDescription("door"),
       roomLinkBehavior,

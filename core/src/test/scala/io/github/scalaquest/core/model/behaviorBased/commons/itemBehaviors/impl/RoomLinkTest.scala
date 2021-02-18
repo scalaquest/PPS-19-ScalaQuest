@@ -29,7 +29,7 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
     }
 
     "the item is closed" when {
-      val roomLink              = RoomLink.builder(targetRoom, Direction.North, Some(Openable.builder()))
+      val roomLink              = RoomLink.builder(targetRoom, Direction.North, Some(Openable.unlockedBuilder()))
       val doorDescription       = ItemDescription("door")
       val targetItem            = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
       val stateWithClosedTarget = simpleState.copyWithItemInLocation(targetItem)

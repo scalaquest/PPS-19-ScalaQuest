@@ -81,7 +81,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
   }
 
   def initializeDoorAndKey(requiredKey: Option[Key]): (GenericItem, S) = {
-    val openable   = Openable.builder(requiredKey = requiredKey)
+    val openable   = Openable.lockedBuilder(requiredKey = requiredKey)
     val targetItem = GenericItem(ItemDescription("item"), Seq(openable))
     val state      = simpleState.copyWithItemInLocation(targetItem)
 

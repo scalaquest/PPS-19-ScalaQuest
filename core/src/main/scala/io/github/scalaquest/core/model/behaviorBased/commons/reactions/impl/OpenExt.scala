@@ -3,7 +3,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.{ReactionUtilsExt, StateUtilsExt}
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 
 /**
  * A Reaction generated when a player open an openable Item.
@@ -11,27 +11,21 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.{ReactionUtilsE
 private[reactions] trait OpenExt
   extends BehaviorBasedModel
   with KeyExt
-  with StateUtilsExt
   with CommonMessagesExt
   with ReactionUtilsExt {
 
   private[reactions] def open(
     itemToOpen: I,
-    requiredKey: Option[Key],
-    iskeyConsumable: Boolean
-  ): Reaction = {
-    val optReaction = requiredKey.map(k =>
-      Reaction(
+    requiredKey: Option[Key]
+  ): Reaction =
+    Reaction(
+      requiredKey.collect { case SimpleKey(_, keyRef, true, _) =>
         Update(
-          (locationRoomLens composeLens roomItemsLens).modify(_ - k.ref),
-          bagLens.modify(_ - k.ref)
+          (locationRoomLens composeLens roomItemsLens).modify(_ - keyRef),
+          bagLens.modify(_ - keyRef)
         )
-      )
-    )
-    val reaction =
-      if (iskeyConsumable) optReaction.getOrElse(Reaction.empty)
-      else Reaction.empty
-    Reaction.appendMessage(Messages.Opened(itemToOpen))(reaction)
-  }
 
+      } getOrElse Update.empty,
+      Messages.Opened(itemToOpen)
+    )
 }

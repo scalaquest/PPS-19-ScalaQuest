@@ -10,7 +10,7 @@ object Items {
     Set(
       Items.redApple,
       Items.greenApple,
-      Items.coffer,
+      Items.chest,
       Items.hatchKey,
       Items.hatch,
       Items.doorway,
@@ -29,7 +29,7 @@ object Items {
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      Eatable.builder(onEatExtra = Some(Reactions.finishGame(false)))
+      Eatable.builder(onEatExtra = Reactions.finishGame(false))
     )
 
   val basementHatch: Door = Door(
@@ -37,33 +37,33 @@ object Items {
     RoomLink.builder(House.basement, Direction.Down)
   )
 
-  val (hatch, hatchKey): (Door, Key) = lockedDoorBuilder(
-    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
-    keyDesc = i(d("old", "rusty"), "key"),
+  val (hatch, hatchKey): (Door, Key) = Door.createLockedWithKey(
+    key = Key(
+      i(d("old", "rusty"), "key"),
+      extraBehavBuilders = Seq(Takeable.builder())
+    ),
     doorDesc = i(d("iron"), "hatch"),
-    consumeKey = true,
     endRoom = House.livingRoom,
     endRoomDirection = Direction.Up
   )
 
-  val coffer: GenericItem = GenericItem(
-    i(d("brown"), "coffer"),
+  val chest: GenericItem = GenericItem(
+    i(d("brown"), "chest"),
     Seq(
-      Openable.builder(onOpenExtra =
-        Some(
-          Reaction(
-            (locationRoomLens composeLens roomItemsLens).modify(_ + hatchKey.ref)
-          )
+      Openable.unlockedBuilder(
+        onOpenExtra = Reaction(
+          (locationRoomLens composeLens roomItemsLens).modify(_ + hatchKey.ref)
         )
       )
     )
   )
 
   val (doorway, crowbar): (GenericItem, Key) = openableBuilder(
-    keyDesc = i(d("rusty", "heavy"), "crowbar"),
-    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
+    key = Key(
+      i(d("rusty", "heavy"), "crowbar"),
+      extraBehavBuilders = Seq(Takeable.builder())
+    ),
     openableDesc = i(d("big"), "doorway"),
-    consumeKey = true,
-    onOpenExtra = Some(Reactions.finishGame(true))
+    onOpenExtra = Reactions.finishGame(true)
   )
 }

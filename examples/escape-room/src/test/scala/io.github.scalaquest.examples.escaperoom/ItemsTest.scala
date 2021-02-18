@@ -30,7 +30,7 @@ class ItemsTest extends AnyWordSpec with Matchers {
     }
 
     "contains a coffer with the hatch key inside" in {
-      val newState = Items.coffer.behaviors
+      val newState = Items.chest.behaviors
         .collectFirst({ case op: Openable => op.open })
         .fold(EscapeRoom.state)(_(EscapeRoom.state))
 
@@ -47,7 +47,7 @@ class ItemsTest extends AnyWordSpec with Matchers {
       Items.allTheItems shouldBe Set(
         Items.redApple,
         Items.greenApple,
-        Items.coffer,
+        Items.chest,
         Items.hatchKey,
         Items.hatch,
         Items.doorway,

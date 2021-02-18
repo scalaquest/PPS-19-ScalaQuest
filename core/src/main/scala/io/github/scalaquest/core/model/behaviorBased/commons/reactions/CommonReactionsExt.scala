@@ -93,8 +93,7 @@ trait CommonReactionsExt
      */
     def open(
       itemToOpen: I,
-      requiredKey: Option[Key],
-      iskeyConsumable: Boolean
-    ): Reaction = self.open(itemToOpen, requiredKey, iskeyConsumable)
+      requiredKey: Option[Key]
+    ): Reaction = self.open(itemToOpen, requiredKey)
   }
 }

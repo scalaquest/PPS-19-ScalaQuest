@@ -19,7 +19,7 @@ class KeyTest extends AnyWordSpec {
     }
 
     "associated to an Openable behavior" should {
-      val openable = Openable.builder(requiredKey = Some(key))(apple)
+      val openable = Openable.lockedBuilder(requiredKey = Some(key))(apple)
 
       "be used as the key for the opening" in {
         assert(openable.requiredKey.contains(key), "The key could not be used for opening")

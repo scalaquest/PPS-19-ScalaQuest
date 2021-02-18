@@ -16,7 +16,7 @@ object House extends Environment[RM] {
   def basement: RM =
     Room(
       name = "basement",
-      items = Set(Items.coffer.ref, Items.crowbar.ref, Items.hatch.ref)
+      items = Set(Items.chest.ref, Items.crowbar.ref, Items.hatch.ref)
     )
 
   def livingRoom: RM =

@@ -14,9 +14,8 @@ private[reactions] trait EnterExt
   with ReactionUtilsExt {
 
   private[reactions] def enter(room: RM): Reaction =
-    s =>
-      Reaction(
-        locationLens.set(room.ref),
-        Messages.Navigated(s.rooms(room.ref))
-      )(s)
+    Reaction(
+      locationRoomLens.set(room),
+      Messages.Navigated(room)
+    )
 }

@@ -55,7 +55,11 @@ object TestsUtils {
     SimpleDoor(
       ItemDescription("door"),
       doorItemRef,
-      RoomLink.builder(targetRoom, Direction.North, Some(Openable.builder(requiredKey = Some(key))))
+      RoomLink.builder(
+        targetRoom,
+        Direction.North,
+        Some(Openable.lockedBuilder(requiredKey = Some(key)))
+      )
     )
 
   val refItemDictionary: Map[ItemRef, BehaviorBasedItem] = Map(

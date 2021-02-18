@@ -1,25 +1,23 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
+import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigable behavior for the
  * [[BehaviorBasedModel.Ground]].
  */
-trait NavigableExt
-  extends BehaviorBasedModel
-  with StateUtilsExt
-  with CommonMessagesExt
-  with CommonReactionsExt {
+trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
 
   /**
    * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
    */
-  abstract class Navigable extends GroundBehavior
+  abstract class Navigable extends GroundBehavior {
+    def movePlayer(targetRoom: RM): Reaction
+  }
 
   /**
    * Standard implementation of [[Navigable]].
@@ -28,19 +26,20 @@ trait NavigableExt
    *   [[Reaction]] to be executed when the player successfully navigate in a new Room, using
    *   navigation Actions after the standard [[Reaction]]. It can be omitted.
    */
-  case class SimpleNavigable(onNavigateExtra: Option[Reaction] = None) extends Navigable {
+  case class SimpleNavigable(onNavigateExtra: Reaction = Reaction.empty) extends Navigable {
 
-    override def triggers: GroundTriggers = {
-      // "go <direction>"
-      case (Go(direction), state) if state.locationNeighbor(direction).isDefined =>
-        movePlayer(state.locationNeighbor(direction).get)
+    override def triggers: GroundTriggers = { case (Go(d), s) =>
+      s.locationNeighbor(d) map movePlayer getOrElse failedToNavigate(d)
     }
 
-    def movePlayer(targetRoom: RM): Reaction =
-      Reaction.foldV(
+    override def movePlayer(targetRoom: RM): Reaction =
+      Reaction.combine(
         Reactions.navigate(targetRoom),
-        onNavigateExtra.getOrElse(Reaction.empty)
+        onNavigateExtra
       )
+
+    def failedToNavigate(direction: Direction): Reaction =
+      Reaction.messages(Messages.FailedToNavigate(direction))
   }
 
   /**
@@ -48,7 +47,7 @@ trait NavigableExt
    */
   object Navigable {
 
-    def apply(onNavigateExtra: Option[Reaction] = None): Navigable =
+    def apply(onNavigateExtra: Reaction = Reaction.empty): Navigable =
       SimpleNavigable(onNavigateExtra)
   }
 }

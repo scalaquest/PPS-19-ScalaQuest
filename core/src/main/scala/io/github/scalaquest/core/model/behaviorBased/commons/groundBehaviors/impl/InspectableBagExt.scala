@@ -4,22 +4,19 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.InspectBag
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableBag behavior for the
  * Ground.
  */
-trait InspectableBagExt
-  extends BehaviorBasedModel
-  with StateUtilsExt
-  with CommonMessagesExt
-  with CommonReactionsExt {
+trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
 
   /**
    * A [[GroundBehavior]] that enables the possibility to know the items present into the Bag.
    */
-  abstract class InspectableBag extends GroundBehavior
+  abstract class InspectableBag extends GroundBehavior {
+    def inspectBag: Reaction
+  }
 
   /**
    * A standard implementation for [[InspectableBag]].
@@ -28,20 +25,14 @@ trait InspectableBagExt
    *   [[Reaction]] to be executed when the player successfully inspected the bag. It can be
    *   omitted.
    */
-  case class SimpleInspectableBag(onInspectExtra: Option[Reaction] = None) extends InspectableBag {
+  case class SimpleInspectableBag(onInspectExtra: Reaction) extends InspectableBag {
 
     override def triggers: GroundTriggers = { case (InspectBag, _) => inspectBag }
 
-    // private def inspectBag: Reaction =
-    //   _.applyReactions(
-    //     Reactions.inspectBag,
-    //     onInspectExtra.getOrElse(Reactions.empty)
-    //   )
-
-    private def inspectBag: Reaction =
-      Reaction.foldV(
+    override def inspectBag: Reaction =
+      Reaction.combine(
         Reactions.inspectBag,
-        onInspectExtra.getOrElse(Reaction.empty)
+        onInspectExtra
       )
   }
 
@@ -50,8 +41,7 @@ trait InspectableBagExt
    */
   object InspectableBag {
 
-    def apply(onInspectExtra: Option[Reaction] = None): InspectableBag =
+    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
       SimpleInspectableBag(onInspectExtra)
   }
-
 }

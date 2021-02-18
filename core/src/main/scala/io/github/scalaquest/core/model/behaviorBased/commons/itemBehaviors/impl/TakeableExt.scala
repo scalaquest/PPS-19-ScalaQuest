@@ -4,16 +4,11 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
  */
-trait TakeableExt
-  extends BehaviorBasedModel
-  with StateUtilsExt
-  with CommonMessagesExt
-  with CommonReactionsExt {
+trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
 
   /**
    * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
@@ -31,11 +26,10 @@ trait TakeableExt
    *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
    *   omitted.
    */
-  case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit subject: I)
+  case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit subject: I)
     extends Takeable {
 
     override def triggers: ItemTriggers = {
-      // "Take the item"
       case (Take, item, None, state) if state.isInLocation(item) => take
     }
 
@@ -46,12 +40,11 @@ trait TakeableExt
      *   A Reaction that removes the item from the current room, put it into the bag, executes the
      *   eventual extra reaction.
      */
-    def take: Reaction =
-      Reaction.foldV(
+    override def take: Reaction =
+      Reaction.combine(
         Reactions.take(subject),
-        onTakeExtra.getOrElse(Reaction.empty)
+        onTakeExtra
       )
-
   }
 
   /**
@@ -59,7 +52,7 @@ trait TakeableExt
    */
   object Takeable {
 
-    def builder(onTakeExtra: Option[Reaction] = None): I => Takeable =
+    def builder(onTakeExtra: Reaction = Reaction.empty): I => Takeable =
       SimpleTakeable(onTakeExtra)(_)
   }
 }
