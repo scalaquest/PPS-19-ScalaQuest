@@ -41,9 +41,9 @@ trait EatableExt
     }
 
     def eat: Reaction =
-      _.applyReactions(
+      Reaction.foldV(
         Reactions.eat(subject),
-        onEatExtra.getOrElse(Reactions.empty)
+        onEatExtra.getOrElse(Reaction.empty)
       )
   }
 
@@ -52,5 +52,6 @@ trait EatableExt
    */
   object Eatable {
     def builder(onEatExtra: Option[Reaction] = None): I => Eatable = SimpleEatable(onEatExtra)(_)
+    def builder(onEatExtra: Reaction): I => Eatable                = SimpleEatable(Some(onEatExtra))(_)
   }
 }

@@ -14,7 +14,6 @@ trait CommonReactionsExt
   with FinishGameExt
   with NavigateExt
   with OpenExt
-  with EmptyExt
   with TakeExt
   with InspectBagExt { self =>
 
@@ -31,8 +30,6 @@ trait CommonReactionsExt
      *   Eaten [[Reaction]]
      */
     def eat(item: I): Reaction = self.eat(item)
-
-    def empty: Reaction = self.empty
 
     /**
      * The RoomLink [[Reaction]].

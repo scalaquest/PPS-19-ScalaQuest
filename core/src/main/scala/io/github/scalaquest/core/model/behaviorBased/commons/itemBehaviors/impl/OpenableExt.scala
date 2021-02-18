@@ -96,17 +96,15 @@ trait OpenableExt
       state => {
         _isOpen = true
 
-        state.applyReactions(
+        Reaction.foldV(
           Reactions.open(subject, requiredKey, consumeKey),
-          onOpenExtra.getOrElse(Reactions.empty)
-        )
+          onOpenExtra.getOrElse(Reaction.empty)
+        )(state)
       }
 
-    def failToOpen: Reaction =
-      state => messageLens.modify(_ :+ Messages.FailedToOpen(subject))(state)
+    def failToOpen: Reaction = Reaction.messages(Messages.FailedToOpen(subject))
 
-    def alreadyOpened: Reaction =
-      state => messageLens.modify(_ :+ Messages.AlreadyOpened(subject))(state)
+    def alreadyOpened: Reaction = Reaction.messages(Messages.AlreadyOpened(subject))
   }
 
   /**

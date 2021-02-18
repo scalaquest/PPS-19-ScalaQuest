@@ -37,9 +37,9 @@ trait NavigableExt
     }
 
     def movePlayer(targetRoom: RM): Reaction =
-      _.applyReactions(
+      Reaction.foldV(
         Reactions.navigate(targetRoom),
-        onNavigateExtra.getOrElse(Reactions.empty)
+        onNavigateExtra.getOrElse(Reaction.empty)
       )
   }
 

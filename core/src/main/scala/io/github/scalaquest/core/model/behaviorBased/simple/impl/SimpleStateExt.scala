@@ -44,7 +44,6 @@ trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
 
   override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)
   override def itemsLens: Lens[S, Map[ItemRef, I]]  = GenLens[S](_.items)
-  override def messageLens: Lens[S, Seq[Message]]   = GenLens[S](_.messages)
   override def matchEndedLens: Lens[S, Boolean]     = GenLens[S](_.ended)
   override def bagLens: Lens[S, Set[ItemRef]]       = GenLens[S](_._bag)
   override def locationLens: Lens[S, RoomRef]       = GenLens[S](_._location)

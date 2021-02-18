@@ -35,9 +35,9 @@ trait InspectableLocationExt
     override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
 
     private def inspectLocation: Reaction =
-      _.applyReactions(
+      Reaction.foldV(
         Reactions.inspectLocation,
-        onInspectExtra.getOrElse(Reactions.empty)
+        onInspectExtra.getOrElse(Reaction.empty)
       )
   }
 

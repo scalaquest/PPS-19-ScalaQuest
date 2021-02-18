@@ -47,9 +47,9 @@ trait TakeableExt
      *   eventual extra reaction.
      */
     def take: Reaction =
-      _.applyReactions(
+      Reaction.foldV(
         Reactions.take(subject),
-        onTakeExtra.getOrElse(Reactions.empty)
+        onTakeExtra.getOrElse(Reaction.empty)
       )
 
   }

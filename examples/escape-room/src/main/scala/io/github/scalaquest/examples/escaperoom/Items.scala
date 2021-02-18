@@ -23,7 +23,7 @@ object Items {
   val redApple: Food =
     Food(
       i(d("red"), "apple"),
-      Eatable.builder(onEatExtra = Some(messageLens.modify(_ :+ DeliciousMessage)(_)))
+      Eatable.builder(onEatExtra = Reaction.messages(DeliciousMessage))
     )
 
   val greenApple: Food =
@@ -48,10 +48,15 @@ object Items {
 
   val coffer: GenericItem = GenericItem(
     i(d("brown"), "coffer"),
-    Seq(Openable.builder(onOpenExtra = Some(state => {
-      val updLocation = roomItemsLens.modify(_ + hatchKey.ref)(state.location)
-      roomsLens.modify(_ + (updLocation.ref -> updLocation))(state)
-    })))
+    Seq(
+      Openable.builder(onOpenExtra =
+        Some(
+          Reaction(
+            (locationRoomLens composeLens roomItemsLens).modify(_ + hatchKey.ref)
+          )
+        )
+      )
+    )
   )
 
   val (doorway, crowbar): (GenericItem, Key) = openableBuilder(

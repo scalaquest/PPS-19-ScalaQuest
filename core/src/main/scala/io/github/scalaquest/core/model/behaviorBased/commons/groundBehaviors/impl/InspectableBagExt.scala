@@ -32,10 +32,16 @@ trait InspectableBagExt
 
     override def triggers: GroundTriggers = { case (InspectBag, _) => inspectBag }
 
+    // private def inspectBag: Reaction =
+    //   _.applyReactions(
+    //     Reactions.inspectBag,
+    //     onInspectExtra.getOrElse(Reactions.empty)
+    //   )
+
     private def inspectBag: Reaction =
-      _.applyReactions(
+      Reaction.foldV(
         Reactions.inspectBag,
-        onInspectExtra.getOrElse(Reactions.empty)
+        onInspectExtra.getOrElse(Reaction.empty)
       )
   }
 

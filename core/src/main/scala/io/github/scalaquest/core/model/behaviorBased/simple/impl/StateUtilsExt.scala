@@ -36,7 +36,8 @@ trait StateUtilsExt extends Model {
       bagLens.modify(_ + item.ref)(stateWithTarget)
     }
 
-    def applyReactions(reactions: Reaction*): S = Function.chain(reactions.toList)(this.state)
+    // def applyReactions(reactions: Reaction*): (S, Seq[Message]) =
+    //   reactions.reduceOption(Reaction.combine)
 
   }
 }

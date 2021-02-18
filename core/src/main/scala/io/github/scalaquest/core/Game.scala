@@ -1,11 +1,11 @@
 package io.github.scalaquest.core
 
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.model.{Message, Model}
 import io.github.scalaquest.core.pipeline.Pipeline.PartialBuilder
 
 abstract class Game[M <: Model](val model: M) {
 
-  def send(input: String)(state: model.S): Either[String, model.S]
+  def send(input: String)(state: model.S): Either[String, (model.S, Seq[Message])]
 }
 
 object Game {
@@ -16,7 +16,7 @@ object Game {
 
       def partialBuilder: PartialBuilder[model.S, model.type]
 
-      override def send(input: String)(state: model.S): Either[String, model.S] =
+      override def send(input: String)(state: model.S): Either[String, (model.S, Seq[Message])] =
         partialBuilder(state) run input
     }
 

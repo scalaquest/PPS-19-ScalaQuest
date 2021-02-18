@@ -70,13 +70,13 @@ trait RoomLinkExt
       case (Enter, _, None, s) if s.isInLocation(subject) && openable.fold(true)(_.isOpen) =>
         enter
       case (Enter, _, _, _) =>
-        messageLens.modify(_ :+ Messages.FailedToEnter(subject))
+        Reaction.messages(Messages.FailedToEnter(subject))
     }
 
     override def enter: Reaction =
-      _.applyReactions(
+      Reaction.foldV(
         Reactions.enter(endRoom),
-        onEnterExtra.getOrElse(Reactions.empty)
+        onEnterExtra.getOrElse(Reaction.empty)
       )
 
     def open: Reaction =
@@ -89,10 +89,10 @@ trait RoomLinkExt
           }
         )
 
-        state.applyReactions(
-          openable.fold(Reactions.empty)(_.open),
-          addDirection
-        )
+        Reaction.foldV(
+          openable.fold(Reaction.empty)(_.open),
+          Reaction(addDirection)
+        )(state)
       }
 
     override def isOpen: Boolean = openable.fold(true)(_.isOpen)

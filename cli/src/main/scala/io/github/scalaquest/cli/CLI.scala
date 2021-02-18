@@ -1,7 +1,7 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.core.Game
-import io.github.scalaquest.core.model.{MessagePusher, Model}
+import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
 import zio.console._
 import zio.{ExitCode, UIO, URIO, ZIO}
 
@@ -38,25 +38,30 @@ object CLI {
         input       <- readLine
         pipelineRes <- UIO.succeed((game send input)(startState))
         (output, updState) <- UIO.succeed(pipelineRes match {
-          case Left(err)       => (err, startState)
-          case Right(updState) => (pusher push updState.messages, updState)
+          case Left(err)                   => (err, startState)
+          case Right((updState, messages)) => (pusher push messages, updState)
         })
-        _         <- putStrLn(output)
-        nextState <- UIO.succeed(model.messageLens.set(Seq())(updState))
+        _ <- putStrLn(output)
         _ <-
-          if (nextState.ended) ZIO.unit
-          else UIO.succeed(nextState) flatMap gameLoop(game, pusher)
+          if (updState.ended) ZIO.unit
+          else UIO.succeed(updState) flatMap gameLoop(game, pusher)
 
       } yield ()
 
-    def build(state: model.S, game: Game[model.type], pusher: MessagePusher[String]): CLI =
+    def build(
+      state: model.S,
+      game: Game[model.type],
+      pusher: MessagePusher[String],
+      initialMessages: Seq[Message] = Seq()
+    ): CLI =
       new CLI() {
 
         override def start: ZIO[Console, Exception, Unit] =
           for {
-            _         <- putStrLn(pusher push state.messages)
-            initState <- UIO.succeed(model.messageLens.set(Seq())(state))
-            _         <- gameLoop(game, pusher)(initState)
+            _ <-
+              if (initialMessages.nonEmpty) putStrLn(pusher push initialMessages)
+              else ZIO.unit
+            _ <- gameLoop(game, pusher)(state)
           } yield ()
       }
   }
