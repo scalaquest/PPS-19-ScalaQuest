@@ -21,7 +21,7 @@ abstract class GameCLIApp[M0 <: Model](val model: M0)
 
   def messagePusher: MessagePusher[String]
 
-  def initialMessages: Seq[Message]
+  def initialMessages: Seq[Message] = Seq.empty
 
   def game: Game[M] = Game.builderFrom[M](model).build(pipelineBuilder)
 

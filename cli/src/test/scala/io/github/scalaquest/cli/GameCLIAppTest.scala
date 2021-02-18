@@ -1,7 +1,7 @@
 package io.github.scalaquest.cli
 
 import io.github.scalaquest.core.dictionary.verbs.Verb
-import io.github.scalaquest.core.model.MessagePusher
+import io.github.scalaquest.core.model.{Message, MessagePusher}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.pipeline.Pipeline
 import io.github.scalaquest.core.pipeline.Pipeline.PartialBuilder
@@ -11,6 +11,8 @@ import org.scalatest.wordspec.AnyWordSpec
 class GameCLIAppTest extends AnyWordSpec with Matchers {
   import CLITestHelper.{model, state => initState}
 
+  val testMessage = new Message {}
+
   val app: GameCLIApp[SimpleModel.type] = new GameCLIApp(model) {
     override def state: S = initState
 
@@ -18,8 +20,10 @@ class GameCLIAppTest extends AnyWordSpec with Matchers {
       _ =>
         new Pipeline[model.type](model) {
 
-          override def run(rawSentence: String): Either[String, SimpleModel.SimpleState] =
-            Right(state.copy(ended = true))
+          override def run(
+            rawSentence: String
+          ): Either[String, (SimpleModel.SimpleState, Seq[Message])] =
+            Right(state.copy(ended = true) -> Seq(testMessage))
         }
 
     override def messagePusher: MessagePusher[String] = _ => ""
@@ -31,7 +35,9 @@ class GameCLIAppTest extends AnyWordSpec with Matchers {
 
   "The game" should {
     "be built using the given model and pipeline" in {
-      app.game.send("anything")(initState) shouldBe Right(initState.copy(ended = true))
+      app.game.send("anything")(initState) shouldBe Right(
+        initState.copy(ended = true) -> Seq(testMessage)
+      )
     }
   }
 }

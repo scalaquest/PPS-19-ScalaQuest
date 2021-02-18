@@ -65,7 +65,7 @@ class CLITest extends JUnitRunnableSpec {
           val s0 = state.copy(messages = Seq(testMessage1))
           val p  = messagePusher
 
-          val cli = CLI.builderFrom(model).build(s0, gameRight, p)
+          val cli = CLI.builderFrom(model).build(s0, gameRight, p, Seq(testMessage1))
           for {
             _ <- TestConsole.feedLines("end")
             _ <- cli.start

@@ -21,18 +21,16 @@ object CLITestHelper {
   def gameRight: TestGame[SimpleModel.type] =
     new TestGame(model) {
 
-      override def returns(input: String): Either[String, SimpleModel.SimpleState] =
-        Right(
-          if (input == "end") state.copy(ended = true, messages = Seq())
-          else state.copy(_location = RoomRef("2"), messages = Seq(testMessage2))
-        )
+      override def returns(input: String): Either[String, (SimpleModel.SimpleState, Seq[Message])] =
+        if (input == "end") Right(state.copy(ended = true) -> Seq())
+        else Right(state.copy(_location = RoomRef("2"))    -> Seq(testMessage2))
     }
 
   def gameLeft: TestGame[SimpleModel.type] =
     new TestGame(model) {
 
-      override def returns(input: String): Either[String, SimpleModel.SimpleState] =
-        if (input == "end") Right(state.copy(ended = true, messages = Seq()))
+      override def returns(input: String): Either[String, (SimpleModel.SimpleState, Seq[Message])] =
+        if (input == "end") Right(state.copy(ended = true) -> Seq())
         else Left("some errors")
     }
 
