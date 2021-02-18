@@ -6,18 +6,6 @@ import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
 
 object Items {
 
-  def allTheItems: Set[I] =
-    Set(
-      Items.redApple,
-      Items.greenApple,
-      Items.chest,
-      Items.hatchKey,
-      Items.hatch,
-      Items.doorway,
-      Items.crowbar,
-      Items.basementHatch
-    )
-
   import model._
 
   val redApple: Food =
@@ -47,23 +35,31 @@ object Items {
     endRoomDirection = Direction.Up
   )
 
-  val chest: GenericItem = GenericItem(
+  val chest: Chest = Chest.createUnlocked(
     i(d("brown"), "chest"),
-    Seq(
-      Openable.unlockedBuilder(
-        onOpenExtra = Reaction(
-          (locationRoomLens composeLens roomItemsLens).modify(_ + hatchKey.ref)
-        )
-      )
-    )
+    Set(hatchKey)
   )
 
-  val (doorway, crowbar): (GenericItem, Key) = openableBuilder(
-    key = Key(
+  val crowbar: Key =
+    Key(
       i(d("rusty", "heavy"), "crowbar"),
       extraBehavBuilders = Seq(Takeable.builder())
-    ),
-    openableDesc = i(d("big"), "doorway"),
-    onOpenExtra = Reactions.finishGame(true)
+    )
+
+  val doorway: GenericItem = GenericItem(
+    i(d("big"), "doorway"),
+    Seq(Openable.lockedBuilder(crowbar, onOpenExtra = Reactions.finishGame(win = true)))
   )
+
+  def allTheItems: Set[BehaviorBasedItem] =
+    Set(
+      Items.redApple,
+      Items.greenApple,
+      Items.chest,
+      Items.hatchKey,
+      Items.hatch,
+      Items.doorway,
+      Items.crowbar,
+      Items.basementHatch
+    )
 }

@@ -47,8 +47,6 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
     extends RoomLink
     with Delegate {
 
-    override def endRoom(implicit s: S): RM = s.rooms(endRoomRef)
-
     /**
      * If an openable is passed, it is passed as father behavior.
      * @return
@@ -58,8 +56,8 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
       openable map (_.triggers) getOrElse PartialFunction.empty: ItemTriggers
 
     override def receiverTriggers: ItemTriggers = {
-      case (Open, i, maybeKey, s)
-          if s.isInLocation(i) && openable.fold(true)(_.canBeOpened(maybeKey)(s))
+      case (Open, _, maybeKey, s)
+          if s.isInLocation(subject) && openable.fold(true)(_.canBeOpened(maybeKey)(s))
             && !isOpen && openable.isDefined =>
         open
 
@@ -84,6 +82,8 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
             .modify(_ + (endRoomDirection -> endRoomRef))
         )
       )
+
+    override def endRoom(implicit s: S): RM = s.rooms(endRoomRef)
 
     override def isOpen: Boolean = openable forall (_.isOpen)
   }
