@@ -75,7 +75,7 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
         )(s)
 
     override def open: Reaction =
-      Reaction.foldV(
+      Reaction.combine(
         openable map (_.open) getOrElse Reaction.empty,
         Reaction(
           (locationRoomLens composeLens roomDirectionsLens)
