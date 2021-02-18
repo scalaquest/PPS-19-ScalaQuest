@@ -5,24 +5,20 @@ import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
+import org.scalatest.matchers.should.Matchers
 
-class KeyTest extends AnyWordSpec {
+class KeyTest extends AnyWordSpec with Matchers {
   "A Key" when {
-    val key =
-      Key(ItemDescription("key"), extraBehavBuilders = Seq(Takeable.builder(), Eatable.builder()))
-    val behaviors = Seq(Takeable.builder()(key), Eatable.builder()(key))
-
-    "instantiated" should {
-      "take whatever number of behaviors" in {
-        assert(key.behaviors == behaviors, "behaviors are not correctly instantiated.")
-      }
-    }
+    val key: Key = Key(
+      ItemDescription("key"),
+      extraBehavBuilders = Seq(Takeable.builder(), Eatable.builder())
+    )
 
     "associated to an Openable behavior" should {
       val openable = Openable.lockedBuilder(requiredKey = key)(apple)
 
       "be used as the key for the opening" in {
-        assert(openable.requiredKey.contains(key), "The key could not be used for opening")
+        openable.requiredKey should contain(key)
       }
     }
   }

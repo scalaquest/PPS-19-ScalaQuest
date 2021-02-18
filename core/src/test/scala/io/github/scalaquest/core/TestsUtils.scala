@@ -22,7 +22,7 @@ object TestsUtils {
   val targetRoom: RM = Room(
     "target room",
     Map(Direction.South -> startRoom.ref),
-    Set()
+    Set.empty
   )
 
   val actionsMap: Map[VerbPrep, Action] = Map(
