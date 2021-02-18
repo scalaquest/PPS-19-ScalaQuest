@@ -21,7 +21,7 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
     )
 
   def item1: SimpleModel.I =
-    SimpleModel.SimpleGenericItem(ItemDescription("item"), ItemRef(ItemDescription("item")))
+    SimpleModel.SimpleGenericItem(ItemDescription("item1"), ItemRef(ItemDescription("item1")))
 
   def item2: SimpleModel.I =
     SimpleModel.SimpleGenericItem(ItemDescription("item2"), ItemRef(ItemDescription("item2")))
@@ -36,9 +36,9 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
     "created with many functions" should {
       "apply them in order" in {
         Update(
-          SimpleModel.bagLens.modify(x => x + item1),
-          SimpleModel.bagLens.modify(x => x - item1)
-        )(state).bag should contain(item1)
+          SimpleModel.bagLens.modify(_ + item1.ref),
+          SimpleModel.bagLens.modify(_ - item1.ref)
+        )(state).bag should not contain item1
       }
     }
   }
@@ -73,15 +73,16 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
         Reaction(
           SimpleModel.matchEndedLens.set(true)
         ),
-        Reaction(s => if (s.ended) SimpleModel.bagLens.modify(x => x + item1)(s) else s)
-      )(state) shouldBe state.copy(ended = true, _bag = Set(item1))
+        Reaction(s => if (s.ended) SimpleModel.bagLens.modify(_ + item1.ref)(s) else s)
+      )(state) shouldBe (state.copy(ended = true, _bag = Set(item1.ref)) -> Seq.empty)
     }
   }
   "Mapping reactions" should {
     "apply an update to a given reaction" in {
-      val r      = Reaction(SimpleModel.bagLens.modify(x => x + item1))
-      val update = SimpleModel.bagLens.modify(x => x + item1)
-      Reaction.map(update)(r)(state)._1.bag should (contain(item1) and contain(item2))
+      val r            = Reaction(SimpleModel.bagLens.modify(_ + item1.ref))
+      val update       = SimpleModel.bagLens.modify(_ + item2.ref)
+      val updatedState = r.map(update)(state)
+      updatedState._1._bag should (contain(item1.ref) and contain(item2.ref))
     }
   }
   "Reactions flatMap" should {
@@ -93,15 +94,16 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
         )
 
       def winCond(r: Reaction): Reaction =
-        r.flatMap(s => endGame(s.bag contains item1))
+        r.flatMap(s => endGame(s._bag contains item1.ref))
           .flatMap(s =>
-            if (s.bag contains item2)
+            if (s._bag contains item2.ref)
               Reaction.messages(bonusMessage)
             else Reaction.empty
           )
 
-      winCond(Reaction(SimpleModel.bagLens.modify(x => x + Set(item1, item2))))(state) shouldBe
-        (state.copy(ended = true, _bag = Set(item1)) -> Seq(winMessage, bonusMessage))
+      winCond(Reaction(SimpleModel.bagLens.modify(_ ++ Set(item1.ref, item2.ref))))(state) shouldBe
+        (state
+          .copy(ended = true, _bag = Set(item1.ref, item2.ref)) -> Seq(winMessage, bonusMessage))
 
       winCond(Reaction.empty)(state) shouldBe (state.copy(ended = true) -> Seq(loseMessage))
     }
@@ -110,7 +112,7 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
       val reaction = for {
         s0 <- Reaction.empty
         s1 <-
-          if (s0.bag contains item1)
+          if (s0._bag contains item1.ref)
             Reaction(
               SimpleModel.matchEndedLens.set(true),
               winMessage
@@ -118,17 +120,20 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
           else
             Reaction.empty
         s2 <-
-          if (s1.bag contains item2) Reaction.messages(bonusMessage)
+          if (s1._bag contains item2.ref) Reaction.messages(bonusMessage)
           else Reaction.empty
       } yield s2
 
-      reaction(state) shouldBe (state                         -> Seq.empty)
-      reaction(state.copy(_bag = Set(item1))) shouldBe (state -> Seq(winMessage))
-      reaction(state.copy(_bag = Set(item2))) shouldBe (state -> Seq(bonusMessage))
-      reaction(state.copy(_bag = Set(item1, item2))) shouldBe (state -> Seq(
-        winMessage,
-        bonusMessage
-      ))
+      reaction(state) shouldBe (state -> Seq.empty)
+      reaction(state.copy(_bag = Set(item1.ref))) shouldBe
+        (state.copy(ended = true, _bag = Set(item1.ref)) -> Seq(winMessage))
+      reaction(state.copy(_bag = Set(item2.ref))) shouldBe
+        (state.copy(_bag = Set(item2.ref)) -> Seq(bonusMessage))
+      reaction(state.copy(_bag = Set(item1.ref, item2.ref))) shouldBe
+        (state.copy(_bag = Set(item1.ref, item2.ref), ended = true) -> Seq(
+          winMessage,
+          bonusMessage
+        ))
     }
   }
 
