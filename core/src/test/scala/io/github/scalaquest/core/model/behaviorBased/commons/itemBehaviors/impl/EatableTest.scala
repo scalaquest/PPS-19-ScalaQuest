@@ -6,8 +6,9 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
+import org.scalatest.matchers.should.Matchers
 
-class EatableTest extends AnyWordSpec {
+class EatableTest extends AnyWordSpec with Matchers {
 
   "A Eatable behavior" when {
 
@@ -24,10 +25,11 @@ class EatableTest extends AnyWordSpec {
               "Reaction not generated"
             )
             modState <- Right(react(stateItemInRoom)._1)
-          } yield assert(
-            !modState.location.items(modState).contains(targetItem),
-            "The item is into the room yet"
-          )
+            msgs     <- Right(react(stateItemInRoom)._2)
+          } yield {
+            modState.location.items(modState) should not contain targetItem
+            msgs should contain(Messages.Eaten(targetItem))
+          }
         }
 
         "let the item disappear if it is in the bag" in {
@@ -36,17 +38,15 @@ class EatableTest extends AnyWordSpec {
               "Reaction not generated"
             )
             modState <- Right(react(stateItemInBag)._1)
-          } yield assert(
-            !modState.bag.contains(targetItem),
-            "The item is into the bag yet"
-          )
+            msgs     <- Right(react(stateItemInBag)._2)
+          } yield {
+            modState.bag should not contain targetItem
+            msgs should contain(Messages.Eaten(targetItem))
+          }
         }
 
         "not work if the item is not in the current room or into the bag" in {
-          assert(
-            targetItem.use(Eat, None)(stateNoItemInRoom).isEmpty,
-            "Generated a reaction when it shouldn't"
-          )
+          targetItem.use(Eat, None)(stateNoItemInRoom) shouldBe None
         }
       }
     }

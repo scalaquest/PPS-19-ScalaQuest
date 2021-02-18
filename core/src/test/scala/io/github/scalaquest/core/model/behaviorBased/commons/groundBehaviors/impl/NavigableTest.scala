@@ -29,7 +29,7 @@ class NavigableTest extends AnyWordSpec with Matchers {
             currRoom <- Right(updState.location)
           } yield {
             currRoom shouldBe targetRoom
-            msgs.last shouldBe Messages.Navigated(targetRoom)
+            msgs should contain(Messages.Navigated(targetRoom))
           }
         }
 
@@ -43,7 +43,7 @@ class NavigableTest extends AnyWordSpec with Matchers {
             currRoom <- Right(updState.location)
           } yield {
             currRoom shouldBe startRoom
-            msgs.last shouldBe Messages.FailedToNavigate(Direction.South)
+            msgs should contain(Messages.FailedToNavigate(Direction.South))
           }
         }
       }

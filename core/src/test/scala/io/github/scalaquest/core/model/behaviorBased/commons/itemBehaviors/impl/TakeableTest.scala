@@ -6,8 +6,9 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
+import org.scalatest.matchers.should.Matchers
 
-class TakeableTest extends AnyWordSpec {
+class TakeableTest extends AnyWordSpec with Matchers {
 
   "A Takeable behavior" when {
 
@@ -25,10 +26,11 @@ class TakeableTest extends AnyWordSpec {
               "Reaction not generated"
             )
             modState <- Right(react(stateWithTargetInRoom)._1)
-          } yield assert(
-            !modState.location.items(modState).contains(targetItem),
-            "The item is into the room yet"
-          )
+            msgs     <- Right(react(stateWithTargetInRoom)._2)
+          } yield {
+            modState.location.items(modState) should not contain targetItem
+            msgs should contain(Messages.Taken(targetItem))
+          }
         }
 
         "appear into the bag" in {
@@ -37,17 +39,12 @@ class TakeableTest extends AnyWordSpec {
               "Reaction not generated"
             )
             modState <- Right(react(stateWithTargetInRoom)._1)
-          } yield assert(
-            modState.bag.contains(targetItem),
-            "The item is not into the bag"
-          )
+          } yield modState.bag should contain(targetItem)
+
         }
 
         "not work if the item is not in the current room" in {
-          assert(
-            targetItem.use(Take, None)(stateWithoutTargetInRoom).isEmpty,
-            "Generated a reaction when it shouldn't"
-          )
+          targetItem.use(Take, None)(stateWithoutTargetInRoom) shouldBe None
         }
       }
     }

@@ -23,7 +23,11 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
               "Reaction not generated"
             )
             modState <- Right(enteredReact(stateWithTarget)._1)
-          } yield modState.location shouldBe targetRoom
+            msgs     <- Right(enteredReact(stateWithTarget)._2)
+          } yield {
+            modState.location shouldBe targetRoom
+            msgs should contain(Messages.Navigated(targetRoom))
+          }
         }
       }
     }
@@ -39,8 +43,12 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             enteredReact <- targetItem.use(Enter)(stateWithClosedTarget) toRight fail(
               "Reaction not generated"
             )
-            msgs <- Right(enteredReact(stateWithClosedTarget)._2)
-          } yield msgs.last shouldBe Messages.FailedToEnter(targetItem)
+            modState <- Right(enteredReact(stateWithClosedTarget)._1)
+            msgs     <- Right(enteredReact(stateWithClosedTarget)._2)
+          } yield {
+            modState.location should not be targetRoom
+            msgs should contain(Messages.FailedToEnter(targetItem))
+          }
         }
       }
 
@@ -56,7 +64,11 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
               "Enter reaction not generated"
             )
             modState <- Right(enteredReact(openReact(stateWithClosedTarget)._1)._1)
-          } yield modState.location shouldBe targetRoom
+            msgs     <- Right(enteredReact(openReact(stateWithClosedTarget)._1)._2)
+          } yield {
+            msgs should contain(Messages.Navigated(targetRoom))
+            modState.location shouldBe targetRoom
+          }
         }
       }
     }

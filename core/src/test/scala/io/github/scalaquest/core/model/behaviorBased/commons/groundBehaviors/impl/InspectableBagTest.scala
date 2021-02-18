@@ -28,7 +28,7 @@ class InspectableBagTest extends AnyWordSpec with Matchers {
         for {
           react <- SimpleGround.use(InspectBag)(simpleState) toRight fail("Reaction not generated")
           msgs  <- Right(react(simpleState)._2)
-        } yield msgs.last shouldBe Messages.InspectedBag(Set(apple))
+        } yield msgs should contain(Messages.InspectedBag(Set(apple)))
       }
     }
 
@@ -43,7 +43,7 @@ class InspectableBagTest extends AnyWordSpec with Matchers {
             appleEatenReact(simpleState)._1
           ) toRight fail("Reaction not generated")
           msgs <- Right(inspectedBagReact(appleEatenReact(simpleState)._1)._2)
-        } yield msgs.last shouldBe Messages.InspectedBag(Set.empty)
+        } yield msgs should contain(Messages.InspectedBag(Set.empty))
       }
     }
   }

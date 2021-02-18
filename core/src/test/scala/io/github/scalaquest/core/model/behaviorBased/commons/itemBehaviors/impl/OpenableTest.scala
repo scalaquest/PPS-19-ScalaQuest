@@ -21,7 +21,9 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs.last shouldBe Messages.Opened(targetItem)
+        } yield {
+          msgs should contain(Messages.Opened(targetItem))
+        }
       }
 
       "not open without the right Key" in {
@@ -34,7 +36,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs.last shouldBe Messages.FailedToOpen(targetItem)
+        } yield msgs should contain(Messages.FailedToOpen(targetItem))
       }
 
       "say that the door is already opened, if already opened" in {
@@ -49,8 +51,8 @@ class OpenableTest extends AnyWordSpec with Matchers {
           openAgainReact <- targetItem.use(Open, Some(targetKey))(openedState) toRight fail(
             "Reaction not generated"
           )
-          msgsFinal <- Right(openAgainReact(openedState)._2)
-        } yield msgsFinal.last shouldBe Messages.AlreadyOpened(targetItem)
+          msgs <- Right(openAgainReact(openedState)._2)
+        } yield msgs should contain(Messages.AlreadyOpened(targetItem))
       }
     }
 
@@ -63,7 +65,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs.last shouldBe Messages.Opened(targetItem)
+        } yield msgs should contain(Messages.Opened(targetItem))
 
       }
       "not open with any Key" in {
@@ -75,7 +77,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs.last shouldBe Messages.FailedToOpen(targetItem)
+        } yield msgs should contain(Messages.FailedToOpen(targetItem))
       }
     }
   }
