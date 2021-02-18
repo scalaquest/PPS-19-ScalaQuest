@@ -30,10 +30,10 @@ class InspectableLocationTest extends AnyWordSpec {
             react <- SimpleGround.use(Inspect)(simpleState) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(simpleState))
+            msgs <- Right(react(simpleState)._2)
 
           } yield assert(
-            modState.messages.last == targetResult,
+            msgs.last == targetResult,
             "The player has reached the Room"
           )
         }

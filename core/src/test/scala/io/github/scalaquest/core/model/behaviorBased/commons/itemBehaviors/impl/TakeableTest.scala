@@ -4,10 +4,10 @@ import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils._
+import TestsUtils.model._
 
 class TakeableTest extends AnyWordSpec {
-  import TestsUtils._
-  import TestsUtils.model._
 
   "A Takeable behavior" when {
 
@@ -24,7 +24,7 @@ class TakeableTest extends AnyWordSpec {
             react <- targetItem.use(Take, None)(stateWithTargetInRoom) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateWithTargetInRoom))
+            modState <- Right(react(stateWithTargetInRoom)._1)
           } yield assert(
             !modState.location.items(modState).contains(targetItem),
             "The item is into the room yet"
@@ -36,7 +36,7 @@ class TakeableTest extends AnyWordSpec {
             react <- targetItem.use(Take, None)(stateWithTargetInRoom) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateWithTargetInRoom))
+            modState <- Right(react(stateWithTargetInRoom)._1)
           } yield assert(
             modState.bag.contains(targetItem),
             "The item is not into the bag"

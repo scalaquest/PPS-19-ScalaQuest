@@ -4,10 +4,10 @@ import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils._
+import TestsUtils.model._
 
 class EatableTest extends AnyWordSpec {
-  import TestsUtils._
-  import TestsUtils.model._
 
   "A Eatable behavior" when {
 
@@ -23,7 +23,7 @@ class EatableTest extends AnyWordSpec {
             react <- targetItem.use(Eat, None)(stateItemInRoom) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateItemInRoom))
+            modState <- Right(react(stateItemInRoom)._1)
           } yield assert(
             !modState.location.items(modState).contains(targetItem),
             "The item is into the room yet"
@@ -35,7 +35,7 @@ class EatableTest extends AnyWordSpec {
             react <- targetItem.use(Eat, None)(stateItemInBag) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(stateItemInBag))
+            modState <- Right(react(stateItemInBag)._1)
           } yield assert(
             !modState.bag.contains(targetItem),
             "The item is into the bag yet"

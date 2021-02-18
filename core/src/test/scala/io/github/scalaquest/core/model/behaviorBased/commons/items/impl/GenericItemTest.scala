@@ -3,9 +3,9 @@ package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils.model._
 
 class GenericItemTest extends AnyWordSpec {
-  import TestsUtils.model._
 
   "A GenericItem" when {
     val genericItem = GenericItem(

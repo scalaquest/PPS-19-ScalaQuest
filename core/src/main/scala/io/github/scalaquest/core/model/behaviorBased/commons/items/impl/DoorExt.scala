@@ -53,15 +53,11 @@ trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
     ): (Door, Key) = {
       val door = apply(
         description = doorDesc,
-        RoomLink.builder(
+        RoomLink.closedLockedBuilder(
           endRoom = endRoom,
           endRoomDirection = endRoomDirection,
-          openableBuilder = Some(
-            Openable.lockedBuilder(
-              requiredKey = key,
-              onOpenExtra = onOpenExtra
-            )
-          ),
+          key = key,
+          onOpenExtra = onOpenExtra,
           onEnterExtra = onEnterExtra
         ),
         extraBehavBuilder = extraBehavBuilders

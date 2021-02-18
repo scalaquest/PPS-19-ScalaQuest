@@ -106,5 +106,47 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
           openableBuilder.map(_(i)),
           onEnterExtra
         )(i)
+
+    def openedBuilder(
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty
+    ): I => RoomLink =
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          None,
+          onEnterExtra
+        )(i)
+
+    def closedUnlockedBuilder(
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty,
+      onOpenExtra: Reaction = Reaction.empty
+    ): I => RoomLink =
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          Some(Openable.unlockedBuilder(onOpenExtra)(i)),
+          onEnterExtra
+        )(i)
+
+    def closedLockedBuilder(
+      key: Key,
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty,
+      onOpenExtra: Reaction = Reaction.empty
+    ): I => RoomLink =
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          Some(Openable.lockedBuilder(key, onOpenExtra)(i)),
+          onEnterExtra
+        )(i)
   }
 }

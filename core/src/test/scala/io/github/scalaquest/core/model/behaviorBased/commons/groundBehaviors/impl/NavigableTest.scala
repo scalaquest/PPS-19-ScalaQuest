@@ -4,10 +4,10 @@ import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils._
+import TestsUtils.model._
 
 class NavigableTest extends AnyWordSpec {
-  import TestsUtils._
-  import TestsUtils.model._
 
   "A Navigation Ground Behavior" when {
     val navigation = Navigable()
@@ -23,7 +23,7 @@ class NavigableTest extends AnyWordSpec {
             react <- SimpleGround.use(Go(Direction.North))(simpleState) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(simpleState))
+            modState <- Right(react(simpleState)._1)
             currRoom <- Right(modState.location)
           } yield assert(targetRoom == currRoom, "The player has reached the Room")
         }

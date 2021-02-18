@@ -10,14 +10,14 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils._
+import TestsUtils.model._
 
 class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
-  import TestsUtils._
-  import TestsUtils.model._
 
   "A BehaviorBasedItem" should {
     val behavior = new ItemBehavior {
-      override def triggers: model.ItemTriggers = { case (Take, _, _, _) => Reactions.empty }
+      override def triggers: model.ItemTriggers = { case (Take, _, _, _) => Reaction.empty }
     }
 
     val item = new BehaviorBasedItem {

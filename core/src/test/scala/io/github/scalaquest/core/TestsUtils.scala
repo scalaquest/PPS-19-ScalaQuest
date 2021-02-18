@@ -42,23 +42,20 @@ object TestsUtils {
     ItemDescription("key")                          -> keyItemRef
   )
 
-  val apple: GenericItem = SimpleGenericItem(
+  val apple: GenericItem = GenericItem(
     ItemDescription("apple", "big", "red", "juicy"),
-    appleItemRef,
-    Takeable.builder(),
-    Eatable.builder()
+    Seq(Takeable.builder(), Eatable.builder())
   )
 
-  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef, Takeable.builder())
+  val key: Key = Key(ItemDescription("key"), extraBehavBuilders = Seq(Takeable.builder()))
 
   val door: Door =
-    SimpleDoor(
+    Door(
       ItemDescription("door"),
-      doorItemRef,
-      RoomLink.builder(
+      RoomLink.closedLockedBuilder(
+        key,
         targetRoom,
-        Direction.North,
-        Some(Openable.lockedBuilder(requiredKey = Some(key)))
+        Direction.North
       )
     )
 
