@@ -7,6 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonVer
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 
 object EscapeRoom extends GameCLIApp(SimpleModel) {
+  import model._
 
   override def items: Set[I] = Items.allTheItems
 
@@ -14,14 +15,14 @@ object EscapeRoom extends GameCLIApp(SimpleModel) {
 
   override def initialMessages: Seq[Message] =
     Seq(
-      model.Messages.Welcome("""
+      Messages.Welcome("""
         |Welcome in the Escape Room Game! You have been kidnapped, and you woke up in a
         |gloomy basement. You have to get out of the house to save yourself!
         |""".stripMargin)
     )
 
   override def state: S =
-    model.State(
+    State(
       actions = verbToAction,
       rooms = House.refToRoom,
       items = refToItem,
@@ -29,5 +30,4 @@ object EscapeRoom extends GameCLIApp(SimpleModel) {
     )
 
   override def messagePusher: StringPusher = Pusher.defaultPusher
-
 }
