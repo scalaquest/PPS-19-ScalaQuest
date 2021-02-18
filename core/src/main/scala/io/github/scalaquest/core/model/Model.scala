@@ -19,7 +19,6 @@ trait Model { model: Model =>
   type G <: Ground
   type RM <: Room
   type Reaction = S => (S, Seq[Message])
-  type Update   = S => S
 
   /**
    * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
