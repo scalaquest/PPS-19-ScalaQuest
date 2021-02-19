@@ -48,7 +48,7 @@ class PipelineProviderTest extends AnyWordSpec with Matchers {
   "Pipeline provider" should {
     "pass the given theory to the pipeline" in {
       pipelineProvider.makePipeline(state).run("some string") shouldBe Right(
-        state.copy(ended = true)
+        (state.copy(ended = true), Seq())
       )
     }
   }
