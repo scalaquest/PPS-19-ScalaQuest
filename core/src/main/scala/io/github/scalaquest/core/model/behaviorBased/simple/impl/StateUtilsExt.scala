@@ -34,10 +34,5 @@ trait StateUtilsExt extends Model {
     def copyWithItemInBag(item: I): S = {
       val stateWithTarget = itemsLens.modify(_ + (item.ref -> item))(state)
       bagLens.modify(_ + item.ref)(stateWithTarget)
-    }
-
-    // def applyReactions(reactions: Reaction*): (S, Seq[Message]) =
-    //   reactions.reduceOption(Reaction.combine)
-
   }
 }
