@@ -77,7 +77,7 @@ abstract class BehaviorBasedModel extends Model {
      * @return
      *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
      */
-    def receiverTriggers: ItemTriggers = PartialFunction.empty
+    def receiverTriggers: ItemTriggers
 
     /**
      * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
