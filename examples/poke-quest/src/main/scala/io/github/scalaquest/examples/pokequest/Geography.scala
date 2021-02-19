@@ -14,8 +14,8 @@ object Geography extends ApplicationGeography[RM] {
 
   def cityExit: RM =
     Room(
-      name = "VermilionCity exit",
-      items = Set()
+      name = "Vermilion City",
+      items = Set(Items.snorlax.ref)
     )
 
   def forest: RM =

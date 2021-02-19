@@ -11,14 +11,15 @@ object PokeQuest extends GameCLIApp(SimpleModel) {
 
   override def items: Set[I] = Items.allTheItems
 
-  override def verbs: Set[Verb] = CommonVerbs()
+  override def verbs: Set[Verb] = CommonVerbs() ++ Actions.customVerbs
 
   override def initialMessages: Seq[Message] =
     Seq(
       Messages.Welcome("""
-                         |Welcome in the Escape Room Game! You have been kidnapped, and you woke up in a
-                         |gloomy basement. You have to get out of the house to save yourself!
-                         |""".stripMargin)
+        |Welcome in the PokeQuest Game! You are a Pokémon trainer, from Vermilion City, and you are looking forward to
+        |capture new Pokémons. So you start walking to reach the forest, but arrived to the city exit, you notice a
+        |Snorlax is blocking the way to the forest :O So, here your adventure starts! Good luck!
+        |""".stripMargin)
     )
 
   override def state: S =
@@ -26,6 +27,7 @@ object PokeQuest extends GameCLIApp(SimpleModel) {
       actions = verbToAction,
       rooms = Geography.refToRoom,
       items = refToItem,
+      bag = Set(Items.flute.ref),
       location = Geography.cityExit.ref
     )
 
