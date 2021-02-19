@@ -2,13 +2,12 @@ package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Door Item.
  */
-trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
+trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
 
   /**
    * A [[BehaviorBasedItem]] that should work as a link between two different [[Room]] s.
@@ -25,10 +24,10 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
     description: ItemDescription,
     ref: ItemRef,
     roomLinkBuilder: I => RoomLink,
-    addBehaviorsBuilders: I => ItemBehavior*
+    extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
   ) extends Door {
     override val roomLink: RoomLink           = roomLinkBuilder(this)
-    override val behaviors: Seq[ItemBehavior] = roomLink +: addBehaviorsBuilders.map(_(this))
+    override val behaviors: Seq[ItemBehavior] = roomLink +: extraBehavBuilders.map(_(this))
     override def isOpen: Boolean              = roomLink.isOpen
   }
 
@@ -40,8 +39,31 @@ trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
     def apply(
       description: ItemDescription,
       roomLinkBuilder: I => RoomLink,
-      addBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
-    ): Door =
-      SimpleDoor(description, ItemRef(description), roomLinkBuilder, addBehaviorsBuilders: _*)
+      extraBehavBuilder: Seq[I => ItemBehavior] = Seq.empty
+    ): Door = SimpleDoor(description, ItemRef(description), roomLinkBuilder, extraBehavBuilder)
+
+    def createLockedWithKey(
+      key: Key,
+      doorDesc: ItemDescription,
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onOpenExtra: Reaction = Reaction.empty,
+      onEnterExtra: Reaction = Reaction.empty,
+      extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): (Door, Key) = {
+      val door = apply(
+        description = doorDesc,
+        RoomLink.closedLockedBuilder(
+          endRoom = endRoom,
+          endRoomDirection = endRoomDirection,
+          key = key,
+          onOpenExtra = onOpenExtra,
+          onEnterExtra = onEnterExtra
+        ),
+        extraBehavBuilder = extraBehavBuilders
+      )
+
+      (door, key)
+    }
   }
 }

@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline
 
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.model.{Message, Model}
 import io.github.scalaquest.core.pipeline.interpreter.Interpreter
 import io.github.scalaquest.core.pipeline.lexer.Lexer
 import io.github.scalaquest.core.pipeline.parser.Parser
@@ -8,7 +8,7 @@ import io.github.scalaquest.core.pipeline.reducer.Reducer
 import io.github.scalaquest.core.pipeline.resolver.Resolver
 
 abstract class Pipeline[M <: Model](val model: M) {
-  def run(rawSentence: String): Either[String, model.S]
+  def run(rawSentence: String): Either[String, (model.S, Seq[Message])]
 }
 
 object Pipeline {
@@ -28,14 +28,14 @@ object Pipeline {
     )(state: model.S): Pipeline[model.type] =
       new Pipeline[model.type](model) {
 
-        override def run(rawSentence: String): Either[String, model.S] =
+        override def run(rawSentence: String): Either[String, (model.S, Seq[Message])] =
           for {
             lr  <- Right(lexer tokenize rawSentence)
             pr  <- (parser parse lr) toRight "Couldn't understand input."
             rr  <- resolver(state) resolve pr
             ir  <- interpreterBuilder(state) interpret rr
             rdr <- Right(reducerBuilder(state) reduce ir)
-          } yield rdr.state
+          } yield (rdr.state, rdr.message)
       }
   }
 

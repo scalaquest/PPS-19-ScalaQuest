@@ -35,6 +35,8 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      */
     case class Navigated(room: RM) extends Message
 
+    case class FailedToNavigate(direction: Direction) extends Message
+
     case class FailedToEnter(item: I) extends Message
 
     /**
@@ -60,6 +62,8 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      *   The opened item.
      */
     case class Opened(item: I) extends Message
+
+    case class ReversedIntoLocation(items: Set[I]) extends Message
 
     case class FailedToOpen(item: I) extends Message
 

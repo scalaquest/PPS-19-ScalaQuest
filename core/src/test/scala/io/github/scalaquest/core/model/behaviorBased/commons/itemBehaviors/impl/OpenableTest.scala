@@ -20,8 +20,10 @@ class OpenableTest extends AnyWordSpec with Matchers {
           react <- targetItem.use(Open, Some(targetKey))(state) toRight fail(
             "Reaction not generated"
           )
-          modState <- Right(react(state))
-        } yield modState.messages.last shouldBe Messages.Opened(targetItem)
+          msgs <- Right(react(state)._2)
+        } yield {
+          msgs should contain(Messages.Opened(targetItem))
+        }
       }
 
       "not open without the right Key" in {
@@ -33,8 +35,8 @@ class OpenableTest extends AnyWordSpec with Matchers {
           react <- targetItem.use(Open, Some(wrongKey))(state) toRight fail(
             "Reaction not generated"
           )
-          modState <- Right(react(state))
-        } yield modState.messages.last shouldBe Messages.FailedToOpen(targetItem)
+          msgs <- Right(react(state)._2)
+        } yield msgs should contain(Messages.FailedToOpen(targetItem))
       }
 
       "say that the door is already opened, if already opened" in {
@@ -45,12 +47,12 @@ class OpenableTest extends AnyWordSpec with Matchers {
           openReact <- targetItem.use(Open, Some(targetKey))(state) toRight fail(
             "Reaction not generated"
           )
-          openedState <- Right(openReact(state))
+          openedState <- Right(openReact(state)._1)
           openAgainReact <- targetItem.use(Open, Some(targetKey))(openedState) toRight fail(
             "Reaction not generated"
           )
-          alrOpenedState <- Right(openAgainReact(openedState))
-        } yield alrOpenedState.messages.last shouldBe Messages.AlreadyOpened(targetItem)
+          msgs <- Right(openAgainReact(openedState)._2)
+        } yield msgs should contain(Messages.AlreadyOpened(targetItem))
       }
     }
 
@@ -62,8 +64,8 @@ class OpenableTest extends AnyWordSpec with Matchers {
           react <- targetItem.use(Open, None)(state) toRight fail(
             "Reaction not generated"
           )
-          modState <- Right(react(state))
-        } yield modState.messages.last shouldBe Messages.Opened(targetItem)
+          msgs <- Right(react(state)._2)
+        } yield msgs should contain(Messages.Opened(targetItem))
 
       }
       "not open with any Key" in {
@@ -74,14 +76,15 @@ class OpenableTest extends AnyWordSpec with Matchers {
           react <- targetItem.use(Open, Some(wrongKey))(state) toRight fail(
             "Reaction not generated"
           )
-          modState <- Right(react(state))
-        } yield modState.messages.last shouldBe Messages.FailedToOpen(targetItem)
+          msgs <- Right(react(state)._2)
+        } yield msgs should contain(Messages.FailedToOpen(targetItem))
       }
     }
   }
 
   def initializeDoorAndKey(requiredKey: Option[Key]): (GenericItem, S) = {
-    val openable   = Openable.builder(requiredKey = requiredKey)
+    val openable = requiredKey.map(k => Openable.lockedBuilder(requiredKey = k)) getOrElse Openable
+      .unlockedBuilder()
     val targetItem = GenericItem(ItemDescription("item"), Seq(openable))
     val state      = simpleState.copyWithItemInLocation(targetItem)
 

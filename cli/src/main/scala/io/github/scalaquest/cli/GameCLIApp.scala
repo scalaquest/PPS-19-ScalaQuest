@@ -6,7 +6,7 @@ import io.github.scalaquest.core.application.{
   DictionaryProvider,
   PipelineProvider
 }
-import io.github.scalaquest.core.model.{MessagePusher, Model}
+import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
 import io.github.scalaquest.core.pipeline.Pipeline
 
 abstract class GameCLIApp[M0 <: Model](val model: M0)
@@ -21,8 +21,11 @@ abstract class GameCLIApp[M0 <: Model](val model: M0)
 
   def messagePusher: MessagePusher[String]
 
+  def initialMessages: Seq[Message] = Seq.empty
+
   def game: Game[M] = Game.builderFrom[M](model).build(pipelineBuilder)
 
-  override def cli: CLI = CLI.builderFrom[M](model).build(state, game, messagePusher)
+  override def cli: CLI =
+    CLI.builderFrom[M](model).build(state, game, messagePusher, initialMessages)
 
 }

@@ -3,22 +3,18 @@ package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils.model._
+import org.scalatest.matchers.should.Matchers
 
-class GenericItemTest extends AnyWordSpec {
-  import TestsUtils.model._
+class GenericItemTest extends AnyWordSpec with Matchers {
 
-  "A GenericItem" when {
-    val genericItem = GenericItem(
-      ItemDescription("item"),
-      Seq(Takeable.builder(), Eatable.builder())
-    )
+  "A GenericItem" should {
+    val behBuilders     = Seq(Takeable.builder(), Eatable.builder())
+    val genericItem     = GenericItem(ItemDescription("item"), behBuilders)
+    val targetBehaviors = behBuilders.map(_(genericItem))
 
-    val someBehaviors = Seq(Takeable.builder()(genericItem), Eatable.builder()(genericItem))
-
-    "instantiated" should {
-      "take whatever number of behaviors" in {
-        assert(genericItem.behaviors == someBehaviors, "behaviors are not correctly instantiated.")
-      }
+    "take a sequence of behaviorBuilders, memorized as behaviors" in {
+      genericItem.behaviors shouldBe targetBehaviors
     }
   }
 }

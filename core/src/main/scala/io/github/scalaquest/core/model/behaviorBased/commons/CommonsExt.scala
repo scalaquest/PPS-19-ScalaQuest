@@ -1,7 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.commons
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.builders.CommonBuildersExt
 import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.CommonGroundBehaviorsExt
 import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CommonGroundExt
 import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.CommonItemBehaviorsExt
@@ -22,4 +21,3 @@ trait CommonsExt
   with CommonGroundBehaviorsExt
   with CommonGroundExt
   with CommonReactionsExt
-  with CommonBuildersExt

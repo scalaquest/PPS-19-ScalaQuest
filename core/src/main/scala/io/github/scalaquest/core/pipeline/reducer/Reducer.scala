@@ -60,6 +60,8 @@ object Reducer {
   def builder[M <: Model](implicit model: M): Builder[model.type, model.S, model.Reaction] =
     // shortcut for implementing the Reducer, as it is a single method trait
     state =>
-      (interpreterResult: InterpreterResult[model.Reaction]) =>
-        ReducerResult(model)(interpreterResult.reaction(state))
+      (interpreterResult: InterpreterResult[model.Reaction]) => {
+        val (updState, messages) = interpreterResult.reaction(state)
+        ReducerResult(model)(updState, messages)
+      }
 }

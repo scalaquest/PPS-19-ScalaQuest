@@ -26,9 +26,9 @@ class InspectableBagTest extends AnyWordSpec with Matchers {
     "applied to a bag with some object" should {
       "describe the items in the bag" in {
         for {
-          react    <- SimpleGround.use(InspectBag)(simpleState) toRight fail("Reaction not generated")
-          modState <- Right(react(simpleState))
-        } yield modState.messages.last shouldBe Messages.InspectedBag(Set(apple))
+          react <- SimpleGround.use(InspectBag)(simpleState) toRight fail("Reaction not generated")
+          msgs  <- Right(react(simpleState)._2)
+        } yield msgs should contain(Messages.InspectedBag(Set(apple)))
       }
     }
 
@@ -40,10 +40,10 @@ class InspectableBagTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           inspectedBagReact <- SimpleGround.use(InspectBag)(
-            appleEatenReact(simpleState)
+            appleEatenReact(simpleState)._1
           ) toRight fail("Reaction not generated")
-          modState <- Right(inspectedBagReact(appleEatenReact(simpleState)))
-        } yield modState.messages.last shouldBe Messages.InspectedBag(Set.empty)
+          msgs <- Right(inspectedBagReact(appleEatenReact(simpleState)._1)._2)
+        } yield msgs should contain(Messages.InspectedBag(Set.empty))
       }
     }
   }

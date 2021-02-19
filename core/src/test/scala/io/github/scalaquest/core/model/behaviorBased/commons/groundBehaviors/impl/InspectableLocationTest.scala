@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
+import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.TestsUtils.model.{
   BehaviorBasedGround,
   GroundBehavior,
@@ -9,9 +10,10 @@ import io.github.scalaquest.core.TestsUtils.model.{
 import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class InspectableLocationTest extends AnyWordSpec {
+class InspectableLocationTest extends AnyWordSpec with Matchers {
 
   "An Inspect Ground Behavior" when {
     val inspection = InspectableLocation()
@@ -24,18 +26,19 @@ class InspectableLocationTest extends AnyWordSpec {
       "An inspect Action is provided" should {
         "describe the room, the items in it, the neighbors" in {
           val targetResult =
-            Messages.Inspected(startRoom, Set(key, door), Map(Direction.North -> targetRoom))
+            Messages.Inspected(
+              startRoom,
+              Set(TestsUtils.key, door),
+              Map(Direction.North -> targetRoom)
+            )
 
           for {
             react <- SimpleGround.use(Inspect)(simpleState) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(react(simpleState))
+            msgs <- Right(react(simpleState)._2)
 
-          } yield assert(
-            modState.messages.last == targetResult,
-            "The player has reached the Room"
-          )
+          } yield msgs.last shouldBe targetResult
         }
       }
     }

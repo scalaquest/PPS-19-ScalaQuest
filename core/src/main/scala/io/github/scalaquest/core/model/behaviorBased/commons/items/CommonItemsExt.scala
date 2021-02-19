@@ -2,6 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.items
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.{
+  ChestExt,
   DoorExt,
   FoodExt,
   GenericItemExt,
@@ -18,3 +19,4 @@ trait CommonItemsExt
   with GenericItemExt
   with KeyExt
   with FoodExt
+  with ChestExt

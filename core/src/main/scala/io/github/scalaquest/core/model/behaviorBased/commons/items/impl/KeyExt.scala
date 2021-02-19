@@ -11,7 +11,9 @@ trait KeyExt extends BehaviorBasedModel {
   /**
    * A [[BehaviorBasedItem]] that should be used to open/close items with a Openable behavior.
    */
-  trait Key extends BehaviorBasedItem
+  trait Key extends BehaviorBasedItem {
+    def disposable: Boolean
+  }
 
   /**
    * Standard implementation of the common [[Key]].
@@ -19,9 +21,10 @@ trait KeyExt extends BehaviorBasedModel {
   case class SimpleKey(
     description: ItemDescription,
     ref: ItemRef,
-    addBehaviorsBuilder: I => ItemBehavior*
+    disposable: Boolean = true,
+    extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
   ) extends Key {
-    override val behaviors: Seq[ItemBehavior] = addBehaviorsBuilder.map(_(this))
+    override val behaviors: Seq[ItemBehavior] = extraBehavBuilders.map(_(this))
   }
 
   /**
@@ -31,7 +34,8 @@ trait KeyExt extends BehaviorBasedModel {
 
     def apply(
       description: ItemDescription,
-      addBehaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
-    ): Key = SimpleKey(description, ItemRef(description), addBehaviorsBuilders: _*)
+      disposable: Boolean = true,
+      extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): Key = SimpleKey(description, ItemRef(description), disposable, extraBehavBuilders)
   }
 }

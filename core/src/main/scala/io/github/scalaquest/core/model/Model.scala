@@ -18,7 +18,7 @@ trait Model { model: Model =>
   type I <: Item
   type G <: Ground
   type RM <: Room
-  type Reaction = S => S
+  type Reaction = S => (S, Seq[Message])
 
   /**
    * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
@@ -85,14 +85,6 @@ trait Model { model: Model =>
      *   True if the match has to end after the current round, false otherwise.
      */
     def ended: Boolean
-
-    /**
-     * A representation of the occurred events in a given the pipeline round. The storyteller can
-     * then decide what to show for each one.
-     * @return
-     *   A [[Seq]] of [[Message]] s.
-     */
-    def messages: Seq[Message]
   }
 
   /**
@@ -215,7 +207,7 @@ trait Model { model: Model =>
     override def hashCode(): Int = ref.hashCode()
   }
 
-  def messageLens: Lens[S, Seq[Message]]
+  def locationRoomLens: Lens[S, RM]
   def roomsLens: Lens[S, Map[RoomRef, RM]]
   def itemsLens: Lens[S, Map[ItemRef, I]]
   def matchEndedLens: Lens[S, Boolean]

@@ -35,8 +35,5 @@ trait StateUtilsExt extends Model {
       val stateWithTarget = itemsLens.modify(_ + (item.ref -> item))(state)
       bagLens.modify(_ + item.ref)(stateWithTarget)
     }
-
-    def applyReactions(reactions: Reaction*): S = Function.chain(reactions.toList)(this.state)
-
   }
 }

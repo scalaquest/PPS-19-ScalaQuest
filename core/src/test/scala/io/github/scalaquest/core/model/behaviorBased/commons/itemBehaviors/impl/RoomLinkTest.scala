@@ -22,14 +22,18 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             enteredReact <- targetItem.use(Enter, None)(stateWithTarget) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(enteredReact(stateWithTarget))
-          } yield modState.location shouldBe targetRoom
+            modState <- Right(enteredReact(stateWithTarget)._1)
+            msgs     <- Right(enteredReact(stateWithTarget)._2)
+          } yield {
+            modState.location shouldBe targetRoom
+            msgs should contain(Messages.Navigated(targetRoom))
+          }
         }
       }
     }
 
     "the item is closed" when {
-      val roomLink              = RoomLink.builder(targetRoom, Direction.North, Some(Openable.builder()))
+      val roomLink              = RoomLink.builder(targetRoom, Direction.North, Some(Openable.unlockedBuilder()))
       val doorDescription       = ItemDescription("door")
       val targetItem            = SimpleDoor(doorDescription, ItemRef(doorDescription), roomLink)
       val stateWithClosedTarget = simpleState.copyWithItemInLocation(targetItem)
@@ -39,8 +43,12 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             enteredReact <- targetItem.use(Enter)(stateWithClosedTarget) toRight fail(
               "Reaction not generated"
             )
-            modState <- Right(enteredReact(stateWithClosedTarget))
-          } yield modState.messages.last shouldBe Messages.FailedToEnter(targetItem)
+            modState <- Right(enteredReact(stateWithClosedTarget)._1)
+            msgs     <- Right(enteredReact(stateWithClosedTarget)._2)
+          } yield {
+            modState.location should not be targetRoom
+            msgs should contain(Messages.FailedToEnter(targetItem))
+          }
         }
       }
 
@@ -51,12 +59,16 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
               "Open reaction not generated"
             )
             enteredReact <- targetItem.use(Enter)(
-              openReact(stateWithClosedTarget)
+              openReact(stateWithClosedTarget)._1
             ) toRight fail(
               "Enter reaction not generated"
             )
-            modState <- Right(enteredReact(openReact(stateWithClosedTarget)))
-          } yield modState.location shouldBe targetRoom
+            modState <- Right(enteredReact(openReact(stateWithClosedTarget)._1)._1)
+            msgs     <- Right(enteredReact(openReact(stateWithClosedTarget)._1)._2)
+          } yield {
+            msgs should contain(Messages.Navigated(targetRoom))
+            modState.location shouldBe targetRoom
+          }
         }
       }
     }

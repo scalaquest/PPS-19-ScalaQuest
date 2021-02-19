@@ -14,9 +14,9 @@ trait CommonReactionsExt
   with FinishGameExt
   with NavigateExt
   with OpenExt
-  with EmptyExt
   with TakeExt
-  with InspectBagExt { self =>
+  with InspectBagExt
+  with RevealItemsExt { self =>
 
   /**
    * Companioni Object with the effective implementation of the common [[Reaction]] s.
@@ -31,8 +31,6 @@ trait CommonReactionsExt
      *   Eaten [[Reaction]]
      */
     def eat(item: I): Reaction = self.eat(item)
-
-    def empty: Reaction = self.empty
 
     /**
      * The RoomLink [[Reaction]].
@@ -96,8 +94,9 @@ trait CommonReactionsExt
      */
     def open(
       itemToOpen: I,
-      requiredKey: Option[Key],
-      iskeyConsumable: Boolean
-    ): Reaction = self.open(itemToOpen, requiredKey, iskeyConsumable)
+      requiredKey: Option[Key]
+    ): Reaction = self.open(itemToOpen, requiredKey)
+
+    def revealItems(items: Set[I]): Reaction = self.revealItems(items)
   }
 }

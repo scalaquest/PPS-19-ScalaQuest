@@ -4,7 +4,6 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableLocation behavior
@@ -12,7 +11,6 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
  */
 trait InspectableLocationExt
   extends BehaviorBasedModel
-  with StateUtilsExt
   with CommonMessagesExt
   with CommonReactionsExt {
 
@@ -20,7 +18,9 @@ trait InspectableLocationExt
    * A [[GroundBehavior]] that enables the possibility to know the items present into the current
    * [[Room]].
    */
-  abstract class InspectableLocation extends GroundBehavior
+  abstract class InspectableLocation extends GroundBehavior {
+    def inspectLocation: Reaction
+  }
 
   /**
    * A standard implementation for [[InspectableLocation]].
@@ -29,15 +29,15 @@ trait InspectableLocationExt
    *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
    *   omitted.
    */
-  case class SimpleInspectableLocation(onInspectExtra: Option[Reaction] = None)
+  case class SimpleInspectableLocation(onInspectExtra: Reaction = Reaction.empty)
     extends InspectableLocation {
 
     override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
 
-    private def inspectLocation: Reaction =
-      _.applyReactions(
+    override def inspectLocation: Reaction =
+      Reaction.combine(
         Reactions.inspectLocation,
-        onInspectExtra.getOrElse(Reactions.empty)
+        onInspectExtra
       )
   }
 
@@ -46,8 +46,7 @@ trait InspectableLocationExt
    */
   object InspectableLocation {
 
-    def apply(onInspectExtra: Option[Reaction] = None): InspectableLocation =
+    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableLocation =
       SimpleInspectableLocation(onInspectExtra)
   }
-
 }

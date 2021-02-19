@@ -20,9 +20,9 @@ trait GenericItemExt extends BehaviorBasedModel {
   case class SimpleGenericItem(
     description: ItemDescription,
     ref: ItemRef,
-    addBehaviorsBuilder: I => ItemBehavior*
+    extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
   ) extends GenericItem {
-    override val behaviors: Seq[ItemBehavior] = addBehaviorsBuilder.map(_(this))
+    override val behaviors: Seq[ItemBehavior] = extraBehavBuilders.map(_(this))
   }
 
   /**
@@ -32,7 +32,7 @@ trait GenericItemExt extends BehaviorBasedModel {
 
     def apply(
       description: ItemDescription,
-      addBehaviorsBuilder: Seq[I => ItemBehavior] = Seq.empty
-    ): GenericItem = SimpleGenericItem(description, ItemRef(description), addBehaviorsBuilder: _*)
+      extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): GenericItem = SimpleGenericItem(description, ItemRef(description), extraBehavBuilders)
   }
 }

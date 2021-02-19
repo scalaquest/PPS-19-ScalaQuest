@@ -5,14 +5,12 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into the [[BehaviorBasedModel]] the Openable behavior.
  */
 trait OpenableExt
   extends BehaviorBasedModel
-  with StateUtilsExt
   with KeyExt
   with CommonMessagesExt
   with CommonReactionsExt {
@@ -22,7 +20,6 @@ trait OpenableExt
    */
   abstract class Openable extends ItemBehavior {
     def isOpen: Boolean
-    def consumeKey: Boolean
     def requiredKey: Option[Key]
     def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
     def open: Reaction
@@ -42,8 +39,7 @@ trait OpenableExt
    */
   case class SimpleOpenable(
     requiredKey: Option[Key] = None,
-    consumeKey: Boolean = false,
-    onOpenExtra: Option[Reaction] = None
+    onOpenExtra: Reaction = Reaction.empty
   )(implicit subject: I)
     extends Openable {
     var _isOpen: Boolean = false
@@ -51,7 +47,6 @@ trait OpenableExt
     override def isOpen: Boolean = _isOpen
 
     override def triggers: ItemTriggers = {
-      // "Open the item (with something)"
       case (Open, item, maybeKey, state)
           if state.isInLocation(item) && canBeOpened(maybeKey)(state) && !isOpen =>
         open
@@ -92,21 +87,18 @@ trait OpenableExt
      * @return
      *   A Reaction that sets the Item in an open state and executes eventual extra actions.
      */
-    def open: Reaction =
-      state => {
-        _isOpen = true
+    def open: Reaction = {
+      _isOpen = true
 
-        state.applyReactions(
-          Reactions.open(subject, requiredKey, consumeKey),
-          onOpenExtra.getOrElse(Reactions.empty)
-        )
-      }
+      Reaction.combine(
+        Reactions.open(subject, requiredKey),
+        onOpenExtra
+      )
+    }
 
-    def failToOpen: Reaction =
-      state => messageLens.modify(_ :+ Messages.FailedToOpen(subject))(state)
+    def failToOpen: Reaction = Reaction.messages(Messages.FailedToOpen(subject))
 
-    def alreadyOpened: Reaction =
-      state => messageLens.modify(_ :+ Messages.AlreadyOpened(subject))(state)
+    def alreadyOpened: Reaction = Reaction.messages(Messages.AlreadyOpened(subject))
   }
 
   /**
@@ -114,10 +106,13 @@ trait OpenableExt
    */
   object Openable {
 
-    def builder(
-      requiredKey: Option[Key] = None,
-      consumeKey: Boolean = true,
-      onOpenExtra: Option[Reaction] = None
-    ): I => Openable = SimpleOpenable(requiredKey, consumeKey, onOpenExtra)(_)
+    def lockedBuilder(
+      requiredKey: Key,
+      onOpenExtra: Reaction = Reaction.empty
+    ): I => Openable = SimpleOpenable(Some(requiredKey), onOpenExtra)(_)
+
+    def unlockedBuilder(
+      onOpenExtra: Reaction = Reaction.empty
+    ): I => Openable = SimpleOpenable(None, onOpenExtra)(_)
   }
 }
