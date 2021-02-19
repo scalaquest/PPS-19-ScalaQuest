@@ -2,7 +2,7 @@ package io.github.scalaquest.core.application
 
 import io.github.scalaquest.core.model.{Model, RoomRef}
 
-abstract class Environment[RM <: Model#Room] {
+abstract class ApplicationGeography[RM <: Model#Room] {
   def allTheRooms: Set[RM]
 
   def checkRooms: Boolean = allTheRooms.groupBy(_.ref).size == allTheRooms.size
