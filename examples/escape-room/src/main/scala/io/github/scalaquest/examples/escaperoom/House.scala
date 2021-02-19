@@ -2,9 +2,9 @@ package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.application.ApplicationGeography
 import io.github.scalaquest.core.model.Direction
+import model.Room
 
 object House extends ApplicationGeography[RM] {
-  import model.Room
 
   override def allTheRooms: Set[RM] =
     Set(

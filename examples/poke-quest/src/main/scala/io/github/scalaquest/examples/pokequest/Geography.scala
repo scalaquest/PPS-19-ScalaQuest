@@ -22,6 +22,8 @@ object Geography extends ApplicationGeography[RM] {
     Room(
       name = "forest",
       neighbors = Map(Direction.South -> cityExit.ref),
-      items = Set()
+      items = Set(
+        Items.charizard.ref
+      )
     )
 }

@@ -34,5 +34,10 @@ trait GenericItemExt extends BehaviorBasedModel {
       description: ItemDescription,
       extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
     ): GenericItem = SimpleGenericItem(description, ItemRef(description), extraBehavBuilders)
+
+    def withSingleBehavior(
+      description: ItemDescription,
+      behavior: I => ItemBehavior
+    ): GenericItem = SimpleGenericItem(description, ItemRef(description), Seq(behavior))
   }
 }
