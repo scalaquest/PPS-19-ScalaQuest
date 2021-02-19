@@ -12,15 +12,22 @@ class CommonStringPusherTest extends AnyWordSpec with Matchers {
   "A CommonStringPusher" should {
     val commonStringPusher = CommonStringPusher(SimpleModel)
 
-    "handle Inspected messages" in {
-      val inspected =
-        Inspected(startRoom, Set(TestsUtils.key, door), Map(Direction.North -> targetRoom))
-      commonStringPusher.push(Seq(inspected)) should not be commonStringPusher.notFound
+    "handle Inspected messages" should {
+      "not return any rooms if there aren't neighbors" in {
+        val inspected =
+          Inspected(startRoom, Set(TestsUtils.key, door), Map.empty)
+        commonStringPusher.push(Seq(inspected)) should include("cannot go")
+      }
+      "return neighbors if presents" in {
+        val inspected =
+          Inspected(startRoom, Set(TestsUtils.key, door), Map(Direction.North -> targetRoom))
+        commonStringPusher.push(Seq(inspected)) should not be commonStringPusher.notFound
+      }
     }
 
     "handle InspectedBag messages" in {
       val inspectedBag =
-        InspectedBag(Set.empty)
+        InspectedBag(Set(apple, TestsUtils.key))
       commonStringPusher.push(Seq(inspectedBag)) should not be commonStringPusher.notFound
     }
 
@@ -70,6 +77,11 @@ class CommonStringPusherTest extends AnyWordSpec with Matchers {
     "handle FailedToEnter messages" in {
       val failedToEnter = FailedToEnter(door)
       commonStringPusher.push(Seq(failedToEnter)) should not be commonStringPusher.notFound
+    }
+
+    "handle ReversedIntoLocation" in {
+      val reversedIntoLocation = ReversedIntoLocation(Set(apple, TestsUtils.key))
+      commonStringPusher.push(Seq(reversedIntoLocation)) should not be commonStringPusher.notFound
     }
   }
 }

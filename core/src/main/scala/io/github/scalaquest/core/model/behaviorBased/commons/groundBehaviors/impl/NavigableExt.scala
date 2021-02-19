@@ -39,7 +39,7 @@ trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with Common
       )
 
     def failedToNavigate(direction: Direction): Reaction =
-      Reaction.messages(Messages.FailedToNavigate(direction))
+      Reaction.appendMessage(Messages.FailedToNavigate(direction))(Reaction.empty)
   }
 
   /**
