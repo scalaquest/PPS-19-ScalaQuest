@@ -26,7 +26,7 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
     extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
   ) extends Food {
     final override val eatable: Eatable       = eatableBuilder(this)
-    override def behaviors: Seq[ItemBehavior] = eatable +: extraBehavBuilders.map(_(this))
+    override val behaviors: Seq[ItemBehavior] = eatable +: extraBehavBuilders.map(_(this))
   }
 
   /**

@@ -15,7 +15,8 @@ trait CommonReactionsExt
   with NavigateExt
   with OpenExt
   with TakeExt
-  with InspectBagExt { self =>
+  with InspectBagExt
+  with RevealItemsExt { self =>
 
   /**
    * Companioni Object with the effective implementation of the common [[Reaction]] s.
@@ -95,5 +96,7 @@ trait CommonReactionsExt
       itemToOpen: I,
       requiredKey: Option[Key]
     ): Reaction = self.open(itemToOpen, requiredKey)
+
+    def revealItems(items: Set[I]): Reaction = self.revealItems(items)
   }
 }

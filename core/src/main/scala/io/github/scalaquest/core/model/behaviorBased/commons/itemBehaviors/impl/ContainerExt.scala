@@ -40,12 +40,11 @@ trait ContainerExt
     override def isOpen: Boolean = openable.isOpen
 
     override def revealItems: Reaction =
-      Reaction.combine(
-        openable.open,
-        Reaction(
-          (locationRoomLens composeLens roomItemsLens).modify(_ ++ itemRefs)
-        )
-      )
+      s =>
+        Reaction.combine(
+          openable.open,
+          Reactions.revealItems(items(s))
+        )(s)
   }
 
   object Container {

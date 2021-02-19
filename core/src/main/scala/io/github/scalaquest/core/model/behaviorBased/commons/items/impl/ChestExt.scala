@@ -35,9 +35,8 @@ trait ChestExt extends BehaviorBasedModel with ContainerExt {
       items: Set[I] = Set.empty,
       extraBehavBuilder: Seq[I => ItemBehavior] = Seq.empty
     ): Chest =
-      SimpleChest(
+      apply(
         description,
-        ItemRef(description),
         Container.unlockedBuilder(items),
         extraBehavBuilder
       )
@@ -48,9 +47,8 @@ trait ChestExt extends BehaviorBasedModel with ContainerExt {
       key: Key,
       extraBehavBuilder: Seq[I => ItemBehavior] = Seq.empty
     ): Chest =
-      SimpleChest(
+      apply(
         description,
-        ItemRef(description),
         Container.lockedBuilder(items, key),
         extraBehavBuilder
       )

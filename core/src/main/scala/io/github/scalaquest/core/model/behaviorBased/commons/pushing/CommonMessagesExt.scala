@@ -63,6 +63,8 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      */
     case class Opened(item: I) extends Message
 
+    case class ReversedIntoLocation(items: Set[I]) extends Message
+
     case class FailedToOpen(item: I) extends Message
 
     case class AlreadyOpened(item: I) extends Message
