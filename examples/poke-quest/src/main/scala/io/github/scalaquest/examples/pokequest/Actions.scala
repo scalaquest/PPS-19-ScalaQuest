@@ -9,7 +9,7 @@ object Actions {
   case object Wake   extends Action
   case object Move   extends Action
   case object Catch  extends Action
-  case object Throw
+  case object Throw  extends Action
 
   def customVerbs: Set[Verb] =
     Set(
@@ -23,6 +23,7 @@ object Actions {
       Transitive("move", Move),
       Ditransitive("move", Move, Some("with")),
       Transitive("catch", Catch),
-      Ditransitive("catch", Catch, Some("with"))
+      Ditransitive("catch", Catch, Some("with")),
+      Transitive("throw", Throw)
     )
 }
