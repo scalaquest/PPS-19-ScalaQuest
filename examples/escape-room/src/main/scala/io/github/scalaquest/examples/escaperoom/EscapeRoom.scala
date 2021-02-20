@@ -5,9 +5,9 @@ import io.github.scalaquest.core.dictionary.verbs.Verb
 import io.github.scalaquest.core.model.{Message, StringPusher}
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonVerbs
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import model.{Messages, State}
 
 object EscapeRoom extends GameCLIApp(SimpleModel) {
-  import model._
 
   override def items: Set[I] = Items.allTheItems
 

@@ -23,10 +23,10 @@ trait PipelineProvider[M0 <: Model] extends ApplicationStructure[M0] {
   def resolver: Resolver.Builder[S]
 
   /** The interpreter used in the pipeline. */
-  def interpreter: Interpreter.Builder[M, S, Reaction]
+  def interpreter: Interpreter.Builder[M, S, React]
 
   /** The reducer used in the pipeline. */
-  def reducer: Reducer.Builder[M, S, Reaction]
+  def reducer: Reducer.Builder[M, S, React]
 
   /** The pipeline built using the given components. */
   def makePipeline: Pipeline.PartialBuilder[S, M] =

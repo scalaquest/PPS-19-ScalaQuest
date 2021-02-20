@@ -1,5 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.reactions
 
+import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl._
 
@@ -16,7 +17,8 @@ trait CommonReactionsExt
   with OpenExt
   with TakeExt
   with InspectBagExt
-  with RevealItemsExt { self =>
+  with RevealItemsExt
+  with AddDirectionToLocationExt { self =>
 
   /**
    * Companioni Object with the effective implementation of the common [[Reaction]] s.
@@ -98,5 +100,8 @@ trait CommonReactionsExt
     ): Reaction = self.open(itemToOpen, requiredKey)
 
     def revealItems(items: Set[I]): Reaction = self.revealItems(items)
+
+    def addDirectionToLocation(direction: Direction, room: RM): Reaction =
+      self.addDirectionToLocation(direction, room)
   }
 }

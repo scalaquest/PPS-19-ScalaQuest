@@ -46,9 +46,9 @@ object Items {
       extraBehavBuilders = Seq(Takeable.builder())
     )
 
-  val doorway: GenericItem = GenericItem(
+  val doorway: GenericItem = GenericItem.withSingleBehavior(
     i(d("big"), "doorway"),
-    Seq(Openable.lockedBuilder(crowbar, onOpenExtra = Reactions.finishGame(win = true)))
+    Openable.lockedBuilder(crowbar, onOpenExtra = Reactions.finishGame(win = true))
   )
 
   def allTheItems: Set[BehaviorBasedItem] =
