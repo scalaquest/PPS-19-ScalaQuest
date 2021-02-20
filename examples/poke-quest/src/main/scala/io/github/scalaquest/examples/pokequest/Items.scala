@@ -10,12 +10,12 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("sleeping"), "snorlax"),
       {
-        case (Wake, _, Some(i), _) if i == flute => CustomReactions.wakeSnorlax
-        case _                                   => Reactions.finishGame(false)
+        case (Wake, _, Some(i), _) if i == pokeflute => CustomReactions.wakeSnorlax
+        case _                                       => Reactions.finishGame(false)
       }
     )
 
-  def flute: GenericItem =
+  def pokeflute: GenericItem =
     GenericItem.withGenBehavior(
       i("pokeflute"),
       { case (Play, _, _, s) =>
@@ -57,7 +57,7 @@ object Items {
   def allTheItems: Set[I] =
     Set(
       snorlax,
-      flute,
+      pokeflute,
       pikachu,
       charizard,
       pokeball

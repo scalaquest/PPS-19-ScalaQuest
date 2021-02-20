@@ -8,11 +8,11 @@ object Geography extends ApplicationGeography[RM] {
 
   override def allTheRooms: Set[RM] =
     Set(
-      cityExit,
+      vermillionCity,
       forest
     )
 
-  def cityExit: RM =
+  def vermillionCity: RM =
     Room(
       name = "Vermilion City",
       items = Set(Items.snorlax.ref)
@@ -21,7 +21,7 @@ object Geography extends ApplicationGeography[RM] {
   def forest: RM =
     Room(
       name = "forest",
-      neighbors = Map(Direction.South -> cityExit.ref),
+      neighbors = Map(Direction.South -> vermillionCity.ref),
       items = Set(
         Items.charizard.ref
       )

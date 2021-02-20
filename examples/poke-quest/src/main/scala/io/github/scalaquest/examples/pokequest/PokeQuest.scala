@@ -28,8 +28,8 @@ object PokeQuest extends GameCLIApp(SimpleModel) {
       actions = verbToAction,
       rooms = Geography.refToRoom,
       items = refToItem,
-      bag = Set(Items.flute.ref, Items.pokeball.ref, Items.pikachu.ref),
-      location = Geography.cityExit.ref
+      bag = Set(Items.pokeflute.ref, Items.pokeball.ref, Items.pikachu.ref),
+      location = Geography.vermillionCity.ref
     )
 
   override def messagePusher: StringPusher = Pusher.defaultPusher
