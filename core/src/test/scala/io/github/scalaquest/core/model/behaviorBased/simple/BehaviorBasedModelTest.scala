@@ -8,52 +8,78 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
   Take
 }
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils._
+import TestsUtils.model._
 
 class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
-  import TestsUtils.model._
-  import TestsUtils._
 
-  "A BehaviorBasedItem" should {
-    val behavior = new ItemBehavior {
-      override def triggers: model.ItemTriggers = { case (Take, _, _, _) => Reactions.empty }
+  "A BehaviorBasedItem" when {
+    "have some triggers" should {
+      val behavior = new ItemBehavior {
+        override def triggers: model.ItemTriggers = { case (Take, _, _, _) =>
+          Reaction.empty
+        }
+      }
+
+      val item = new BehaviorBasedItem {
+        override def behaviors: Seq[ItemBehavior] = Seq(behavior)
+
+        override def description: ItemDescription = ItemDescription("item")
+
+        override def ref: ItemRef = ItemRef(ItemDescription("item"))
+      }
+
+      val stateWithItem = simpleState.copyWithItemInLocation(item)
+
+      "respond to use calls with a Reaction" in {
+        item.use(Take, None)(stateWithItem).isDefined shouldBe true
+      }
+
+      "Respond with an empty value, if a match is not found" in {
+        item.use(Open, None)(stateWithItem).isEmpty shouldBe true
+      }
+
     }
 
-    val item = new BehaviorBasedItem {
-      override def behaviors: Seq[ItemBehavior] = Seq(behavior)
-      override def description: ItemDescription = ItemDescription("item")
-      override def ref: ItemRef                 = ItemRef(ItemDescription("item"))
-    }
+    "not have any trigger" should {
 
-    val stateWithItem = simpleState.copyWithItemInLocation(item)
+      val item = new BehaviorBasedItem {
 
-    "respond to use calls with a Reaction, if a match is found" in {
-      assert(item.use(Take, None)(stateWithItem).isDefined, "The reaction has not been generated")
-    }
+        override def description: ItemDescription = ItemDescription("item")
 
-    "Respond with an empty value, if a match is not found" in {
-      assert(
-        item.use(Open, None)(stateWithItem).isEmpty,
-        "A reaction has been generated, when nothing should happen"
-      )
+        override def ref: ItemRef = ItemRef(ItemDescription("item"))
+      }
+
+      val stateWithItem = simpleState.copyWithItemInLocation(item)
+
+      "not respond to any calls" in {
+        item.use(Open, None)(stateWithItem).isEmpty shouldBe true
+      }
     }
   }
 
-  "A BehaviorBasedGround" should {
-    val ground = new BehaviorBasedGround {
-      override def behaviors: Seq[GroundBehavior] = Seq(Inspectable())
-    }
+  "A BehaviorBasedGround" when {
+    "have some behaviors" should {
+      val ground = new BehaviorBasedGround {
+        override def behaviors: Seq[GroundBehavior] = Seq(InspectableLocation())
+      }
 
-    "respond to use calls with a Reaction, if a match is found" in {
-      assert(ground.use(Inspect)(simpleState).isDefined, "The reaction has not been generated")
-    }
+      "respond to use calls with a Reaction, if a match is found" in {
+        ground.use(Inspect)(simpleState).isDefined shouldBe true
+      }
 
-    "Respond with an empty value, if a match is not found" in {
-      assert(
-        ground.use(Go(Direction.North))(simpleState).isEmpty,
-        "A reaction has been generated, when nothing should happen"
-      )
+      "respond with an empty value, if a match is not found" in {
+        ground.use(Go(Direction.North))(simpleState).isEmpty shouldBe true
+      }
+    }
+    "not have any behaviors" should {
+      val ground = new BehaviorBasedGround {}
+
+      "not respond to any calls" in {
+        ground.use(Go(Direction.North))(simpleState).isEmpty shouldBe true
+      }
     }
   }
 

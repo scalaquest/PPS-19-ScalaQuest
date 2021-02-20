@@ -2,37 +2,49 @@ package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.{Direction, ItemDescription}
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils.model._
+import io.github.scalaquest.core.TestsUtils.model
+import io.github.scalaquest.core.model.ItemDescription.dsl.i
 
-class DoorTest extends AnyWordSpec {
-  import TestsUtils.model._
+class DoorTest extends AnyWordSpec with Matchers {
+  val room: model.RM = Room("room")
 
-  "A Door" should {
-    val room             = Room("room")
-    val roomLinkBehavior = RoomLink.builder(room, Direction.North, Some(Openable.builder()))
-    val door = Door(
+  "A unlocked Door" should {
+    val unlockedDoor = Door(
       ItemDescription("door"),
-      roomLinkBehavior,
-      Seq(Takeable.builder(), Eatable.builder())
+      RoomLink.closedUnlockedBuilder(room, Direction.North)
     )
-    val additionalBehaviors = Seq(Takeable.builder()(door), Eatable.builder()(door))
 
-    "take a RoomLink Behavior and save it as the first behavior" in {
-      assert(
-        door.behaviors.head == door.roomLink,
-        "the roomLink is not in the first position."
-      )
+    "have a RoomLink accessible from the interface" in {
+      unlockedDoor.roomLink shouldBe a[RoomLink]
     }
 
-    "take additional behaviors as subsequent to the door behavior" in {
-      assert(
-        door.behaviors.tail == additionalBehaviors,
-        "the additional behaviors are not in the right place."
-      )
+    "have a open state, initially closed" in {
+      unlockedDoor.isOpen shouldBe false
+    }
+  }
+
+  "A locked Chest" should {
+    val (lockedDoor, keyLockedDoor) = Door.createLockedWithKey(
+      key = TestsUtils.key,
+      doorDesc = i("lockedDoor"),
+      endRoom = room,
+      endRoomDirection = Direction.North
+    )
+
+    "have a RoomLink accessible from the interface" in {
+      for {
+        openableDoor <- lockedDoor.roomLink.openable toRight fail("Key not correct")
+      } yield openableDoor.canBeOpened(Some(keyLockedDoor))(
+        TestsUtils.simpleState
+      ) shouldBe true
+
     }
 
-    "have an accessor for the open state, initially closed" in {
-      assert(!door.isOpen, "The door is open")
+    "be initially is closed" in {
+      lockedDoor.isOpen shouldBe false
     }
   }
 }

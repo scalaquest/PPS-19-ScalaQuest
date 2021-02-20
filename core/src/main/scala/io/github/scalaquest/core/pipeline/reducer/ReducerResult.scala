@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.pipeline.reducer
 
-import io.github.scalaquest.core.model.Model
+import io.github.scalaquest.core.model.{Message, Model}
 
 /**
  * A wrapper for the output of the [[Reducer]] execution. It should contain a [[Model.State]]
@@ -10,6 +10,7 @@ import io.github.scalaquest.core.model.Model
  */
 trait ReducerResult[S] {
   def state: S
+  def message: Seq[Message]
 }
 
 /**
@@ -30,8 +31,9 @@ object ReducerResult {
    * @return
    *   An [[ReducerResult]], with the right type constraints.
    */
-  def apply[M <: Model](model: M)(state: model.S): ReducerResult[model.S] = {
-    case class SimpleReducerResult(state: model.S) extends ReducerResult[model.S]
-    SimpleReducerResult(state)
+  def apply[M <: Model](model: M)(state: model.S, message: Seq[Message]): ReducerResult[model.S] = {
+    case class SimpleReducerResult(state: model.S, message: Seq[Message])
+      extends ReducerResult[model.S]
+    SimpleReducerResult(state, message)
   }
 }

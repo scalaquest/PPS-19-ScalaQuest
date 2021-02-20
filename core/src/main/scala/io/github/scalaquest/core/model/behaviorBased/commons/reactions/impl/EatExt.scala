@@ -2,21 +2,22 @@ package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 
+/**
+ * A Reaction that eat the item.
+ */
 private[reactions] trait EatExt
   extends BehaviorBasedModel
-  with StateUtilsExt
-  with CommonMessagesExt {
+  with CommonMessagesExt
+  with ReactionUtilsExt {
 
   private[reactions] def eat(item: I): Reaction =
-    state => {
-      val updLocation = roomItemsLens.modify(_ - item.ref)(state.location)
-
-      state.applyReactions(
-        roomsLens.modify(_ + (updLocation.ref -> updLocation)),
-        bagLens.modify(_ - item.ref),
-        messageLens.modify(_ :+ Messages.Eaten(item))
-      )
-    }
+    Reaction(
+      Update(
+        (locationRoomLens composeLens roomItemsLens).modify(_ - item.ref),
+        bagLens.modify(_ - item.ref)
+      ),
+      Messages.Eaten(item)
+    )
 }

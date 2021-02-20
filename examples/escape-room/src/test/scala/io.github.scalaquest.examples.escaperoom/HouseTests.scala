@@ -7,7 +7,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class HouseTests extends AnyWordSpec with Matchers {
   "The House object" should {
     "contains a basement with a coffer, a crowbar, a hatch" in {
-      House.basement.items(EscapeRoom.state) shouldBe Set(Items.coffer, Items.crowbar, Items.hatch)
+      House.basement.items(EscapeRoom.state) shouldBe Set(Items.chest, Items.crowbar, Items.hatch)
     }
 
     "contains a basement not linked with other room" in {

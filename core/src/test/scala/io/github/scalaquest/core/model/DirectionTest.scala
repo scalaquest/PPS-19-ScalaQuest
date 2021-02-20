@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model
 
-import io.github.scalaquest.core.model.Direction.{Down, East, North, South, Up, West}
+import io.github.scalaquest.core.model.Direction._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

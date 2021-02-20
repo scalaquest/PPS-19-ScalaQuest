@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.parsing.scalog.dsl
 
-import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
+import io.github.scalaquest.core.parsing.scalog.Atom
 
 abstract class CompoundBase {
   def functor: Atom

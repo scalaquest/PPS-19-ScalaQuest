@@ -22,7 +22,7 @@ object TestsUtils {
   val targetRoom: RM = Room(
     "target room",
     Map(Direction.South -> startRoom.ref),
-    Set()
+    Set.empty
   )
 
   val actionsMap: Map[VerbPrep, Action] = Map(
@@ -42,20 +42,21 @@ object TestsUtils {
     ItemDescription("key")                          -> keyItemRef
   )
 
-  val apple: GenericItem = SimpleGenericItem(
+  val apple: GenericItem = GenericItem(
     ItemDescription("apple", "big", "red", "juicy"),
-    appleItemRef,
-    Takeable.builder(),
-    Eatable.builder()
+    Seq(Takeable.builder(), Eatable.builder())
   )
 
-  val key: Key = SimpleKey(ItemDescription("key"), keyItemRef, Takeable.builder())
+  val key: Key = Key(ItemDescription("key"), extraBehavBuilders = Seq(Takeable.builder()))
 
   val door: Door =
-    SimpleDoor(
+    Door(
       ItemDescription("door"),
-      doorItemRef,
-      RoomLink.builder(targetRoom, Direction.North, Some(Openable.builder(requiredKey = Some(key))))
+      RoomLink.closedLockedBuilder(
+        key,
+        targetRoom,
+        Direction.North
+      )
     )
 
   val refItemDictionary: Map[ItemRef, BehaviorBasedItem] = Map(

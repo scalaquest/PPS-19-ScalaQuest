@@ -2,6 +2,8 @@ package io.github.scalaquest.core.parsing.scalog.dsl
 
 import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
 
+import scala.annotation.nowarn
+
 trait Extractors extends CompoundBase {
 
   object extractor {
@@ -17,6 +19,7 @@ trait Extractors extends CompoundBase {
 
     object toStrings extends CompoundExtractor[String] {
 
+      @nowarn("msg=unchecked.*erasure")
       override def unapplySeq(term: Term): Option[Seq[String]] =
         term match {
           case Compound(f, Atom(t0), terms: List[Atom]) if f == functor =>

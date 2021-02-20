@@ -1,14 +1,7 @@
 package io.github.scalaquest.core.pipeline.interpreter
 
-import io.github.scalaquest.core.TestsUtils.{
-  apple,
-  appleItemRef,
-  door,
-  doorItemRef,
-  key,
-  keyItemRef,
-  simpleState
-}
+import io.github.scalaquest.core.TestsUtils
+import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
   Go,
@@ -18,9 +11,10 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.CommonGround
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class InterpreterTest extends AnyWordSpec {
+class InterpreterTest extends AnyWordSpec with Matchers {
   "An Interpreter" when {
     val interpreter = Interpreter.builder(SimpleModel)(simpleState)
 
@@ -46,8 +40,8 @@ class InterpreterTest extends AnyWordSpec {
     "given a Ditransitive Statement" should {
       val resolverResult     = ResolverResult(Statement.Ditransitive(Open, doorItemRef, keyItemRef))
       val stateDoorInRoom    = simpleState.copyWithItemInLocation(door)
-      val stateDoorKeyInRoom = stateDoorInRoom.copyWithItemInLocation(key)
-      val maybeExpReaction   = door.use(Open, Some(key))(stateDoorKeyInRoom)
+      val stateDoorKeyInRoom = stateDoorInRoom.copyWithItemInLocation(TestsUtils.key)
+      val maybeExpReaction   = door.use(Open, Some(TestsUtils.key))(stateDoorKeyInRoom)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)
@@ -64,16 +58,12 @@ class InterpreterTest extends AnyWordSpec {
       interprResult  <- interpreter.interpret(resolverResult)
       toTestReaction <- Right(interprResult.reaction)
       expctReaction  <- maybeExpReaction toRight fail("Test implementation error")
-      toTestState    <- Right(toTestReaction(simpleState))
-      expctState     <- Right(expctReaction(simpleState))
-    } yield assert(
-      toTestState == expctState,
-      "The result of the reaction application is not the expected one."
-    )
+      toTestState    <- Right(toTestReaction(simpleState)._1)
+      expctState     <- Right(expctReaction(simpleState)._1)
+    } yield toTestState shouldBe expctState
   }
 
   "An interpreterBuilder" should {
-    import org.scalatest.matchers.should.Matchers.{a, convertToAnyShouldWrapper}
     "be of the right type" in {
       val builder = Interpreter.builder(SimpleModel)
       builder shouldBe a[Interpreter.Builder[_, _, _]]

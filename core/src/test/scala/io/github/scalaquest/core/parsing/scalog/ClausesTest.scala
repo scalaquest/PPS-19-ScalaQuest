@@ -92,6 +92,11 @@ class ClausesTest extends AnyWordSpec {
       val compound = Atom("hello") ^: Atom("world") ^: Atom("again")
       assert(compound.generate == "^(hello,^(world,again))")
     }
+
+    "generate compound terms using /" in {
+      val compound = Atom("hello") /: Atom("world")
+      assert(compound == Compound(Atom("/"), Atom("hello"), List(Atom("world"))))
+    }
   }
 
   "Compound builder" should {

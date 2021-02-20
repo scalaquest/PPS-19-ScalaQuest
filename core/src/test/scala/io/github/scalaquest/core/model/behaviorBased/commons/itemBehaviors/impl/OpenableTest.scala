@@ -2,74 +2,92 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
-import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+import io.github.scalaquest.core.model.ItemDescription
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import TestsUtils._
+import TestsUtils.model._
 
-class OpenableTest extends AnyWordSpec {
-  import TestsUtils._
-  import TestsUtils.model._
+class OpenableTest extends AnyWordSpec with Matchers {
 
   "An Openable behavior" when {
+    "a key is required" when {
+      "let the item open only with the right Key" in {
+        val targetKey           = Key(ItemDescription("key"))
+        val (targetItem, state) = initializeDoorAndKey(Some(targetKey))
 
-    def targetOpenable: SimpleState => Option[Openable] =
-      state => {
-        state.location
-          .items(state)
-          .map(_.behaviors.headOption)
-          .collect({ case Some(beh) => beh })
-          .collectFirst({ case o: Openable => o })
+        for {
+          react <- targetItem.use(Open, Some(targetKey))(state) toRight fail(
+            "Reaction not generated"
+          )
+          msgs <- Right(react(state)._2)
+        } yield {
+          msgs should contain(Messages.Opened(targetItem))
+        }
       }
 
-    "a key is required" when {
-      val targetKey  = Key(ItemDescription("key"))
-      val openable   = Openable.builder(requiredKey = Some(targetKey))
-      val targetItem = GenericItem(ItemDescription("item"), Seq(openable))
+      "not open without the right Key" in {
+        val wrongKey            = Key(ItemDescription("wrongkey"))
+        val targetKey           = Key(ItemDescription("key"))
+        val (targetItem, state) = initializeDoorAndKey(Some(targetKey))
 
-      val stateWithTarget    = simpleState.copyWithItemInLocation(targetItem)
-      val stateWKeyAndTarget = stateWithTarget.copyWithItemInBag(targetKey)
+        for {
+          react <- targetItem.use(Open, Some(wrongKey))(state) toRight fail(
+            "Reaction not generated"
+          )
+          msgs <- Right(react(state)._2)
+        } yield msgs should contain(Messages.FailedToOpen(targetItem))
+      }
 
-      "the user says 'open the item'" should {
+      "say that the door is already opened, if already opened" in {
+        val targetKey           = Key(ItemDescription("key"))
+        val (targetItem, state) = initializeDoorAndKey(Some(targetKey))
 
-        "let the item open only with the right Key" in {
-          for {
-            react <- targetItem.use(Open, Some(targetKey))(stateWKeyAndTarget) toRight fail(
-              "Reaction not generated"
-            )
-            modState <- Right(react(stateWKeyAndTarget))
-            openable <- targetOpenable(modState) toRight fail("Error into the test implementation")
-          } yield assert(openable.isOpen, "The item is not in open state")
-        }
-
-        "not open without the right Key" in {
-          val wrongKey = Key(ItemDescription("wrongkey"))
-          assert(targetItem.use(Open, None)(stateWKeyAndTarget).isEmpty)
-          assert(targetItem.use(Open, Some(wrongKey))(stateWKeyAndTarget).isEmpty)
-        }
+        for {
+          openReact <- targetItem.use(Open, Some(targetKey))(state) toRight fail(
+            "Reaction not generated"
+          )
+          openedState <- Right(openReact(state)._1)
+          openAgainReact <- targetItem.use(Open, Some(targetKey))(openedState) toRight fail(
+            "Reaction not generated"
+          )
+          msgs <- Right(openAgainReact(openedState)._2)
+        } yield msgs should contain(Messages.AlreadyOpened(targetItem))
       }
     }
 
     "a key is not required" when {
-      val openable              = Openable.builder()
-      val itemDescription       = ItemDescription("item")
-      val targetItem            = SimpleGenericItem(itemDescription, ItemRef(itemDescription), openable)
-      val stateWithTargetInRoom = simpleState.copyWithItemInLocation(targetItem)
+      val (targetItem, state) = initializeDoorAndKey(None)
 
-      "the user says 'open the item'" should {
-        "open without Key" in {
-          for {
-            react <- targetItem.use(Open, None)(stateWithTargetInRoom) toRight fail(
-              "Reaction not generated"
-            )
-            modState <- Right(react(stateWithTargetInRoom))
-            openable <- targetOpenable(modState) toRight fail("Error into the test implementation")
-          } yield assert(openable.isOpen, "The item is not in open state")
+      "open without Key" in {
+        for {
+          react <- targetItem.use(Open, None)(state) toRight fail(
+            "Reaction not generated"
+          )
+          msgs <- Right(react(state)._2)
+        } yield msgs should contain(Messages.Opened(targetItem))
 
-        }
-        "not open with any Key" in {
-          val wrongKey = Key(ItemDescription("wrongkey"))
-          assert(targetItem.use(Open, Some(wrongKey))(stateWithTargetInRoom).isEmpty)
-        }
+      }
+      "not open with any Key" in {
+        val wrongKey            = Key(ItemDescription("wrongkey"))
+        val (targetItem, state) = initializeDoorAndKey(None)
+
+        for {
+          react <- targetItem.use(Open, Some(wrongKey))(state) toRight fail(
+            "Reaction not generated"
+          )
+          msgs <- Right(react(state)._2)
+        } yield msgs should contain(Messages.FailedToOpen(targetItem))
       }
     }
+  }
+
+  def initializeDoorAndKey(requiredKey: Option[Key]): (GenericItem, S) = {
+    val openable = requiredKey.map(k => Openable.lockedBuilder(requiredKey = k)) getOrElse Openable
+      .unlockedBuilder()
+    val targetItem = GenericItem(ItemDescription("item"), Seq(openable))
+    val state      = simpleState.copyWithItemInLocation(targetItem)
+
+    (targetItem, state)
   }
 }

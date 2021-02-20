@@ -21,7 +21,7 @@ trait StateUtilsExt extends Model {
     def locationNeighbor(direction: Direction): Option[RM] = state.location.neighbor(direction)
 
     def locationNeighbors: Set[RM] =
-      Direction.all.map(d => state.locationNeighbor(d)).collect({ case Some(room) => room })
+      Direction.all.map(state.locationNeighbor(_)).collect({ case Some(room) => room })
 
     def locationItems: Set[I] = state.location.items
 
@@ -35,8 +35,5 @@ trait StateUtilsExt extends Model {
       val stateWithTarget = itemsLens.modify(_ + (item.ref -> item))(state)
       bagLens.modify(_ + item.ref)(stateWithTarget)
     }
-
-    def applyReactions(reactions: Reaction*): S = Function.chain(reactions.toList)(this.state)
-
   }
 }

@@ -1,35 +1,30 @@
 package io.github.scalaquest.core.dictionary
 
-import io.github.scalaquest.core.dictionary.generators.{Generator, GeneratorK}
+import cats.Monoid
+import io.github.scalaquest.core.dictionary.generators.Generator
 import io.github.scalaquest.core.dictionary.verbs.{Verb, VerbPrep}
-import io.github.scalaquest.core.model.{Action, ItemRef, Model}
+import io.github.scalaquest.core.model.{Action, ItemRef}
 import io.github.scalaquest.core.parsing.scalog.{Clause, Program}
 
+/**
+ * Mixin useful to inject some type class instances in an object.
+ */
 trait DictionaryImplicits {
 
   object implicits {
-    import cats.implicits.catsKernelStdSemilatticeForSet
-    import generators.implicits.listGenerator
 
-    implicit def itemToEntryGenerator[I <: Item]: Generator[I, Map[ItemRef, I]] =
-      Generator.makeEntry(i => i.ref -> i)
-
+    /** Generator from a `Verb` to an entry `(VerbPrep, Action)`. */
     implicit def verbToEntryGenerator: Generator[Verb, Map[VerbPrep, Action]] =
       Generator.makeEntry(_.binding)
 
-    /*
-     * Temporary solution:
-     * We had to declare these generators explicitly because Scala compiler
-     * couldn't infer them implicitly, using listGenerator, in a similar way it
-     * infers the map generators.
-     */
-    implicit def verbListToProgram: GeneratorK[List, Verb, Program] = listGenerator[Verb, Program]
+    /** Generator from an `Item` to an entry `(ItemRef, Item)`. */
+    implicit def itemToEntryGenerator[I <: Item]: Generator[I, Map[ItemRef, I]] =
+      Generator.makeEntry(i => i.ref -> i)
 
-    implicit def itemListToProgram[I <: Item]: GeneratorK[List, I, Program] =
-      listGenerator[I, Program]
-
+    /** Generator from a `Verb` to a `Program`. */
     implicit def verbToProgram: Generator[Verb, Program] = Generator.instance(v => Set(v.clause))
 
+    /** Generator from an `Item` to a `Program`. */
     implicit def itemToProgram: Generator[Item, Program] =
       Generator.instance(i => {
         import io.github.scalaquest.core.parsing.scalog.dsl._
@@ -41,5 +36,8 @@ trait DictionaryImplicits {
 
         (names ++ adjectives).toSet
       })
+
+    /** Monoid instance for a `Program`. */
+    implicit def programMonoid: Monoid[Program] = Monoid.instance(Set(), _ ++ _)
   }
 }

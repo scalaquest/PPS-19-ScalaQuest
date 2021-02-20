@@ -1,10 +1,10 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.application.Environment
+import io.github.scalaquest.core.application.ApplicationGeography
 import io.github.scalaquest.core.model.Direction
+import model.Room
 
-object House extends Environment[RM] {
-  import model.Room
+object House extends ApplicationGeography[RM] {
 
   override def allTheRooms: Set[RM] =
     Set(
@@ -16,7 +16,7 @@ object House extends Environment[RM] {
   def basement: RM =
     Room(
       name = "basement",
-      items = Set(Items.coffer.ref, Items.crowbar.ref, Items.hatch.ref)
+      items = Set(Items.chest.ref, Items.crowbar.ref, Items.hatch.ref)
     )
 
   def livingRoom: RM =

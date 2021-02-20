@@ -1,19 +1,14 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
-import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.{Direction, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{Enter, Open}
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into [[BehaviorBasedModel]] the RoomLink behavior.
  */
-trait RoomLinkExt
-  extends BehaviorBasedModel
-  with StateUtilsExt
-  with OpenableExt
-  with CommonReactionsExt {
+trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactionsExt {
 
   /**
    * A [[ItemBehavior]] associated to an [[Item]] that enables the possibility to move into another
@@ -23,7 +18,8 @@ trait RoomLinkExt
   abstract class RoomLink extends ItemBehavior {
     def isOpen: Boolean
     def openable: Option[Openable]
-    def endRoom: RM
+    def endRoom(implicit s: S): RM
+    def open: Reaction
     def enter: Reaction
   }
 
@@ -33,7 +29,7 @@ trait RoomLinkExt
    * This is a behavior associated to an item that is a link between two rooms (a door, for
    * instance), and that could be opened to pass into it. The user can "Enter" into it, resulting
    * into move it into the connected Room. another room.
-   * @param endRoom
+   * @param endRoomRef
    *   The room into which the user is projected after entering the object.
    * @param openable
    *   The Openable behavior associated to the roomLink. If not passed, the item can be entered
@@ -43,10 +39,10 @@ trait RoomLinkExt
    *   omitted.
    */
   case class SimpleRoomLink(
-    endRoom: RM,
+    endRoomRef: RoomRef,
     endRoomDirection: Direction,
     openable: Option[Openable] = None,
-    onEnterExtra: Option[Reaction] = None
+    onEnterExtra: Reaction = Reaction.empty
   )(implicit subject: I)
     extends RoomLink
     with Delegate {
@@ -57,42 +53,39 @@ trait RoomLinkExt
      *   The father behavior triggers.
      */
     override def delegateTriggers: ItemTriggers =
-      openable.fold(PartialFunction.empty: ItemTriggers)(_.triggers)
+      openable map (_.triggers) getOrElse PartialFunction.empty: ItemTriggers
 
     override def receiverTriggers: ItemTriggers = {
-      // "Open the item (with something)"
-      case (Open, i, maybeKey, s)
-          if s.isInLocation(i) && openable.fold(true)(_.canBeOpened(maybeKey)(s))
+      case (Open, _, maybeKey, s)
+          if s.isInLocation(subject) && openable.fold(true)(_.canBeOpened(maybeKey)(s))
             && !isOpen && openable.isDefined =>
         open
 
-      // "Enter the item"
-      case (Enter, i, None, s) if s.isInLocation(i) && openable.fold(true)(_.isOpen) => enter
+      case (Enter, _, None, s) if s.isInLocation(subject) && openable.fold(true)(_.isOpen) =>
+        enter
+      case (Enter, _, _, _) =>
+        Reaction.messages(Messages.FailedToEnter(subject))
     }
 
     override def enter: Reaction =
-      _.applyReactions(
-        Reactions.enter(endRoom),
-        onEnterExtra.getOrElse(Reactions.empty)
+      s =>
+        Reaction.combine(
+          Reactions.enter(endRoom(s)),
+          onEnterExtra
+        )(s)
+
+    override def open: Reaction =
+      Reaction.combine(
+        openable map (_.open) getOrElse Reaction.empty,
+        Reaction(
+          (locationRoomLens composeLens roomDirectionsLens)
+            .modify(_ + (endRoomDirection -> endRoomRef))
+        )
       )
 
-    def open: Reaction =
-      state => {
-        val addDirection = roomsLens.modify(
-          _.updatedWith(state.location.ref) {
-            case Some(room) =>
-              Some(roomDirectionsLens.modify(_ + (endRoomDirection -> endRoom.ref))(room))
-            case _ => None
-          }
-        )
+    override def endRoom(implicit s: S): RM = s.rooms(endRoomRef)
 
-        state.applyReactions(
-          openable.fold(Reactions.empty)(o => o.open),
-          addDirection
-        )
-      }
-
-    override def isOpen: Boolean = openable.fold(true)(_.isOpen)
+    override def isOpen: Boolean = openable forall (_.isOpen)
   }
 
   /**
@@ -104,9 +97,56 @@ trait RoomLinkExt
       endRoom: RM,
       endRoomDirection: Direction,
       openableBuilder: Option[I => Openable] = None,
-      onEnterExtra: Option[Reaction] = None
+      onEnterExtra: Reaction = Reaction.empty
     ): I => RoomLink =
-      item =>
-        SimpleRoomLink(endRoom, endRoomDirection, openableBuilder.map(_(item)), onEnterExtra)(item)
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          openableBuilder.map(_(i)),
+          onEnterExtra
+        )(i)
+
+    def openedBuilder(
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty
+    ): I => RoomLink =
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          None,
+          onEnterExtra
+        )(i)
+
+    def closedUnlockedBuilder(
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty,
+      onOpenExtra: Reaction = Reaction.empty
+    ): I => RoomLink =
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          Some(Openable.unlockedBuilder(onOpenExtra)(i)),
+          onEnterExtra
+        )(i)
+
+    def closedLockedBuilder(
+      key: Key,
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty,
+      onOpenExtra: Reaction = Reaction.empty
+    ): I => RoomLink =
+      i =>
+        SimpleRoomLink(
+          endRoom.ref,
+          endRoomDirection,
+          Some(Openable.lockedBuilder(key, onOpenExtra)(i)),
+          onEnterExtra
+        )(i)
   }
 }

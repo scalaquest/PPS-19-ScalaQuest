@@ -1,41 +1,32 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.cli._
-import io.github.scalaquest.core.model.StringPusher
-import io.github.scalaquest.core.Game
-import io.github.scalaquest.core.pipeline.Pipeline
+import io.github.scalaquest.cli.GameCLIApp
+import io.github.scalaquest.core.dictionary.verbs.Verb
+import io.github.scalaquest.core.model.{Message, StringPusher}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonVerbs
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
+import model.{Messages, State}
 
-abstract class GameCLIApp extends CLIApp {
+object EscapeRoom extends GameCLIApp(SimpleModel) {
 
-  def pipelineBuilder: Pipeline.PartialBuilder[S, M]
-  def state: S
-  def messagePusher: StringPusher
+  override def items: Set[I] = Items.allTheItems
 
-  def source: String = programFromResource("base.pl")
+  override def verbs: Set[Verb] = CommonVerbs()
 
-  def game: Game[M] = Game builderFrom model build pipelineBuilder
-
-  override def cli: CLI = CLI.builderFrom(model).build(state, game, messagePusher)
-
-}
-
-object EscapeRoom extends GameCLIApp {
-
-  override def pipelineBuilder: Pipeline.PartialBuilder[S, M] = defaultPipeline(source)
-
-  val welcome: String =
-    """
-    |Welcome in the Escape Room Game! You have been kidnapped, and you woke up in a
-    |gloomy basement. You have to get out of the house to save yourself!
-    |""".stripMargin
+  override def initialMessages: Seq[Message] =
+    Seq(
+      Messages.Welcome("""
+        |Welcome in the Escape Room Game! You have been kidnapped, and you woke up in a
+        |gloomy basement. You have to get out of the house to save yourself!
+        |""".stripMargin)
+    )
 
   override def state: S =
-    model.State(
+    State(
       actions = verbToAction,
       rooms = House.refToRoom,
       items = refToItem,
-      location = House.basement.ref,
-      welcomeMsg = Some(model.Messages.Welcome(welcome))
+      location = House.basement.ref
     )
 
   override def messagePusher: StringPusher = Pusher.defaultPusher

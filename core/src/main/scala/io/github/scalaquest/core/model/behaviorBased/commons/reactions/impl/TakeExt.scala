@@ -2,21 +2,22 @@ package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 
+/**
+ * A Reaction generated when a player take a takeable Item.
+ */
 private[reactions] trait TakeExt
   extends BehaviorBasedModel
-  with StateUtilsExt
-  with CommonMessagesExt {
+  with CommonMessagesExt
+  with ReactionUtilsExt {
 
   private[reactions] def take(item: I): Reaction =
-    state => {
-      val updLocation = roomItemsLens.modify(_ - item.ref)(state.location)
-
-      state.applyReactions(
-        roomsLens.modify(_ + (updLocation.ref -> updLocation)),
-        bagLens.modify(_ + item.ref),
-        messageLens.modify(_ :+ Messages.Taken(item))
-      )
-    }
+    Reaction(
+      Update(
+        (locationRoomLens composeLens roomItemsLens).modify(_ - item.ref),
+        bagLens.modify(_ + item.ref)
+      ),
+      Messages.Taken(item)
+    )
 }

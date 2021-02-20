@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
-import monocle.{Lens, PLens}
+import monocle.Lens
 
 /**
  * A way to represent the basic linked concepts of the story, in an extendible way. Usage example:
@@ -18,11 +18,11 @@ trait Model { model: Model =>
   type I <: Item
   type G <: Ground
   type RM <: Room
-  type Reaction = S => S
+  type Reaction = S => (S, Seq[Message])
 
   /**
-   * Represents a snapshot of the current game, at an higher level in comparison to [[MatchState]].
-   * The key fact is that this level of abstraction can handle also [[Message]] s, that is a
+   * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
+   * key fact is that this level of abstraction can handle also [[Message]] s, that is a
    * representation of the output to render to the user at the end of the pipeline round, and all
    * the possible [[Action]] s.
    */
@@ -44,6 +44,11 @@ trait Model { model: Model =>
      */
     def rooms: Map[RoomRef, RM]
 
+    /**
+     * The model's reference to the [[Ground]].
+     * @return
+     *   the model's instance of [[Ground]].
+     */
     def ground: G
 
     /**
@@ -80,18 +85,10 @@ trait Model { model: Model =>
      *   True if the match has to end after the current round, false otherwise.
      */
     def ended: Boolean
-
-    /**
-     * A representation of the occurred events in a given the pipeline round. The storyteller can
-     * then decide what to show for each one.
-     * @return
-     *   A [[Seq]] of [[Message]] s.
-     */
-    def messages: Seq[Message]
   }
 
   /**
-   * Represents a single object against which the [[Player]] can interact.
+   * Represents a single object against which the Player can interact.
    */
   abstract class Item { item: I =>
 
@@ -166,8 +163,8 @@ trait Model { model: Model =>
    * A geographical portion of the match map.
    *
    * This is one of the basic block for the story build by the storyteller, as it is used to
-   * identify [[Player]] 's and [[Model.Item]] s' location, in a given moment of the story, and
-   * navigate across the match geography.
+   * identify Player 's and [[Model.Item]] s' location, in a given moment of the story, and navigate
+   * across the match geography.
    */
   abstract class Room { room: RM =>
 
@@ -210,7 +207,7 @@ trait Model { model: Model =>
     override def hashCode(): Int = ref.hashCode()
   }
 
-  def messageLens: Lens[S, Seq[Message]]
+  def locationRoomLens: Lens[S, RM]
   def roomsLens: Lens[S, Map[RoomRef, RM]]
   def itemsLens: Lens[S, Map[ItemRef, I]]
   def matchEndedLens: Lens[S, Boolean]

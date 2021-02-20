@@ -1,35 +1,23 @@
 package io.github.scalaquest.examples.escaperoom
 
-import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.core.model.Direction
+import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
 
 object Items {
-
-  def allTheItems: Set[I] =
-    Set(
-      Items.redApple,
-      Items.greenApple,
-      Items.coffer,
-      Items.hatchKey,
-      Items.hatch,
-      Items.doorway,
-      Items.crowbar,
-      Items.basementHatch
-    )
 
   import model._
 
   val redApple: Food =
     Food(
       i(d("red"), "apple"),
-      Eatable.builder(onEatExtra = Some(messageLens.modify(_ :+ DeliciousMessage)(_)))
+      Eatable.builder(onEatExtra = Reaction.messages(DeliciousMessage))
     )
 
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      Eatable.builder(onEatExtra = Some(Reactions.finishGame(false)))
+      Eatable.builder(onEatExtra = Reactions.finishGame(false))
     )
 
   val basementHatch: Door = Door(
@@ -37,28 +25,41 @@ object Items {
     RoomLink.builder(House.basement, Direction.Down)
   )
 
-  val (hatch, hatchKey): (Door, Key) = doorKeyBuilder(
+  val (hatch, hatchKey): (Door, Key) = Door.createLockedWithKey(
+    key = Key(
+      i(d("old", "rusty"), "key"),
+      extraBehavBuilders = Seq(Takeable.builder())
+    ),
     doorDesc = i(d("iron"), "hatch"),
-    keyDesc = i(d("old", "rusty"), "key"),
-    consumeKey = true,
     endRoom = House.livingRoom,
-    endRoomDirection = Direction.Up,
-    keyAddBehaviorsBuilders = Seq(Takeable.builder())
+    endRoomDirection = Direction.Up
   )
 
-  val coffer: GenericItem = GenericItem(
-    i(d("brown"), "coffer"),
-    Seq(Openable.builder(onOpenExtra = Some(state => {
-      val updLocation = roomItemsLens.modify(_ + hatchKey.ref)(state.location)
-      roomsLens.modify(_ + (updLocation.ref -> updLocation))(state)
-    })))
+  val chest: Chest = Chest.createUnlocked(
+    i(d("brown"), "chest"),
+    Set(hatchKey)
   )
 
-  val (doorway, crowbar): (GenericItem, Key) = openableWithKeyBuilder(
-    openableDesc = i(d("big"), "doorway"),
-    keyDesc = i(d("rusty", "heavy"), "crowbar"),
-    consumeKey = true,
-    keyAddBehaviorsBuilders = Seq(Takeable.builder()),
-    onOpenExtra = Some(Reactions.finishGame(true))
+  val crowbar: Key =
+    Key(
+      i(d("rusty", "heavy"), "crowbar"),
+      extraBehavBuilders = Seq(Takeable.builder())
+    )
+
+  val doorway: GenericItem = GenericItem.withSingleBehavior(
+    i(d("big"), "doorway"),
+    Openable.lockedBuilder(crowbar, onOpenExtra = Reactions.finishGame(win = true))
   )
+
+  def allTheItems: Set[BehaviorBasedItem] =
+    Set(
+      Items.redApple,
+      Items.greenApple,
+      Items.chest,
+      Items.hatchKey,
+      Items.hatch,
+      Items.doorway,
+      Items.crowbar,
+      Items.basementHatch
+    )
 }

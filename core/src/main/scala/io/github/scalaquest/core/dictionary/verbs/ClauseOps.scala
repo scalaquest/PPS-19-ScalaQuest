@@ -1,11 +1,11 @@
 package io.github.scalaquest.core.dictionary.verbs
 
 import io.github.scalaquest.core.parsing.scalog.Fact
-import io.github.scalaquest.core.parsing.scalog.dsl.{termToFact, intToNumber, stringToAtom}
+import io.github.scalaquest.core.parsing.scalog.dsl.{intToNumber, stringToAtom, termToFact}
 
 trait ClauseOps { self: BaseVerb =>
 
-  def arity: Int
+  protected def arity: Int
 
   def clause: Fact =
     prep match {
