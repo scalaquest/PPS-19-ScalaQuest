@@ -37,6 +37,9 @@ object Items {
 
         case (Actions.Catch, _, Some(i), _) if i == pokeball =>
           CustomReactions.catchCharizard
+
+        case (Actions.Catch, _, None, _) =>
+          CustomReactions.catchCharizard
       }
     )
 
@@ -45,6 +48,8 @@ object Items {
       i("pokeball"),
       {
         case (Throw, _, None, s) if s.location.items(s).contains(charizard) =>
+          CustomReactions.catchCharizard
+        case (Throw, _, Some(i), s) if s.location.items(s).contains(charizard) && i == charizard =>
           CustomReactions.catchCharizard
       }
     )

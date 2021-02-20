@@ -24,6 +24,7 @@ object Actions {
       Ditransitive("move", Move, Some("with")),
       Transitive("catch", Catch),
       Ditransitive("catch", Catch, Some("with")),
-      Transitive("throw", Throw)
+      Transitive("throw", Throw),
+      Ditransitive("throw", Throw, Some("to"))
     )
 }
