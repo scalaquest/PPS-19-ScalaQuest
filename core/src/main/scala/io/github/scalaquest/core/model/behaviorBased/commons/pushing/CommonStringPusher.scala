@@ -17,8 +17,6 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
   extends ComposableStringPusher {
   import model.Messages._
 
-  override def extra: MessageTriggers[String] = PartialFunction.empty
-
   final def base: StringMessageTriggers = {
     case Inspected(room, items, neighbors) =>
       val ordItems = items.toList.sortWith(_.toString < _.toString)

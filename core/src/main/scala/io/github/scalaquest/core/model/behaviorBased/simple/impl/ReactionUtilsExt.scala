@@ -27,7 +27,7 @@ trait ReactionUtilsExt extends BehaviorBasedModel {
 
     def create(f: S => S, messages: Seq[Message]): Reaction = s => (f(s), messages)
 
-    def empty: Reaction = create(identity[S], Seq())
+    def empty: Reaction = create(identity[S], Seq.empty)
 
     def flatMap(g: S => Reaction)(f: Reaction): Reaction = { s =>
       val (s1, m1) = f(s)
