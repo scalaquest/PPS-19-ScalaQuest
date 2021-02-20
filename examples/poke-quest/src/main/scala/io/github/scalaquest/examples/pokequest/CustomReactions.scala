@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.pokequest
 
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.examples.pokequest.Items.{snorlax}
+import io.github.scalaquest.examples.pokequest.Items.snorlax
 import model.{Reaction, Reactions, Update, locationRoomLens, roomItemsLens, matchEndedLens}
 
 object CustomReactions {
