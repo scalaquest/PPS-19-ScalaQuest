@@ -13,7 +13,8 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
   "A RoomLinkBehavior" when {
 
     "the item has not an openable behavior" when {
-      val targetItem      = Door(ItemDescription("door"), RoomLink.builder(targetRoom, Direction.North))
+      val targetItem =
+        Door(ItemDescription("door"), RoomLink.openedBuilder(targetRoom, Direction.North))
       val stateWithTarget = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {

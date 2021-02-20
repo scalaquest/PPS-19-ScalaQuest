@@ -1,20 +1,28 @@
 package io.github.scalaquest.core.pipeline.resolver
 
+import io.github.scalaquest.core.TestsUtils.model._
 import io.github.scalaquest.core.TestsUtils.{appleItemRef, doorItemRef, keyItemRef, simpleState}
+import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
   Go,
   Open,
   Take
 }
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import io.github.scalaquest.core.model.{BaseItem, Direction}
+import io.github.scalaquest.core.model.{BaseItem, Direction, ItemDescription}
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, SimpleParserResult}
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class ResolverTest extends AnyWordSpec {
+class ResolverTest extends AnyWordSpec with Matchers {
   "A Resolver" when {
-    val model    = SimpleModel
-    val resolver = Resolver.builder(model)(simpleState)
+    val model = SimpleModel
+    val greenApple: I = GenericItem(
+      ItemDescription("apple", "green"),
+      Seq(Takeable.builder(), Eatable.builder())
+    )
+    val newState = simpleState.copyWithItemInLocation(greenApple)
+    val resolver = Resolver.builder(model)(newState)
 
     "receives an Intransitive AST" should {
       val parserResult =
@@ -40,7 +48,7 @@ class ResolverTest extends AnyWordSpec {
     "receives an Transitive AST" should {
       val parserResult =
         SimpleParserResult(
-          AbstractSyntaxTree.Transitive("take", None, "you", BaseItem("apple"))
+          AbstractSyntaxTree.Transitive("take", None, "you", i(d("red"), "apple"))
         )
       val maybeStatement = resolver.resolve(parserResult).map(_.statement)
 
@@ -95,6 +103,35 @@ class ResolverTest extends AnyWordSpec {
           left => assert(left == "The statement is wrong.", "The left description is invalid."),
           _ => fail("Parser result is non empty, but it should be")
         )
+      }
+    }
+
+    "receives a non resolvible Statement due to a name incomprension" should {
+      "return a 'Which' message" in {
+        val parserResult =
+          SimpleParserResult(
+            AbstractSyntaxTree.Transitive("take", None, "you", i("apple"))
+          )
+
+        resolver
+          .resolve(parserResult)
+          .map(_.statement)
+          .left
+          .foreach(_ should include("Which"))
+      }
+    }
+
+    "receives a non resolvible Statement due to the object is not present in the room or bag" should {
+      "not recognize the object" in {
+        val parserResult =
+          SimpleParserResult(
+            AbstractSyntaxTree.Transitive("take", None, "you", i("banana"))
+          )
+        resolver
+          .resolve(parserResult)
+          .map(_.statement)
+          .left
+          .foreach(_ should include("can't see"))
       }
     }
   }
