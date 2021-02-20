@@ -34,19 +34,27 @@
 </span>10 <span style=''>
 </span>11 <span style=''>  object implicits {
 </span>12 <span style=''>
-</span>13 <span style=''>    implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
-</span>14 <span style=''>      </span><span style='background: #F0ADAD'>new GeneratorK[List, A, B]</span><span style=''>
-</span>15 <span style=''>
-</span>16 <span style=''>    implicit def listToMapGenerator[T, K, V](implicit
-</span>17 <span style=''>      G: Generator[T, Map[K, V]]
-</span>18 <span style=''>    ): GeneratorK[List, T, Map[K, V]] = {
-</span>19 <span style=''>      implicit def keepSemigroup[A]: Semigroup[A] = </span><span style='background: #F0ADAD'>Semigroup.instance((a, _) =&gt; a)</span><span style=''>
-</span>20 <span style=''>
-</span>21 <span style=''>      </span><span style='background: #F0ADAD'>new GeneratorK[List, T, Map[K, V]]</span><span style=''>
-</span>22 <span style=''>    }
-</span>23 <span style=''>
-</span>24 <span style=''>  }
-</span>25 <span style=''>}
+</span>13 <span style=''>    /** Allows for the implicit creation of `Generator`s from `List[A]` to `B`. */
+</span>14 <span style=''>    implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
+</span>15 <span style=''>      </span><span style='background: #AEF1AE'>new GeneratorK[List, A, B]</span><span style=''>
+</span>16 <span style=''>
+</span>17 <span style=''>    /**
+</span>18 <span style=''>     * Allows for the implicit creation of `Generator`s from `List[T]` to `Map[K, V].`
+</span>19 <span style=''>     *
+</span>20 <span style=''>     * @note:
+</span>21 <span style=''>     *   In the case there are many occurrences for the same key in the result, the second one is
+</span>22 <span style=''>     *   kept.
+</span>23 <span style=''>     */
+</span>24 <span style=''>    implicit def listToMapGenerator[T, K, V](implicit
+</span>25 <span style=''>      G: Generator[T, Map[K, V]]
+</span>26 <span style=''>    ): GeneratorK[List, T, Map[K, V]] = {
+</span>27 <span style=''>      implicit def keepRightSemigroup: Semigroup[V] = </span><span style='background: #AEF1AE'>Semigroup.instance((_, b) =&gt; b)</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>      </span><span style='background: #AEF1AE'>new GeneratorK[List, T, Map[K, V]]</span><span style=''>
+</span>30 <span style=''>    }
+</span>31 <span style=''>
+</span>32 <span style=''>  }
+</span>33 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -61,15 +69,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          14
+          15
         </td>
         <td>
-          63
+          76
         </td>
         <td>
-          394
+          477
           -
-          394
+          477
         </td>
         <td>
           Select
@@ -80,20 +88,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.implicits.catsStdInstancesForList
         </td>
       </tr><tr>
         <td>
-          14
+          15
         </td>
         <td>
-          64
+          77
         </td>
         <td>
-          394
+          477
           -
-          394
+          477
         </td>
         <td>
           Select
@@ -104,20 +112,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.implicits.catsStdInstancesForList
         </td>
       </tr><tr>
         <td>
-          14
+          15
         </td>
         <td>
-          65
+          78
         </td>
         <td>
-          394
+          477
           -
-          420
+          503
         </td>
         <td>
           ApplyToImplicitArgs
@@ -128,20 +136,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           new io.github.scalaquest.core.dictionary.generators.GeneratorK[List,A,B]()(cats.implicits.catsStdInstancesForList, cats.implicits.catsStdInstancesForList, evidence$1, G)
         </td>
       </tr><tr>
         <td>
-          19
+          27
         </td>
         <td>
-          66
+          79
         </td>
         <td>
-          603
+          925
           -
-          634
+          956
         </td>
         <td>
           Apply
@@ -152,20 +160,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          cats.kernel.Semigroup.instance[A](((a: A, x$1: A) =&gt; a))
+        <td style="background: #AEF1AE">
+          cats.kernel.Semigroup.instance[V](((x$1: V, b: V) =&gt; b))
         </td>
       </tr><tr>
         <td>
-          21
+          29
         </td>
         <td>
-          67
+          80
         </td>
         <td>
-          642
+          964
           -
-          642
+          964
         </td>
         <td>
           Select
@@ -176,20 +184,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.implicits.catsStdInstancesForList
         </td>
       </tr><tr>
         <td>
-          21
+          29
         </td>
         <td>
-          68
+          81
         </td>
         <td>
-          642
+          964
           -
-          642
+          964
         </td>
         <td>
           Select
@@ -200,44 +208,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.implicits.catsStdInstancesForList
         </td>
       </tr><tr>
         <td>
-          21
+          29
         </td>
         <td>
-          69
+          82
         </td>
         <td>
-          642
+          964
           -
-          642
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          io.github.scalaquest.core.dictionary.generators.GeneratorImplicits.implicits.keepSemigroup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          keepSemigroup[V]
-        </td>
-      </tr><tr>
-        <td>
-          21
-        </td>
-        <td>
-          70
-        </td>
-        <td>
-          642
-          -
-          642
+          964
         </td>
         <td>
           ApplyToImplicitArgs
@@ -248,20 +232,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          cats.implicits.catsKernelStdMonoidForMap[K, V](keepSemigroup[V])
+        <td style="background: #AEF1AE">
+          cats.implicits.catsKernelStdMonoidForMap[K, V](keepRightSemigroup)
         </td>
       </tr><tr>
         <td>
-          21
+          29
         </td>
         <td>
-          71
+          83
         </td>
         <td>
-          642
+          964
           -
-          676
+          998
         </td>
         <td>
           ApplyToImplicitArgs
@@ -272,8 +256,8 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          new io.github.scalaquest.core.dictionary.generators.GeneratorK[List,T,Map[K,V]]()(cats.implicits.catsStdInstancesForList, cats.implicits.catsStdInstancesForList, cats.implicits.catsKernelStdMonoidForMap[K, V](keepSemigroup[V]), G)
+        <td style="background: #AEF1AE">
+          new io.github.scalaquest.core.dictionary.generators.GeneratorK[List,T,Map[K,V]]()(cats.implicits.catsStdInstancesForList, cats.implicits.catsStdInstancesForList, cats.implicits.catsKernelStdMonoidForMap[K, V](keepRightSemigroup), G)
         </td>
       </tr>
     </table>

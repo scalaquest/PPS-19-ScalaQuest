@@ -38,7 +38,7 @@
 </span>14 <span style=''>    extends BehaviorBasedGround {
 </span>15 <span style=''>
 </span>16 <span style=''>    override val behaviors: Seq[GroundBehavior] =
-</span>17 <span style=''>      </span><span style='background: #AEF1AE'>additionalBehaviors ++ Seq(Inspectable(), Navigable())</span><span style=''>
+</span>17 <span style=''>      </span><span style='background: #AEF1AE'>additionalBehaviors ++ Seq(InspectableLocation(), InspectableBag(), Navigable())</span><span style=''>
 </span>18 <span style=''>  }
 </span>19 <span style=''>}
 </span></pre>
@@ -58,7 +58,7 @@
           17
         </td>
         <td>
-          284
+          300
         </td>
         <td>
           737
@@ -69,49 +69,97 @@
           Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableExt.Inspectable.apply$default$1
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableLocationExt.InspectableLocation.apply$default$1
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          CommonGroundExt.this.Inspectable.apply$default$1
+          CommonGroundExt.this.InspectableLocation.apply$default$1
         </td>
       </tr><tr>
         <td>
           17
         </td>
         <td>
-          285
+          301
         </td>
         <td>
           737
           -
-          750
+          758
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableExt.Inspectable.apply
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableLocationExt.InspectableLocation.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          CommonGroundExt.this.Inspectable.apply(CommonGroundExt.this.Inspectable.apply$default$1)
+          CommonGroundExt.this.InspectableLocation.apply(CommonGroundExt.this.InspectableLocation.apply$default$1)
         </td>
       </tr><tr>
         <td>
           17
         </td>
         <td>
-          286
+          302
         </td>
         <td>
-          752
+          760
           -
-          752
+          760
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableBagExt.InspectableBag.apply$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonGroundExt.this.InspectableBag.apply$default$1
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          303
+        </td>
+        <td>
+          760
+          -
+          776
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableBagExt.InspectableBag.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonGroundExt.this.InspectableBag.apply(CommonGroundExt.this.InspectableBag.apply$default$1)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          304
+        </td>
+        <td>
+          778
+          -
+          778
         </td>
         <td>
           Select
@@ -130,12 +178,12 @@
           17
         </td>
         <td>
-          287
+          305
         </td>
         <td>
-          752
+          778
           -
-          763
+          789
         </td>
         <td>
           Apply
@@ -154,12 +202,12 @@
           17
         </td>
         <td>
-          288
+          306
         </td>
         <td>
           733
           -
-          764
+          790
         </td>
         <td>
           Apply
@@ -171,19 +219,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          scala.`package`.Seq.apply[CommonGroundExt.this.GroundBehavior](CommonGroundExt.this.Inspectable.apply(CommonGroundExt.this.Inspectable.apply$default$1), CommonGroundExt.this.Navigable.apply(CommonGroundExt.this.Navigable.apply$default$1))
+          scala.`package`.Seq.apply[CommonGroundExt.this.GroundBehavior](CommonGroundExt.this.InspectableLocation.apply(CommonGroundExt.this.InspectableLocation.apply$default$1), CommonGroundExt.this.InspectableBag.apply(CommonGroundExt.this.InspectableBag.apply$default$1), CommonGroundExt.this.Navigable.apply(CommonGroundExt.this.Navigable.apply$default$1))
         </td>
       </tr><tr>
         <td>
           17
         </td>
         <td>
-          289
+          307
         </td>
         <td>
           710
           -
-          764
+          790
         </td>
         <td>
           Apply
@@ -195,7 +243,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          CommonGround.this.additionalBehaviors.++[CommonGroundExt.this.GroundBehavior](scala.`package`.Seq.apply[CommonGroundExt.this.GroundBehavior](CommonGroundExt.this.Inspectable.apply(CommonGroundExt.this.Inspectable.apply$default$1), CommonGroundExt.this.Navigable.apply(CommonGroundExt.this.Navigable.apply$default$1)))
+          CommonGround.this.additionalBehaviors.++[CommonGroundExt.this.GroundBehavior](scala.`package`.Seq.apply[CommonGroundExt.this.GroundBehavior](CommonGroundExt.this.InspectableLocation.apply(CommonGroundExt.this.InspectableLocation.apply$default$1), CommonGroundExt.this.InspectableBag.apply(CommonGroundExt.this.InspectableBag.apply$default$1), CommonGroundExt.this.Navigable.apply(CommonGroundExt.this.Navigable.apply$default$1)))
         </td>
       </tr>
     </table>

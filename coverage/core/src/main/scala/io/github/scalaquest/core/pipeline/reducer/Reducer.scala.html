@@ -84,9 +84,11 @@
 </span>60 <span style=''>  def builder[M &lt;: Model](implicit model: M): Builder[model.type, model.S, model.Reaction] =
 </span>61 <span style=''>    // shortcut for implementing the Reducer, as it is a single method trait
 </span>62 <span style=''>    state =&gt;
-</span>63 <span style=''>      (interpreterResult: InterpreterResult[model.Reaction]) =&gt;
-</span>64 <span style=''>        </span><span style='background: #AEF1AE'>ReducerResult(model)(interpreterResult.reaction(state))</span><span style=''>
-</span>65 <span style=''>}
+</span>63 <span style=''>      (interpreterResult: InterpreterResult[model.Reaction]) =&gt; {
+</span>64 <span style=''>        val (updState, messages) = interpreterResult.reaction(state)
+</span>65 <span style=''>        </span><span style='background: #AEF1AE'>ReducerResult(model)(updState, messages)</span><span style=''>
+</span>66 <span style=''>      }
+</span>67 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -104,36 +106,60 @@
           64
         </td>
         <td>
-          708
+          799
         </td>
         <td>
-          2571
+          2557
           -
-          2604
+          2557
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Function1.apply
+          scala.Tuple2._1
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          interpreterResult.reaction.apply(state)
+          x$1._1
         </td>
       </tr><tr>
         <td>
           64
         </td>
         <td>
-          709
+          800
         </td>
         <td>
-          2550
+          2567
           -
-          2605
+          2567
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1._2
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          801
+        </td>
+        <td>
+          2621
+          -
+          2661
         </td>
         <td>
           Apply
@@ -145,7 +171,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          ReducerResult.apply[M](model)(interpreterResult.reaction.apply(state))
+          ReducerResult.apply[M](model)(updState, messages)
         </td>
       </tr>
     </table>

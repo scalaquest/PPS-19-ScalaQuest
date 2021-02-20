@@ -1,0 +1,238 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/groundBehaviors/impl/InspectableLocationExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableLocation behavior
+</span>10 <span style=''> * for the Ground.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait InspectableLocationExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with CommonMessagesExt
+</span>15 <span style=''>  with CommonReactionsExt {
+</span>16 <span style=''>
+</span>17 <span style=''>  /**
+</span>18 <span style=''>   * A [[GroundBehavior]] that enables the possibility to know the items present into the current
+</span>19 <span style=''>   * [[Room]].
+</span>20 <span style=''>   */
+</span>21 <span style=''>  abstract class InspectableLocation extends GroundBehavior {
+</span>22 <span style=''>    def inspectLocation: Reaction
+</span>23 <span style=''>  }
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * A standard implementation for [[InspectableLocation]].
+</span>27 <span style=''>   *
+</span>28 <span style=''>   * @param onInspectExtra
+</span>29 <span style=''>   *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
+</span>30 <span style=''>   *   omitted.
+</span>31 <span style=''>   */
+</span>32 <span style=''>  case class SimpleInspectableLocation(onInspectExtra: Reaction = Reaction.empty)
+</span>33 <span style=''>    extends InspectableLocation {
+</span>34 <span style=''>
+</span>35 <span style=''>    override def triggers: GroundTriggers = { case (Inspect, _) =&gt; </span><span style='background: #AEF1AE'>inspectLocation</span><span style=''> }
+</span>36 <span style=''>
+</span>37 <span style=''>    override def inspectLocation: Reaction =
+</span>38 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
+</span>39 <span style=''></span><span style='background: #AEF1AE'>        Reactions.inspectLocation,
+</span>40 <span style=''></span><span style='background: #AEF1AE'>        onInspectExtra
+</span>41 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>42 <span style=''>  }
+</span>43 <span style=''>
+</span>44 <span style=''>  /**
+</span>45 <span style=''>   * Companion object for [[InspectableLocation]]. Shortcut for the standard implementation.
+</span>46 <span style=''>   */
+</span>47 <span style=''>  object InspectableLocation {
+</span>48 <span style=''>
+</span>49 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableLocation =
+</span>50 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableLocation(onInspectExtra)</span><span style=''>
+</span>51 <span style=''>  }
+</span>52 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          283
+        </td>
+        <td>
+          1288
+          -
+          1303
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableLocationExt.SimpleInspectableLocation.inspectLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleInspectableLocation.this.inspectLocation
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          284
+        </td>
+        <td>
+          1265
+          -
+          1265
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableLocationExt.SimpleInspectableLocation.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          287
+        </td>
+        <td>
+          1358
+          -
+          1441
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableLocationExt.this.Reaction.combine(InspectableLocationExt.this.Reactions.inspectLocation, SimpleInspectableLocation.this.onInspectExtra)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          285
+        </td>
+        <td>
+          1384
+          -
+          1409
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.inspectLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableLocationExt.this.Reactions.inspectLocation
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          286
+        </td>
+        <td>
+          1419
+          -
+          1433
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableLocationExt.SimpleInspectableLocation.onInspectExtra
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleInspectableLocation.this.onInspectExtra
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          288
+        </td>
+        <td>
+          1670
+          -
+          1711
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableLocationExt.SimpleInspectableLocation.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableLocationExt.this.SimpleInspectableLocation.apply(onInspectExtra)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

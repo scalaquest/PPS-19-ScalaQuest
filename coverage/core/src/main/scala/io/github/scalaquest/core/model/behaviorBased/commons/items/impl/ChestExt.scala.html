@@ -1,0 +1,314 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/items/impl/ChestExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt
+</span>6 <span style=''>
+</span>7 <span style=''>trait ChestExt extends BehaviorBasedModel with ContainerExt {
+</span>8 <span style=''>
+</span>9 <span style=''>  trait Chest extends BehaviorBasedItem {
+</span>10 <span style=''>    def isOpen: Boolean
+</span>11 <span style=''>    def container: Container
+</span>12 <span style=''>  }
+</span>13 <span style=''>
+</span>14 <span style=''>  case class SimpleChest(
+</span>15 <span style=''>    description: ItemDescription,
+</span>16 <span style=''>    ref: ItemRef,
+</span>17 <span style=''>    containerBuilder: I =&gt; Container,
+</span>18 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>19 <span style=''>  ) extends Chest {
+</span>20 <span style=''>    override val container: Container         = </span><span style='background: #AEF1AE'>containerBuilder(this)</span><span style=''>
+</span>21 <span style=''>    override val behaviors: Seq[ItemBehavior] = container </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
+</span>22 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>container.isOpen</span><span style=''>
+</span>23 <span style=''>  }
+</span>24 <span style=''>
+</span>25 <span style=''>  object Chest {
+</span>26 <span style=''>
+</span>27 <span style=''>    def apply(
+</span>28 <span style=''>      description: ItemDescription,
+</span>29 <span style=''>      containerBuilder: I =&gt; Container,
+</span>30 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>31 <span style=''>    ): Chest = </span><span style='background: #AEF1AE'>SimpleChest(description, ItemRef(description), containerBuilder, extraBehavBuilder)</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>    def createUnlocked(
+</span>34 <span style=''>      description: ItemDescription,
+</span>35 <span style=''>      items: Set[I] = Set.empty,
+</span>36 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>37 <span style=''>    ): Chest =
+</span>38 <span style=''>      </span><span style='background: #AEF1AE'>apply(
+</span>39 <span style=''></span><span style='background: #AEF1AE'>        description,
+</span>40 <span style=''></span><span style='background: #AEF1AE'>        Container.unlockedBuilder(items),
+</span>41 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder
+</span>42 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>43 <span style=''>
+</span>44 <span style=''>    def createLocked(
+</span>45 <span style=''>      description: ItemDescription,
+</span>46 <span style=''>      items: Set[I] = Set.empty,
+</span>47 <span style=''>      key: Key,
+</span>48 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>49 <span style=''>    ): Chest =
+</span>50 <span style=''>      </span><span style='background: #AEF1AE'>apply(
+</span>51 <span style=''></span><span style='background: #AEF1AE'>        description,
+</span>52 <span style=''></span><span style='background: #AEF1AE'>        Container.lockedBuilder(items, key),
+</span>53 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder
+</span>54 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>55 <span style=''>  }
+</span>56 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          408
+        </td>
+        <td>
+          712
+          -
+          734
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleChest.this.containerBuilder.apply(this)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          409
+        </td>
+        <td>
+          793
+          -
+          827
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.+:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleChest.this.extraBehavBuilders.map[ChestExt.this.ItemBehavior](((x$1: ChestExt.this.I =&gt; ChestExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[ChestExt.this.ItemBehavior](rassoc$1)
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          410
+        </td>
+        <td>
+          876
+          -
+          892
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.Container.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleChest.this.container.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          411
+        </td>
+        <td>
+          1107
+          -
+          1127
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.ItemRef.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.model.ItemRef.apply(description)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          412
+        </td>
+        <td>
+          1082
+          -
+          1165
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.ChestExt.SimpleChest.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ChestExt.this.SimpleChest.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), containerBuilder, extraBehavBuilder)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          414
+        </td>
+        <td>
+          1341
+          -
+          1444
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.ChestExt.Chest.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Chest.this.apply(description, ChestExt.this.Container.unlockedBuilder(items), extraBehavBuilder)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          413
+        </td>
+        <td>
+          1377
+          -
+          1409
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.Container.unlockedBuilder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ChestExt.this.Container.unlockedBuilder(items)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          416
+        </td>
+        <td>
+          1634
+          -
+          1740
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.ChestExt.Chest.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Chest.this.apply(description, ChestExt.this.Container.lockedBuilder(items, key), extraBehavBuilder)
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          415
+        </td>
+        <td>
+          1670
+          -
+          1705
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.Container.lockedBuilder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ChestExt.this.Container.lockedBuilder(items, key)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

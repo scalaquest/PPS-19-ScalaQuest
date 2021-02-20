@@ -26,19 +26,22 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 </span>6 <span style=''>
-</span>7 <span style=''>private[reactions] trait NavigateExt
-</span>8 <span style=''>  extends BehaviorBasedModel
-</span>9 <span style=''>  with StateUtilsExt
-</span>10 <span style=''>  with CommonMessagesExt {
-</span>11 <span style=''>
-</span>12 <span style=''>  private[reactions] def navigate(room: RM): Reaction =
-</span>13 <span style=''>    </span><span style='background: #AEF1AE'>_.applyReactions(
-</span>14 <span style=''></span><span style='background: #AEF1AE'>      locationLens.set(room.ref),
-</span>15 <span style=''></span><span style='background: #AEF1AE'>      messageLens.modify(_ :+ Messages.Navigated(room))
-</span>16 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
-</span>17 <span style=''>}
+</span>7 <span style=''>/**
+</span>8 <span style=''> * A Reaction generated when a player go in a nearby room.
+</span>9 <span style=''> */
+</span>10 <span style=''>private[reactions] trait NavigateExt
+</span>11 <span style=''>  extends BehaviorBasedModel
+</span>12 <span style=''>  with CommonMessagesExt
+</span>13 <span style=''>  with ReactionUtilsExt {
+</span>14 <span style=''>
+</span>15 <span style=''>  private[reactions] def navigate(room: RM): Reaction =
+</span>16 <span style=''>    </span><span style='background: #AEF1AE'>Reaction(
+</span>17 <span style=''></span><span style='background: #AEF1AE'>      locationLens.set(room.ref),
+</span>18 <span style=''></span><span style='background: #AEF1AE'>      Messages.Navigated(room)
+</span>19 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>20 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -53,39 +56,39 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          16
         </td>
         <td>
-          442
+          508
         </td>
         <td>
-          492
+          565
           -
-          605
+          645
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          NavigateExt.this.StateUtils(x$1).applyReactions(NavigateExt.this.locationLens.set(room.ref), NavigateExt.this.messageLens.modify(((x$2: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$2.:+[io.github.scalaquest.core.model.Message](NavigateExt.this.Messages.Navigated.apply(room)))))
+          NavigateExt.this.Reaction.apply(NavigateExt.this.locationLens.set(room.ref), NavigateExt.this.Messages.Navigated.apply(room))
         </td>
       </tr><tr>
         <td>
-          14
+          17
         </td>
         <td>
-          437
+          505
         </td>
         <td>
-          533
+          598
           -
-          541
+          606
         </td>
         <td>
           Select
@@ -101,15 +104,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          17
         </td>
         <td>
-          438
+          506
         </td>
         <td>
-          516
+          581
           -
-          542
+          607
         </td>
         <td>
           Apply
@@ -125,15 +128,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          18
         </td>
         <td>
-          439
+          507
         </td>
         <td>
-          574
+          615
           -
-          598
+          639
         </td>
         <td>
           Apply
@@ -146,54 +149,6 @@
         </td>
         <td style="background: #AEF1AE">
           NavigateExt.this.Messages.Navigated.apply(room)
-        </td>
-      </tr><tr>
-        <td>
-          15
-        </td>
-        <td>
-          440
-        </td>
-        <td>
-          569
-          -
-          598
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.SeqOps.:+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          x$2.:+[io.github.scalaquest.core.model.Message](NavigateExt.this.Messages.Navigated.apply(room))
-        </td>
-      </tr><tr>
-        <td>
-          15
-        </td>
-        <td>
-          441
-        </td>
-        <td>
-          550
-          -
-          599
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          monocle.PLens.modify
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          NavigateExt.this.messageLens.modify(((x$2: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$2.:+[io.github.scalaquest.core.model.Message](NavigateExt.this.Messages.Navigated.apply(room))))
         </td>
       </tr>
     </table>

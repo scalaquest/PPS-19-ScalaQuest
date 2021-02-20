@@ -26,24 +26,25 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 </span>6 <span style=''>
-</span>7 <span style=''>private[reactions] trait TakeExt
-</span>8 <span style=''>  extends BehaviorBasedModel
-</span>9 <span style=''>  with StateUtilsExt
-</span>10 <span style=''>  with CommonMessagesExt {
-</span>11 <span style=''>
-</span>12 <span style=''>  private[reactions] def take(item: I): Reaction =
-</span>13 <span style=''>    state =&gt; {
-</span>14 <span style=''>      val updLocation = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ - item.ref)(state.location)</span><span style=''>
-</span>15 <span style=''>
-</span>16 <span style=''>      </span><span style='background: #AEF1AE'>state.applyReactions(
-</span>17 <span style=''></span><span style='background: #AEF1AE'>        roomsLens.modify(_ + (updLocation.ref -&gt; updLocation)),
-</span>18 <span style=''></span><span style='background: #AEF1AE'>        bagLens.modify(_ + item.ref),
-</span>19 <span style=''></span><span style='background: #AEF1AE'>        messageLens.modify(_ :+ Messages.Taken(item))
-</span>20 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>21 <span style=''>    }
-</span>22 <span style=''>}
+</span>7 <span style=''>/**
+</span>8 <span style=''> * A Reaction generated when a player take a takeable Item.
+</span>9 <span style=''> */
+</span>10 <span style=''>private[reactions] trait TakeExt
+</span>11 <span style=''>  extends BehaviorBasedModel
+</span>12 <span style=''>  with CommonMessagesExt
+</span>13 <span style=''>  with ReactionUtilsExt {
+</span>14 <span style=''>
+</span>15 <span style=''>  private[reactions] def take(item: I): Reaction =
+</span>16 <span style=''>    </span><span style='background: #AEF1AE'>Reaction(
+</span>17 <span style=''></span><span style='background: #AEF1AE'>      Update(
+</span>18 <span style=''></span><span style='background: #AEF1AE'>        (locationRoomLens composeLens roomItemsLens).modify(_ - item.ref),
+</span>19 <span style=''></span><span style='background: #AEF1AE'>        bagLens.modify(_ + item.ref)
+</span>20 <span style=''></span><span style='background: #AEF1AE'>      ),
+</span>21 <span style=''></span><span style='background: #AEF1AE'>      Messages.Taken(item)
+</span>22 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>23 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -58,15 +59,87 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          14
+          16
         </td>
         <td>
-          461
+          537
         </td>
         <td>
-          543
+          557
           -
-          551
+          734
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeExt.this.Reaction.apply(TakeExt.this.Update.apply(TakeExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](TakeExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(item.ref))), TakeExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(item.ref)))), TakeExt.this.Messages.Taken.apply(item))
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          535
+        </td>
+        <td>
+          573
+          -
+          700
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeExt.this.Update.apply(TakeExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](TakeExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(item.ref))), TakeExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(item.ref))))
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          528
+        </td>
+        <td>
+          619
+          -
+          632
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.roomItemsLens
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeExt.this.roomItemsLens
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          529
+        </td>
+        <td>
+          645
+          -
+          653
         </td>
         <td>
           Select
@@ -82,15 +155,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          18
         </td>
         <td>
-          462
+          530
         </td>
         <td>
-          539
+          641
           -
-          551
+          653
         </td>
         <td>
           Apply
@@ -106,135 +179,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          18
         </td>
         <td>
-          463
+          531
         </td>
         <td>
-          553
+          590
           -
-          567
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.Model.State.location
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          state.location
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          464
-        </td>
-        <td>
-          518
-          -
-          568
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Function1.apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          TakeExt.this.roomItemsLens.modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(item.ref))).apply(state.location)
-        </td>
-      </tr><tr>
-        <td>
-          16
-        </td>
-        <td>
-          474
-        </td>
-        <td>
-          576
-          -
-          761
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          TakeExt.this.StateUtils(state).applyReactions(TakeExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,TakeExt.this.RM]) =&gt; x$2.+[TakeExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[TakeExt.this.RM](updLocation)))), TakeExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.+(item.ref))), TakeExt.this.messageLens.modify(((x$4: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$4.:+[io.github.scalaquest.core.model.Message](TakeExt.this.Messages.Taken.apply(item)))))
-        </td>
-      </tr><tr>
-        <td>
-          17
-        </td>
-        <td>
-          465
-        </td>
-        <td>
-          628
-          -
-          658
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[TakeExt.this.RM](updLocation)
-        </td>
-      </tr><tr>
-        <td>
-          17
-        </td>
-        <td>
-          466
-        </td>
-        <td>
-          623
-          -
-          659
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.MapOps.+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          x$2.+[TakeExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[TakeExt.this.RM](updLocation))
-        </td>
-      </tr><tr>
-        <td>
-          17
-        </td>
-        <td>
-          467
-        </td>
-        <td>
-          606
-          -
-          660
+          654
         </td>
         <td>
           Apply
@@ -246,19 +199,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          TakeExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,TakeExt.this.RM]) =&gt; x$2.+[TakeExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](updLocation.ref).-&gt;[TakeExt.this.RM](updLocation))))
+          TakeExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](TakeExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(item.ref)))
         </td>
       </tr><tr>
         <td>
-          18
+          19
         </td>
         <td>
-          468
+          532
         </td>
         <td>
-          689
+          683
           -
-          697
+          691
         </td>
         <td>
           Select
@@ -274,15 +227,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          19
         </td>
         <td>
-          469
+          533
         </td>
         <td>
-          685
+          679
           -
-          697
+          691
         </td>
         <td>
           Apply
@@ -294,19 +247,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$3.+(item.ref)
+          x$2.+(item.ref)
         </td>
       </tr><tr>
         <td>
-          18
+          19
         </td>
         <td>
-          470
+          534
         </td>
         <td>
-          670
+          664
           -
-          698
+          692
         </td>
         <td>
           Apply
@@ -318,19 +271,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          TakeExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.+(item.ref)))
+          TakeExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(item.ref)))
         </td>
       </tr><tr>
         <td>
-          19
+          21
         </td>
         <td>
-          471
+          536
         </td>
         <td>
-          732
+          708
           -
-          752
+          728
         </td>
         <td>
           Apply
@@ -343,54 +296,6 @@
         </td>
         <td style="background: #AEF1AE">
           TakeExt.this.Messages.Taken.apply(item)
-        </td>
-      </tr><tr>
-        <td>
-          19
-        </td>
-        <td>
-          472
-        </td>
-        <td>
-          727
-          -
-          752
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.SeqOps.:+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          x$4.:+[io.github.scalaquest.core.model.Message](TakeExt.this.Messages.Taken.apply(item))
-        </td>
-      </tr><tr>
-        <td>
-          19
-        </td>
-        <td>
-          473
-        </td>
-        <td>
-          708
-          -
-          753
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          monocle.PLens.modify
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          TakeExt.this.messageLens.modify(((x$4: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$4.:+[io.github.scalaquest.core.model.Message](TakeExt.this.Messages.Taken.apply(item))))
         </td>
       </tr>
     </table>

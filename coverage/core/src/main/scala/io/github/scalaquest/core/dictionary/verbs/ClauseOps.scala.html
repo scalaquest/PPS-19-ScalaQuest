@@ -25,16 +25,16 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.verbs
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.Fact
-</span>4 <span style=''>import io.github.scalaquest.core.parsing.scalog.dsl.{termToFact, intToNumber, stringToAtom}
+</span>4 <span style=''>import io.github.scalaquest.core.parsing.scalog.dsl.{intToNumber, stringToAtom, termToFact}
 </span>5 <span style=''>
 </span>6 <span style=''>trait ClauseOps { self: BaseVerb =&gt;
 </span>7 <span style=''>
-</span>8 <span style=''>  def arity: Int
+</span>8 <span style=''>  protected def arity: Int
 </span>9 <span style=''>
 </span>10 <span style=''>  def clause: Fact =
-</span>11 <span style=''>    </span><span style='background: #F0ADAD'>prep</span><span style=''> match {
-</span>12 <span style=''>      case Some(value) =&gt; </span><span style='background: #F0ADAD'>verb(arity, name, value)</span><span style=''>
-</span>13 <span style=''>      case None        =&gt; </span><span style='background: #F0ADAD'>verb(arity, name)</span><span style=''>
+</span>11 <span style=''>    </span><span style='background: #AEF1AE'>prep</span><span style=''> match {
+</span>12 <span style=''>      case Some(value) =&gt; </span><span style='background: #AEF1AE'>verb(arity, name, value)</span><span style=''>
+</span>13 <span style=''>      case None        =&gt; </span><span style='background: #AEF1AE'>verb(arity, name)</span><span style=''>
 </span>14 <span style=''>    }
 </span>15 <span style=''>}
 </span></pre>
@@ -54,12 +54,12 @@
           11
         </td>
         <td>
-          83
+          95
         </td>
         <td>
-          278
+          288
           -
-          282
+          292
         </td>
         <td>
           Select
@@ -70,7 +70,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           ClauseOps.this.prep
         </td>
       </tr><tr>
@@ -78,12 +78,12 @@
           12
         </td>
         <td>
-          84
+          96
         </td>
         <td>
-          322
+          332
           -
-          327
+          337
         </td>
         <td>
           Select
@@ -94,7 +94,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           ClauseOps.this.arity
         </td>
       </tr><tr>
@@ -102,12 +102,12 @@
           12
         </td>
         <td>
-          85
+          97
         </td>
         <td>
-          322
+          332
           -
-          327
+          337
         </td>
         <td>
           ApplyImplicitView
@@ -118,7 +118,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity)
         </td>
       </tr><tr>
@@ -126,12 +126,12 @@
           12
         </td>
         <td>
-          86
+          98
         </td>
         <td>
-          329
+          339
           -
-          333
+          343
         </td>
         <td>
           Select
@@ -142,7 +142,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           ClauseOps.this.name
         </td>
       </tr><tr>
@@ -150,12 +150,12 @@
           12
         </td>
         <td>
-          87
+          99
         </td>
         <td>
-          329
+          339
           -
-          333
+          343
         </td>
         <td>
           ApplyImplicitView
@@ -166,7 +166,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name)
         </td>
       </tr><tr>
@@ -174,12 +174,12 @@
           12
         </td>
         <td>
-          88
+          100
         </td>
         <td>
-          335
+          345
           -
-          340
+          350
         </td>
         <td>
           ApplyImplicitView
@@ -190,7 +190,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(value)
         </td>
       </tr><tr>
@@ -198,12 +198,12 @@
           12
         </td>
         <td>
-          89
+          101
         </td>
         <td>
-          317
+          327
           -
-          341
+          351
         </td>
         <td>
           Apply
@@ -214,7 +214,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(value))
         </td>
       </tr><tr>
@@ -222,12 +222,12 @@
           12
         </td>
         <td>
-          90
+          102
         </td>
         <td>
-          317
+          327
           -
-          341
+          351
         </td>
         <td>
           ApplyImplicitView
@@ -238,7 +238,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(value)))
         </td>
       </tr><tr>
@@ -246,12 +246,12 @@
           13
         </td>
         <td>
-          91
+          103
         </td>
         <td>
-          373
+          383
           -
-          378
+          388
         </td>
         <td>
           Select
@@ -262,7 +262,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           ClauseOps.this.arity
         </td>
       </tr><tr>
@@ -270,12 +270,12 @@
           13
         </td>
         <td>
-          92
+          104
         </td>
         <td>
-          373
+          383
           -
-          378
+          388
         </td>
         <td>
           ApplyImplicitView
@@ -286,7 +286,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity)
         </td>
       </tr><tr>
@@ -294,12 +294,12 @@
           13
         </td>
         <td>
-          93
+          105
         </td>
         <td>
-          380
+          390
           -
-          384
+          394
         </td>
         <td>
           Select
@@ -310,7 +310,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           ClauseOps.this.name
         </td>
       </tr><tr>
@@ -318,12 +318,12 @@
           13
         </td>
         <td>
-          94
+          106
         </td>
         <td>
-          380
+          390
           -
-          384
+          394
         </td>
         <td>
           ApplyImplicitView
@@ -334,7 +334,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name)
         </td>
       </tr><tr>
@@ -342,12 +342,12 @@
           13
         </td>
         <td>
-          95
+          107
         </td>
         <td>
-          368
+          378
           -
-          385
+          395
         </td>
         <td>
           Apply
@@ -358,7 +358,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name))
         </td>
       </tr><tr>
@@ -366,12 +366,12 @@
           13
         </td>
         <td>
-          96
+          108
         </td>
         <td>
-          368
+          378
           -
-          385
+          395
         </td>
         <td>
           ApplyImplicitView
@@ -382,7 +382,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           io.github.scalaquest.core.parsing.scalog.dsl.`package`.termToFact(verbs.this.`package`.verb.apply(io.github.scalaquest.core.parsing.scalog.dsl.`package`.intToNumber(ClauseOps.this.arity), io.github.scalaquest.core.parsing.scalog.dsl.`package`.stringToAtom(ClauseOps.this.name)))
         </td>
       </tr>

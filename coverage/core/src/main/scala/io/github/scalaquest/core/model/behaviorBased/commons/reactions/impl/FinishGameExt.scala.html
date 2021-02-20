@@ -26,19 +26,24 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 </span>6 <span style=''>
-</span>7 <span style=''>private[reactions] trait FinishGameExt
-</span>8 <span style=''>  extends BehaviorBasedModel
-</span>9 <span style=''>  with StateUtilsExt
-</span>10 <span style=''>  with CommonMessagesExt {
-</span>11 <span style=''>
-</span>12 <span style=''>  private[reactions] def finishGame(win: Boolean): Reaction =
-</span>13 <span style=''>    </span><span style='background: #F0ADAD'>_.applyReactions(
-</span>14 <span style=''></span><span style='background: #F0ADAD'>      matchEndedLens.set(true),
-</span>15 <span style=''></span><span style='background: #F0ADAD'>      messageLens.modify(_ :+ (if (win) Messages.Won else Messages.Lost))
-</span>16 <span style=''></span><span style='background: #F0ADAD'>    )</span><span style=''>
-</span>17 <span style=''>}
+</span>7 <span style=''>/**
+</span>8 <span style=''> * A Reaction used to finish the Game. Two possible scenarios:
+</span>9 <span style=''> *   - player win
+</span>10 <span style=''> *   - player lose
+</span>11 <span style=''> */
+</span>12 <span style=''>private[reactions] trait FinishGameExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with CommonMessagesExt
+</span>15 <span style=''>  with ReactionUtilsExt {
+</span>16 <span style=''>
+</span>17 <span style=''>  private[reactions] def finishGame(win: Boolean): Reaction =
+</span>18 <span style=''>    </span><span style='background: #AEF1AE'>Reaction(
+</span>19 <span style=''></span><span style='background: #AEF1AE'>      matchEndedLens.set(true),
+</span>20 <span style=''></span><span style='background: #AEF1AE'>      if (win) Messages.Won else Messages.Lost
+</span>21 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>22 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -53,42 +58,42 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          18
         </td>
         <td>
-          435
+          502
         </td>
         <td>
-          500
+          614
           -
-          629
+          708
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
         </td>
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          FinishGameExt.this.StateUtils(x$1).applyReactions(FinishGameExt.this.matchEndedLens.set(true), FinishGameExt.this.messageLens.modify(((x$2: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$2.:+[io.github.scalaquest.core.model.Message](if (win)
+        <td style="background: #AEF1AE">
+          FinishGameExt.this.Reaction.apply(FinishGameExt.this.matchEndedLens.set(true), if (win)
   FinishGameExt.this.Messages.Won
 else
-  FinishGameExt.this.Messages.Lost))))
+  FinishGameExt.this.Messages.Lost)
         </td>
       </tr><tr>
         <td>
-          14
+          19
         </td>
         <td>
-          428
+          497
         </td>
         <td>
-          524
+          630
           -
-          548
+          654
         </td>
         <td>
           Apply
@@ -99,20 +104,20 @@ else
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           FinishGameExt.this.matchEndedLens.set(true)
         </td>
       </tr><tr>
         <td>
-          15
+          20
         </td>
         <td>
-          429
+          498
         </td>
         <td>
-          590
+          671
           -
-          602
+          683
         </td>
         <td>
           Select
@@ -123,20 +128,20 @@ else
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           FinishGameExt.this.Messages.Won
         </td>
       </tr><tr>
         <td>
-          15
+          20
         </td>
         <td>
-          430
+          499
         </td>
         <td>
-          590
+          671
           -
-          602
+          683
         </td>
         <td>
           Block
@@ -147,20 +152,20 @@ else
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           FinishGameExt.this.Messages.Won
         </td>
       </tr><tr>
         <td>
-          15
+          20
         </td>
         <td>
-          431
+          500
         </td>
         <td>
-          608
+          689
           -
-          621
+          702
         </td>
         <td>
           Select
@@ -171,20 +176,20 @@ else
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           FinishGameExt.this.Messages.Lost
         </td>
       </tr><tr>
         <td>
-          15
+          20
         </td>
         <td>
-          432
+          501
         </td>
         <td>
-          608
+          689
           -
-          621
+          702
         </td>
         <td>
           Block
@@ -195,62 +200,8 @@ else
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           FinishGameExt.this.Messages.Lost
-        </td>
-      </tr><tr>
-        <td>
-          15
-        </td>
-        <td>
-          433
-        </td>
-        <td>
-          575
-          -
-          622
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.SeqOps.:+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          x$2.:+[io.github.scalaquest.core.model.Message](if (win)
-  FinishGameExt.this.Messages.Won
-else
-  FinishGameExt.this.Messages.Lost)
-        </td>
-      </tr><tr>
-        <td>
-          15
-        </td>
-        <td>
-          434
-        </td>
-        <td>
-          556
-          -
-          623
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          monocle.PLens.modify
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          FinishGameExt.this.messageLens.modify(((x$2: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$2.:+[io.github.scalaquest.core.model.Message](if (win)
-  FinishGameExt.this.Messages.Won
-else
-  FinishGameExt.this.Messages.Lost)))
         </td>
       </tr>
     </table>

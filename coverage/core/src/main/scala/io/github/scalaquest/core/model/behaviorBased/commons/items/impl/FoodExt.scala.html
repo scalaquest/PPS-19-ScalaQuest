@@ -25,8 +25,8 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 </span>6 <span style=''>
 </span>7 <span style=''>/**
 </span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Food Item.
@@ -47,10 +47,10 @@
 </span>23 <span style=''>    description: ItemDescription,
 </span>24 <span style=''>    ref: ItemRef,
 </span>25 <span style=''>    eatableBuilder: I =&gt; Eatable,
-</span>26 <span style=''>    addBehaviorsBuilders: I =&gt; ItemBehavior*
+</span>26 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
 </span>27 <span style=''>  ) extends Food {
 </span>28 <span style=''>    final override val eatable: Eatable       = </span><span style='background: #AEF1AE'>eatableBuilder(this)</span><span style=''>
-</span>29 <span style=''>    override def behaviors: Seq[ItemBehavior] = eatable </span><span style='background: #F0ADAD'>+: addBehaviorsBuilders.map(_(this))</span><span style=''>
+</span>29 <span style=''>    override val behaviors: Seq[ItemBehavior] = eatable </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
 </span>30 <span style=''>  }
 </span>31 <span style=''>
 </span>32 <span style=''>  /**
@@ -61,9 +61,9 @@
 </span>37 <span style=''>    def apply(
 </span>38 <span style=''>      description: ItemDescription,
 </span>39 <span style=''>      eatableBuilder: I =&gt; Eatable,
-</span>40 <span style=''>      addBehaviorsBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>40 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
 </span>41 <span style=''>    ): Food = {
-</span>42 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), eatableBuilder, addBehaviorsBuilder: _*)</span><span style=''>
+</span>42 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), eatableBuilder, extraBehavBuilders)</span><span style=''>
 </span>43 <span style=''>    }
 </span>44 <span style=''>  }
 </span>45 <span style=''>}
@@ -84,12 +84,12 @@
           28
         </td>
         <td>
-          369
+          425
         </td>
         <td>
-          883
+          897
           -
-          903
+          917
         </td>
         <td>
           Apply
@@ -108,12 +108,12 @@
           29
         </td>
         <td>
-          370
+          426
         </td>
         <td>
-          960
+          974
           -
-          996
+          1008
         </td>
         <td>
           Apply
@@ -124,20 +124,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          SimpleFood.this.addBehaviorsBuilders.map[FoodExt.this.ItemBehavior](((x$1: FoodExt.this.I =&gt; FoodExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[FoodExt.this.ItemBehavior](rassoc$1)
+        <td style="background: #AEF1AE">
+          SimpleFood.this.extraBehavBuilders.map[FoodExt.this.ItemBehavior](((x$1: FoodExt.this.I =&gt; FoodExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[FoodExt.this.ItemBehavior](rassoc$1)
         </td>
       </tr><tr>
         <td>
           42
         </td>
         <td>
-          371
+          427
         </td>
         <td>
-          1302
+          1313
           -
-          1322
+          1333
         </td>
         <td>
           Apply
@@ -156,12 +156,12 @@
           42
         </td>
         <td>
-          372
+          428
         </td>
         <td>
-          1278
+          1289
           -
-          1364
+          1370
         </td>
         <td>
           Apply
@@ -173,7 +173,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          FoodExt.this.SimpleFood.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), eatableBuilder, (addBehaviorsBuilder: _*))
+          FoodExt.this.SimpleFood.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), eatableBuilder, extraBehavBuilders)
         </td>
       </tr>
     </table>

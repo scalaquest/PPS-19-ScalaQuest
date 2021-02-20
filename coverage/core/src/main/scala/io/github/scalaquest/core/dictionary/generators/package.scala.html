@@ -27,12 +27,46 @@
 </span>3 <span style=''>import cats.implicits.catsStdInstancesForList
 </span>4 <span style=''>import cats.{Foldable, Monoid}
 </span>5 <span style=''>
-</span>6 <span style=''>package object generators extends GeneratorImplicits {
-</span>7 <span style=''>
-</span>8 <span style=''>  def combineAll[F[_]: Foldable, A: Monoid](as: F[A]): A = </span><span style='background: #F0ADAD'>Foldable[F].fold(as)</span><span style=''>
-</span>9 <span style=''>
-</span>10 <span style=''>  def combineAll[A: Monoid](a: A, as: A*): A = </span><span style='background: #F0ADAD'>combineAll((a +: as).toList)</span><span style=''>
-</span>11 <span style=''>}
+</span>6 <span style=''>/**
+</span>7 <span style=''> * This package provides two type classes `Generator` and `GeneratorK`. They are composable wrappers
+</span>8 <span style=''> * around functions. In addition, there are facility methods that allow the creation of these type
+</span>9 <span style=''> * classes.
+</span>10 <span style=''> *
+</span>11 <span style=''> * For example:
+</span>12 <span style=''> * {{{
+</span>13 <span style=''> *   implicit val generator = Generator.makeEntry((x: Int) =&gt; x -&gt; Math.pow(x, 2))
+</span>14 <span style=''> *   val generatorK = new GeneratorK[List, Int, Map[Int, Double]]
+</span>15 <span style=''> * }}}
+</span>16 <span style=''> *
+</span>17 <span style=''> * A [[GeneratorK]] can create a Map from a List.
+</span>18 <span style=''> * {{{
+</span>19 <span style=''> *   generatorK.generate(List(1, 2, 3))
+</span>20 <span style=''> * }}}
+</span>21 <span style=''> *
+</span>22 <span style=''> * Should result in the following being printed:
+</span>23 <span style=''> * {{{
+</span>24 <span style=''> *   Map(
+</span>25 <span style=''> *   1 -&gt; 1,
+</span>26 <span style=''> *   2 -&gt; 4,
+</span>27 <span style=''> *   3 -&gt; 9
+</span>28 <span style=''> *   )
+</span>29 <span style=''> * }}}
+</span>30 <span style=''> */
+</span>31 <span style=''>package object generators extends GeneratorImplicits {
+</span>32 <span style=''>
+</span>33 <span style=''>  /**
+</span>34 <span style=''>   * Allows to fold a `F[A]`.
+</span>35 <span style=''>   *
+</span>36 <span style=''>   * Inspired by:
+</span>37 <span style=''>   * [[https://typelevel.org/cats/typeclasses/monoid.html#example-usage-collapsing-a-list]].
+</span>38 <span style=''>   */
+</span>39 <span style=''>  def combineAll[F[_]: Foldable, A: Monoid](as: F[A]): A = </span><span style='background: #AEF1AE'>Foldable[F].fold(as)</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>  /**
+</span>42 <span style=''>   * Variadic argument function that wraps the non-variadic `combineAll` one.
+</span>43 <span style=''>   */
+</span>44 <span style=''>  def combineAll[A: Monoid](a: A, as: A*): A = </span><span style='background: #AEF1AE'>combineAll((a +: as).toList)</span><span style=''>
+</span>45 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -47,15 +81,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          8
+          39
         </td>
         <td>
-          78
+          90
         </td>
         <td>
-          239
+          1027
           -
-          259
+          1047
         </td>
         <td>
           ApplyToImplicitArgs
@@ -66,20 +100,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.Foldable.apply[F](evidence$1).fold[A](as)(evidence$2)
         </td>
       </tr><tr>
         <td>
-          10
+          44
         </td>
         <td>
-          79
+          91
         </td>
         <td>
-          322
+          1200
           -
-          327
+          1205
         </td>
         <td>
           Apply
@@ -90,20 +124,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           as.+:[A](rassoc$1)
         </td>
       </tr><tr>
         <td>
-          10
+          44
         </td>
         <td>
-          80
+          92
         </td>
         <td>
-          320
+          1198
           -
-          335
+          1213
         </td>
         <td>
           Select
@@ -114,7 +148,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           {
   final &lt;synthetic&gt; &lt;artifact&gt; val rassoc$1: A = a;
   as.+:[A](rassoc$1)
@@ -122,15 +156,15 @@
         </td>
       </tr><tr>
         <td>
-          10
+          44
         </td>
         <td>
-          81
+          93
         </td>
         <td>
-          318
+          1196
           -
-          318
+          1196
         </td>
         <td>
           Select
@@ -141,20 +175,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.implicits.catsStdInstancesForList
         </td>
       </tr><tr>
         <td>
-          10
+          44
         </td>
         <td>
-          82
+          94
         </td>
         <td>
-          308
+          1186
           -
-          336
+          1214
         </td>
         <td>
           ApplyToImplicitArgs
@@ -165,7 +199,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           `package`.this.combineAll[List, A]({
   final &lt;synthetic&gt; &lt;artifact&gt; val rassoc$1: A = a;
   as.+:[A](rassoc$1)

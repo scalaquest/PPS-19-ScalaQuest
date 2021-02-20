@@ -24,45 +24,111 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions
 </span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.{
-</span>5 <span style=''>  EatExt,
-</span>6 <span style=''>  EmptyExt,
-</span>7 <span style=''>  EnterExt,
-</span>8 <span style=''>  FinishGameExt,
-</span>9 <span style=''>  InspectLocationExt,
-</span>10 <span style=''>  NavigateExt,
-</span>11 <span style=''>  OpenExt,
-</span>12 <span style=''>  TakeExt
-</span>13 <span style=''>}
-</span>14 <span style=''>
-</span>15 <span style=''>trait CommonReactionsExt
-</span>16 <span style=''>  extends BehaviorBasedModel
-</span>17 <span style=''>  with EatExt
-</span>18 <span style=''>  with EnterExt
-</span>19 <span style=''>  with InspectLocationExt
-</span>20 <span style=''>  with FinishGameExt
-</span>21 <span style=''>  with NavigateExt
-</span>22 <span style=''>  with OpenExt
-</span>23 <span style=''>  with EmptyExt
-</span>24 <span style=''>  with TakeExt { self =&gt;
-</span>25 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Direction
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl._
+</span>6 <span style=''>
+</span>7 <span style=''>/**
+</span>8 <span style=''> * A mixable trait that contains implementation of common Reactions.
+</span>9 <span style=''> */
+</span>10 <span style=''>trait CommonReactionsExt
+</span>11 <span style=''>  extends BehaviorBasedModel
+</span>12 <span style=''>  with EatExt
+</span>13 <span style=''>  with EnterExt
+</span>14 <span style=''>  with InspectLocationExt
+</span>15 <span style=''>  with FinishGameExt
+</span>16 <span style=''>  with NavigateExt
+</span>17 <span style=''>  with OpenExt
+</span>18 <span style=''>  with TakeExt
+</span>19 <span style=''>  with InspectBagExt
+</span>20 <span style=''>  with RevealItemsExt
+</span>21 <span style=''>  with AddDirectionToLocationExt { self =&gt;
+</span>22 <span style=''>
+</span>23 <span style=''>  /**
+</span>24 <span style=''>   * Companioni Object with the effective implementation of the common [[Reaction]] s.
+</span>25 <span style=''>   */
 </span>26 <span style=''>  object Reactions {
-</span>27 <span style=''>    def eat(item: I): Reaction             = </span><span style='background: #AEF1AE'>self.eat(item)</span><span style=''>
-</span>28 <span style=''>    def empty: Reaction                    = </span><span style='background: #AEF1AE'>self.empty</span><span style=''>
-</span>29 <span style=''>    def enter(room: RM): Reaction          = </span><span style='background: #AEF1AE'>self.enter(room)</span><span style=''>
-</span>30 <span style=''>    def take(item: I): Reaction            = </span><span style='background: #AEF1AE'>self.take(item)</span><span style=''>
-</span>31 <span style=''>    def inspectLocation: Reaction          = </span><span style='background: #AEF1AE'>self.inspectLocation</span><span style=''>
-</span>32 <span style=''>    def navigate(room: RM): Reaction       = </span><span style='background: #AEF1AE'>self.navigate(room)</span><span style=''>
-</span>33 <span style=''>    def finishGame(win: Boolean): Reaction = </span><span style='background: #F0ADAD'>self.finishGame(win)</span><span style=''>
-</span>34 <span style=''>
-</span>35 <span style=''>    def open(
-</span>36 <span style=''>      itemToOpen: I,
-</span>37 <span style=''>      requiredKey: Option[Key],
-</span>38 <span style=''>      iskeyConsumable: Boolean
-</span>39 <span style=''>    ): Reaction = </span><span style='background: #AEF1AE'>self.open(itemToOpen, requiredKey, iskeyConsumable)</span><span style=''>
-</span>40 <span style=''>  }
-</span>41 <span style=''>}
+</span>27 <span style=''>
+</span>28 <span style=''>    /**
+</span>29 <span style=''>     * The Eatable [[Reaction]].
+</span>30 <span style=''>     * @param item
+</span>31 <span style=''>     *   that have to be eaten.
+</span>32 <span style=''>     * @return
+</span>33 <span style=''>     *   Eaten [[Reaction]]
+</span>34 <span style=''>     */
+</span>35 <span style=''>    def eat(item: I): Reaction = </span><span style='background: #AEF1AE'>self.eat(item)</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>    /**
+</span>38 <span style=''>     * The RoomLink [[Reaction]].
+</span>39 <span style=''>     * @param room
+</span>40 <span style=''>     *   that have to be reached.
+</span>41 <span style=''>     * @return
+</span>42 <span style=''>     *   RoomLink [[Reaction]]
+</span>43 <span style=''>     */
+</span>44 <span style=''>    def enter(room: RM): Reaction = </span><span style='background: #AEF1AE'>self.enter(room)</span><span style=''>
+</span>45 <span style=''>
+</span>46 <span style=''>    /**
+</span>47 <span style=''>     * The Takeable [[Reaction]].
+</span>48 <span style=''>     * @param item
+</span>49 <span style=''>     *   that have to be taken.
+</span>50 <span style=''>     * @return
+</span>51 <span style=''>     *   Taken [[Reaction]]
+</span>52 <span style=''>     */
+</span>53 <span style=''>    def take(item: I): Reaction = </span><span style='background: #AEF1AE'>self.take(item)</span><span style=''>
+</span>54 <span style=''>
+</span>55 <span style=''>    /**
+</span>56 <span style=''>     * The Inspect Location [[Reaction]].
+</span>57 <span style=''>     * @return
+</span>58 <span style=''>     *   The Inspect Location [[Reaction]].
+</span>59 <span style=''>     */
+</span>60 <span style=''>    def inspectLocation: Reaction = </span><span style='background: #AEF1AE'>self.inspectLocation</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>    /**
+</span>63 <span style=''>     * The Navigate [[Reaction]].
+</span>64 <span style=''>     * @param room
+</span>65 <span style=''>     *   that have to be reached.
+</span>66 <span style=''>     * @return
+</span>67 <span style=''>     *   Navigate [[Reaction]]
+</span>68 <span style=''>     */
+</span>69 <span style=''>    def navigate(room: RM): Reaction = </span><span style='background: #AEF1AE'>self.navigate(room)</span><span style=''>
+</span>70 <span style=''>
+</span>71 <span style=''>    /**
+</span>72 <span style=''>     * The Finish Game [[Reaction]].
+</span>73 <span style=''>     * @param win
+</span>74 <span style=''>     *   true if player have won the game, false otherwise.
+</span>75 <span style=''>     * @return
+</span>76 <span style=''>     *   The FinishGame [[Reaction]]
+</span>77 <span style=''>     */
+</span>78 <span style=''>    def finishGame(win: Boolean): Reaction = </span><span style='background: #AEF1AE'>self.finishGame(win)</span><span style=''>
+</span>79 <span style=''>
+</span>80 <span style=''>    /**
+</span>81 <span style=''>     * The Inspect Bag [[Reaction]].
+</span>82 <span style=''>     * @return
+</span>83 <span style=''>     *   The Inspect Bag [[Reaction]].
+</span>84 <span style=''>     */
+</span>85 <span style=''>    def inspectBag: Reaction = </span><span style='background: #AEF1AE'>self.inspectBag</span><span style=''>
+</span>86 <span style=''>
+</span>87 <span style=''>    /**
+</span>88 <span style=''>     * The Openable [[Reaction]].
+</span>89 <span style=''>     * @param itemToOpen
+</span>90 <span style=''>     *   is the item that have to be opened.
+</span>91 <span style=''>     * @param requiredKey
+</span>92 <span style=''>     *   if present is the requiredKey to open the item, otherwise key isn't necessary.
+</span>93 <span style=''>     * @param iskeyConsumable
+</span>94 <span style=''>     *   is true if key after his use have to be destroyed, false otherwise.
+</span>95 <span style=''>     * @return
+</span>96 <span style=''>     */
+</span>97 <span style=''>    def open(
+</span>98 <span style=''>      itemToOpen: I,
+</span>99 <span style=''>      requiredKey: Option[Key]
+</span>100 <span style=''>    ): Reaction = </span><span style='background: #AEF1AE'>self.open(itemToOpen, requiredKey)</span><span style=''>
+</span>101 <span style=''>
+</span>102 <span style=''>    def revealItems(items: Set[I]): Reaction = </span><span style='background: #AEF1AE'>self.revealItems(items)</span><span style=''>
+</span>103 <span style=''>
+</span>104 <span style=''>    def addDirectionToLocation(direction: Direction, room: RM): Reaction =
+</span>105 <span style=''>      </span><span style='background: #F0ADAD'>self.addDirectionToLocation(direction, room)</span><span style=''>
+</span>106 <span style=''>  }
+</span>107 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -77,15 +143,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
+          35
         </td>
         <td>
-          398
+          468
         </td>
         <td>
-          608
+          914
           -
-          622
+          928
         </td>
         <td>
           Apply
@@ -101,39 +167,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          44
         </td>
         <td>
-          399
+          469
         </td>
         <td>
-          668
+          1115
           -
-          678
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.EmptyExt.empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CommonReactionsExt.this.empty
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          400
-        </td>
-        <td>
-          724
-          -
-          740
+          1131
         </td>
         <td>
           Apply
@@ -149,15 +191,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          53
         </td>
         <td>
-          401
+          470
         </td>
         <td>
-          786
+          1311
           -
-          801
+          1326
         </td>
         <td>
           Apply
@@ -173,15 +215,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          60
         </td>
         <td>
-          402
+          471
         </td>
         <td>
-          847
+          1481
           -
-          867
+          1501
         </td>
         <td>
           Select
@@ -197,15 +239,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          69
         </td>
         <td>
-          403
+          472
         </td>
         <td>
-          913
+          1691
           -
-          932
+          1710
         </td>
         <td>
           Apply
@@ -221,15 +263,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          78
         </td>
         <td>
-          404
+          473
         </td>
         <td>
-          978
+          1940
           -
-          998
+          1960
         </td>
         <td>
           Apply
@@ -240,20 +282,44 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           CommonReactionsExt.this.finishGame(win)
         </td>
       </tr><tr>
         <td>
-          39
+          85
         </td>
         <td>
-          405
+          474
         </td>
         <td>
-          1116
+          2100
           -
-          1167
+          2115
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.InspectBagExt.inspectBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.inspectBag
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          475
+        </td>
+        <td>
+          2557
+          -
+          2591
         </td>
         <td>
           Apply
@@ -265,7 +331,55 @@
           
         </td>
         <td style="background: #AEF1AE">
-          CommonReactionsExt.this.open(itemToOpen, requiredKey, iskeyConsumable)
+          CommonReactionsExt.this.open(itemToOpen, requiredKey)
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          476
+        </td>
+        <td>
+          2640
+          -
+          2663
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.RevealItemsExt.revealItems
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CommonReactionsExt.this.revealItems(items)
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          477
+        </td>
+        <td>
+          2746
+          -
+          2790
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.AddDirectionToLocationExt.addDirectionToLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          CommonReactionsExt.this.addDirectionToLocation(direction, room)
         </td>
       </tr>
     </table>

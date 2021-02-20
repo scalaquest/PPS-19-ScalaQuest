@@ -24,58 +24,57 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 </span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>3 <span style=''>import io.github.scalaquest.core.model.Direction
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 </span>8 <span style=''>
 </span>9 <span style=''>/**
-</span>10 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigatable behavior for the
+</span>10 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigable behavior for the
 </span>11 <span style=''> * [[BehaviorBasedModel.Ground]].
 </span>12 <span style=''> */
-</span>13 <span style=''>trait NavigableExt
-</span>14 <span style=''>  extends BehaviorBasedModel
-</span>15 <span style=''>  with StateUtilsExt
-</span>16 <span style=''>  with CommonMessagesExt
-</span>17 <span style=''>  with CommonReactionsExt {
-</span>18 <span style=''>
-</span>19 <span style=''>  /**
-</span>20 <span style=''>   * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
-</span>21 <span style=''>   */
-</span>22 <span style=''>  abstract class Navigable extends GroundBehavior
-</span>23 <span style=''>
-</span>24 <span style=''>  /**
-</span>25 <span style=''>   * Standard implementation of [[Navigable]].
-</span>26 <span style=''>   *
-</span>27 <span style=''>   * @param onNavigateExtra
-</span>28 <span style=''>   *   [[Reaction]] to be executed when the player successfully navigate in a new Room, using
-</span>29 <span style=''>   *   navigation Actions after the standard [[Reaction]]. It can be omitted.
-</span>30 <span style=''>   */
-</span>31 <span style=''>  case class SimpleNavigable(onNavigateExtra: Option[Reaction] = None) extends Navigable {
-</span>32 <span style=''>
-</span>33 <span style=''>    override def triggers: GroundTriggers = {
-</span>34 <span style=''>      // &quot;go &lt;direction&gt;&quot;
-</span>35 <span style=''>      case (Go(direction), state) if </span><span style='background: #AEF1AE'>state.locationNeighbor(direction).isDefined</span><span style=''> =&gt;
-</span>36 <span style=''>        </span><span style='background: #AEF1AE'>movePlayer(state.locationNeighbor(direction).get)</span><span style=''>
-</span>37 <span style=''>    }
-</span>38 <span style=''>
-</span>39 <span style=''>    def movePlayer(targetRoom: RM): Reaction =
-</span>40 <span style=''>      </span><span style='background: #AEF1AE'>_.applyReactions(
-</span>41 <span style=''></span><span style='background: #AEF1AE'>        Reactions.navigate(targetRoom),
-</span>42 <span style=''></span><span style='background: #AEF1AE'>        onNavigateExtra.getOrElse(Reactions.empty)
-</span>43 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>44 <span style=''>  }
-</span>45 <span style=''>
-</span>46 <span style=''>  /**
-</span>47 <span style=''>   * Companion object for [[Navigable]]. Shortcut for the standard implementation.
-</span>48 <span style=''>   */
-</span>49 <span style=''>  object Navigable {
-</span>50 <span style=''>
-</span>51 <span style=''>    def apply(onNavigateExtra: Option[Reaction] = None): Navigable =
-</span>52 <span style=''>      </span><span style='background: #AEF1AE'>SimpleNavigable(onNavigateExtra)</span><span style=''>
-</span>53 <span style=''>  }
-</span>54 <span style=''>}
+</span>13 <span style=''>trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+</span>14 <span style=''>
+</span>15 <span style=''>  /**
+</span>16 <span style=''>   * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
+</span>17 <span style=''>   */
+</span>18 <span style=''>  abstract class Navigable extends GroundBehavior {
+</span>19 <span style=''>    def movePlayer(targetRoom: RM): Reaction
+</span>20 <span style=''>  }
+</span>21 <span style=''>
+</span>22 <span style=''>  /**
+</span>23 <span style=''>   * Standard implementation of [[Navigable]].
+</span>24 <span style=''>   *
+</span>25 <span style=''>   * @param onNavigateExtra
+</span>26 <span style=''>   *   [[Reaction]] to be executed when the player successfully navigate in a new Room, using
+</span>27 <span style=''>   *   navigation Actions after the standard [[Reaction]]. It can be omitted.
+</span>28 <span style=''>   */
+</span>29 <span style=''>  case class SimpleNavigable(onNavigateExtra: Reaction = Reaction.empty) extends Navigable {
+</span>30 <span style=''>
+</span>31 <span style=''>    override def triggers: GroundTriggers = { case (Go(d), s) =&gt;
+</span>32 <span style=''>      </span><span style='background: #AEF1AE'>s.locationNeighbor(d) map movePlayer getOrElse failedToNavigate(d)</span><span style=''>
+</span>33 <span style=''>    }
+</span>34 <span style=''>
+</span>35 <span style=''>    override def movePlayer(targetRoom: RM): Reaction =
+</span>36 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
+</span>37 <span style=''></span><span style='background: #AEF1AE'>        Reactions.navigate(targetRoom),
+</span>38 <span style=''></span><span style='background: #AEF1AE'>        onNavigateExtra
+</span>39 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>    def failedToNavigate(direction: Direction): Reaction =
+</span>42 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.appendMessage(Messages.FailedToNavigate(direction))(Reaction.empty)</span><span style=''>
+</span>43 <span style=''>  }
+</span>44 <span style=''>
+</span>45 <span style=''>  /**
+</span>46 <span style=''>   * Companion object for [[Navigable]]. Shortcut for the standard implementation.
+</span>47 <span style=''>   */
+</span>48 <span style=''>  object Navigable {
+</span>49 <span style=''>
+</span>50 <span style=''>    def apply(onNavigateExtra: Reaction = Reaction.empty): Navigable =
+</span>51 <span style=''>      </span><span style='background: #AEF1AE'>SimpleNavigable(onNavigateExtra)</span><span style=''>
+</span>52 <span style=''>  }
+</span>53 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -90,15 +89,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          33
+          31
         </td>
         <td>
-          278
+          292
         </td>
         <td>
-          1318
+          1312
           -
-          1318
+          1312
         </td>
         <td>
           Apply
@@ -114,63 +113,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          32
         </td>
         <td>
-          275
+          289
         </td>
         <td>
-          1383
+          1365
           -
-          1426
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Option.isDefined
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          NavigableExt.this.StateUtils(state).locationNeighbor(direction).isDefined
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          276
-        </td>
-        <td>
-          1449
-          -
-          1486
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Option.get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          NavigableExt.this.StateUtils(state).locationNeighbor(direction).get
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          277
-        </td>
-        <td>
-          1438
-          -
-          1487
+          1375
         </td>
         <td>
           Apply
@@ -182,43 +133,91 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleNavigable.this.movePlayer(NavigableExt.this.StateUtils(state).locationNeighbor(direction).get)
+          SimpleNavigable.this.movePlayer(targetRoom)
         </td>
       </tr><tr>
         <td>
-          40
+          32
         </td>
         <td>
-          282
+          290
         </td>
         <td>
-          1548
+          1386
           -
-          1664
+          1405
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.NavigableExt.SimpleNavigable.failedToNavigate
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          NavigableExt.this.StateUtils(x$1).applyReactions(NavigableExt.this.Reactions.navigate(targetRoom), SimpleNavigable.this.onNavigateExtra.getOrElse[NavigableExt.this.Reaction](NavigableExt.this.Reactions.empty))
+          SimpleNavigable.this.failedToNavigate(d)
         </td>
       </tr><tr>
         <td>
-          41
+          32
         </td>
         <td>
-          279
+          291
         </td>
         <td>
-          1574
+          1339
           -
-          1604
+          1405
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NavigableExt.this.StateUtils(s).locationNeighbor(d).map[NavigableExt.this.Reaction](((targetRoom: NavigableExt.this.RM) =&gt; SimpleNavigable.this.movePlayer(targetRoom))).getOrElse[NavigableExt.this.Reaction](SimpleNavigable.this.failedToNavigate(d))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          295
+        </td>
+        <td>
+          1475
+          -
+          1564
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NavigableExt.this.Reaction.combine(NavigableExt.this.Reactions.navigate(targetRoom), SimpleNavigable.this.onNavigateExtra)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          293
+        </td>
+        <td>
+          1501
+          -
+          1531
         </td>
         <td>
           Apply
@@ -234,63 +233,111 @@
         </td>
       </tr><tr>
         <td>
-          42
+          38
         </td>
         <td>
-          280
+          294
         </td>
         <td>
-          1640
+          1541
           -
-          1655
+          1556
         </td>
         <td>
           Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.empty
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.NavigableExt.SimpleNavigable.onNavigateExtra
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          NavigableExt.this.Reactions.empty
+          SimpleNavigable.this.onNavigateExtra
         </td>
       </tr><tr>
         <td>
           42
         </td>
         <td>
-          281
+          296
         </td>
         <td>
-          1614
+          1654
           -
-          1656
+          1690
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Option.getOrElse
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt.Messages.FailedToNavigate.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleNavigable.this.onNavigateExtra.getOrElse[NavigableExt.this.Reaction](NavigableExt.this.Reactions.empty)
+          NavigableExt.this.Messages.FailedToNavigate.apply(direction)
         </td>
       </tr><tr>
         <td>
-          52
+          42
         </td>
         <td>
-          283
+          297
         </td>
         <td>
-          1862
+          1692
           -
-          1894
+          1706
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NavigableExt.this.Reaction.empty
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          1631
+          -
+          1707
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.appendMessage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NavigableExt.this.Reaction.appendMessage(NavigableExt.this.Messages.FailedToNavigate.apply(direction))(NavigableExt.this.Reaction.empty)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          299
+        </td>
+        <td>
+          1907
+          -
+          1939
         </td>
         <td>
           Apply

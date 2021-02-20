@@ -28,65 +28,58 @@
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
 </span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 </span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
-</span>8 <span style=''>
-</span>9 <span style=''>/**
-</span>10 <span style=''> * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
-</span>11 <span style=''> */
-</span>12 <span style=''>trait TakeableExt
-</span>13 <span style=''>  extends BehaviorBasedModel
-</span>14 <span style=''>  with StateUtilsExt
-</span>15 <span style=''>  with CommonMessagesExt
-</span>16 <span style=''>  with CommonReactionsExt {
-</span>17 <span style=''>
-</span>18 <span style=''>  /**
-</span>19 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
-</span>20 <span style=''>   * player.
-</span>21 <span style=''>   */
-</span>22 <span style=''>  abstract class Takeable extends ItemBehavior {
-</span>23 <span style=''>    def take: Reaction
-</span>24 <span style=''>  }
-</span>25 <span style=''>
-</span>26 <span style=''>  /**
-</span>27 <span style=''>   * Standard implementation of the Takeable.
-</span>28 <span style=''>   *
-</span>29 <span style=''>   * The behavior of an Item that could be put into the Bag of the player from the current room.
-</span>30 <span style=''>   * @param onTakeExtra
-</span>31 <span style=''>   *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
-</span>32 <span style=''>   *   omitted.
-</span>33 <span style=''>   */
-</span>34 <span style=''>  case class SimpleTakeable(onTakeExtra: Option[Reaction] = None)(implicit subject: I)
-</span>35 <span style=''>    extends Takeable {
-</span>36 <span style=''>
-</span>37 <span style=''>    override def triggers: ItemTriggers = {
-</span>38 <span style=''>      // &quot;Take the item&quot;
-</span>39 <span style=''>      case (Take, item, None, state) if </span><span style='background: #AEF1AE'>state.isInLocation(item)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>take</span><span style=''>
-</span>40 <span style=''>    }
-</span>41 <span style=''>
-</span>42 <span style=''>    /**
-</span>43 <span style=''>     * Returns a Reaction that removes the item from the current room, put it into the bag, executes
-</span>44 <span style=''>     * the eventual extra reaction.
-</span>45 <span style=''>     * @return
-</span>46 <span style=''>     *   A Reaction that removes the item from the current room, put it into the bag, executes the
-</span>47 <span style=''>     *   eventual extra reaction.
-</span>48 <span style=''>     */
-</span>49 <span style=''>    def take: Reaction =
-</span>50 <span style=''>      </span><span style='background: #AEF1AE'>_.applyReactions(
-</span>51 <span style=''></span><span style='background: #AEF1AE'>        Reactions.take(subject),
-</span>52 <span style=''></span><span style='background: #AEF1AE'>        onTakeExtra.getOrElse(Reactions.empty)
-</span>53 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
+</span>10 <span style=''> */
+</span>11 <span style=''>trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
+</span>15 <span style=''>   * player.
+</span>16 <span style=''>   */
+</span>17 <span style=''>  abstract class Takeable extends ItemBehavior {
+</span>18 <span style=''>    def take: Reaction
+</span>19 <span style=''>  }
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * Standard implementation of the Takeable.
+</span>23 <span style=''>   *
+</span>24 <span style=''>   * The behavior of an Item that could be put into the Bag of the player from the current room.
+</span>25 <span style=''>   * @param onTakeExtra
+</span>26 <span style=''>   *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
+</span>27 <span style=''>   *   omitted.
+</span>28 <span style=''>   */
+</span>29 <span style=''>  case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit subject: I)
+</span>30 <span style=''>    extends Takeable {
+</span>31 <span style=''>
+</span>32 <span style=''>    override def triggers: ItemTriggers = {
+</span>33 <span style=''>      case (Take, item, None, state) if </span><span style='background: #AEF1AE'>state.isInLocation(item)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>take</span><span style=''>
+</span>34 <span style=''>    }
+</span>35 <span style=''>
+</span>36 <span style=''>    /**
+</span>37 <span style=''>     * Returns a Reaction that removes the item from the current room, put it into the bag, executes
+</span>38 <span style=''>     * the eventual extra reaction.
+</span>39 <span style=''>     * @return
+</span>40 <span style=''>     *   A Reaction that removes the item from the current room, put it into the bag, executes the
+</span>41 <span style=''>     *   eventual extra reaction.
+</span>42 <span style=''>     */
+</span>43 <span style=''>    override def take: Reaction =
+</span>44 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
+</span>45 <span style=''></span><span style='background: #AEF1AE'>        Reactions.take(subject),
+</span>46 <span style=''></span><span style='background: #AEF1AE'>        onTakeExtra
+</span>47 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>
+</span>50 <span style=''>  /**
+</span>51 <span style=''>   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
+</span>52 <span style=''>   */
+</span>53 <span style=''>  object Takeable {
 </span>54 <span style=''>
-</span>55 <span style=''>  }
-</span>56 <span style=''>
-</span>57 <span style=''>  /**
-</span>58 <span style=''>   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
-</span>59 <span style=''>   */
-</span>60 <span style=''>  object Takeable {
-</span>61 <span style=''>
-</span>62 <span style=''>    def builder(onTakeExtra: Option[Reaction] = None): I =&gt; Takeable =
-</span>63 <span style=''>      </span><span style='background: #AEF1AE'>SimpleTakeable(onTakeExtra)(_)</span><span style=''>
-</span>64 <span style=''>  }
-</span>65 <span style=''>}
+</span>55 <span style=''>    def builder(onTakeExtra: Reaction = Reaction.empty): I =&gt; Takeable =
+</span>56 <span style=''>      </span><span style='background: #AEF1AE'>SimpleTakeable(onTakeExtra)(_)</span><span style=''>
+</span>57 <span style=''>  }
+</span>58 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -101,15 +94,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          37
+          32
         </td>
         <td>
-          357
+          402
         </td>
         <td>
-          1374
+          1270
           -
-          1374
+          1270
         </td>
         <td>
           Apply
@@ -125,15 +118,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          33
         </td>
         <td>
-          355
+          400
         </td>
         <td>
-          1441
+          1312
           -
-          1465
+          1336
         </td>
         <td>
           Apply
@@ -149,15 +142,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          33
         </td>
         <td>
-          356
+          401
         </td>
         <td>
-          1469
+          1340
           -
-          1473
+          1344
         </td>
         <td>
           Select
@@ -173,39 +166,39 @@
         </td>
       </tr><tr>
         <td>
-          50
+          44
         </td>
         <td>
-          362
+          406
         </td>
         <td>
-          1813
+          1693
           -
-          1918
+          1771
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          TakeableExt.this.StateUtils(x$1).applyReactions(TakeableExt.this.Reactions.take(SimpleTakeable.this.subject), SimpleTakeable.this.onTakeExtra.getOrElse[TakeableExt.this.Reaction](TakeableExt.this.Reactions.empty))
+          TakeableExt.this.Reaction.combine(TakeableExt.this.Reactions.take(SimpleTakeable.this.subject), SimpleTakeable.this.onTakeExtra)
         </td>
       </tr><tr>
         <td>
-          51
+          45
         </td>
         <td>
-          358
+          403
         </td>
         <td>
-          1854
+          1734
           -
-          1861
+          1741
         </td>
         <td>
           Select
@@ -221,15 +214,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          45
         </td>
         <td>
-          359
+          404
         </td>
         <td>
-          1839
+          1719
           -
-          1862
+          1742
         </td>
         <td>
           Apply
@@ -245,63 +238,39 @@
         </td>
       </tr><tr>
         <td>
-          52
+          46
         </td>
         <td>
-          360
+          405
         </td>
         <td>
-          1894
+          1752
           -
-          1909
+          1763
         </td>
         <td>
           Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.empty
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.onTakeExtra
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          TakeableExt.this.Reactions.empty
+          SimpleTakeable.this.onTakeExtra
         </td>
       </tr><tr>
         <td>
-          52
+          56
         </td>
         <td>
-          361
+          407
         </td>
         <td>
-          1872
+          1971
           -
-          1910
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Option.getOrElse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          SimpleTakeable.this.onTakeExtra.getOrElse[TakeableExt.this.Reaction](TakeableExt.this.Reactions.empty)
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          363
-        </td>
-        <td>
-          2117
-          -
-          2147
+          2001
         </td>
         <td>
           Apply
@@ -313,7 +282,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          TakeableExt.this.SimpleTakeable.apply(onTakeExtra)(x$2)
+          TakeableExt.this.SimpleTakeable.apply(onTakeExtra)(x$1)
         </td>
       </tr>
     </table>

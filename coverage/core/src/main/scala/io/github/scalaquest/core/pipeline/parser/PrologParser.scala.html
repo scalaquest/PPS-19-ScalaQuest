@@ -26,92 +26,95 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.{BaseItem, DecoratedItem, ItemDescription}
 </span>4 <span style=''>import io.github.scalaquest.core.parsing.engine.Engine
-</span>5 <span style=''>import io.github.scalaquest.core.parsing.scalog
-</span>6 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, ListP, Term, Variable}
-</span>7 <span style=''>import io.github.scalaquest.core.pipeline.lexer.LexerResult
-</span>8 <span style=''>
-</span>9 <span style=''>case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
-</span>10 <span style=''>
-</span>11 <span style=''>trait Helpers {
-</span>12 <span style=''>
-</span>13 <span style=''>  object dsl {
-</span>14 <span style=''>    import io.github.scalaquest.core.parsing.scalog.dsl._
-</span>15 <span style=''>
-</span>16 <span style=''>    val X         = </span><span style='background: #AEF1AE'>Variable(&quot;X&quot;)</span><span style=''>
-</span>17 <span style=''>    val imp       = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;imp&quot;).constructor</span><span style=''>
-</span>18 <span style=''>    val phrase    = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;phrase&quot;).constructor</span><span style=''>
-</span>19 <span style=''>    val sentence  = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;sentence&quot;).extractor.toTerms</span><span style=''>
-</span>20 <span style=''>    val `/`       = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;/&quot;).extractor.toStrings</span><span style=''>
-</span>21 <span style=''>    val decorated = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;decorated&quot;).extractor.toTerms</span><span style=''>
-</span>22 <span style=''>  }
-</span>23 <span style=''>
-</span>24 <span style=''>  object ItemDescription {
-</span>25 <span style=''>    import dsl.decorated
-</span>26 <span style=''>
-</span>27 <span style=''>    private def toItemDescription(term: Term): ItemDescription =
-</span>28 <span style=''>      term match {
-</span>29 <span style=''>        case Atom(name) =&gt; </span><span style='background: #AEF1AE'>BaseItem(name)</span><span style=''>
-</span>30 <span style=''>        case decorated(Atom(decoration), t) =&gt;
-</span>31 <span style=''>          </span><span style='background: #AEF1AE'>DecoratedItem(decoration, toItemDescription(t))</span><span style=''>
-</span>32 <span style=''>      }
-</span>33 <span style=''>
-</span>34 <span style=''>    def unapply(t: Term): Option[ItemDescription] =
-</span>35 <span style=''>      t match {
-</span>36 <span style=''>        case obj @ (_: Compound | _: Term) =&gt; </span><span style='background: #AEF1AE'>Some(toItemDescription(obj))</span><span style=''>
-</span>37 <span style=''>        case _                             =&gt; </span><span style='background: #F0ADAD'>None</span><span style=''>
-</span>38 <span style=''>      }
-</span>39 <span style=''>
-</span>40 <span style=''>  }
-</span>41 <span style=''>
-</span>42 <span style=''>  object Preposition {
-</span>43 <span style=''>    private final val empty = </span><span style='background: #F0ADAD'>&quot;{}&quot;</span><span style=''>
+</span>5 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term, Variable}
+</span>6 <span style=''>import io.github.scalaquest.core.pipeline.lexer.LexerResult
+</span>7 <span style=''>
+</span>8 <span style=''>import scala.annotation.nowarn
+</span>9 <span style=''>
+</span>10 <span style=''>case class SimpleParserResult(tree: AbstractSyntaxTree) extends ParserResult
+</span>11 <span style=''>
+</span>12 <span style=''>trait Helpers {
+</span>13 <span style=''>
+</span>14 <span style=''>  object dsl {
+</span>15 <span style=''>    import io.github.scalaquest.core.parsing.scalog.dsl._
+</span>16 <span style=''>
+</span>17 <span style=''>    val X         = </span><span style='background: #AEF1AE'>Variable(&quot;X&quot;)</span><span style=''>
+</span>18 <span style=''>    val imp       = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;imp&quot;).constructor</span><span style=''>
+</span>19 <span style=''>    val phrase    = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;phrase&quot;).constructor</span><span style=''>
+</span>20 <span style=''>    val sentence  = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;sentence&quot;).extractor.toTerms</span><span style=''>
+</span>21 <span style=''>    val `/`       = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;/&quot;).extractor.toStrings</span><span style=''>
+</span>22 <span style=''>    val decorated = </span><span style='background: #AEF1AE'>CompoundBuilder(&quot;decorated&quot;).extractor.toTerms</span><span style=''>
+</span>23 <span style=''>  }
+</span>24 <span style=''>
+</span>25 <span style=''>  object ItemDescription {
+</span>26 <span style=''>    import dsl.decorated
+</span>27 <span style=''>
+</span>28 <span style=''>    @nowarn(&quot;msg=not all missing cases are reported&quot;)
+</span>29 <span style=''>    @nowarn(&quot;msg=match.*exhaustive&quot;)
+</span>30 <span style=''>    private def toItemDescription(term: Term): ItemDescription =
+</span>31 <span style=''>      term match {
+</span>32 <span style=''>        case Atom(name) =&gt; </span><span style='background: #AEF1AE'>BaseItem(name)</span><span style=''>
+</span>33 <span style=''>        case decorated(Atom(decoration), t) =&gt;
+</span>34 <span style=''>          </span><span style='background: #AEF1AE'>DecoratedItem(decoration, toItemDescription(t))</span><span style=''>
+</span>35 <span style=''>      }
+</span>36 <span style=''>
+</span>37 <span style=''>    def unapply(t: Term): Option[ItemDescription] =
+</span>38 <span style=''>      t match {
+</span>39 <span style=''>        case obj @ (_: Compound | _: Term) =&gt; </span><span style='background: #AEF1AE'>Some(toItemDescription(obj))</span><span style=''>
+</span>40 <span style=''>        case _                             =&gt; </span><span style='background: #F0ADAD'>None</span><span style=''>
+</span>41 <span style=''>      }
+</span>42 <span style=''>
+</span>43 <span style=''>  }
 </span>44 <span style=''>
-</span>45 <span style=''>    def unapply(prep: String): Option[Option[String]] =
-</span>46 <span style=''>      prep match {
-</span>47 <span style=''>        case `empty` =&gt; </span><span style='background: #AEF1AE'>Some(None)</span><span style=''>
-</span>48 <span style=''>        case x       =&gt; </span><span style='background: #AEF1AE'>Some(Some(x))</span><span style=''>
-</span>49 <span style=''>      }
-</span>50 <span style=''>  }
-</span>51 <span style=''>
-</span>52 <span style=''>  val i = </span><span style='background: #AEF1AE'>ItemDescription</span><span style=''>
-</span>53 <span style=''>  val p = </span><span style='background: #AEF1AE'>Preposition</span><span style=''>
-</span>54 <span style=''>}
-</span>55 <span style=''>
-</span>56 <span style=''>/**
-</span>57 <span style=''> * A [[Parser]] implementation that takes advantage of an
-</span>58 <span style=''> * [[io.github.scalaquest.core.parsing.engine.Engine]] in order to perform the syntactical analysis.
-</span>59 <span style=''> */
-</span>60 <span style=''>abstract class PrologParser extends Parser with Helpers {
-</span>61 <span style=''>
-</span>62 <span style=''>  /** The [[io.github.scalaquest.core.parsing.engine.Engine]] used. */
-</span>63 <span style=''>  protected def engine: Engine
+</span>45 <span style=''>  object Preposition {
+</span>46 <span style=''>    private final val empty = </span><span style='background: #F0ADAD'>&quot;{}&quot;</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>    def unapply(prep: String): Option[Option[String]] =
+</span>49 <span style=''>      prep match {
+</span>50 <span style=''>        case `empty` =&gt; </span><span style='background: #AEF1AE'>Some(None)</span><span style=''>
+</span>51 <span style=''>        case x       =&gt; </span><span style='background: #AEF1AE'>Some(Some(x))</span><span style=''>
+</span>52 <span style=''>      }
+</span>53 <span style=''>  }
+</span>54 <span style=''>
+</span>55 <span style=''>  val i = </span><span style='background: #AEF1AE'>ItemDescription</span><span style=''>
+</span>56 <span style=''>  val p = </span><span style='background: #AEF1AE'>Preposition</span><span style=''>
+</span>57 <span style=''>}
+</span>58 <span style=''>
+</span>59 <span style=''>/**
+</span>60 <span style=''> * A [[Parser]] implementation that takes advantage of an
+</span>61 <span style=''> * [[io.github.scalaquest.core.parsing.engine.Engine]] in order to perform the syntactical analysis.
+</span>62 <span style=''> */
+</span>63 <span style=''>abstract class PrologParser extends Parser with Helpers {
 </span>64 <span style=''>
-</span>65 <span style=''>  override def parse(lexerResult: LexerResult): Option[ParserResult] = {
-</span>66 <span style=''>    import dsl._
-</span>67 <span style=''>    import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
-</span>68 <span style=''>    val tokens = </span><span style='background: #AEF1AE'>lexerResult.tokens.map(Atom)</span><span style=''>
-</span>69 <span style=''>    val query  = </span><span style='background: #AEF1AE'>phrase(imp(X), tokens)</span><span style=''>
-</span>70 <span style=''>
-</span>71 <span style=''>    </span><span style='background: #AEF1AE'>for {
-</span>72 <span style=''></span><span style='background: #AEF1AE'>      r &lt;- engine.solve(query).headOption
-</span>73 <span style=''></span><span style='background: #AEF1AE'>      x &lt;- r.getVariable(X)
-</span>74 <span style=''></span><span style='background: #AEF1AE'>      ast &lt;- x match {
-</span>75 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject)) =&gt;
-</span>76 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
-</span>77 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =&gt;
-</span>78 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
-</span>79 <span style=''></span><span style='background: #AEF1AE'>        case sentence(
-</span>80 <span style=''></span><span style='background: #AEF1AE'>              `/`(verb, p(prep)),
-</span>81 <span style=''></span><span style='background: #AEF1AE'>              Atom(subject),
-</span>82 <span style=''></span><span style='background: #AEF1AE'>              i(directObj),
-</span>83 <span style=''></span><span style='background: #AEF1AE'>              i(indirectObj)
-</span>84 <span style=''></span><span style='background: #AEF1AE'>            ) =&gt;
-</span>85 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
-</span>86 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; </span><span style='background: #F0ADAD'>None</span><span style='background: #AEF1AE'>
-</span>87 <span style=''></span><span style='background: #AEF1AE'>      }
-</span>88 <span style=''></span><span style='background: #AEF1AE'>    } yield SimpleParserResult(ast)</span><span style=''>
-</span>89 <span style=''>  }
-</span>90 <span style=''>}
+</span>65 <span style=''>  /** The [[io.github.scalaquest.core.parsing.engine.Engine]] used. */
+</span>66 <span style=''>  protected def engine: Engine
+</span>67 <span style=''>
+</span>68 <span style=''>  override def parse(lexerResult: LexerResult): Option[ParserResult] = {
+</span>69 <span style=''>    import dsl._
+</span>70 <span style=''>    import io.github.scalaquest.core.parsing.scalog.dsl.seqToListP
+</span>71 <span style=''>    val tokens = </span><span style='background: #AEF1AE'>lexerResult.tokens.map(Atom)</span><span style=''>
+</span>72 <span style=''>    val query  = </span><span style='background: #AEF1AE'>phrase(imp(X), tokens)</span><span style=''>
+</span>73 <span style=''>
+</span>74 <span style=''>    </span><span style='background: #AEF1AE'>for {
+</span>75 <span style=''></span><span style='background: #AEF1AE'>      r &lt;- engine.solve(query).headOption
+</span>76 <span style=''></span><span style='background: #AEF1AE'>      x &lt;- r.getVariable(X)
+</span>77 <span style=''></span><span style='background: #AEF1AE'>      ast &lt;- x match {
+</span>78 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject)) =&gt;
+</span>79 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Intransitive(verb, prep, subject))
+</span>80 <span style=''></span><span style='background: #AEF1AE'>        case sentence(`/`(verb, p(prep)), Atom(subject), i(obj)) =&gt;
+</span>81 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Transitive(verb, prep, subject, obj))
+</span>82 <span style=''></span><span style='background: #AEF1AE'>        case sentence(
+</span>83 <span style=''></span><span style='background: #AEF1AE'>              `/`(verb, p(prep)),
+</span>84 <span style=''></span><span style='background: #AEF1AE'>              Atom(subject),
+</span>85 <span style=''></span><span style='background: #AEF1AE'>              i(directObj),
+</span>86 <span style=''></span><span style='background: #AEF1AE'>              i(indirectObj)
+</span>87 <span style=''></span><span style='background: #AEF1AE'>            ) =&gt;
+</span>88 <span style=''></span><span style='background: #AEF1AE'>          Some(AbstractSyntaxTree.Ditransitive(verb, prep, subject, directObj, indirectObj))
+</span>89 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; </span><span style='background: #F0ADAD'>None</span><span style='background: #AEF1AE'>
+</span>90 <span style=''></span><span style='background: #AEF1AE'>      }
+</span>91 <span style=''></span><span style='background: #AEF1AE'>    } yield SimpleParserResult(ast)</span><span style=''>
+</span>92 <span style=''>  }
+</span>93 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -126,15 +129,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          16
+          17
         </td>
         <td>
-          666
+          757
         </td>
         <td>
-          574
+          551
           -
-          587
+          564
         </td>
         <td>
           Apply
@@ -150,15 +153,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          18
         </td>
         <td>
-          667
+          758
         </td>
         <td>
-          624
+          601
           -
-          629
+          606
         </td>
         <td>
           ApplyImplicitView
@@ -174,15 +177,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          18
         </td>
         <td>
-          668
+          759
         </td>
         <td>
-          608
+          585
           -
-          642
+          619
         </td>
         <td>
           Select
@@ -198,15 +201,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          19
         </td>
         <td>
-          669
+          760
         </td>
         <td>
-          679
+          656
           -
-          687
+          664
         </td>
         <td>
           ApplyImplicitView
@@ -222,15 +225,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          19
         </td>
         <td>
-          670
+          761
         </td>
         <td>
-          663
+          640
           -
-          700
+          677
         </td>
         <td>
           Select
@@ -246,15 +249,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          20
         </td>
         <td>
-          671
+          762
         </td>
         <td>
-          737
+          714
           -
-          747
+          724
         </td>
         <td>
           ApplyImplicitView
@@ -270,15 +273,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          20
         </td>
         <td>
-          672
+          763
         </td>
         <td>
-          721
+          698
           -
-          766
+          743
         </td>
         <td>
           Select
@@ -294,15 +297,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
-          673
+          764
         </td>
         <td>
-          803
+          780
           -
-          806
+          783
         </td>
         <td>
           ApplyImplicitView
@@ -318,15 +321,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
-          674
+          765
         </td>
         <td>
-          787
+          764
           -
-          827
+          804
         </td>
         <td>
           Select
@@ -342,15 +345,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          675
+          766
         </td>
         <td>
-          864
+          841
           -
-          875
+          852
         </td>
         <td>
           ApplyImplicitView
@@ -366,15 +369,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          676
+          767
         </td>
         <td>
-          848
+          825
           -
-          894
+          871
         </td>
         <td>
           Select
@@ -390,15 +393,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          32
         </td>
         <td>
-          677
+          768
         </td>
         <td>
-          1064
+          1132
           -
-          1078
+          1146
         </td>
         <td>
           Apply
@@ -414,15 +417,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          34
         </td>
         <td>
-          678
+          769
         </td>
         <td>
-          1162
+          1230
           -
-          1182
+          1250
         </td>
         <td>
           Apply
@@ -438,15 +441,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          34
         </td>
         <td>
-          679
+          770
         </td>
         <td>
-          1136
+          1204
           -
-          1183
+          1251
         </td>
         <td>
           Apply
@@ -462,15 +465,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          39
         </td>
         <td>
-          680
+          771
         </td>
         <td>
-          1312
+          1380
           -
-          1334
+          1402
         </td>
         <td>
           Apply
@@ -486,15 +489,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          39
         </td>
         <td>
-          681
+          772
         </td>
         <td>
-          1307
+          1375
           -
-          1335
+          1403
         </td>
         <td>
           Apply
@@ -510,15 +513,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          40
         </td>
         <td>
-          682
+          773
         </td>
         <td>
-          1382
+          1450
           -
-          1386
+          1454
         </td>
         <td>
           Select
@@ -534,15 +537,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          46
         </td>
         <td>
-          683
+          774
         </td>
         <td>
-          1454
+          1522
           -
-          1458
+          1526
         </td>
         <td>
           Literal
@@ -558,15 +561,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          50
         </td>
         <td>
-          684
+          775
         </td>
         <td>
-          1564
+          1632
           -
-          1568
+          1636
         </td>
         <td>
           Select
@@ -582,15 +585,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          50
         </td>
         <td>
-          685
+          776
         </td>
         <td>
-          1559
+          1627
           -
-          1569
+          1637
         </td>
         <td>
           Apply
@@ -606,15 +609,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          51
         </td>
         <td>
-          686
+          777
         </td>
         <td>
-          1599
+          1667
           -
-          1606
+          1674
         </td>
         <td>
           Apply
@@ -630,15 +633,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          51
         </td>
         <td>
-          687
+          778
         </td>
         <td>
-          1594
+          1662
           -
-          1607
+          1675
         </td>
         <td>
           Apply
@@ -654,15 +657,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          55
         </td>
         <td>
-          688
+          779
         </td>
         <td>
-          1631
+          1699
           -
-          1646
+          1714
         </td>
         <td>
           Select
@@ -678,15 +681,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          56
         </td>
         <td>
-          689
+          780
         </td>
         <td>
-          1657
+          1725
           -
-          1668
+          1736
         </td>
         <td>
           Select
@@ -702,15 +705,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          71
         </td>
         <td>
-          690
+          781
         </td>
         <td>
-          2198
+          2266
           -
-          2202
+          2270
         </td>
         <td>
           Select
@@ -726,15 +729,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          71
         </td>
         <td>
-          691
+          782
         </td>
         <td>
-          2175
+          2243
           -
-          2203
+          2271
         </td>
         <td>
           Apply
@@ -750,15 +753,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          72
         </td>
         <td>
-          692
+          783
         </td>
         <td>
-          2232
+          2300
           -
-          2233
+          2301
         </td>
         <td>
           Select
@@ -774,15 +777,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          72
         </td>
         <td>
-          693
+          784
         </td>
         <td>
-          2228
+          2296
           -
-          2234
+          2302
         </td>
         <td>
           Apply
@@ -798,15 +801,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          72
         </td>
         <td>
-          694
+          785
         </td>
         <td>
-          2236
+          2304
           -
-          2242
+          2310
         </td>
         <td>
           ApplyImplicitView
@@ -822,15 +825,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          72
         </td>
         <td>
-          695
+          786
         </td>
         <td>
-          2221
+          2289
           -
-          2243
+          2311
         </td>
         <td>
           Apply
@@ -846,15 +849,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          75
         </td>
         <td>
-          707
+          798
         </td>
         <td>
-          2249
+          2317
           -
-          2936
+          3004
         </td>
         <td>
           Apply
@@ -875,15 +878,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          76
         </td>
         <td>
-          696
+          787
         </td>
         <td>
-          2322
+          2390
           -
-          2323
+          2391
         </td>
         <td>
           Select
@@ -899,15 +902,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          76
         </td>
         <td>
-          706
+          797
         </td>
         <td>
-          2303
+          2371
           -
-          2936
+          3004
         </td>
         <td>
           Apply
@@ -928,15 +931,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          77
         </td>
         <td>
-          705
+          796
         </td>
         <td>
-          2331
+          2399
           -
-          2936
+          3004
         </td>
         <td>
           Apply
@@ -957,15 +960,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          79
         </td>
         <td>
-          697
+          788
         </td>
         <td>
-          2423
+          2491
           -
-          2475
+          2543
         </td>
         <td>
           Apply
@@ -981,15 +984,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          79
         </td>
         <td>
-          698
+          789
         </td>
         <td>
-          2418
+          2486
           -
-          2476
+          2544
         </td>
         <td>
           Apply
@@ -1005,15 +1008,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          81
         </td>
         <td>
-          699
+          790
         </td>
         <td>
-          2560
+          2628
           -
-          2615
+          2683
         </td>
         <td>
           Apply
@@ -1029,15 +1032,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          81
         </td>
         <td>
-          700
+          791
         </td>
         <td>
-          2555
+          2623
           -
-          2616
+          2684
         </td>
         <td>
           Apply
@@ -1053,15 +1056,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          88
         </td>
         <td>
-          701
+          792
         </td>
         <td>
-          2792
+          2860
           -
-          2868
+          2936
         </td>
         <td>
           Apply
@@ -1077,15 +1080,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          88
         </td>
         <td>
-          702
+          793
         </td>
         <td>
-          2787
+          2855
           -
-          2869
+          2937
         </td>
         <td>
           Apply
@@ -1101,15 +1104,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          89
         </td>
         <td>
-          703
+          794
         </td>
         <td>
-          2888
+          2956
           -
-          2892
+          2960
         </td>
         <td>
           Select
@@ -1125,15 +1128,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          91
         </td>
         <td>
-          704
+          795
         </td>
         <td>
-          2913
+          2981
           -
-          2936
+          3004
         </td>
         <td>
           Apply

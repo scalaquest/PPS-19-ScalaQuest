@@ -1,0 +1,915 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/simple/impl/ReactionUtilsExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Message
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>
+</span>6 <span style=''>trait ReactionUtilsExt extends BehaviorBasedModel {
+</span>7 <span style=''>
+</span>8 <span style=''>  implicit class EnhancedReaction(r: Reaction) {
+</span>9 <span style=''>    def map(g: S =&gt; S): Reaction = </span><span style='background: #AEF1AE'>Reaction.map(g)(r)</span><span style=''>
+</span>10 <span style=''>
+</span>11 <span style=''>    def flatMap(g: S =&gt; Reaction): Reaction = </span><span style='background: #AEF1AE'>Reaction.flatMap(g)(r)</span><span style=''>
+</span>12 <span style=''>  }
+</span>13 <span style=''>
+</span>14 <span style=''>  object Reaction {
+</span>15 <span style=''>
+</span>16 <span style=''>    def appendMessage(msg: Message)(r: Reaction): Reaction = </span><span style='background: #AEF1AE'>appendMessages(Seq(msg))(r)</span><span style=''>
+</span>17 <span style=''>
+</span>18 <span style=''>    def appendMessages(msgs: Seq[Message])(r: Reaction): Reaction =
+</span>19 <span style=''>      s =&gt; {
+</span>20 <span style=''>        val (s1, m1) = r(s)
+</span>21 <span style=''>        </span><span style='background: #AEF1AE'>(s1, m1 ++ msgs)</span><span style=''>
+</span>22 <span style=''>      }
+</span>23 <span style=''>
+</span>24 <span style=''>    def apply(f: S =&gt; S, messages: Message*): Reaction = </span><span style='background: #AEF1AE'>create(f, messages)</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>    def combine(a: Reaction, b: Reaction): Reaction = </span><span style='background: #AEF1AE'>a.flatMap(_ =&gt; b)</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>    def create(f: S =&gt; S, messages: Seq[Message]): Reaction = s =&gt; </span><span style='background: #AEF1AE'>(f(s), messages)</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>    def empty: Reaction = </span><span style='background: #AEF1AE'>create(identity[S], Seq.empty)</span><span style=''>
+</span>31 <span style=''>
+</span>32 <span style=''>    def flatMap(g: S =&gt; Reaction)(f: Reaction): Reaction = { s =&gt;
+</span>33 <span style=''>      val (s1, m1) = f(s)
+</span>34 <span style=''>      val (s2, m2) = g(s1)(s1)
+</span>35 <span style=''>      </span><span style='background: #AEF1AE'>(s2, m1 ++ m2)</span><span style=''>
+</span>36 <span style=''>    }
+</span>37 <span style=''>
+</span>38 <span style=''>    def map(g: S =&gt; S)(f: Reaction): Reaction =
+</span>39 <span style=''>      s =&gt; {
+</span>40 <span style=''>        val (s1, m1) = f(s)
+</span>41 <span style=''>        </span><span style='background: #AEF1AE'>(g(s1), m1)</span><span style=''>
+</span>42 <span style=''>      }
+</span>43 <span style=''>
+</span>44 <span style=''>    def messages(msgs: Message*): Reaction = </span><span style='background: #AEF1AE'>appendMessages(msgs)(empty)</span><span style=''>
+</span>45 <span style=''>
+</span>46 <span style=''>    def pure(s: S): Reaction = </span><span style='background: #F0ADAD'>create(_ =&gt; s, Seq.empty)</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>
+</span>50 <span style=''>  object Update {
+</span>51 <span style=''>    private type U = S =&gt; S
+</span>52 <span style=''>
+</span>53 <span style=''>    def apply(fs: U*): U = </span><span style='background: #AEF1AE'>fs.reduceOption(_ andThen _) getOrElse </span><span style='background: #F0ADAD'>identity[S]</span><span style=''>
+</span>54 <span style=''>
+</span>55 <span style=''>    def empty: U = </span><span style='background: #AEF1AE'>identity[S]</span><span style=''>
+</span>56 <span style=''>  }
+</span>57 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          549
+        </td>
+        <td>
+          340
+          -
+          341
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.r
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EnhancedReaction.this.r
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          550
+        </td>
+        <td>
+          324
+          -
+          342
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ReactionUtilsExt.this.Reaction.map(g)(EnhancedReaction.this.r)
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          551
+        </td>
+        <td>
+          410
+          -
+          411
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.r
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EnhancedReaction.this.r
+        </td>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          552
+        </td>
+        <td>
+          390
+          -
+          412
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ReactionUtilsExt.this.Reaction.flatMap(g)(EnhancedReaction.this.r)
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          553
+        </td>
+        <td>
+          500
+          -
+          527
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.appendMessages
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Reaction.this.appendMessages(scala.`package`.Seq.apply[io.github.scalaquest.core.model.Message](msg))(r)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          554
+        </td>
+        <td>
+          623
+          -
+          623
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1._1
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          555
+        </td>
+        <td>
+          627
+          -
+          627
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1._2
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          556
+        </td>
+        <td>
+          651
+          -
+          661
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.++
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          m1.++[io.github.scalaquest.core.model.Message](msgs)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          557
+        </td>
+        <td>
+          646
+          -
+          662
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[ReactionUtilsExt.this.S, Seq[io.github.scalaquest.core.model.Message]](s1, m1.++[io.github.scalaquest.core.model.Message](msgs))
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          558
+        </td>
+        <td>
+          729
+          -
+          748
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Reaction.this.create(f, messages)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          559
+        </td>
+        <td>
+          804
+          -
+          821
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ReactionUtilsExt.this.EnhancedReaction(a).flatMap(((x$2: ReactionUtilsExt.this.S) =&gt; b))
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          560
+        </td>
+        <td>
+          891
+          -
+          895
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          f.apply(s)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          561
+        </td>
+        <td>
+          890
+          -
+          906
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[ReactionUtilsExt.this.S, Seq[io.github.scalaquest.core.model.Message]](f.apply(s), messages)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          562
+        </td>
+        <td>
+          941
+          -
+          952
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.identity
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.identity[ReactionUtilsExt.this.S](x)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          563
+        </td>
+        <td>
+          954
+          -
+          963
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.SeqFactory.Delegate.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.Seq.empty[Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          564
+        </td>
+        <td>
+          934
+          -
+          964
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Reaction.this.create(((x: ReactionUtilsExt.this.S) =&gt; scala.Predef.identity[ReactionUtilsExt.this.S](x)), scala.`package`.Seq.empty[Nothing])
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          565
+        </td>
+        <td>
+          1043
+          -
+          1043
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3._1
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          566
+        </td>
+        <td>
+          1047
+          -
+          1047
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3._2
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          567
+        </td>
+        <td>
+          1069
+          -
+          1069
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$4._1
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          568
+        </td>
+        <td>
+          1073
+          -
+          1073
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$4._2
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          569
+        </td>
+        <td>
+          1100
+          -
+          1108
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.++
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          m1.++[io.github.scalaquest.core.model.Message](m2)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          570
+        </td>
+        <td>
+          1095
+          -
+          1109
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[ReactionUtilsExt.this.S, Seq[io.github.scalaquest.core.model.Message]](s2, m1.++[io.github.scalaquest.core.model.Message](m2))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          571
+        </td>
+        <td>
+          1191
+          -
+          1191
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$5._1
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          572
+        </td>
+        <td>
+          1195
+          -
+          1195
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$5._2
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          573
+        </td>
+        <td>
+          1215
+          -
+          1220
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          g.apply(s1)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          574
+        </td>
+        <td>
+          1214
+          -
+          1225
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[ReactionUtilsExt.this.S, Seq[io.github.scalaquest.core.model.Message]](g.apply(s1), m1)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          575
+        </td>
+        <td>
+          1301
+          -
+          1306
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Reaction.this.empty
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          576
+        </td>
+        <td>
+          1280
+          -
+          1307
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.appendMessages
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Reaction.this.appendMessages(msgs)(Reaction.this.empty)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          577
+        </td>
+        <td>
+          1355
+          -
+          1364
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.SeqFactory.Delegate.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Seq.empty[Nothing]
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          578
+        </td>
+        <td>
+          1340
+          -
+          1365
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Reaction.this.create(((x$6: ReactionUtilsExt.this.S) =&gt; s), scala.`package`.Seq.empty[Nothing])
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          579
+        </td>
+        <td>
+          1462
+          -
+          1473
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.andThen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$7.andThen[ReactionUtilsExt.this.S](x$8)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          580
+        </td>
+        <td>
+          1485
+          -
+          1496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.identity
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.identity[ReactionUtilsExt.this.S](x)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          581
+        </td>
+        <td>
+          1446
+          -
+          1496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          fs.reduceOption[io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.U](((x$7: io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.U, x$8: io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.U) =&gt; x$7.andThen[ReactionUtilsExt.this.S](x$8))).getOrElse[io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.U](((x: ReactionUtilsExt.this.S) =&gt; scala.Predef.identity[ReactionUtilsExt.this.S](x)))
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          582
+        </td>
+        <td>
+          1517
+          -
+          1528
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.identity
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.identity[ReactionUtilsExt.this.S](x)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -35,30 +35,34 @@
 </span>11 <span style=''>  /**
 </span>12 <span style=''>   * A [[BehaviorBasedItem]] that should be used to open/close items with a Openable behavior.
 </span>13 <span style=''>   */
-</span>14 <span style=''>  trait Key extends BehaviorBasedItem
-</span>15 <span style=''>
-</span>16 <span style=''>  /**
-</span>17 <span style=''>   * Standard implementation of the common [[Key]].
-</span>18 <span style=''>   */
-</span>19 <span style=''>  case class SimpleKey(
-</span>20 <span style=''>    description: ItemDescription,
-</span>21 <span style=''>    ref: ItemRef,
-</span>22 <span style=''>    addBehaviorsBuilder: I =&gt; ItemBehavior*
-</span>23 <span style=''>  ) extends Key {
-</span>24 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>addBehaviorsBuilder.map(_(this))</span><span style=''>
-</span>25 <span style=''>  }
-</span>26 <span style=''>
-</span>27 <span style=''>  /**
-</span>28 <span style=''>   * Companion object for [[Key]]. Makes the initialization more succinct.
-</span>29 <span style=''>   */
-</span>30 <span style=''>  object Key {
-</span>31 <span style=''>
-</span>32 <span style=''>    def apply(
-</span>33 <span style=''>      description: ItemDescription,
-</span>34 <span style=''>      addBehaviorsBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>35 <span style=''>    ): Key = </span><span style='background: #AEF1AE'>SimpleKey(description, ItemRef(description), addBehaviorsBuilders: _*)</span><span style=''>
-</span>36 <span style=''>  }
-</span>37 <span style=''>}
+</span>14 <span style=''>  trait Key extends BehaviorBasedItem {
+</span>15 <span style=''>    def disposable: Boolean
+</span>16 <span style=''>  }
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * Standard implementation of the common [[Key]].
+</span>20 <span style=''>   */
+</span>21 <span style=''>  case class SimpleKey(
+</span>22 <span style=''>    description: ItemDescription,
+</span>23 <span style=''>    ref: ItemRef,
+</span>24 <span style=''>    disposable: Boolean = true,
+</span>25 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>26 <span style=''>  ) extends Key {
+</span>27 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>extraBehavBuilders.map(_(this))</span><span style=''>
+</span>28 <span style=''>  }
+</span>29 <span style=''>
+</span>30 <span style=''>  /**
+</span>31 <span style=''>   * Companion object for [[Key]]. Makes the initialization more succinct.
+</span>32 <span style=''>   */
+</span>33 <span style=''>  object Key {
+</span>34 <span style=''>
+</span>35 <span style=''>    def apply(
+</span>36 <span style=''>      description: ItemDescription,
+</span>37 <span style=''>      disposable: Boolean = true,
+</span>38 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>39 <span style=''>    ): Key = </span><span style='background: #AEF1AE'>SimpleKey(description, ItemRef(description), disposable, extraBehavBuilders)</span><span style=''>
+</span>40 <span style=''>  }
+</span>41 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -73,15 +77,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          24
+          27
         </td>
         <td>
-          377
+          440
         </td>
         <td>
-          763
+          843
           -
-          770
+          850
         </td>
         <td>
           Apply
@@ -97,15 +101,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          27
         </td>
         <td>
-          378
+          441
         </td>
         <td>
-          739
+          820
           -
-          771
+          851
         </td>
         <td>
           Apply
@@ -117,19 +121,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleKey.this.addBehaviorsBuilder.map[KeyExt.this.ItemBehavior](((x$1: KeyExt.this.I =&gt; KeyExt.this.ItemBehavior) =&gt; x$1.apply(this)))
+          SimpleKey.this.extraBehavBuilders.map[KeyExt.this.ItemBehavior](((x$1: KeyExt.this.I =&gt; KeyExt.this.ItemBehavior) =&gt; x$1.apply(this)))
         </td>
       </tr><tr>
         <td>
-          35
+          39
         </td>
         <td>
-          379
+          442
         </td>
         <td>
-          1030
+          1142
           -
-          1050
+          1162
         </td>
         <td>
           Apply
@@ -145,15 +149,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          39
         </td>
         <td>
-          380
+          443
         </td>
         <td>
-          1007
+          1119
           -
-          1077
+          1195
         </td>
         <td>
           Apply
@@ -165,7 +169,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          KeyExt.this.SimpleKey.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), (addBehaviorsBuilders: _*))
+          KeyExt.this.SimpleKey.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), disposable, extraBehavBuilders)
         </td>
       </tr>
     </table>

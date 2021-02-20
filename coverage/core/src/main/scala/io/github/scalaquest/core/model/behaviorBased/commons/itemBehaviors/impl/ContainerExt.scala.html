@@ -1,0 +1,415 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/itemBehaviors/impl/ContainerExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.ItemRef
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>8 <span style=''>
+</span>9 <span style=''>trait ContainerExt
+</span>10 <span style=''>  extends BehaviorBasedModel
+</span>11 <span style=''>  with CommonMessagesExt
+</span>12 <span style=''>  with CommonReactionsExt
+</span>13 <span style=''>  with OpenableExt {
+</span>14 <span style=''>
+</span>15 <span style=''>  abstract class Container extends ItemBehavior {
+</span>16 <span style=''>    def items(implicit state: S): Set[I]
+</span>17 <span style=''>    def revealItems: Reaction
+</span>18 <span style=''>    def openable: Openable
+</span>19 <span style=''>    def isOpen: Boolean
+</span>20 <span style=''>  }
+</span>21 <span style=''>
+</span>22 <span style=''>  case class SimpleContainer(
+</span>23 <span style=''>    itemRefs: Set[ItemRef],
+</span>24 <span style=''>    openable: Openable
+</span>25 <span style=''>  )(implicit subject: I)
+</span>26 <span style=''>    extends Container
+</span>27 <span style=''>    with Delegate {
+</span>28 <span style=''>
+</span>29 <span style=''>    override def delegateTriggers: ItemTriggers = </span><span style='background: #AEF1AE'>openable.triggers</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>    override def receiverTriggers: ItemTriggers = {
+</span>32 <span style=''>      case (Open, _, maybeKey, s)
+</span>33 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.canBeOpened(maybeKey)(s)
+</span>34 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !openable.isOpen</span><span style=''> =&gt;
+</span>35 <span style=''>        </span><span style='background: #AEF1AE'>revealItems</span><span style=''>
+</span>36 <span style=''>    }
+</span>37 <span style=''>
+</span>38 <span style=''>    override def items(implicit state: S): Set[I] = </span><span style='background: #AEF1AE'>itemRefs.map(state.items(_))</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable.isOpen</span><span style=''>
+</span>41 <span style=''>
+</span>42 <span style=''>    override def revealItems: Reaction =
+</span>43 <span style=''>      s =&gt;
+</span>44 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.combine(
+</span>45 <span style=''></span><span style='background: #AEF1AE'>          openable.open,
+</span>46 <span style=''></span><span style='background: #AEF1AE'>          Reactions.revealItems(items(s))
+</span>47 <span style=''></span><span style='background: #AEF1AE'>        )(s)</span><span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>
+</span>50 <span style=''>  object Container {
+</span>51 <span style=''>
+</span>52 <span style=''>    def unlockedBuilder(
+</span>53 <span style=''>      items: Set[I]
+</span>54 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.unlockedBuilder()(i))(i)</span><span style=''>
+</span>55 <span style=''>
+</span>56 <span style=''>    def lockedBuilder(
+</span>57 <span style=''>      items: Set[I],
+</span>58 <span style=''>      key: Key
+</span>59 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.lockedBuilder(key)(i))(i)</span><span style=''>
+</span>60 <span style=''>  }
+</span>61 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          308
+        </td>
+        <td>
+          966
+          -
+          983
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel.ItemBehavior.triggers
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.openable.triggers
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          314
+        </td>
+        <td>
+          1035
+          -
+          1035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.SimpleContainer.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          309
+        </td>
+        <td>
+          1099
+          -
+          1106
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.SimpleContainer.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          310
+        </td>
+        <td>
+          1111
+          -
+          1144
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.Openable.canBeOpened
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.openable.canBeOpened(maybeKey)(s)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          311
+        </td>
+        <td>
+          1160
+          -
+          1176
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.openable.isOpen.unary_!
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          312
+        </td>
+        <td>
+          1084
+          -
+          1176
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.StateUtils(s).isInLocation(SimpleContainer.this.subject).&amp;&amp;(SimpleContainer.this.openable.canBeOpened(maybeKey)(s)).&amp;&amp;(SimpleContainer.this.openable.isOpen.unary_!)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          313
+        </td>
+        <td>
+          1188
+          -
+          1199
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.SimpleContainer.revealItems
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.revealItems
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          315
+        </td>
+        <td>
+          1272
+          -
+          1286
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          state.items.apply(x$1)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          316
+        </td>
+        <td>
+          1259
+          -
+          1287
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.itemRefs.map[ContainerExt.this.I](((x$1: io.github.scalaquest.core.model.ItemRef) =&gt; state.items.apply(x$1)))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          317
+        </td>
+        <td>
+          1324
+          -
+          1339
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.Openable.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.openable.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          318
+        </td>
+        <td>
+          1401
+          -
+          1498
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.Reaction.combine(SimpleContainer.this.openable.open, ContainerExt.this.Reactions.revealItems(SimpleContainer.this.items(s))).apply(s)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          319
+        </td>
+        <td>
+          1600
+          -
+          1667
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.SimpleContainer.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.SimpleContainer.apply(items.map[io.github.scalaquest.core.model.ItemRef](((x$2: ContainerExt.this.I) =&gt; x$2.ref)), ContainerExt.this.Openable.unlockedBuilder(ContainerExt.this.Openable.unlockedBuilder$default$1).apply(i))(i)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          320
+        </td>
+        <td>
+          1757
+          -
+          1825
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.SimpleContainer.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.SimpleContainer.apply(items.map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref)), ContainerExt.this.Openable.lockedBuilder(key, ContainerExt.this.Openable.lockedBuilder$default$2).apply(i))(i)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

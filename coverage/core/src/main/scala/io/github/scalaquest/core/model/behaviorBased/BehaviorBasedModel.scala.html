@@ -51,7 +51,7 @@
 </span>27 <span style=''>     * @return
 </span>28 <span style=''>     *   [[ItemBehavior]] s associated to the Item.
 </span>29 <span style=''>     */
-</span>30 <span style=''>    def behaviors: Seq[ItemBehavior] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
+</span>30 <span style=''>    def behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>Seq.empty</span><span style=''>
 </span>31 <span style=''>
 </span>32 <span style=''>    override def use(action: Action, maybeSideItem: Option[I])(implicit
 </span>33 <span style=''>      state: S
@@ -59,7 +59,7 @@
 </span>35 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
 </span>36 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
 </span>37 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
-</span>38 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(</span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style='background: #AEF1AE'>)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(PartialFunction.empty)
 </span>39 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, this, maybeSideItem, state))</span><span style=''>
 </span>40 <span style=''>  }
 </span>41 <span style=''>
@@ -101,7 +101,7 @@
 </span>77 <span style=''>     * @return
 </span>78 <span style=''>     *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
 </span>79 <span style=''>     */
-</span>80 <span style=''>    def receiverTriggers: ItemTriggers = </span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style=''>
+</span>80 <span style=''>    def receiverTriggers: ItemTriggers
 </span>81 <span style=''>
 </span>82 <span style=''>    /**
 </span>83 <span style=''>     * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
@@ -126,13 +126,13 @@
 </span>102 <span style=''>   * triggers) is implemented here.
 </span>103 <span style=''>   */
 </span>104 <span style=''>  abstract class BehaviorBasedGround extends Ground {
-</span>105 <span style=''>    def behaviors: Seq[GroundBehavior] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
+</span>105 <span style=''>    def behaviors: Seq[GroundBehavior] = </span><span style='background: #AEF1AE'>Seq.empty</span><span style=''>
 </span>106 <span style=''>
 </span>107 <span style=''>    override def use(action: Action)(implicit state: S): Option[Reaction] =
 </span>108 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
 </span>109 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
 </span>110 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
-</span>111 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(</span><span style='background: #F0ADAD'>PartialFunction.empty</span><span style='background: #AEF1AE'>)
+</span>111 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(PartialFunction.empty)
 </span>112 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, state))</span><span style=''>
 </span>113 <span style=''>  }
 </span>114 <span style=''>
@@ -167,7 +167,7 @@
           30
         </td>
         <td>
-          183
+          195
         </td>
         <td>
           1111
@@ -183,7 +183,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.`package`.Seq.empty[Nothing]
         </td>
       </tr><tr>
@@ -191,7 +191,7 @@
           36
         </td>
         <td>
-          184
+          196
         </td>
         <td>
           1264
@@ -215,7 +215,7 @@
           37
         </td>
         <td>
-          185
+          197
         </td>
         <td>
           1298
@@ -239,7 +239,7 @@
           38
         </td>
         <td>
-          186
+          198
         </td>
         <td>
           1329
@@ -255,7 +255,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.PartialFunction.empty[Any, Nothing]
         </td>
       </tr><tr>
@@ -263,7 +263,7 @@
           39
         </td>
         <td>
-          187
+          199
         </td>
         <td>
           1366
@@ -287,7 +287,7 @@
           39
         </td>
         <td>
-          188
+          200
         </td>
         <td>
           1241
@@ -311,7 +311,7 @@
           54
         </td>
         <td>
-          189
+          201
         </td>
         <td>
           1952
@@ -332,39 +332,15 @@
         </td>
       </tr><tr>
         <td>
-          80
-        </td>
-        <td>
-          190
-        </td>
-        <td>
-          2936
-          -
-          2957
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.PartialFunction.empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          scala.PartialFunction.empty[Any, Nothing]
-        </td>
-      </tr><tr>
-        <td>
           91
         </td>
         <td>
-          191
+          202
         </td>
         <td>
-          3329
+          3305
           -
-          3345
+          3321
         </td>
         <td>
           Select
@@ -383,12 +359,12 @@
           91
         </td>
         <td>
-          192
+          203
         </td>
         <td>
-          3347
+          3323
           -
-          3363
+          3339
         </td>
         <td>
           Select
@@ -407,12 +383,12 @@
           91
         </td>
         <td>
-          193
+          204
         </td>
         <td>
-          3372
+          3348
           -
-          3382
+          3358
         </td>
         <td>
           Apply
@@ -424,19 +400,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$4.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S), BehaviorBasedModel.this.S =&gt; BehaviorBasedModel.this.S](x$5)
+          x$4.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S), BehaviorBasedModel.this.S =&gt; (BehaviorBasedModel.this.S, Seq[io.github.scalaquest.core.model.Message])](x$5)
         </td>
       </tr><tr>
         <td>
           91
         </td>
         <td>
-          194
+          205
         </td>
         <td>
-          3325
+          3301
           -
-          3383
+          3359
         </td>
         <td>
           Apply
@@ -448,19 +424,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          scala.`package`.Seq.apply[BehaviorBasedModel.this.ItemTriggers](Delegate.this.receiverTriggers, Delegate.this.delegateTriggers).reduce[PartialFunction[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S),BehaviorBasedModel.this.S =&gt; BehaviorBasedModel.this.S]](((x$4: PartialFunction[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S),BehaviorBasedModel.this.S =&gt; BehaviorBasedModel.this.S], x$5: PartialFunction[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S),BehaviorBasedModel.this.S =&gt; BehaviorBasedModel.this.S]) =&gt; x$4.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S), BehaviorBasedModel.this.S =&gt; BehaviorBasedModel.this.S](x$5)))
+          scala.`package`.Seq.apply[BehaviorBasedModel.this.ItemTriggers](Delegate.this.receiverTriggers, Delegate.this.delegateTriggers).reduce[PartialFunction[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S),BehaviorBasedModel.this.S =&gt; (BehaviorBasedModel.this.S, Seq[io.github.scalaquest.core.model.Message])]](((x$4: PartialFunction[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S),BehaviorBasedModel.this.S =&gt; (BehaviorBasedModel.this.S, Seq[io.github.scalaquest.core.model.Message])], x$5: PartialFunction[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S),BehaviorBasedModel.this.S =&gt; (BehaviorBasedModel.this.S, Seq[io.github.scalaquest.core.model.Message])]) =&gt; x$4.orElse[(io.github.scalaquest.core.model.Action, BehaviorBasedModel.this.BehaviorBasedItem, Option[BehaviorBasedModel.this.BehaviorBasedItem], BehaviorBasedModel.this.S), BehaviorBasedModel.this.S =&gt; (BehaviorBasedModel.this.S, Seq[io.github.scalaquest.core.model.Message])](x$5)))
         </td>
       </tr><tr>
         <td>
           105
         </td>
         <td>
-          195
+          206
         </td>
         <td>
-          3882
+          3858
           -
-          3891
+          3867
         </td>
         <td>
           TypeApply
@@ -471,7 +447,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.`package`.Seq.empty[Nothing]
         </td>
       </tr><tr>
@@ -479,12 +455,12 @@
           109
         </td>
         <td>
-          196
+          207
         </td>
         <td>
-          3998
+          3974
           -
-          4008
+          3984
         </td>
         <td>
           Select
@@ -503,12 +479,12 @@
           110
         </td>
         <td>
-          197
+          208
         </td>
         <td>
-          4032
+          4008
           -
-          4042
+          4018
         </td>
         <td>
           Apply
@@ -527,12 +503,12 @@
           111
         </td>
         <td>
-          198
+          209
         </td>
         <td>
-          4063
+          4039
           -
-          4084
+          4060
         </td>
         <td>
           TypeApply
@@ -543,7 +519,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.PartialFunction.empty[Any, Nothing]
         </td>
       </tr><tr>
@@ -551,12 +527,12 @@
           112
         </td>
         <td>
-          199
+          210
         </td>
         <td>
-          4100
+          4076
           -
-          4115
+          4091
         </td>
         <td>
           Apply
@@ -575,12 +551,12 @@
           112
         </td>
         <td>
-          200
+          211
         </td>
         <td>
-          3975
+          3951
           -
-          4116
+          4092
         </td>
         <td>
           Apply
@@ -599,12 +575,12 @@
           126
         </td>
         <td>
-          201
+          212
         </td>
         <td>
-          4622
+          4598
           -
-          4643
+          4619
         </td>
         <td>
           TypeApply

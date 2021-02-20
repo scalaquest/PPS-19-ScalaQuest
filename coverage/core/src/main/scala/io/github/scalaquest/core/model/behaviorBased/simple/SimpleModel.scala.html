@@ -1,0 +1,338 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/simple/SimpleModel.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.CommonsExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.{SimpleRoomExt, SimpleStateExt}
+</span>6 <span style=''>import monocle.Lens
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * This represents the Model with a standard implementation: items share an internal implementation
+</span>10 <span style=''> * based on behaviors, with some commonly used items and behaviors. The state uses a simple
+</span>11 <span style=''> * implementation, that keeps track of the rooms' composition, and a bag for the player.
+</span>12 <span style=''> */
+</span>13 <span style=''>object SimpleModel
+</span>14 <span style=''>  extends BehaviorBasedModel
+</span>15 <span style=''>  with SimpleStateExt
+</span>16 <span style=''>  with SimpleRoomExt
+</span>17 <span style=''>  with CommonsExt {
+</span>18 <span style=''>
+</span>19 <span style=''>  override def locationRoomLens: Lens[SimpleModel.SimpleState, SimpleModel.SimpleRoom] =
+</span>20 <span style=''>    </span><span style='background: #AEF1AE'>Lens[S, RM] { s =&gt; s.location } { r =&gt; s =&gt;
+</span>21 <span style=''></span><span style='background: #AEF1AE'>      s.copy(rooms = s.rooms.updated(s.location.ref, r), _location = r.ref)
+</span>22 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
+</span>23 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          538
+        </td>
+        <td>
+          837
+          -
+          847
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.location
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.location
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          548
+        </td>
+        <td>
+          818
+          -
+          943
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.Lens.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          monocle.Lens.apply[io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.S, io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.RM](((s: io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.S) =&gt; s.location))(((r: io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.RM) =&gt; ((s: io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.S) =&gt; {
+  &lt;artifact&gt; val x$1: scala.collection.immutable.Map[io.github.scalaquest.core.model.RoomRef,io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.RM] @scala.reflect.internal.annotations.uncheckedBounds = s.rooms.updated[io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.RM](s.location.ref, r);
+  &lt;artifact&gt; val x$2: io.github.scalaquest.core.model.RoomRef = r.ref;
+  &lt;artifact&gt; val x$3: Map[io.github.scalaquest.core.dictionary.verbs.VerbPrep,io.github.scalaquest.core.model.Action] @scala.reflect.internal.annotations.uncheckedBounds = s.copy$default$1;
+  &lt;artifact&gt; val x$4: Map[io.github.scalaquest.core.model.ItemRef,io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.I] @scala.reflect.internal.annotations.uncheckedBounds = s.copy$default$3;
+  &lt;artifact&gt; val x$5: io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.G = s.copy$default$4;
+  &lt;artifact&gt; val x$6: Set[io.github.scalaquest.core.model.ItemRef] @scala.reflect.internal.annotations.uncheckedBounds = s.copy$default$5;
+  &lt;artifact&gt; val x$7: Boolean = s.copy$default$7;
+  s.copy(x$3, x$1, x$4, x$5, x$6, x$2, x$7)
+})))
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          539
+        </td>
+        <td>
+          899
+          -
+          913
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.location.ref
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          540
+        </td>
+        <td>
+          883
+          -
+          917
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.updated
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.rooms.updated[io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.RM](s.location.ref, r)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          541
+        </td>
+        <td>
+          931
+          -
+          936
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleRoomExt.SimpleRoom.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.ref
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          542
+        </td>
+        <td>
+          870
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.copy$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.copy$default$1
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          543
+        </td>
+        <td>
+          870
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.copy$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.copy$default$3
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          544
+        </td>
+        <td>
+          870
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.copy$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.copy$default$4
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          545
+        </td>
+        <td>
+          870
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.copy$default$5
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.copy$default$5
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          546
+        </td>
+        <td>
+          870
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.copy$default$7
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.copy$default$7
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          547
+        </td>
+        <td>
+          868
+          -
+          937
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.SimpleStateExt.SimpleState.copy
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s.copy(x$3, x$1, x$4, x$5, x$6, x$2, x$7)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

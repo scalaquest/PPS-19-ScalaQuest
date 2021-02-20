@@ -27,41 +27,32 @@
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 </span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 </span>7 <span style=''>
-</span>8 <span style=''>private[reactions] trait OpenExt
-</span>9 <span style=''>  extends BehaviorBasedModel
-</span>10 <span style=''>  with KeyExt
-</span>11 <span style=''>  with StateUtilsExt
-</span>12 <span style=''>  with CommonMessagesExt {
-</span>13 <span style=''>
-</span>14 <span style=''>  private[reactions] def open(
-</span>15 <span style=''>    itemToOpen: I,
-</span>16 <span style=''>    requiredKey: Option[Key],
-</span>17 <span style=''>    iskeyConsumable: Boolean
-</span>18 <span style=''>  ): Reaction =
-</span>19 <span style=''>    state =&gt; {
-</span>20 <span style=''>
-</span>21 <span style=''>      val modState = if (iskeyConsumable) </span><span style='background: #AEF1AE'>{
-</span>22 <span style=''></span><span style='background: #AEF1AE'>        val keyConsumedState: S =
-</span>23 <span style=''></span><span style='background: #AEF1AE'>          requiredKey.fold(state)(k =&gt; {
-</span>24 <span style=''></span><span style='background: #AEF1AE'>            val newLoc = roomItemsLens.modify(_ - k.ref)(state.location)
-</span>25 <span style=''></span><span style='background: #AEF1AE'>            state.applyReactions(
-</span>26 <span style=''></span><span style='background: #AEF1AE'>              roomsLens.modify(_ + (newLoc.ref -&gt; newLoc)),
-</span>27 <span style=''></span><span style='background: #AEF1AE'>              bagLens.modify(_ - k.ref)
-</span>28 <span style=''></span><span style='background: #AEF1AE'>            )
-</span>29 <span style=''></span><span style='background: #AEF1AE'>          })
-</span>30 <span style=''></span><span style='background: #AEF1AE'>        keyConsumedState
-</span>31 <span style=''></span><span style='background: #AEF1AE'>      }</span><span style=''> else {
-</span>32 <span style=''>        </span><span style='background: #F0ADAD'>state</span><span style=''>
-</span>33 <span style=''>      }
-</span>34 <span style=''>
-</span>35 <span style=''>      </span><span style='background: #AEF1AE'>modState.applyReactions(
-</span>36 <span style=''></span><span style='background: #AEF1AE'>        messageLens.modify(_ :+ Messages.Opened(itemToOpen))
-</span>37 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>38 <span style=''>
-</span>39 <span style=''>    }
-</span>40 <span style=''>}
+</span>8 <span style=''>/**
+</span>9 <span style=''> * A Reaction generated when a player open an openable Item.
+</span>10 <span style=''> */
+</span>11 <span style=''>private[reactions] trait OpenExt
+</span>12 <span style=''>  extends BehaviorBasedModel
+</span>13 <span style=''>  with KeyExt
+</span>14 <span style=''>  with CommonMessagesExt
+</span>15 <span style=''>  with ReactionUtilsExt {
+</span>16 <span style=''>
+</span>17 <span style=''>  private[reactions] def open(
+</span>18 <span style=''>    itemToOpen: I,
+</span>19 <span style=''>    requiredKey: Option[Key]
+</span>20 <span style=''>  ): Reaction =
+</span>21 <span style=''>    </span><span style='background: #AEF1AE'>Reaction(
+</span>22 <span style=''></span><span style='background: #AEF1AE'>      requiredKey.collect { case SimpleKey(_, keyRef, true, _) =&gt;
+</span>23 <span style=''></span><span style='background: #AEF1AE'>        Update(
+</span>24 <span style=''></span><span style='background: #AEF1AE'>          (locationRoomLens composeLens roomItemsLens).modify(_ - keyRef),
+</span>25 <span style=''></span><span style='background: #AEF1AE'>          bagLens.modify(_ - keyRef)
+</span>26 <span style=''></span><span style='background: #AEF1AE'>        )
+</span>27 <span style=''></span><span style='background: #AEF1AE'>
+</span>28 <span style=''></span><span style='background: #AEF1AE'>      } getOrElse Update.empty,
+</span>29 <span style=''></span><span style='background: #AEF1AE'>      Messages.Opened(itemToOpen)
+</span>30 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>31 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -79,93 +70,124 @@
           21
         </td>
         <td>
-          455
+          519
         </td>
         <td>
-          704
+          695
           -
-          1047
+          981
         </td>
         <td>
-          Block
+          Apply
         </td>
         <td>
-          &lt;nosymbol&gt;
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          {
-  val keyConsumedState: OpenExt.this.S = requiredKey.fold[OpenExt.this.S](state)(((k: OpenExt.this.Key) =&gt; {
-    val newLoc: OpenExt.this.RM = OpenExt.this.roomItemsLens.modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(k.ref))).apply(state.location);
-    OpenExt.this.StateUtils(state).applyReactions(OpenExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,OpenExt.this.RM]) =&gt; x$2.+[OpenExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](newLoc.ref).-&gt;[OpenExt.this.RM](newLoc)))), OpenExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.-(k.ref))))
-  }));
-  keyConsumedState
-}
+          OpenExt.this.Reaction.apply(requiredKey.collect[OpenExt.this.S =&gt; OpenExt.this.S](({
+  @SerialVersionUID(value = 0) final &lt;synthetic&gt; class $anonfun extends scala.runtime.AbstractPartialFunction[OpenExt.this.Key,OpenExt.this.S =&gt; OpenExt.this.S] with java.io.Serializable {
+    def &lt;init&gt;(): &lt;$anon: OpenExt.this.Key =&gt; (OpenExt.this.S =&gt; OpenExt.this.S)&gt; = {
+      $anonfun.super.&lt;init&gt;();
+      ()
+    };
+    final override def applyOrElse[A1 &lt;: OpenExt.this.Key, B1 &gt;: OpenExt.this.S =&gt; OpenExt.this.S](x1: A1, default: A1 =&gt; B1): B1 = ((x1.asInstanceOf[OpenExt.this.Key]: OpenExt.this.Key): OpenExt.this.Key @unchecked) match {
+      case (description: io.github.scalaquest.core.model.ItemDescription, ref: io.github.scalaquest.core.model.ItemRef, disposable: Boolean, extraBehavBuilders: Seq[OpenExt.this.I =&gt; OpenExt.this.ItemBehavior]): OpenExt.this.SimpleKey(_, (keyRef @ _), true, _) =&gt; OpenExt.this.Update.apply(OpenExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](OpenExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(keyRef))), OpenExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(keyRef))))
+      case (defaultCase$ @ _) =&gt; default.apply(x1)
+    };
+    final def isDefinedAt(x1: OpenExt.this.Key): Boolean = ((x1.asInstanceOf[OpenExt.this.Key]: OpenExt.this.Key): OpenExt.this.Key @unchecked) match {
+      case (description: io.github.scalaquest.core.model.ItemDescription, ref: io.github.scalaquest.core.model.ItemRef, disposable: Boolean, extraBehavBuilders: Seq[OpenExt.this.I =&gt; OpenExt.this.ItemBehavior]): OpenExt.this.SimpleKey(_, (keyRef @ _), true, _) =&gt; true
+      case (defaultCase$ @ _) =&gt; false
+    }
+  };
+  new $anonfun()
+}: PartialFunction[OpenExt.this.Key,OpenExt.this.S =&gt; OpenExt.this.S])).getOrElse[OpenExt.this.S =&gt; OpenExt.this.S](OpenExt.this.Update.empty), OpenExt.this.Messages.Opened.apply(itemToOpen))
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          515
+        </td>
+        <td>
+          731
+          -
+          731
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.OpenExt.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
         </td>
       </tr><tr>
         <td>
           23
         </td>
         <td>
-          454
+          514
         </td>
         <td>
-          750
+          779
           -
-          1014
+          908
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Option.fold
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          requiredKey.fold[OpenExt.this.S](state)(((k: OpenExt.this.Key) =&gt; {
-  val newLoc: OpenExt.this.RM = OpenExt.this.roomItemsLens.modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(k.ref))).apply(state.location);
-  OpenExt.this.StateUtils(state).applyReactions(OpenExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,OpenExt.this.RM]) =&gt; x$2.+[OpenExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](newLoc.ref).-&gt;[OpenExt.this.RM](newLoc)))), OpenExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.-(k.ref))))
-}))
+          OpenExt.this.Update.apply(OpenExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](OpenExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(keyRef))), OpenExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(keyRef))))
         </td>
       </tr><tr>
         <td>
           24
         </td>
         <td>
-          443
+          509
         </td>
         <td>
-          831
+          827
           -
-          836
+          840
         </td>
         <td>
           Select
         </td>
         <td>
-          io.github.scalaquest.core.model.Model.Item.ref
+          io.github.scalaquest.core.model.Model.roomItemsLens
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          k.ref
+          OpenExt.this.roomItemsLens
         </td>
       </tr><tr>
         <td>
           24
         </td>
         <td>
-          444
+          510
         </td>
         <td>
-          827
+          849
           -
-          836
+          859
         </td>
         <td>
           Apply
@@ -177,187 +199,43 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$1.-(k.ref)
+          x$1.-(keyRef)
         </td>
       </tr><tr>
         <td>
           24
         </td>
         <td>
-          445
+          511
         </td>
         <td>
-          838
+          798
           -
-          852
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.Model.State.location
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          state.location
-        </td>
-      </tr><tr>
-        <td>
-          24
-        </td>
-        <td>
-          446
-        </td>
-        <td>
-          806
-          -
-          853
+          860
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Function1.apply
+          monocle.PLens.modify
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          OpenExt.this.roomItemsLens.modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(k.ref))).apply(state.location)
+          OpenExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](OpenExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(keyRef)))
         </td>
       </tr><tr>
         <td>
           25
         </td>
         <td>
-          453
+          512
         </td>
         <td>
-          866
+          887
           -
-          1001
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          OpenExt.this.StateUtils(state).applyReactions(OpenExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,OpenExt.this.RM]) =&gt; x$2.+[OpenExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](newLoc.ref).-&gt;[OpenExt.this.RM](newLoc)))), OpenExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.-(k.ref))))
-        </td>
-      </tr><tr>
-        <td>
-          26
-        </td>
-        <td>
-          447
-        </td>
-        <td>
-          924
-          -
-          944
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](newLoc.ref).-&gt;[OpenExt.this.RM](newLoc)
-        </td>
-      </tr><tr>
-        <td>
-          26
-        </td>
-        <td>
-          448
-        </td>
-        <td>
-          919
-          -
-          945
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.MapOps.+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          x$2.+[OpenExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](newLoc.ref).-&gt;[OpenExt.this.RM](newLoc))
-        </td>
-      </tr><tr>
-        <td>
-          26
-        </td>
-        <td>
-          449
-        </td>
-        <td>
-          902
-          -
-          946
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          monocle.PLens.modify
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          OpenExt.this.roomsLens.modify(((x$2: Map[io.github.scalaquest.core.model.RoomRef,OpenExt.this.RM]) =&gt; x$2.+[OpenExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](newLoc.ref).-&gt;[OpenExt.this.RM](newLoc))))
-        </td>
-      </tr><tr>
-        <td>
-          27
-        </td>
-        <td>
-          450
-        </td>
-        <td>
-          981
-          -
-          986
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.Model.Item.ref
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          k.ref
-        </td>
-      </tr><tr>
-        <td>
-          27
-        </td>
-        <td>
-          451
-        </td>
-        <td>
-          977
-          -
-          986
+          897
         </td>
         <td>
           Apply
@@ -369,19 +247,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$3.-(k.ref)
+          x$2.-(keyRef)
         </td>
       </tr><tr>
         <td>
-          27
+          25
         </td>
         <td>
-          452
+          513
         </td>
         <td>
-          962
+          872
           -
-          987
+          898
         </td>
         <td>
           Apply
@@ -393,67 +271,83 @@
           
         </td>
         <td style="background: #AEF1AE">
-          OpenExt.this.bagLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.-(k.ref)))
+          OpenExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(keyRef)))
         </td>
       </tr><tr>
         <td>
-          32
+          28
         </td>
         <td>
-          456
+          516
         </td>
         <td>
-          1063
+          928
           -
-          1068
+          940
         </td>
         <td>
-          Ident
+          Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl.OpenExt.state
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          state
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          460
-        </td>
-        <td>
-          1084
-          -
-          1177
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.empty
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          OpenExt.this.StateUtils(modState).applyReactions(OpenExt.this.messageLens.modify(((x$4: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$4.:+[io.github.scalaquest.core.model.Message](OpenExt.this.Messages.Opened.apply(itemToOpen)))))
+          OpenExt.this.Update.empty
         </td>
       </tr><tr>
         <td>
-          36
+          28
         </td>
         <td>
-          457
+          517
         </td>
         <td>
-          1141
+          711
           -
-          1168
+          940
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          requiredKey.collect[OpenExt.this.S =&gt; OpenExt.this.S](({
+  @SerialVersionUID(value = 0) final &lt;synthetic&gt; class $anonfun extends scala.runtime.AbstractPartialFunction[OpenExt.this.Key,OpenExt.this.S =&gt; OpenExt.this.S] with java.io.Serializable {
+    def &lt;init&gt;(): &lt;$anon: OpenExt.this.Key =&gt; (OpenExt.this.S =&gt; OpenExt.this.S)&gt; = {
+      $anonfun.super.&lt;init&gt;();
+      ()
+    };
+    final override def applyOrElse[A1 &lt;: OpenExt.this.Key, B1 &gt;: OpenExt.this.S =&gt; OpenExt.this.S](x1: A1, default: A1 =&gt; B1): B1 = ((x1.asInstanceOf[OpenExt.this.Key]: OpenExt.this.Key): OpenExt.this.Key @unchecked) match {
+      case (description: io.github.scalaquest.core.model.ItemDescription, ref: io.github.scalaquest.core.model.ItemRef, disposable: Boolean, extraBehavBuilders: Seq[OpenExt.this.I =&gt; OpenExt.this.ItemBehavior]): OpenExt.this.SimpleKey(_, (keyRef @ _), true, _) =&gt; OpenExt.this.Update.apply(OpenExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](OpenExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(keyRef))), OpenExt.this.bagLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(keyRef))))
+      case (defaultCase$ @ _) =&gt; default.apply(x1)
+    };
+    final def isDefinedAt(x1: OpenExt.this.Key): Boolean = ((x1.asInstanceOf[OpenExt.this.Key]: OpenExt.this.Key): OpenExt.this.Key @unchecked) match {
+      case (description: io.github.scalaquest.core.model.ItemDescription, ref: io.github.scalaquest.core.model.ItemRef, disposable: Boolean, extraBehavBuilders: Seq[OpenExt.this.I =&gt; OpenExt.this.ItemBehavior]): OpenExt.this.SimpleKey(_, (keyRef @ _), true, _) =&gt; true
+      case (defaultCase$ @ _) =&gt; false
+    }
+  };
+  new $anonfun()
+}: PartialFunction[OpenExt.this.Key,OpenExt.this.S =&gt; OpenExt.this.S])).getOrElse[OpenExt.this.S =&gt; OpenExt.this.S](OpenExt.this.Update.empty)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          518
+        </td>
+        <td>
+          948
+          -
+          975
         </td>
         <td>
           Apply
@@ -466,54 +360,6 @@
         </td>
         <td style="background: #AEF1AE">
           OpenExt.this.Messages.Opened.apply(itemToOpen)
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          458
-        </td>
-        <td>
-          1136
-          -
-          1168
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.SeqOps.:+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          x$4.:+[io.github.scalaquest.core.model.Message](OpenExt.this.Messages.Opened.apply(itemToOpen))
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          459
-        </td>
-        <td>
-          1117
-          -
-          1169
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          monocle.PLens.modify
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          OpenExt.this.messageLens.modify(((x$4: Seq[io.github.scalaquest.core.model.Message]) =&gt; x$4.:+[io.github.scalaquest.core.model.Message](OpenExt.this.Messages.Opened.apply(itemToOpen))))
         </td>
       </tr>
     </table>

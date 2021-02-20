@@ -26,49 +26,71 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-</span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Door Item.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait DoorExt extends BehaviorBasedModel with StateUtilsExt with RoomLinkExt {
-</span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * A [[BehaviorBasedItem]] that should work as a link between two different [[Room]] s.
-</span>15 <span style=''>   */
-</span>16 <span style=''>  trait Door extends BehaviorBasedItem {
-</span>17 <span style=''>    def isOpen: Boolean
-</span>18 <span style=''>    def roomLink: RoomLink
-</span>19 <span style=''>  }
-</span>20 <span style=''>
-</span>21 <span style=''>  /**
-</span>22 <span style=''>   * Standard implementation of the common [[Door]].
-</span>23 <span style=''>   */
-</span>24 <span style=''>  case class SimpleDoor(
-</span>25 <span style=''>    description: ItemDescription,
-</span>26 <span style=''>    ref: ItemRef,
-</span>27 <span style=''>    roomLinkBuilder: I =&gt; RoomLink,
-</span>28 <span style=''>    addBehaviorsBuilders: I =&gt; ItemBehavior*
-</span>29 <span style=''>  ) extends Door {
-</span>30 <span style=''>    override val roomLink: RoomLink           = </span><span style='background: #AEF1AE'>roomLinkBuilder(this)</span><span style=''>
-</span>31 <span style=''>    override val behaviors: Seq[ItemBehavior] = roomLink </span><span style='background: #AEF1AE'>+: addBehaviorsBuilders.map(_(this))</span><span style=''>
-</span>32 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>roomLink.isOpen</span><span style=''>
-</span>33 <span style=''>  }
-</span>34 <span style=''>
-</span>35 <span style=''>  /**
-</span>36 <span style=''>   * Companion object for [[Door]]. Makes the initialization more succinct.
-</span>37 <span style=''>   */
-</span>38 <span style=''>  object Door {
-</span>39 <span style=''>
-</span>40 <span style=''>    def apply(
-</span>41 <span style=''>      description: ItemDescription,
-</span>42 <span style=''>      roomLinkBuilder: I =&gt; RoomLink,
-</span>43 <span style=''>      addBehaviorsBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>44 <span style=''>    ): Door =
-</span>45 <span style=''>      </span><span style='background: #AEF1AE'>SimpleDoor(description, ItemRef(description), roomLinkBuilder, addBehaviorsBuilders: _*)</span><span style=''>
-</span>46 <span style=''>  }
-</span>47 <span style=''>}
+</span>5 <span style=''>import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
+</span>6 <span style=''>
+</span>7 <span style=''>/**
+</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Door Item.
+</span>9 <span style=''> */
+</span>10 <span style=''>trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
+</span>11 <span style=''>
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   * A [[BehaviorBasedItem]] that should work as a link between two different [[Room]] s.
+</span>14 <span style=''>   */
+</span>15 <span style=''>  trait Door extends BehaviorBasedItem {
+</span>16 <span style=''>    def isOpen: Boolean
+</span>17 <span style=''>    def roomLink: RoomLink
+</span>18 <span style=''>  }
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * Standard implementation of the common [[Door]].
+</span>22 <span style=''>   */
+</span>23 <span style=''>  case class SimpleDoor(
+</span>24 <span style=''>    description: ItemDescription,
+</span>25 <span style=''>    ref: ItemRef,
+</span>26 <span style=''>    roomLinkBuilder: I =&gt; RoomLink,
+</span>27 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>28 <span style=''>  ) extends Door {
+</span>29 <span style=''>    override val roomLink: RoomLink           = </span><span style='background: #AEF1AE'>roomLinkBuilder(this)</span><span style=''>
+</span>30 <span style=''>    override val behaviors: Seq[ItemBehavior] = roomLink </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
+</span>31 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>roomLink.isOpen</span><span style=''>
+</span>32 <span style=''>  }
+</span>33 <span style=''>
+</span>34 <span style=''>  /**
+</span>35 <span style=''>   * Companion object for [[Door]]. Makes the initialization more succinct.
+</span>36 <span style=''>   */
+</span>37 <span style=''>  object Door {
+</span>38 <span style=''>
+</span>39 <span style=''>    def apply(
+</span>40 <span style=''>      description: ItemDescription,
+</span>41 <span style=''>      roomLinkBuilder: I =&gt; RoomLink,
+</span>42 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>43 <span style=''>    ): Door = </span><span style='background: #AEF1AE'>SimpleDoor(description, ItemRef(description), roomLinkBuilder, extraBehavBuilder)</span><span style=''>
+</span>44 <span style=''>
+</span>45 <span style=''>    def createLockedWithKey(
+</span>46 <span style=''>      key: Key,
+</span>47 <span style=''>      doorDesc: ItemDescription,
+</span>48 <span style=''>      endRoom: RM,
+</span>49 <span style=''>      endRoomDirection: Direction,
+</span>50 <span style=''>      onOpenExtra: Reaction = Reaction.empty,
+</span>51 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>52 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>53 <span style=''>    ): (Door, Key) = {
+</span>54 <span style=''>      val door = </span><span style='background: #AEF1AE'>apply(
+</span>55 <span style=''></span><span style='background: #AEF1AE'>        description = doorDesc,
+</span>56 <span style=''></span><span style='background: #AEF1AE'>        RoomLink.closedLockedBuilder(
+</span>57 <span style=''></span><span style='background: #AEF1AE'>          endRoom = endRoom,
+</span>58 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection = endRoomDirection,
+</span>59 <span style=''></span><span style='background: #AEF1AE'>          key = key,
+</span>60 <span style=''></span><span style='background: #AEF1AE'>          onOpenExtra = onOpenExtra,
+</span>61 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra = onEnterExtra
+</span>62 <span style=''></span><span style='background: #AEF1AE'>        ),
+</span>63 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder = extraBehavBuilders
+</span>64 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>65 <span style=''>
+</span>66 <span style=''>      </span><span style='background: #AEF1AE'>(door, key)</span><span style=''>
+</span>67 <span style=''>    }
+</span>68 <span style=''>  }
+</span>69 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -83,15 +105,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          30
+          29
         </td>
         <td>
-          364
+          417
         </td>
         <td>
-          1041
+          968
           -
-          1062
+          989
         </td>
         <td>
           Apply
@@ -107,15 +129,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          30
         </td>
         <td>
-          365
+          418
         </td>
         <td>
-          1120
+          1047
           -
-          1156
+          1081
         </td>
         <td>
           Apply
@@ -127,19 +149,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleDoor.this.addBehaviorsBuilders.map[DoorExt.this.ItemBehavior](((x$1: DoorExt.this.I =&gt; DoorExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[DoorExt.this.ItemBehavior](rassoc$1)
+          SimpleDoor.this.extraBehavBuilders.map[DoorExt.this.ItemBehavior](((x$1: DoorExt.this.I =&gt; DoorExt.this.ItemBehavior) =&gt; x$1.apply(this))).+:[DoorExt.this.ItemBehavior](rassoc$1)
         </td>
       </tr><tr>
         <td>
-          32
+          31
         </td>
         <td>
-          366
+          419
         </td>
         <td>
-          1205
+          1130
           -
-          1220
+          1145
         </td>
         <td>
           Select
@@ -155,15 +177,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          43
         </td>
         <td>
-          367
+          420
         </td>
         <td>
-          1527
+          1443
           -
-          1547
+          1463
         </td>
         <td>
           Apply
@@ -179,15 +201,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          43
         </td>
         <td>
-          368
+          421
         </td>
         <td>
-          1503
+          1419
           -
-          1591
+          1500
         </td>
         <td>
           Apply
@@ -199,7 +221,86 @@
           
         </td>
         <td style="background: #AEF1AE">
-          DoorExt.this.SimpleDoor.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), roomLinkBuilder, (addBehaviorsBuilders: _*))
+          DoorExt.this.SimpleDoor.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), roomLinkBuilder, extraBehavBuilder)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          423
+        </td>
+        <td>
+          1828
+          -
+          2142
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.DoorExt.Door.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Door.this.apply(doorDesc, {
+  &lt;artifact&gt; val x$1: DoorExt.this.RM = endRoom;
+  &lt;artifact&gt; val x$2: io.github.scalaquest.core.model.Direction = endRoomDirection;
+  &lt;artifact&gt; val x$3: DoorExt.this.Key = key;
+  &lt;artifact&gt; val x$4: DoorExt.this.Reaction = onOpenExtra;
+  &lt;artifact&gt; val x$5: DoorExt.this.Reaction = onEnterExtra;
+  DoorExt.this.RoomLink.closedLockedBuilder(x$3, x$1, x$2, x$5, x$4)
+}, extraBehavBuilders)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          422
+        </td>
+        <td>
+          1875
+          -
+          2086
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.closedLockedBuilder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          DoorExt.this.RoomLink.closedLockedBuilder(x$3, x$1, x$2, x$5, x$4)
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          424
+        </td>
+        <td>
+          2150
+          -
+          2161
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[DoorExt.this.Door, DoorExt.this.Key](door, key)
         </td>
       </tr>
     </table>

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 <coverage 
-line-rate="1.00" lines-valid="35" lines-covered="35" branches-valid="4" branches-covered="4" branch-rate="1.00" complexity="0" version="1.0" timestamp="1613224773286">
+line-rate="0.84" lines-valid="44" lines-covered="37" branches-valid="6" branches-covered="6" branch-rate="1.00" complexity="0" version="1.0" timestamp="1613815683839">
     <sources>
         <source>--source</source>
         <source>/home/runner/work/PPS-19-ScalaQuest/PPS-19-ScalaQuest/cli</source>
     </sources>
     <packages>
-        <package name="io.github.scalaquest.cli" line-rate="1.00" branch-rate="1.00" complexity="0">
+        <package name="io.github.scalaquest.cli" line-rate="0.84" branch-rate="1.00" complexity="0">
             <classes>
                 <class 
                 name="io.github.scalaquest.cli.CLI.CLIBuilder" filename="src/main/scala/io/github/scalaquest/cli/CLI.scala" line-rate="1.00" branch-rate="1.00" complexity="0">
@@ -15,14 +15,16 @@ line-rate="1.00" lines-valid="35" lines-covered="35" branches-valid="4" branches
                         <method 
                         name="io.github.scalaquest.cli/CLIBuilder/start" signature="()V" line-rate="1.00" branch-rate="1.00" complexity="0">
                             <lines>
+                                <line number="62" hits="1" branch="false"/>
+                                <line number="62" hits="1" branch="false"/>
+                                <line number="62" hits="1" branch="false"/>
+                                <line number="62" hits="1" branch="true"/>
+                                <line number="63" hits="1" branch="false"/>
+                                <line number="63" hits="1" branch="true"/>
+                                <line number="65" hits="1" branch="false"/>
+                                <line number="64" hits="1" branch="false"/>
+                                <line number="61" hits="1" branch="false"/>
                                 <line number="57" hits="1" branch="false"/>
-                                <line number="57" hits="1" branch="false"/>
-                                <line number="58" hits="1" branch="false"/>
-                                <line number="60" hits="1" branch="false"/>
-                                <line number="59" hits="1" branch="false"/>
-                                <line number="58" hits="1" branch="false"/>
-                                <line number="57" hits="1" branch="false"/>
-                                <line number="53" hits="1" branch="false"/>
                             </lines>
 </method>
                         <method 
@@ -30,15 +32,13 @@ line-rate="1.00" lines-valid="35" lines-covered="35" branches-valid="4" branches
                             <lines>
                                 <line number="39" hits="1" branch="false"/>
                                 <line number="40" hits="1" branch="false"/>
-                                <line number="45" hits="1" branch="false"/>
+                                <line number="46" hits="1" branch="false"/>
+                                <line number="46" hits="1" branch="false"/>
+                                <line number="46" hits="1" branch="true"/>
                                 <line number="47" hits="1" branch="false"/>
                                 <line number="47" hits="1" branch="false"/>
                                 <line number="47" hits="1" branch="true"/>
-                                <line number="48" hits="1" branch="false"/>
-                                <line number="48" hits="1" branch="false"/>
-                                <line number="48" hits="1" branch="true"/>
-                                <line number="50" hits="1" branch="false"/>
-                                <line number="46" hits="1" branch="false"/>
+                                <line number="49" hits="1" branch="false"/>
                                 <line number="45" hits="1" branch="false"/>
                                 <line number="44" hits="1" branch="false"/>
                                 <line number="40" hits="1" branch="false"/>
@@ -50,28 +50,28 @@ line-rate="1.00" lines-valid="35" lines-covered="35" branches-valid="4" branches
                     <lines>
                         <line number="39" hits="1" branch="false"/>
                         <line number="40" hits="1" branch="false"/>
-                        <line number="45" hits="1" branch="false"/>
+                        <line number="46" hits="1" branch="false"/>
+                        <line number="46" hits="1" branch="false"/>
+                        <line number="46" hits="1" branch="true"/>
                         <line number="47" hits="1" branch="false"/>
                         <line number="47" hits="1" branch="false"/>
                         <line number="47" hits="1" branch="true"/>
-                        <line number="48" hits="1" branch="false"/>
-                        <line number="48" hits="1" branch="false"/>
-                        <line number="48" hits="1" branch="true"/>
-                        <line number="50" hits="1" branch="false"/>
-                        <line number="46" hits="1" branch="false"/>
+                        <line number="49" hits="1" branch="false"/>
                         <line number="45" hits="1" branch="false"/>
                         <line number="44" hits="1" branch="false"/>
                         <line number="40" hits="1" branch="false"/>
                         <line number="39" hits="1" branch="false"/>
                         <line number="38" hits="1" branch="false"/>
+                        <line number="62" hits="1" branch="false"/>
+                        <line number="62" hits="1" branch="false"/>
+                        <line number="62" hits="1" branch="false"/>
+                        <line number="62" hits="1" branch="true"/>
+                        <line number="63" hits="1" branch="false"/>
+                        <line number="63" hits="1" branch="true"/>
+                        <line number="65" hits="1" branch="false"/>
+                        <line number="64" hits="1" branch="false"/>
+                        <line number="61" hits="1" branch="false"/>
                         <line number="57" hits="1" branch="false"/>
-                        <line number="57" hits="1" branch="false"/>
-                        <line number="58" hits="1" branch="false"/>
-                        <line number="60" hits="1" branch="false"/>
-                        <line number="59" hits="1" branch="false"/>
-                        <line number="58" hits="1" branch="false"/>
-                        <line number="57" hits="1" branch="false"/>
-                        <line number="53" hits="1" branch="false"/>
                     </lines>
 </class>
                 <class 
@@ -85,6 +85,51 @@ line-rate="1.00" lines-valid="35" lines-covered="35" branches-valid="4" branches
                     </methods>
                     <lines>
                         <line number="13" hits="1" branch="false"/>
+                    </lines>
+</class>
+                <class 
+                name="io.github.scalaquest.cli.GameCLIApp" filename="src/main/scala/io/github/scalaquest/cli/GameCLIApp.scala" line-rate="0.22" branch-rate="1.00" complexity="0">
+                    <methods>
+                        <method 
+                        name="io.github.scalaquest.cli/GameCLIApp/game" signature="()V" line-rate="1.00" branch-rate="1.00" complexity="0">
+                            <lines>
+                                <line number="26" hits="1" branch="false"/>
+                                <line number="26" hits="1" branch="false"/>
+                            </lines>
+</method>
+                        <method 
+                        name="io.github.scalaquest.cli/GameCLIApp/initialMessages" signature="()V" line-rate="0.00" branch-rate="0.00" complexity="0">
+                            <lines>
+                                <line number="24" hits="0" branch="false"/>
+                            </lines>
+</method>
+                        <method 
+                        name="io.github.scalaquest.cli/GameCLIApp/cli" signature="()V" line-rate="0.00" branch-rate="0.00" complexity="0">
+                            <lines>
+                                <line number="29" hits="0" branch="false"/>
+                                <line number="29" hits="0" branch="false"/>
+                                <line number="29" hits="0" branch="false"/>
+                                <line number="29" hits="0" branch="false"/>
+                                <line number="29" hits="0" branch="false"/>
+                            </lines>
+</method>
+                        <method 
+                        name="io.github.scalaquest.cli/GameCLIApp/pipelineBuilder" signature="()V" line-rate="0.00" branch-rate="0.00" complexity="0">
+                            <lines>
+                                <line number="18" hits="0" branch="false"/>
+                            </lines>
+</method>
+                    </methods>
+                    <lines>
+                        <line number="18" hits="0" branch="false"/>
+                        <line number="24" hits="0" branch="false"/>
+                        <line number="26" hits="1" branch="false"/>
+                        <line number="26" hits="1" branch="false"/>
+                        <line number="29" hits="0" branch="false"/>
+                        <line number="29" hits="0" branch="false"/>
+                        <line number="29" hits="0" branch="false"/>
+                        <line number="29" hits="0" branch="false"/>
+                        <line number="29" hits="0" branch="false"/>
                     </lines>
 </class>
                 <class 

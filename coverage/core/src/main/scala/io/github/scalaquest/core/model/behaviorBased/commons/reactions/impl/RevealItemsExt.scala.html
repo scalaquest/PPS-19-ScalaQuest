@@ -1,0 +1,251 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/reactions/impl/RevealItemsExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
+</span>6 <span style=''>
+</span>7 <span style=''>private[reactions] trait RevealItemsExt
+</span>8 <span style=''>  extends BehaviorBasedModel
+</span>9 <span style=''>  with CommonMessagesExt
+</span>10 <span style=''>  with ReactionUtilsExt {
+</span>11 <span style=''>
+</span>12 <span style=''>  private[reactions] def revealItems(items: Set[I]): Reaction =
+</span>13 <span style=''>    </span><span style='background: #AEF1AE'>Reaction(
+</span>14 <span style=''></span><span style='background: #AEF1AE'>      Update((locationRoomLens composeLens roomItemsLens).modify(_ ++ items.map(_.ref))),
+</span>15 <span style=''></span><span style='background: #AEF1AE'>      Messages.ReversedIntoLocation(items)
+</span>16 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>17 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          527
+        </td>
+        <td>
+          509
+          -
+          657
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RevealItemsExt.this.Reaction.apply(RevealItemsExt.this.Update.apply(RevealItemsExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](RevealItemsExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.++(items.map[io.github.scalaquest.core.model.ItemRef](((x$2: RevealItemsExt.this.I) =&gt; x$2.ref)))))), RevealItemsExt.this.Messages.ReversedIntoLocation.apply(items))
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          520
+        </td>
+        <td>
+          562
+          -
+          575
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.roomItemsLens
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RevealItemsExt.this.roomItemsLens
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          521
+        </td>
+        <td>
+          599
+          -
+          604
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.ref
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          522
+        </td>
+        <td>
+          589
+          -
+          605
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          items.map[io.github.scalaquest.core.model.ItemRef](((x$2: RevealItemsExt.this.I) =&gt; x$2.ref))
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          523
+        </td>
+        <td>
+          584
+          -
+          605
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetOps.++
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.++(items.map[io.github.scalaquest.core.model.ItemRef](((x$2: RevealItemsExt.this.I) =&gt; x$2.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          524
+        </td>
+        <td>
+          533
+          -
+          606
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RevealItemsExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](RevealItemsExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.++(items.map[io.github.scalaquest.core.model.ItemRef](((x$2: RevealItemsExt.this.I) =&gt; x$2.ref)))))
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          525
+        </td>
+        <td>
+          525
+          -
+          607
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Update.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RevealItemsExt.this.Update.apply(RevealItemsExt.this.locationRoomLens.composeLens[Set[io.github.scalaquest.core.model.ItemRef], Set[io.github.scalaquest.core.model.ItemRef]](RevealItemsExt.this.roomItemsLens).modify(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.++(items.map[io.github.scalaquest.core.model.ItemRef](((x$2: RevealItemsExt.this.I) =&gt; x$2.ref))))))
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          526
+        </td>
+        <td>
+          615
+          -
+          651
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt.Messages.ReversedIntoLocation.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RevealItemsExt.this.Messages.ReversedIntoLocation.apply(items)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

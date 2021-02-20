@@ -1,0 +1,381 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/application/DefaultPipelineProvider.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.application
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Model
+</span>4 <span style=''>import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
+</span>5 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>6 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
+</span>7 <span style=''>import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
+</span>8 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>9 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>10 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>11 <span style=''>
+</span>12 <span style=''>/** A `PipelineProvider` that uses the default implementation of its components. */
+</span>13 <span style=''>trait DefaultPipelineProvider[M0 &lt;: Model] extends PipelineProvider[M0] {
+</span>14 <span style=''>
+</span>15 <span style=''>  /** The theory used to create the `Theory` for the `Engine`. */
+</span>16 <span style=''>  def baseTheory: String
+</span>17 <span style=''>
+</span>18 <span style=''>  override def lexer: Lexer = </span><span style='background: #F0ADAD'>SimpleLexer</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>  override def parser: Parser = </span><span style='background: #F0ADAD'>Parser(Engine(Theory(baseTheory), Set(DCGLibrary)))</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>  override def resolver: Resolver.Builder[S] = </span><span style='background: #F0ADAD'>Resolver.builder(model)</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>  override def interpreter: Builder[M, S, React] = </span><span style='background: #F0ADAD'>Interpreter.builder(model)</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>  override def reducer: Reducer.Builder[M, S, React] = </span><span style='background: #F0ADAD'>Reducer.builder(model)</span><span style=''>
+</span>27 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          834
+          -
+          845
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.lexer.SimpleLexer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.pipeline.lexer.SimpleLexer
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          11
+        </td>
+        <td>
+          900
+          -
+          910
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.application.DefaultPipelineProvider.baseTheory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          DefaultPipelineProvider.this.baseTheory
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          12
+        </td>
+        <td>
+          893
+          -
+          911
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.Theory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.engine.Theory.apply(DefaultPipelineProvider.this.baseTheory)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          13
+        </td>
+        <td>
+          917
+          -
+          927
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.DCGLibrary
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.engine.DCGLibrary
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          14
+        </td>
+        <td>
+          913
+          -
+          928
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableFactory.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.Set.apply[io.github.scalaquest.core.parsing.engine.Library](io.github.scalaquest.core.parsing.engine.DCGLibrary)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          15
+        </td>
+        <td>
+          886
+          -
+          929
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.parsing.engine.Engine.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.parsing.engine.Engine.apply(io.github.scalaquest.core.parsing.engine.Theory.apply(DefaultPipelineProvider.this.baseTheory), scala.Predef.Set.apply[io.github.scalaquest.core.parsing.engine.Library](io.github.scalaquest.core.parsing.engine.DCGLibrary))
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          16
+        </td>
+        <td>
+          879
+          -
+          930
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.parser.Parser.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.pipeline.parser.Parser.apply(io.github.scalaquest.core.parsing.engine.Engine.apply(io.github.scalaquest.core.parsing.engine.Theory.apply(DefaultPipelineProvider.this.baseTheory), scala.Predef.Set.apply[io.github.scalaquest.core.parsing.engine.Library](io.github.scalaquest.core.parsing.engine.DCGLibrary)))
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          17
+        </td>
+        <td>
+          996
+          -
+          1001
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.application.ApplicationStructure.model
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          DefaultPipelineProvider.this.model
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          18
+        </td>
+        <td>
+          979
+          -
+          1002
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.resolver.Resolver.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.pipeline.resolver.Resolver.builder[M0](DefaultPipelineProvider.this.model)
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          19
+        </td>
+        <td>
+          1075
+          -
+          1080
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.application.ApplicationStructure.model
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          DefaultPipelineProvider.this.model
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          20
+        </td>
+        <td>
+          1055
+          -
+          1081
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.interpreter.Interpreter.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.pipeline.interpreter.Interpreter.builder[M0](DefaultPipelineProvider.this.model)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          21
+        </td>
+        <td>
+          1154
+          -
+          1159
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.application.ApplicationStructure.model
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          DefaultPipelineProvider.this.model
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          22
+        </td>
+        <td>
+          1138
+          -
+          1160
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.reducer.Reducer.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.pipeline.reducer.Reducer.builder[M0](DefaultPipelineProvider.this.model)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

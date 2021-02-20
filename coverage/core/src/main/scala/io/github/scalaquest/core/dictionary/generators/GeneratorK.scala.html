@@ -26,19 +26,28 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import cats.{Foldable, Functor, Monoid}
 </span>4 <span style=''>
-</span>5 <span style=''>class GeneratorK[F[_]: Functor: Foldable, A, +B: Monoid](implicit G: Generator[A, B])
-</span>6 <span style=''>  extends Generator[F[A], B] {
-</span>7 <span style=''>
-</span>8 <span style=''>  override def generate(a: F[A]): B = {
-</span>9 <span style=''>    val b = </span><span style='background: #F0ADAD'>Functor[F].map(a)(Generator[A, B].generate)</span><span style=''>
-</span>10 <span style=''>    </span><span style='background: #F0ADAD'>Foldable[F].fold(b)</span><span style=''>
-</span>11 <span style=''>  }
-</span>12 <span style=''>}
-</span>13 <span style=''>
-</span>14 <span style=''>object GeneratorK {
+</span>5 <span style=''>/**
+</span>6 <span style=''> * A `Generator` that operates on kinds. It is used to wrap functions from `F[A]` to `B`.
+</span>7 <span style=''> *
+</span>8 <span style=''> * This type class is useful to work with `A`s that live in a context such as `Option` or `List`.
+</span>9 <span style=''> *
+</span>10 <span style=''> * It is necessary that `B` is a monoid instance, because its `empty` and `combine` are used to fold
+</span>11 <span style=''> * on the `F`.
+</span>12 <span style=''> */
+</span>13 <span style=''>class GeneratorK[F[_]: Functor: Foldable, A, +B: Monoid](implicit G: Generator[A, B])
+</span>14 <span style=''>  extends Generator[F[A], B] {
 </span>15 <span style=''>
-</span>16 <span style=''>  def apply[F[_], A, B](implicit G: GeneratorK[F, A, B]): GeneratorK[F, A, B] = G
-</span>17 <span style=''>}
+</span>16 <span style=''>  override def generate(a: F[A]): B = {
+</span>17 <span style=''>    val b = </span><span style='background: #AEF1AE'>Functor[F].map(a)(Generator[A, B].generate)</span><span style=''>
+</span>18 <span style=''>    </span><span style='background: #AEF1AE'>Foldable[F].fold(b)</span><span style=''>
+</span>19 <span style=''>  }
+</span>20 <span style=''>}
+</span>21 <span style=''>
+</span>22 <span style=''>object GeneratorK {
+</span>23 <span style=''>
+</span>24 <span style=''>  /** Access to implicit `GeneratorK[F, A, B]`. */
+</span>25 <span style=''>  def apply[F[_], A, B](implicit G: GeneratorK[F, A, B]): GeneratorK[F, A, B] = G
+</span>26 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -53,15 +62,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          9
+          17
         </td>
         <td>
-          72
+          84
         </td>
         <td>
-          275
+          593
           -
-          275
+          593
         </td>
         <td>
           Select
@@ -72,20 +81,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           GeneratorK.this.evidence$1
         </td>
       </tr><tr>
         <td>
-          9
+          17
         </td>
         <td>
-          73
+          85
         </td>
         <td>
-          286
+          604
           -
-          310
+          628
         </td>
         <td>
           Apply
@@ -96,20 +105,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           eta$0$1.generate(a)
         </td>
       </tr><tr>
         <td>
-          9
+          17
         </td>
         <td>
-          74
+          86
         </td>
         <td>
-          268
+          586
           -
-          311
+          629
         </td>
         <td>
           Apply
@@ -120,7 +129,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.Functor.apply[F](GeneratorK.this.evidence$1).map[A, B](a)({
   &lt;synthetic&gt; val eta$0$1: io.github.scalaquest.core.dictionary.generators.Generator[A,B] = Generator.apply[A, B](GeneratorK.this.G);
   ((a: A) =&gt; eta$0$1.generate(a))
@@ -128,15 +137,15 @@
         </td>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          75
+          87
         </td>
         <td>
-          324
+          642
           -
-          324
+          642
         </td>
         <td>
           Select
@@ -147,20 +156,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           GeneratorK.this.evidence$2
         </td>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          76
+          88
         </td>
         <td>
-          332
+          650
           -
-          332
+          650
         </td>
         <td>
           Select
@@ -171,20 +180,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           GeneratorK.this.evidence$3
         </td>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          77
+          89
         </td>
         <td>
-          316
+          634
           -
-          335
+          653
         </td>
         <td>
           ApplyToImplicitArgs
@@ -195,7 +204,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           cats.Foldable.apply[F](GeneratorK.this.evidence$2).fold[B](b)(GeneratorK.this.evidence$3)
         </td>
       </tr>

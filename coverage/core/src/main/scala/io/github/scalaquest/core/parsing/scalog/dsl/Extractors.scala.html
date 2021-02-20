@@ -26,30 +26,33 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
 </span>4 <span style=''>
-</span>5 <span style=''>trait Extractors extends CompoundBase {
+</span>5 <span style=''>import scala.annotation.nowarn
 </span>6 <span style=''>
-</span>7 <span style=''>  object extractor {
+</span>7 <span style=''>trait Extractors extends CompoundBase {
 </span>8 <span style=''>
-</span>9 <span style=''>    object toTerms extends CompoundExtractor[Term] {
+</span>9 <span style=''>  object extractor {
 </span>10 <span style=''>
-</span>11 <span style=''>      override def unapplySeq(term: Term): Option[Seq[Term]] =
-</span>12 <span style=''>        term match {
-</span>13 <span style=''>          case Compound(f, t0, terms) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>Some(t0 +: terms)</span><span style=''>
-</span>14 <span style=''>          case _                                      =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
-</span>15 <span style=''>        }
-</span>16 <span style=''>    }
-</span>17 <span style=''>
-</span>18 <span style=''>    object toStrings extends CompoundExtractor[String] {
+</span>11 <span style=''>    object toTerms extends CompoundExtractor[Term] {
+</span>12 <span style=''>
+</span>13 <span style=''>      override def unapplySeq(term: Term): Option[Seq[Term]] =
+</span>14 <span style=''>        term match {
+</span>15 <span style=''>          case Compound(f, t0, terms) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>Some(t0 +: terms)</span><span style=''>
+</span>16 <span style=''>          case _                                      =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>17 <span style=''>        }
+</span>18 <span style=''>    }
 </span>19 <span style=''>
-</span>20 <span style=''>      override def unapplySeq(term: Term): Option[Seq[String]] =
-</span>21 <span style=''>        term match {
-</span>22 <span style=''>          case Compound(f, Atom(t0), terms: List[Atom]) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt;
-</span>23 <span style=''>            </span><span style='background: #AEF1AE'>Some(t0 +: terms.map(_.name))</span><span style=''>
-</span>24 <span style=''>          case _ =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
-</span>25 <span style=''>        }
-</span>26 <span style=''>    }
-</span>27 <span style=''>  }
-</span>28 <span style=''>}
+</span>20 <span style=''>    object toStrings extends CompoundExtractor[String] {
+</span>21 <span style=''>
+</span>22 <span style=''>      @nowarn(&quot;msg=unchecked.*erasure&quot;)
+</span>23 <span style=''>      override def unapplySeq(term: Term): Option[Seq[String]] =
+</span>24 <span style=''>        term match {
+</span>25 <span style=''>          case Compound(f, Atom(t0), terms: List[Atom]) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt;
+</span>26 <span style=''>            </span><span style='background: #AEF1AE'>Some(t0 +: terms.map(_.name))</span><span style=''>
+</span>27 <span style=''>          case _ =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>28 <span style=''>        }
+</span>29 <span style=''>    }
+</span>30 <span style=''>  }
+</span>31 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -64,15 +67,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          15
         </td>
         <td>
-          621
+          711
         </td>
         <td>
-          373
+          405
           -
-          380
+          412
         </td>
         <td>
           Select
@@ -88,15 +91,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          15
         </td>
         <td>
-          622
+          712
         </td>
         <td>
-          368
+          400
           -
-          380
+          412
         </td>
         <td>
           Apply
@@ -112,15 +115,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          15
         </td>
         <td>
-          623
+          713
         </td>
         <td>
-          392
+          424
           -
-          400
+          432
         </td>
         <td>
           Apply
@@ -136,15 +139,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          15
         </td>
         <td>
-          624
+          714
         </td>
         <td>
-          384
+          416
           -
-          401
+          433
         </td>
         <td>
           Apply
@@ -163,15 +166,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          16
         </td>
         <td>
-          625
+          715
         </td>
         <td>
-          459
+          491
           -
-          463
+          495
         </td>
         <td>
           Select
@@ -187,15 +190,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          25
         </td>
         <td>
-          626
+          716
         </td>
         <td>
-          689
+          761
           -
-          696
+          768
         </td>
         <td>
           Select
@@ -211,15 +214,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          25
         </td>
         <td>
-          627
+          717
         </td>
         <td>
-          684
+          756
           -
-          696
+          768
         </td>
         <td>
           Apply
@@ -235,15 +238,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          26
         </td>
         <td>
-          628
+          718
         </td>
         <td>
-          720
+          792
           -
-          740
+          812
         </td>
         <td>
           Apply
@@ -259,15 +262,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          26
         </td>
         <td>
-          629
+          719
         </td>
         <td>
-          712
+          784
           -
-          741
+          813
         </td>
         <td>
           Apply
@@ -286,15 +289,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          27
         </td>
         <td>
-          630
+          720
         </td>
         <td>
-          762
+          834
           -
-          766
+          838
         </td>
         <td>
           Select

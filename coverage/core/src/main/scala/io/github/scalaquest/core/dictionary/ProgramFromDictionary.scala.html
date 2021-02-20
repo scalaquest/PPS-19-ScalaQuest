@@ -1,0 +1,162 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/dictionary/ProgramFromDictionary.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary
+</span>2 <span style=''>
+</span>3 <span style=''>import cats.Functor
+</span>4 <span style=''>import io.github.scalaquest.core.dictionary.implicits.{itemToProgram, programMonoid, verbToProgram}
+</span>5 <span style=''>import io.github.scalaquest.core.dictionary.generators.implicits.listGenerator
+</span>6 <span style=''>import io.github.scalaquest.core.dictionary.generators.{GeneratorK, combineAll}
+</span>7 <span style=''>import io.github.scalaquest.core.dictionary.verbs.Verb
+</span>8 <span style=''>import io.github.scalaquest.core.parsing.scalog.Program
+</span>9 <span style=''>
+</span>10 <span style=''>case class ProgramFromDictionary[I &lt;: Item](verbs: Set[Verb], items: Set[I]) {
+</span>11 <span style=''>
+</span>12 <span style=''>  def generateSource[F[_]: Functor](base: F[String]): F[String] = {
+</span>13 <span style=''>    val src = </span><span style='background: #AEF1AE'>Functor[F].map(base)(
+</span>14 <span style=''></span><span style='background: #AEF1AE'>      _ +: combineAll(
+</span>15 <span style=''></span><span style='background: #AEF1AE'>        GeneratorK[List, Verb, Program].generate(verbs.toList),
+</span>16 <span style=''></span><span style='background: #AEF1AE'>        GeneratorK[List, Item, Program].generate(items.toList)
+</span>17 <span style=''></span><span style='background: #AEF1AE'>      ).map(_.generate).toList
+</span>18 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>19 <span style=''>    </span><span style='background: #AEF1AE'>Functor[F].map(src)(_.mkString(&quot;\n&quot;))</span><span style=''>
+</span>20 <span style=''>  }
+</span>21 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          69
+        </td>
+        <td>
+          599
+          -
+          807
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cats.Functor.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cats.Functor.apply[F](evidence$1).map[String, List[String]](base)(((x$1: String) =&gt; {
+  final &lt;synthetic&gt; &lt;artifact&gt; val rassoc$1: String = x$1;
+  io.github.scalaquest.core.dictionary.generators.`package`.combineAll[io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.generators.GeneratorK.apply[List, io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.generators.`package`.implicits.listGenerator[io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.`package`.implicits.programMonoid, io.github.scalaquest.core.dictionary.`package`.implicits.verbToProgram)).generate(ProgramFromDictionary.this.verbs.toList), io.github.scalaquest.core.dictionary.generators.GeneratorK.apply[List, io.github.scalaquest.core.dictionary.Item, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.generators.`package`.implicits.listGenerator[io.github.scalaquest.core.dictionary.Item, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.`package`.implicits.programMonoid, io.github.scalaquest.core.dictionary.`package`.implicits.itemToProgram)).generate(ProgramFromDictionary.this.items.toList))(io.github.scalaquest.core.dictionary.`package`.implicits.programMonoid).map[String](((x$2: io.github.scalaquest.core.parsing.scalog.Clause) =&gt; x$2.generate)).toList.+:[String](rassoc$1)
+}))
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          629
+          -
+          801
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqOps.+:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          io.github.scalaquest.core.dictionary.generators.`package`.combineAll[io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.generators.GeneratorK.apply[List, io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.generators.`package`.implicits.listGenerator[io.github.scalaquest.core.dictionary.verbs.Verb, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.`package`.implicits.programMonoid, io.github.scalaquest.core.dictionary.`package`.implicits.verbToProgram)).generate(ProgramFromDictionary.this.verbs.toList), io.github.scalaquest.core.dictionary.generators.GeneratorK.apply[List, io.github.scalaquest.core.dictionary.Item, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.generators.`package`.implicits.listGenerator[io.github.scalaquest.core.dictionary.Item, io.github.scalaquest.core.parsing.scalog.Program](io.github.scalaquest.core.dictionary.`package`.implicits.programMonoid, io.github.scalaquest.core.dictionary.`package`.implicits.itemToProgram)).generate(ProgramFromDictionary.this.items.toList))(io.github.scalaquest.core.dictionary.`package`.implicits.programMonoid).map[String](((x$2: io.github.scalaquest.core.parsing.scalog.Clause) =&gt; x$2.generate)).toList.+:[String](rassoc$1)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          70
+        </td>
+        <td>
+          832
+          -
+          848
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3.mkString(&quot;\n&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          71
+        </td>
+        <td>
+          812
+          -
+          849
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cats.Functor.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cats.Functor.apply[F](evidence$1).map[List[String], String](src)(((x$3: List[String]) =&gt; x$3.mkString(&quot;\n&quot;)))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

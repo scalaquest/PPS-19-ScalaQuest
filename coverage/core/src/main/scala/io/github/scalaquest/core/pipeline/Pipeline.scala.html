@@ -24,7 +24,7 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline
 </span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Model
+</span>3 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
 </span>4 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
 </span>5 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
 </span>6 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
@@ -32,7 +32,7 @@
 </span>8 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
 </span>9 <span style=''>
 </span>10 <span style=''>abstract class Pipeline[M &lt;: Model](val model: M) {
-</span>11 <span style=''>  def run(rawSentence: String): Either[String, model.S]
+</span>11 <span style=''>  def run(rawSentence: String): Either[String, (model.S, Seq[Message])]
 </span>12 <span style=''>}
 </span>13 <span style=''>
 </span>14 <span style=''>object Pipeline {
@@ -52,14 +52,14 @@
 </span>28 <span style=''>    )(state: model.S): Pipeline[model.type] =
 </span>29 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> Pipeline[model.type](model) {
 </span>30 <span style=''>
-</span>31 <span style=''>        override def run(rawSentence: String): Either[String, model.S] =
+</span>31 <span style=''>        override def run(rawSentence: String): Either[String, (model.S, Seq[Message])] =
 </span>32 <span style=''>          </span><span style='background: #AEF1AE'>for {
 </span>33 <span style=''></span><span style='background: #AEF1AE'>            lr  &lt;- Right(lexer tokenize rawSentence)
 </span>34 <span style=''></span><span style='background: #AEF1AE'>            pr  &lt;- (parser parse lr) toRight &quot;Couldn't understand input.&quot;
-</span>35 <span style=''></span><span style='background: #AEF1AE'>            </span><span style='background: #F0ADAD'>rr  &lt;- resolver(state) resolve pr
-</span>36 <span style=''></span><span style='background: #F0ADAD'>            ir  &lt;- interpreterBuilder(state) interpret rr
-</span>37 <span style=''></span><span style='background: #F0ADAD'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
-</span>38 <span style=''></span><span style='background: #F0ADAD'>          } yield rdr.state</span><span style=''>
+</span>35 <span style=''></span><span style='background: #AEF1AE'>            rr  &lt;- resolver(state) resolve pr
+</span>36 <span style=''></span><span style='background: #AEF1AE'>            ir  &lt;- interpreterBuilder(state) interpret rr
+</span>37 <span style=''></span><span style='background: #AEF1AE'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>          } yield (rdr.state, rdr.message)</span><span style=''>
 </span>39 <span style=''>      }
 </span>40 <span style=''>  }
 </span>41 <span style=''>
@@ -81,12 +81,12 @@
           18
         </td>
         <td>
-          635
+          725
         </td>
         <td>
-          628
+          655
           -
-          657
+          684
         </td>
         <td>
           Apply
@@ -105,12 +105,12 @@
           29
         </td>
         <td>
-          645
+          737
         </td>
         <td>
-          1023
+          1050
           -
-          1026
+          1053
         </td>
         <td>
           Apply
@@ -129,12 +129,12 @@
           33
         </td>
         <td>
-          636
+          726
         </td>
         <td>
-          1172
+          1215
           -
-          1198
+          1241
         </td>
         <td>
           Apply
@@ -153,12 +153,12 @@
           33
         </td>
         <td>
-          644
+          736
         </td>
         <td>
-          1141
+          1184
           -
-          1463
+          1521
         </td>
         <td>
           Apply
@@ -170,19 +170,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.lexer.LexerResult](lexer.tokenize(rawSentence)).flatMap[String, PipelineBuilder.this.model.S](((lr: io.github.scalaquest.core.pipeline.lexer.LexerResult) =&gt; parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, PipelineBuilder.this.model.S](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))))))
+          scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.lexer.LexerResult](lexer.tokenize(rawSentence)).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((lr: io.github.scalaquest.core.pipeline.lexer.LexerResult) =&gt; parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[(PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; scala.Tuple2.apply[PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message]](rdr.state, rdr.message)))))))))))
         </td>
       </tr><tr>
         <td>
           34
         </td>
         <td>
-          637
+          727
         </td>
         <td>
-          1245
+          1288
           -
-          1273
+          1316
         </td>
         <td>
           Literal
@@ -201,12 +201,12 @@
           34
         </td>
         <td>
-          643
+          735
         </td>
         <td>
-          1212
+          1255
           -
-          1463
+          1521
         </td>
         <td>
           Apply
@@ -218,19 +218,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, PipelineBuilder.this.model.S](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))))
+          parser.parse(lr).toRight[String](&quot;Couldn\'t understand input.&quot;).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((pr: io.github.scalaquest.core.pipeline.parser.ParserResult) =&gt; resolver.apply(state).resolve(pr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[(PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; scala.Tuple2.apply[PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message]](rdr.state, rdr.message)))))))))
         </td>
       </tr><tr>
         <td>
           35
         </td>
         <td>
-          642
+          734
         </td>
         <td>
-          1286
+          1329
           -
-          1463
+          1521
         </td>
         <td>
           Apply
@@ -241,20 +241,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          resolver.apply(state).resolve(pr).flatMap[String, PipelineBuilder.this.model.S](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))))
+        <td style="background: #AEF1AE">
+          resolver.apply(state).resolve(pr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rr: io.github.scalaquest.core.pipeline.resolver.ResolverResult) =&gt; interpreterBuilder.apply(state).interpret(rr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[(PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; scala.Tuple2.apply[PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message]](rdr.state, rdr.message)))))))
         </td>
       </tr><tr>
         <td>
           36
         </td>
         <td>
-          641
+          733
         </td>
         <td>
-          1332
+          1375
           -
-          1463
+          1521
         </td>
         <td>
           Apply
@@ -265,20 +265,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          interpreterBuilder.apply(state).interpret(rr).flatMap[String, PipelineBuilder.this.model.S](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))))
+        <td style="background: #AEF1AE">
+          interpreterBuilder.apply(state).interpret(rr).flatMap[String, (PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((ir: io.github.scalaquest.core.pipeline.interpreter.InterpreterResult[PipelineBuilder.this.model.Reaction]) =&gt; scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[(PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; scala.Tuple2.apply[PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message]](rdr.state, rdr.message)))))
         </td>
       </tr><tr>
         <td>
           37
         </td>
         <td>
-          638
+          728
         </td>
         <td>
-          1403
+          1446
           -
-          1434
+          1477
         </td>
         <td>
           Apply
@@ -289,7 +289,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           reducerBuilder.apply(state).reduce(ir)
         </td>
       </tr><tr>
@@ -297,12 +297,12 @@
           37
         </td>
         <td>
-          640
+          732
         </td>
         <td>
-          1390
+          1433
           -
-          1463
+          1521
         </td>
         <td>
           Apply
@@ -313,20 +313,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[PipelineBuilder.this.model.S](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; rdr.state))
+        <td style="background: #AEF1AE">
+          scala.`package`.Right.apply[Nothing, io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]](reducerBuilder.apply(state).reduce(ir)).map[(PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message])](((rdr: io.github.scalaquest.core.pipeline.reducer.ReducerResult[PipelineBuilder.this.model.S]) =&gt; scala.Tuple2.apply[PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message]](rdr.state, rdr.message)))
         </td>
       </tr><tr>
         <td>
           38
         </td>
         <td>
-          639
+          729
         </td>
         <td>
-          1454
+          1498
           -
-          1463
+          1507
         </td>
         <td>
           Select
@@ -337,8 +337,56 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           rdr.state
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          730
+        </td>
+        <td>
+          1509
+          -
+          1520
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.pipeline.reducer.ReducerResult.message
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          rdr.message
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          731
+        </td>
+        <td>
+          1497
+          -
+          1521
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[PipelineBuilder.this.model.S, Seq[io.github.scalaquest.core.model.Message]](rdr.state, rdr.message)
         </td>
       </tr>
     </table>

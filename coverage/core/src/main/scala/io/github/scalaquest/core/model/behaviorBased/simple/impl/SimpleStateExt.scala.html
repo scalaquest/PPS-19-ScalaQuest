@@ -45,34 +45,31 @@
 </span>21 <span style=''>    ground: G,
 </span>22 <span style=''>    _bag: Set[ItemRef],
 </span>23 <span style=''>    _location: RoomRef,
-</span>24 <span style=''>    messages: Seq[Message],
-</span>25 <span style=''>    ended: Boolean = false
-</span>26 <span style=''>  ) extends State {
-</span>27 <span style=''>    override def bag: Set[I]  = </span><span style='background: #AEF1AE'>_bag.flatMap(items.get)</span><span style=''>
-</span>28 <span style=''>    override def location: RM = </span><span style='background: #AEF1AE'>rooms(_location)</span><span style=''>
-</span>29 <span style=''>  }
-</span>30 <span style=''>
-</span>31 <span style=''>  object State {
-</span>32 <span style=''>
-</span>33 <span style=''>    def apply(
-</span>34 <span style=''>      actions: Map[VerbPrep, Action],
-</span>35 <span style=''>      rooms: Map[RoomRef, RM],
-</span>36 <span style=''>      items: Map[ItemRef, I],
-</span>37 <span style=''>      ground: G = CommonGround(),
-</span>38 <span style=''>      bag: Set[ItemRef] = Set.empty,
-</span>39 <span style=''>      location: RoomRef,
-</span>40 <span style=''>      welcomeMsg: Option[Messages.Welcome] = None,
-</span>41 <span style=''>      ended: Boolean = false
-</span>42 <span style=''>    ): S = </span><span style='background: #AEF1AE'>SimpleState(actions, rooms, items, ground, bag, location, Seq(welcomeMsg).flatten, ended)</span><span style=''>
-</span>43 <span style=''>  }
-</span>44 <span style=''>
-</span>45 <span style=''>  override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)
-</span>46 <span style=''>  override def itemsLens: Lens[S, Map[ItemRef, I]]  = GenLens[S](_.items)
-</span>47 <span style=''>  override def messageLens: Lens[S, Seq[Message]]   = GenLens[S](_.messages)
-</span>48 <span style=''>  override def matchEndedLens: Lens[S, Boolean]     = GenLens[S](_.ended)
-</span>49 <span style=''>  override def bagLens: Lens[S, Set[ItemRef]]       = GenLens[S](_._bag)
-</span>50 <span style=''>  override def locationLens: Lens[S, RoomRef]       = GenLens[S](_._location)
-</span>51 <span style=''>}
+</span>24 <span style=''>    ended: Boolean = false
+</span>25 <span style=''>  ) extends State {
+</span>26 <span style=''>    override def bag: Set[I]  = </span><span style='background: #AEF1AE'>_bag.flatMap(items.get)</span><span style=''>
+</span>27 <span style=''>    override def location: RM = </span><span style='background: #AEF1AE'>rooms(_location)</span><span style=''>
+</span>28 <span style=''>  }
+</span>29 <span style=''>
+</span>30 <span style=''>  object State {
+</span>31 <span style=''>
+</span>32 <span style=''>    def apply(
+</span>33 <span style=''>      actions: Map[VerbPrep, Action],
+</span>34 <span style=''>      rooms: Map[RoomRef, RM],
+</span>35 <span style=''>      items: Map[ItemRef, I],
+</span>36 <span style=''>      ground: G = CommonGround(),
+</span>37 <span style=''>      bag: Set[ItemRef] = Set.empty,
+</span>38 <span style=''>      location: RoomRef,
+</span>39 <span style=''>      ended: Boolean = false
+</span>40 <span style=''>    ): S = </span><span style='background: #AEF1AE'>SimpleState(actions, rooms, items, ground, bag, location, ended)</span><span style=''>
+</span>41 <span style=''>  }
+</span>42 <span style=''>
+</span>43 <span style=''>  override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)
+</span>44 <span style=''>  override def itemsLens: Lens[S, Map[ItemRef, I]]  = GenLens[S](_.items)
+</span>45 <span style=''>  override def matchEndedLens: Lens[S, Boolean]     = GenLens[S](_.ended)
+</span>46 <span style=''>  override def bagLens: Lens[S, Set[ItemRef]]       = GenLens[S](_._bag)
+</span>47 <span style=''>  override def locationLens: Lens[S, RoomRef]       = GenLens[S](_._location)
+</span>48 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -87,15 +84,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
-          511
+          606
         </td>
         <td>
-          869
+          841
           -
-          878
+          850
         </td>
         <td>
           Apply
@@ -111,15 +108,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
-          512
+          607
         </td>
         <td>
-          856
+          828
           -
-          879
+          851
         </td>
         <td>
           Apply
@@ -135,15 +132,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
-          513
+          608
         </td>
         <td>
-          918
+          890
           -
-          927
+          899
         </td>
         <td>
           Select
@@ -159,15 +156,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
-          514
+          609
         </td>
         <td>
-          912
+          884
           -
-          928
+          900
         </td>
         <td>
           Apply
@@ -183,63 +180,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          40
         </td>
         <td>
-          515
+          610
         </td>
         <td>
-          1327
+          1174
           -
-          1327
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.Predef.$conforms
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Predef.$conforms[Option[SimpleStateExt.this.Messages.Welcome]]
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          516
-        </td>
-        <td>
-          1311
-          -
-          1334
-        </td>
-        <td>
-          ApplyToImplicitArgs
-        </td>
-        <td>
-          scala.collection.IterableOps.flatten
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.`package`.Seq.apply[Option[SimpleStateExt.this.Messages.Welcome]](welcomeMsg).flatten[io.github.scalaquest.core.model.Message](scala.Predef.$conforms[Option[SimpleStateExt.this.Messages.Welcome]])
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          517
-        </td>
-        <td>
-          1253
-          -
-          1342
+          1238
         </td>
         <td>
           Apply
@@ -251,7 +200,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleStateExt.this.SimpleState.apply(actions, rooms, items, ground, bag, location, scala.`package`.Seq.apply[Option[SimpleStateExt.this.Messages.Welcome]](welcomeMsg).flatten[io.github.scalaquest.core.model.Message](scala.Predef.$conforms[Option[SimpleStateExt.this.Messages.Welcome]]), ended)
+          SimpleStateExt.this.SimpleState.apply(actions, rooms, items, ground, bag, location, ended)
         </td>
       </tr>
     </table>

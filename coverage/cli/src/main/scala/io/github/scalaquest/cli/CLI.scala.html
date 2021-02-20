@@ -24,8 +24,8 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.cli
 </span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{MessagePusher, Model}
-</span>4 <span style=''>import io.github.scalaquest.core.Game
+</span>3 <span style=''>import io.github.scalaquest.core.Game
+</span>4 <span style=''>import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
 </span>5 <span style=''>import zio.console._
 </span>6 <span style=''>import zio.{ExitCode, UIO, URIO, ZIO}
 </span>7 <span style=''>
@@ -62,30 +62,35 @@
 </span>38 <span style=''></span><span style='background: #AEF1AE'>        input       &lt;- readLine
 </span>39 <span style=''></span><span style='background: #AEF1AE'>        pipelineRes &lt;- UIO.succeed((game send input)(startState))
 </span>40 <span style=''></span><span style='background: #AEF1AE'>        (output, updState) &lt;- UIO.succeed(pipelineRes match {
-</span>41 <span style=''></span><span style='background: #AEF1AE'>          case Left(err)       =&gt; (err, startState)
-</span>42 <span style=''></span><span style='background: #AEF1AE'>          case Right(updState) =&gt; (pusher push updState.messages, updState)
+</span>41 <span style=''></span><span style='background: #AEF1AE'>          case Left(err)                   =&gt; (err, startState)
+</span>42 <span style=''></span><span style='background: #AEF1AE'>          case Right((updState, messages)) =&gt; (pusher push messages, updState)
 </span>43 <span style=''></span><span style='background: #AEF1AE'>        })
-</span>44 <span style=''></span><span style='background: #AEF1AE'>        _         &lt;- putStrLn(output)
-</span>45 <span style=''></span><span style='background: #AEF1AE'>        nextState &lt;- UIO.succeed(model.messageLens.set(Seq())(updState))
-</span>46 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
-</span>47 <span style=''></span><span style='background: #AEF1AE'>          if (nextState.ended) ZIO.unit
-</span>48 <span style=''></span><span style='background: #AEF1AE'>          else UIO.succeed(nextState) flatMap gameLoop(game, pusher)
-</span>49 <span style=''></span><span style='background: #AEF1AE'>
-</span>50 <span style=''></span><span style='background: #AEF1AE'>      } yield ()</span><span style=''>
-</span>51 <span style=''>
-</span>52 <span style=''>    def build(state: model.S, game: Game[model.type], pusher: MessagePusher[String]): CLI =
-</span>53 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> CLI() {
-</span>54 <span style=''>
-</span>55 <span style=''>        override def start: ZIO[Console, Exception, Unit] =
-</span>56 <span style=''>          </span><span style='background: #AEF1AE'>for {
-</span>57 <span style=''></span><span style='background: #AEF1AE'>            _         &lt;- putStrLn(pusher push state.messages)
-</span>58 <span style=''></span><span style='background: #AEF1AE'>            initState &lt;- UIO.succeed(model.messageLens.set(Seq())(state))
-</span>59 <span style=''></span><span style='background: #AEF1AE'>            _         &lt;- gameLoop(game, pusher)(initState)
-</span>60 <span style=''></span><span style='background: #AEF1AE'>          } yield ()</span><span style=''>
-</span>61 <span style=''>      }
-</span>62 <span style=''>  }
-</span>63 <span style=''>
-</span>64 <span style=''>}
+</span>44 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- putStrLn(output)
+</span>45 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
+</span>46 <span style=''></span><span style='background: #AEF1AE'>          if (updState.ended) ZIO.unit
+</span>47 <span style=''></span><span style='background: #AEF1AE'>          else UIO.succeed(updState) flatMap gameLoop(game, pusher)
+</span>48 <span style=''></span><span style='background: #AEF1AE'>
+</span>49 <span style=''></span><span style='background: #AEF1AE'>      } yield ()</span><span style=''>
+</span>50 <span style=''>
+</span>51 <span style=''>    def build(
+</span>52 <span style=''>      state: model.S,
+</span>53 <span style=''>      game: Game[model.type],
+</span>54 <span style=''>      pusher: MessagePusher[String],
+</span>55 <span style=''>      initialMessages: Seq[Message] = Seq()
+</span>56 <span style=''>    ): CLI =
+</span>57 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> CLI() {
+</span>58 <span style=''>
+</span>59 <span style=''>        override def start: ZIO[Console, Exception, Unit] =
+</span>60 <span style=''>          </span><span style='background: #AEF1AE'>for {
+</span>61 <span style=''></span><span style='background: #AEF1AE'>            _ &lt;-
+</span>62 <span style=''></span><span style='background: #AEF1AE'>              if (initialMessages.nonEmpty) putStrLn(pusher push initialMessages)
+</span>63 <span style=''></span><span style='background: #AEF1AE'>              else ZIO.unit
+</span>64 <span style=''></span><span style='background: #AEF1AE'>            _ &lt;- gameLoop(game, pusher)(state)
+</span>65 <span style=''></span><span style='background: #AEF1AE'>          } yield ()</span><span style=''>
+</span>66 <span style=''>      }
+</span>67 <span style=''>  }
+</span>68 <span style=''>
+</span>69 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -106,9 +111,9 @@
           1
         </td>
         <td>
-          342
+          351
           -
-          360
+          369
         </td>
         <td>
           Select
@@ -130,9 +135,9 @@
           2
         </td>
         <td>
-          487
+          496
           -
-          511
+          520
         </td>
         <td>
           Apply
@@ -154,9 +159,9 @@
           3
         </td>
         <td>
-          594
+          603
           -
-          598
+          607
         </td>
         <td>
           Literal
@@ -178,9 +183,9 @@
           11
         </td>
         <td>
-          569
+          578
           -
-          689
+          698
         </td>
         <td>
           Apply
@@ -207,9 +212,9 @@ else
           10
         </td>
         <td>
-          606
+          615
           -
-          689
+          698
         </td>
         <td>
           Apply
@@ -234,9 +239,9 @@ else
           4
         </td>
         <td>
-          637
+          646
           -
-          644
+          653
         </td>
         <td>
           Apply
@@ -258,9 +263,9 @@ else
           5
         </td>
         <td>
-          646
+          655
           -
-          654
+          663
         </td>
         <td>
           Select
@@ -282,9 +287,9 @@ else
           6
         </td>
         <td>
-          646
+          655
           -
-          654
+          663
         </td>
         <td>
           Block
@@ -306,9 +311,9 @@ else
           7
         </td>
         <td>
-          660
+          669
           -
-          674
+          683
         </td>
         <td>
           Apply
@@ -330,9 +335,9 @@ else
           8
         </td>
         <td>
-          660
+          669
           -
-          674
+          683
         </td>
         <td>
           Block
@@ -354,9 +359,9 @@ else
           9
         </td>
         <td>
-          627
+          636
           -
-          689
+          698
         </td>
         <td>
           Apply
@@ -378,12 +383,12 @@ else
           38
         </td>
         <td>
-          27
+          25
         </td>
         <td>
-          898
+          907
           -
-          1453
+          1394
         </td>
         <td>
           Apply
@@ -395,20 +400,20 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          CLI.this.readLine.flatMap[zio.console.Console, Exception, Unit](((input: String) =&gt; zio.UIO.succeed[Either[String,game.model.S]](game.send(input)(startState)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,game.model.S]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
-  case (value: String): scala.util.Left[String,game.model.S]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
-  case (value: game.model.S): scala.util.Right[String,game.model.S]((updState @ _)) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(updState.messages), updState)
+          CLI.this.readLine.flatMap[zio.console.Console, Exception, Unit](((input: String) =&gt; zio.UIO.succeed[Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]](game.send(input)(startState)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
+  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
+  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
 })).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
   case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
   case _ =&gt; false
 }))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$4: (String, CLIBuilder.this.model.S)) =&gt; (x$4: (String, CLIBuilder.this.model.S) @unchecked) match {
   case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-    case _ =&gt; zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(updState)).flatMap[zio.console.Console, Exception, Unit](((nextState: CLIBuilder.this.model.S) =&gt; if (nextState.ended)
+    case _ =&gt; if (updState.ended)
   zio.ZIO.unit
 else
-  zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
+  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
       case _ =&gt; ()
-    }))))
+    }))
   }))
 }))))))
         </td>
@@ -420,9 +425,9 @@ else
           12
         </td>
         <td>
-          971
+          980
           -
-          1000
+          1009
         </td>
         <td>
           Apply
@@ -441,12 +446,12 @@ else
           39
         </td>
         <td>
-          26
+          24
         </td>
         <td>
-          944
+          953
           -
-          1453
+          1394
         </td>
         <td>
           Apply
@@ -458,20 +463,20 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          zio.UIO.succeed[Either[String,game.model.S]](game.send(input)(startState)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,game.model.S]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
-  case (value: String): scala.util.Left[String,game.model.S]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
-  case (value: game.model.S): scala.util.Right[String,game.model.S]((updState @ _)) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(updState.messages), updState)
+          zio.UIO.succeed[Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]](game.send(input)(startState)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
+  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
+  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
 })).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
   case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
   case _ =&gt; false
 }))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$4: (String, CLIBuilder.this.model.S)) =&gt; (x$4: (String, CLIBuilder.this.model.S) @unchecked) match {
   case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-    case _ =&gt; zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(updState)).flatMap[zio.console.Console, Exception, Unit](((nextState: CLIBuilder.this.model.S) =&gt; if (nextState.ended)
+    case _ =&gt; if (updState.ended)
   zio.ZIO.unit
 else
-  zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
+  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
       case _ =&gt; ()
-    }))))
+    }))
   }))
 }))))
         </td>
@@ -483,9 +488,9 @@ else
           13
         </td>
         <td>
-          1043
+          1052
           -
-          1043
+          1052
         </td>
         <td>
           TypeApply
@@ -504,12 +509,12 @@ else
           40
         </td>
         <td>
-          25
+          23
         </td>
         <td>
-          1010
+          1019
           -
-          1453
+          1394
         </td>
         <td>
           Apply
@@ -522,19 +527,19 @@ else
         </td>
         <td style="background: #AEF1AE">
           zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
-  case (value: String): scala.util.Left[String,game.model.S]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
-  case (value: game.model.S): scala.util.Right[String,game.model.S]((updState @ _)) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(updState.messages), updState)
+  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
+  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
 })).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
   case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
   case _ =&gt; false
 }))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$4: (String, CLIBuilder.this.model.S)) =&gt; (x$4: (String, CLIBuilder.this.model.S) @unchecked) match {
   case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-    case _ =&gt; zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(updState)).flatMap[zio.console.Console, Exception, Unit](((nextState: CLIBuilder.this.model.S) =&gt; if (nextState.ended)
+    case _ =&gt; if (updState.ended)
   zio.ZIO.unit
 else
-  zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
+  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
       case _ =&gt; ()
-    }))))
+    }))
   }))
 }))
         </td>
@@ -543,12 +548,12 @@ else
           44
         </td>
         <td>
-          24
+          22
         </td>
         <td>
-          1211
+          1235
           -
-          1453
+          1394
         </td>
         <td>
           Apply
@@ -561,12 +566,12 @@ else
         </td>
         <td style="background: #AEF1AE">
           zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-  case _ =&gt; zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(updState)).flatMap[zio.console.Console, Exception, Unit](((nextState: CLIBuilder.this.model.S) =&gt; if (nextState.ended)
+  case _ =&gt; if (updState.ended)
   zio.ZIO.unit
 else
-  zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
+  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
     case _ =&gt; ()
-  }))))
+  }))
 }))
         </td>
       </tr><tr>
@@ -574,65 +579,12 @@ else
           45
         </td>
         <td>
-          14
+          21
         </td>
         <td>
-          1274
+          1265
           -
-          1312
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Function1.apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(updState)
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          23
-        </td>
-        <td>
-          1249
-          -
-          1453
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(updState)).flatMap[zio.console.Console, Exception, Unit](((nextState: CLIBuilder.this.model.S) =&gt; if (nextState.ended)
-  zio.ZIO.unit
-else
-  zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
-  case _ =&gt; ()
-}))))
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          22
-        </td>
-        <td>
-          1322
-          -
-          1453
+          1394
         </td>
         <td>
           Apply
@@ -644,24 +596,24 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          if (nextState.ended)
+          if (updState.ended)
   zio.ZIO.unit
 else
-  zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
+  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
   case _ =&gt; ()
 }))
         </td>
       </tr><tr>
         <td>
-          47
+          46
         </td>
         <td>
-          15
+          14
         </td>
         <td>
-          1341
+          1284
           -
-          1356
+          1298
         </td>
         <td>
           Select
@@ -673,22 +625,46 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          nextState.ended
+          updState.ended
         </td>
       </tr><tr>
         <td>
-          47
+          46
+        </td>
+        <td>
+          15
+        </td>
+        <td>
+          1300
+          -
+          1308
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.unit
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.unit
+        </td>
+      </tr><tr>
+        <td>
+          46
         </td>
         <td>
           16
         </td>
         <td>
-          1358
+          1300
           -
-          1366
+          1308
         </td>
         <td>
-          Select
+          Block
         </td>
         <td>
           zio.ZIO.unit
@@ -707,33 +683,9 @@ else
           17
         </td>
         <td>
-          1358
+          1354
           -
-          1366
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          zio.ZIO.unit
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.ZIO.unit
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          18
-        </td>
-        <td>
-          1413
-          -
-          1435
+          1376
         </td>
         <td>
           Apply
@@ -749,15 +701,15 @@ else
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
-          19
+          18
         </td>
         <td>
-          1382
+          1324
           -
-          1435
+          1376
         </td>
         <td>
           Apply
@@ -769,19 +721,19 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState)))
+          zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState)))
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
-          20
+          19
         </td>
         <td>
-          1382
+          1324
           -
-          1435
+          1376
         </td>
         <td>
           Block
@@ -793,19 +745,19 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          zio.UIO.succeed[CLIBuilder.this.model.S](nextState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState)))
+          zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState)))
         </td>
       </tr><tr>
         <td>
-          50
+          49
         </td>
         <td>
-          21
+          20
         </td>
         <td>
-          1451
+          1392
           -
-          1453
+          1394
         </td>
         <td>
           Literal
@@ -821,15 +773,15 @@ else
         </td>
       </tr><tr>
         <td>
-          53
+          57
         </td>
         <td>
           35
         </td>
         <td>
-          1553
+          1563
           -
-          1556
+          1566
         </td>
         <td>
           Apply
@@ -845,39 +797,70 @@ else
         </td>
       </tr><tr>
         <td>
-          57
+          61
         </td>
         <td>
-          28
+          34
         </td>
         <td>
-          1688
+          1646
           -
-          1702
+          1846
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.Model.State.messages
+          zio.ZIO.flatMap
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          state.messages
+          if (initialMessages.nonEmpty)
+  zio.console.`package`.putStrLn(pusher.push(initialMessages))
+else
+  zio.ZIO.unit.flatMap[zio.console.Console, Exception, Unit](((x$6: Unit) =&gt; (x$6: Unit @unchecked) match {
+  case _ =&gt; CLIBuilder.this.gameLoop(game, pusher)(state).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
+    case _ =&gt; ()
+  }))
+}))
         </td>
       </tr><tr>
         <td>
-          57
+          62
         </td>
         <td>
-          29
+          26
         </td>
         <td>
-          1676
+          1687
           -
-          1702
+          1711
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.nonEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          initialMessages.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          27
+        </td>
+        <td>
+          1722
+          -
+          1749
         </td>
         <td>
           Apply
@@ -889,97 +872,115 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          pusher.push(state.messages)
+          pusher.push(initialMessages)
         </td>
       </tr><tr>
         <td>
-          57
+          62
         </td>
         <td>
-          34
+          28
         </td>
         <td>
-          1636
+          1713
           -
-          1857
+          1750
         </td>
         <td>
           Apply
         </td>
         <td>
-          zio.ZIO.flatMap
+          zio.console.putStrLn
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          zio.console.`package`.putStrLn(pusher.push(state.messages)).flatMap[zio.console.Console, Exception, Unit](((x$6: Unit) =&gt; (x$6: Unit @unchecked) match {
-  case _ =&gt; zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(state)).flatMap[zio.console.Console, Exception, Unit](((initState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(initState).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
-    case _ =&gt; ()
-  }))))
-}))
+          zio.console.`package`.putStrLn(pusher.push(initialMessages))
         </td>
       </tr><tr>
         <td>
-          58
+          62
+        </td>
+        <td>
+          29
+        </td>
+        <td>
+          1713
+          -
+          1750
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          zio.console.putStrLn
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(pusher.push(initialMessages))
+        </td>
+      </tr><tr>
+        <td>
+          63
         </td>
         <td>
           30
         </td>
         <td>
-          1741
+          1770
           -
-          1776
+          1778
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Function1.apply
+          zio.ZIO.unit
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(state)
+          zio.ZIO.unit
         </td>
       </tr><tr>
         <td>
-          58
+          63
+        </td>
+        <td>
+          31
+        </td>
+        <td>
+          1770
+          -
+          1778
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          zio.ZIO.unit
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.unit
+        </td>
+      </tr><tr>
+        <td>
+          64
         </td>
         <td>
           33
         </td>
         <td>
-          1716
+          1791
           -
-          1857
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.UIO.succeed[CLIBuilder.this.model.S](CLIBuilder.this.model.messageLens.set(scala.`package`.Seq.apply[Nothing]()).apply(state)).flatMap[zio.console.Console, Exception, Unit](((initState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(initState).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
-  case _ =&gt; ()
-}))))
-        </td>
-      </tr><tr>
-        <td>
-          59
-        </td>
-        <td>
-          32
-        </td>
-        <td>
-          1790
-          -
-          1857
+          1846
         </td>
         <td>
           Apply
@@ -991,21 +992,21 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          CLIBuilder.this.gameLoop(game, pusher)(initState).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
+          CLIBuilder.this.gameLoop(game, pusher)(state).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
   case _ =&gt; ()
 }))
         </td>
       </tr><tr>
         <td>
-          60
+          65
         </td>
         <td>
-          31
+          32
         </td>
         <td>
-          1855
+          1844
           -
-          1857
+          1846
         </td>
         <td>
           Literal

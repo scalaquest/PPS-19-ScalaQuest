@@ -1,0 +1,233 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/groundBehaviors/impl/InspectableBagExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.InspectBag
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableBag behavior for the
+</span>10 <span style=''> * Ground.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+</span>13 <span style=''>
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * A [[GroundBehavior]] that enables the possibility to know the items present into the Bag.
+</span>16 <span style=''>   */
+</span>17 <span style=''>  abstract class InspectableBag extends GroundBehavior {
+</span>18 <span style=''>    def inspectBag: Reaction
+</span>19 <span style=''>  }
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * A standard implementation for [[InspectableBag]].
+</span>23 <span style=''>   *
+</span>24 <span style=''>   * @param onInspectExtra
+</span>25 <span style=''>   *   [[Reaction]] to be executed when the player successfully inspected the bag. It can be
+</span>26 <span style=''>   *   omitted.
+</span>27 <span style=''>   */
+</span>28 <span style=''>  case class SimpleInspectableBag(onInspectExtra: Reaction) extends InspectableBag {
+</span>29 <span style=''>
+</span>30 <span style=''>    override def triggers: GroundTriggers = { case (InspectBag, _) =&gt; </span><span style='background: #AEF1AE'>inspectBag</span><span style=''> }
+</span>31 <span style=''>
+</span>32 <span style=''>    override def inspectBag: Reaction =
+</span>33 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
+</span>34 <span style=''></span><span style='background: #AEF1AE'>        Reactions.inspectBag,
+</span>35 <span style=''></span><span style='background: #AEF1AE'>        onInspectExtra
+</span>36 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>37 <span style=''>  }
+</span>38 <span style=''>
+</span>39 <span style=''>  /**
+</span>40 <span style=''>   * Companion object for [[InspectableBag]]. Shortcut for the standard implementation.
+</span>41 <span style=''>   */
+</span>42 <span style=''>  object InspectableBag {
+</span>43 <span style=''>
+</span>44 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
+</span>45 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableBag(onInspectExtra)</span><span style=''>
+</span>46 <span style=''>  }
+</span>47 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          277
+        </td>
+        <td>
+          1213
+          -
+          1223
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableBagExt.SimpleInspectableBag.inspectBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleInspectableBag.this.inspectBag
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          278
+        </td>
+        <td>
+          1187
+          -
+          1187
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableBagExt.SimpleInspectableBag.$anonfun.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new $anonfun()
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          281
+        </td>
+        <td>
+          1273
+          -
+          1351
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.Reaction.combine(InspectableBagExt.this.Reactions.inspectBag, SimpleInspectableBag.this.onInspectExtra)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          279
+        </td>
+        <td>
+          1299
+          -
+          1319
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.inspectBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.Reactions.inspectBag
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          280
+        </td>
+        <td>
+          1329
+          -
+          1343
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableBagExt.SimpleInspectableBag.onInspectExtra
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleInspectableBag.this.onInspectExtra
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          282
+        </td>
+        <td>
+          1565
+          -
+          1601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.InspectableBagExt.SimpleInspectableBag.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.SimpleInspectableBag.apply(onInspectExtra)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

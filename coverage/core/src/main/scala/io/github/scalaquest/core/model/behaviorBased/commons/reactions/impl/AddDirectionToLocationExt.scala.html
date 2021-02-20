@@ -1,0 +1,203 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/reactions/impl/AddDirectionToLocationExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.Direction
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
+</span>7 <span style=''>
+</span>8 <span style=''>private[reactions] trait AddDirectionToLocationExt
+</span>9 <span style=''>  extends BehaviorBasedModel
+</span>10 <span style=''>  with ReactionUtilsExt
+</span>11 <span style=''>  with CommonMessagesExt {
+</span>12 <span style=''>
+</span>13 <span style=''>  private[reactions] def addDirectionToLocation(direction: Direction, room: RM): Reaction =
+</span>14 <span style=''>    </span><span style='background: #F0ADAD'>Reaction(
+</span>15 <span style=''></span><span style='background: #F0ADAD'>      (locationRoomLens composeLens roomDirectionsLens).modify(_ + (direction -&gt; room.ref))
+</span>16 <span style=''></span><span style='background: #F0ADAD'>    )</span><span style=''>
+</span>17 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          483
+        </td>
+        <td>
+          597
+          -
+          704
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AddDirectionToLocationExt.this.Reaction.apply(AddDirectionToLocationExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](AddDirectionToLocationExt.this.roomDirectionsLens).modify(((x$1: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$1.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref)))))
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          478
+        </td>
+        <td>
+          643
+          -
+          661
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.roomDirectionsLens
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AddDirectionToLocationExt.this.roomDirectionsLens
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          479
+        </td>
+        <td>
+          688
+          -
+          696
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          room.ref
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          480
+        </td>
+        <td>
+          675
+          -
+          696
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref)
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          481
+        </td>
+        <td>
+          670
+          -
+          697
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          x$1.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref))
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          614
+          -
+          698
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AddDirectionToLocationExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](AddDirectionToLocationExt.this.roomDirectionsLens).modify(((x$1: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$1.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref))))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

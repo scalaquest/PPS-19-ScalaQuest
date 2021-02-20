@@ -29,113 +29,117 @@
 </span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 </span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 </span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-</span>8 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
-</span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * The trait makes possible to mix into the [[BehaviorBasedModel]] the Openable behavior.
-</span>12 <span style=''> */
-</span>13 <span style=''>trait OpenableExt
-</span>14 <span style=''>  extends BehaviorBasedModel
-</span>15 <span style=''>  with StateUtilsExt
-</span>16 <span style=''>  with KeyExt
-</span>17 <span style=''>  with CommonMessagesExt
-</span>18 <span style=''>  with CommonReactionsExt {
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be opened a single time.
-</span>22 <span style=''>   */
-</span>23 <span style=''>  abstract class Openable extends ItemBehavior {
-</span>24 <span style=''>    def isOpen: Boolean
-</span>25 <span style=''>    def consumeKey: Boolean
-</span>26 <span style=''>    def requiredKey: Option[Key]
-</span>27 <span style=''>    def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
-</span>28 <span style=''>    def open: Reaction
-</span>29 <span style=''>  }
-</span>30 <span style=''>
-</span>31 <span style=''>  /**
-</span>32 <span style=''>   * Standard implementation of the common Openable behavior.
-</span>33 <span style=''>   *
-</span>34 <span style=''>   * This is a behavior associated to an Item that can be opened a single time. Open The standard
-</span>35 <span style=''>   * [[Reaction]] consists into changing an internal variable that indicates the &quot;openness&quot; of the
-</span>36 <span style=''>   * Openable, when Statement &quot;open Item (with something)&quot; ais called.
-</span>37 <span style=''>   * @param requiredKey
-</span>38 <span style=''>   *   The key required to open the Item. If not passed the Item can be opened without Key.
-</span>39 <span style=''>   * @param onOpenExtra
-</span>40 <span style=''>   *   Reaction to be executed into the State when opened, after the standard Reaction. It can be
-</span>41 <span style=''>   *   omitted.
-</span>42 <span style=''>   */
-</span>43 <span style=''>  case class SimpleOpenable(
-</span>44 <span style=''>    requiredKey: Option[Key] = None,
-</span>45 <span style=''>    consumeKey: Boolean = false,
-</span>46 <span style=''>    onOpenExtra: Option[Reaction] = None
-</span>47 <span style=''>  )(implicit subject: I)
-</span>48 <span style=''>    extends Openable {
-</span>49 <span style=''>    var _isOpen: Boolean = </span><span style='background: #AEF1AE'>false</span><span style=''>
-</span>50 <span style=''>
-</span>51 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>_isOpen</span><span style=''>
-</span>52 <span style=''>
-</span>53 <span style=''>    override def triggers: ItemTriggers = {
-</span>54 <span style=''>      // &quot;Open the item (with something)&quot;
-</span>55 <span style=''>      case (Open, item, maybeKey, state)
-</span>56 <span style=''>          if </span><span style='background: #AEF1AE'>state.isInLocation(item) &amp;&amp; canBeOpened(maybeKey)(state) &amp;&amp; !isOpen</span><span style=''> =&gt;
-</span>57 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
-</span>58 <span style=''>    }
-</span>59 <span style=''>
-</span>60 <span style=''>    /**
-</span>61 <span style=''>     * Checks whether the Item can be opened with the current configuration. The usedKey is the
-</span>62 <span style=''>     * eventual Key passed explicitly by the user, with a statement like &quot;open the item with the
-</span>63 <span style=''>     * key&quot;.
-</span>64 <span style=''>     *
-</span>65 <span style=''>     * @param state
-</span>66 <span style=''>     *   The current State.
-</span>67 <span style=''>     * @param usedKey
-</span>68 <span style=''>     *   The eventual key passed explicitly by the user, e.g. , with a statement like &quot;open the item
-</span>69 <span style=''>     *   with the key&quot;.
-</span>70 <span style=''>     * @return
-</span>71 <span style=''>     *   True if:
-</span>72 <span style=''>     *   - A key was passed explicitly, is effectively into the Bag of the Player (or in the current
-</span>73 <span style=''>     *     room) and that key is effectively required to open the Item.
-</span>74 <span style=''>     *   - No key was passed explicitly, is effectively into the Bag of the Player and that key is
-</span>75 <span style=''>     *     effectively required to open the Item.
-</span>76 <span style=''>     *   - No key was passed explicitly, and no key is required.
-</span>77 <span style=''>     *
-</span>78 <span style=''>     * False otherwise.
-</span>79 <span style=''>     */
-</span>80 <span style=''>    override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
-</span>81 <span style=''>      usedKey match {
-</span>82 <span style=''>        case Some(key) =&gt; </span><span style='background: #AEF1AE'>requiredKey.contains(key) &amp;&amp; state.isInScope(key)</span><span style=''>
-</span>83 <span style=''>        case None      =&gt; </span><span style='background: #AEF1AE'>requiredKey.fold(true)(state.isInBag(_))</span><span style=''>
-</span>84 <span style=''>      }
-</span>85 <span style=''>    }
-</span>86 <span style=''>
-</span>87 <span style=''>    /**
-</span>88 <span style=''>     * Sets the Item in an open state and executes eventual extra actions.
-</span>89 <span style=''>     * @return
-</span>90 <span style=''>     *   A Reaction that sets the Item in an open state and executes eventual extra actions.
-</span>91 <span style=''>     */
-</span>92 <span style=''>    def open: Reaction =
-</span>93 <span style=''>      state =&gt; {
-</span>94 <span style=''>        </span><span style='background: #AEF1AE'>_isOpen = true</span><span style=''>
-</span>95 <span style=''>
-</span>96 <span style=''>        </span><span style='background: #AEF1AE'>state.applyReactions(
-</span>97 <span style=''></span><span style='background: #AEF1AE'>          Reactions.open(subject, requiredKey, consumeKey),
-</span>98 <span style=''></span><span style='background: #AEF1AE'>          onOpenExtra.getOrElse(Reactions.empty)
-</span>99 <span style=''></span><span style='background: #AEF1AE'>        )</span><span style=''>
-</span>100 <span style=''>      }
-</span>101 <span style=''>  }
-</span>102 <span style=''>
-</span>103 <span style=''>  /**
-</span>104 <span style=''>   * Companion object for [[Openable]]. Shortcut for the standard implementation.
-</span>105 <span style=''>   */
-</span>106 <span style=''>  object Openable {
-</span>107 <span style=''>
-</span>108 <span style=''>    def builder(
-</span>109 <span style=''>      requiredKey: Option[Key] = None,
-</span>110 <span style=''>      consumeKey: Boolean = true,
-</span>111 <span style=''>      onOpenExtra: Option[Reaction] = None
-</span>112 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(requiredKey, consumeKey, onOpenExtra)(_)</span><span style=''>
-</span>113 <span style=''>  }
-</span>114 <span style=''>}
+</span>8 <span style=''>
+</span>9 <span style=''>/**
+</span>10 <span style=''> * The trait makes possible to mix into the [[BehaviorBasedModel]] the Openable behavior.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait OpenableExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with KeyExt
+</span>15 <span style=''>  with CommonMessagesExt
+</span>16 <span style=''>  with CommonReactionsExt {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be opened a single time.
+</span>20 <span style=''>   */
+</span>21 <span style=''>  abstract class Openable extends ItemBehavior {
+</span>22 <span style=''>    def isOpen: Boolean
+</span>23 <span style=''>    def requiredKey: Option[Key]
+</span>24 <span style=''>    def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
+</span>25 <span style=''>    def open: Reaction
+</span>26 <span style=''>  }
+</span>27 <span style=''>
+</span>28 <span style=''>  /**
+</span>29 <span style=''>   * Standard implementation of the common Openable behavior.
+</span>30 <span style=''>   *
+</span>31 <span style=''>   * This is a behavior associated to an Item that can be opened a single time. Open The standard
+</span>32 <span style=''>   * [[Reaction]] consists into changing an internal variable that indicates the &quot;openness&quot; of the
+</span>33 <span style=''>   * Openable, when Statement &quot;open Item (with something)&quot; ais called.
+</span>34 <span style=''>   * @param requiredKey
+</span>35 <span style=''>   *   The key required to open the Item. If not passed the Item can be opened without Key.
+</span>36 <span style=''>   * @param onOpenExtra
+</span>37 <span style=''>   *   Reaction to be executed into the State when opened, after the standard Reaction. It can be
+</span>38 <span style=''>   *   omitted.
+</span>39 <span style=''>   */
+</span>40 <span style=''>  case class SimpleOpenable(
+</span>41 <span style=''>    requiredKey: Option[Key] = None,
+</span>42 <span style=''>    onOpenExtra: Reaction = Reaction.empty
+</span>43 <span style=''>  )(implicit subject: I)
+</span>44 <span style=''>    extends Openable {
+</span>45 <span style=''>    var _isOpen: Boolean = </span><span style='background: #AEF1AE'>false</span><span style=''>
+</span>46 <span style=''>
+</span>47 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>_isOpen</span><span style=''>
+</span>48 <span style=''>
+</span>49 <span style=''>    override def triggers: ItemTriggers = {
+</span>50 <span style=''>      case (Open, item, maybeKey, state)
+</span>51 <span style=''>          if </span><span style='background: #AEF1AE'>state.isInLocation(item) &amp;&amp; canBeOpened(maybeKey)(state) &amp;&amp; !isOpen</span><span style=''> =&gt;
+</span>52 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
+</span>53 <span style=''>
+</span>54 <span style=''>      case (Open, _, _, _) if </span><span style='background: #AEF1AE'>!isOpen</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>failToOpen</span><span style=''>
+</span>55 <span style=''>      case (Open, _, _, _) if </span><span style='background: #AEF1AE'>isOpen</span><span style=''>  =&gt; </span><span style='background: #AEF1AE'>alreadyOpened</span><span style=''>
+</span>56 <span style=''>    }
+</span>57 <span style=''>
+</span>58 <span style=''>    /**
+</span>59 <span style=''>     * Checks whether the Item can be opened with the current configuration. The usedKey is the
+</span>60 <span style=''>     * eventual Key passed explicitly by the user, with a statement like &quot;open the item with the
+</span>61 <span style=''>     * key&quot;.
+</span>62 <span style=''>     *
+</span>63 <span style=''>     * @param state
+</span>64 <span style=''>     *   The current State.
+</span>65 <span style=''>     * @param usedKey
+</span>66 <span style=''>     *   The eventual key passed explicitly by the user, e.g. , with a statement like &quot;open the item
+</span>67 <span style=''>     *   with the key&quot;.
+</span>68 <span style=''>     * @return
+</span>69 <span style=''>     *   True if:
+</span>70 <span style=''>     *   - A key was passed explicitly, is effectively into the Bag of the Player (or in the current
+</span>71 <span style=''>     *     room) and that key is effectively required to open the Item.
+</span>72 <span style=''>     *   - No key was passed explicitly, is effectively into the Bag of the Player and that key is
+</span>73 <span style=''>     *     effectively required to open the Item.
+</span>74 <span style=''>     *   - No key was passed explicitly, and no key is required.
+</span>75 <span style=''>     *
+</span>76 <span style=''>     * False otherwise.
+</span>77 <span style=''>     */
+</span>78 <span style=''>    override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
+</span>79 <span style=''>      usedKey match {
+</span>80 <span style=''>        case Some(key) =&gt; </span><span style='background: #AEF1AE'>requiredKey.contains(key)</span><span style=''>
+</span>81 <span style=''>        case None      =&gt; </span><span style='background: #AEF1AE'>requiredKey.fold(true)(_ =&gt; false)</span><span style=''>
+</span>82 <span style=''>      }
+</span>83 <span style=''>    }
+</span>84 <span style=''>
+</span>85 <span style=''>    /**
+</span>86 <span style=''>     * Sets the Item in an open state and executes eventual extra actions.
+</span>87 <span style=''>     * @return
+</span>88 <span style=''>     *   A Reaction that sets the Item in an open state and executes eventual extra actions.
+</span>89 <span style=''>     */
+</span>90 <span style=''>    def open: Reaction = {
+</span>91 <span style=''>      </span><span style='background: #AEF1AE'>_isOpen = true</span><span style=''>
+</span>92 <span style=''>
+</span>93 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
+</span>94 <span style=''></span><span style='background: #AEF1AE'>        Reactions.open(subject, requiredKey),
+</span>95 <span style=''></span><span style='background: #AEF1AE'>        onOpenExtra
+</span>96 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>97 <span style=''>    }
+</span>98 <span style=''>
+</span>99 <span style=''>    def failToOpen: Reaction = </span><span style='background: #AEF1AE'>Reaction.messages(Messages.FailedToOpen(subject))</span><span style=''>
+</span>100 <span style=''>
+</span>101 <span style=''>    def alreadyOpened: Reaction = </span><span style='background: #AEF1AE'>Reaction.messages(Messages.AlreadyOpened(subject))</span><span style=''>
+</span>102 <span style=''>  }
+</span>103 <span style=''>
+</span>104 <span style=''>  /**
+</span>105 <span style=''>   * Companion object for [[Openable]]. Shortcut for the standard implementation.
+</span>106 <span style=''>   */
+</span>107 <span style=''>  object Openable {
+</span>108 <span style=''>
+</span>109 <span style=''>    def lockedBuilder(
+</span>110 <span style=''>      requiredKey: Key,
+</span>111 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>112 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(Some(requiredKey), onOpenExtra)(_)</span><span style=''>
+</span>113 <span style=''>
+</span>114 <span style=''>    def unlockedBuilder(
+</span>115 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>116 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(None, onOpenExtra)(_)</span><span style=''>
+</span>117 <span style=''>  }
+</span>118 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -150,15 +154,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          49
+          45
         </td>
         <td>
-          299
+          330
         </td>
         <td>
-          1956
+          1797
           -
-          1961
+          1802
         </td>
         <td>
           Literal
@@ -174,15 +178,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          47
         </td>
         <td>
-          300
+          331
         </td>
         <td>
-          1998
+          1839
           -
-          2005
+          1846
         </td>
         <td>
           Select
@@ -198,15 +202,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          49
         </td>
         <td>
-          305
+          340
         </td>
         <td>
-          2049
+          1890
           -
-          2049
+          1890
         </td>
         <td>
           Apply
@@ -222,15 +226,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          51
         </td>
         <td>
-          301
+          332
         </td>
         <td>
-          2175
+          1974
           -
-          2203
+          2002
         </td>
         <td>
           Apply
@@ -246,15 +250,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          51
         </td>
         <td>
-          302
+          333
         </td>
         <td>
-          2207
+          2006
           -
-          2214
+          2013
         </td>
         <td>
           Select
@@ -270,15 +274,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          51
         </td>
         <td>
-          303
+          334
         </td>
         <td>
-          2147
+          1946
           -
-          2214
+          2013
         </td>
         <td>
           Apply
@@ -294,15 +298,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          52
         </td>
         <td>
-          304
+          335
         </td>
         <td>
-          2226
+          2025
           -
-          2230
+          2029
         </td>
         <td>
           Select
@@ -318,63 +322,135 @@
         </td>
       </tr><tr>
         <td>
-          82
+          54
         </td>
         <td>
-          306
+          336
         </td>
         <td>
-          3278
+          2061
           -
-          3298
+          2068
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInScope
+          scala.Boolean.unary_!
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          OpenableExt.this.StateUtils(state).isInScope(key)
+          SimpleOpenable.this.isOpen.unary_!
         </td>
       </tr><tr>
         <td>
-          82
+          54
         </td>
         <td>
-          307
+          337
         </td>
         <td>
-          3249
+          2072
           -
-          3298
+          2082
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Boolean.&amp;&amp;
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.failToOpen
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleOpenable.this.requiredKey.contains[OpenableExt.this.I](key).&amp;&amp;(OpenableExt.this.StateUtils(state).isInScope(key))
+          SimpleOpenable.this.failToOpen
         </td>
       </tr><tr>
         <td>
-          83
+          55
         </td>
         <td>
-          308
+          338
         </td>
         <td>
-          3342
+          2113
           -
-          3346
+          2119
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.isOpen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.isOpen
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          339
+        </td>
+        <td>
+          2124
+          -
+          2137
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.alreadyOpened
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.alreadyOpened
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          341
+        </td>
+        <td>
+          3156
+          -
+          3181
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.requiredKey.contains[OpenableExt.this.I](key)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          342
+        </td>
+        <td>
+          3225
+          -
+          3229
         </td>
         <td>
           Literal
@@ -390,39 +466,39 @@
         </td>
       </tr><tr>
         <td>
-          83
+          81
         </td>
         <td>
-          309
+          343
         </td>
         <td>
-          3348
+          3236
           -
-          3364
+          3241
         </td>
         <td>
-          Apply
+          Literal
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInBag
+          &lt;nosymbol&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          OpenableExt.this.StateUtils(state).isInBag(x$1)
+          false
         </td>
       </tr><tr>
         <td>
-          83
+          81
         </td>
         <td>
-          310
+          344
         </td>
         <td>
-          3325
+          3208
           -
-          3365
+          3242
         </td>
         <td>
           Apply
@@ -434,19 +510,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleOpenable.this.requiredKey.fold[Boolean](true)(((x$1: OpenableExt.this.Key) =&gt; OpenableExt.this.StateUtils(state).isInBag(x$1)))
+          SimpleOpenable.this.requiredKey.fold[Boolean](true)(((x$1: OpenableExt.this.Key) =&gt; false))
         </td>
       </tr><tr>
         <td>
-          94
+          91
         </td>
         <td>
-          311
+          345
         </td>
         <td>
-          3630
+          3490
           -
-          3644
+          3504
         </td>
         <td>
           Apply
@@ -462,39 +538,39 @@
         </td>
       </tr><tr>
         <td>
-          96
+          93
         </td>
         <td>
-          318
+          350
         </td>
         <td>
-          3654
+          3512
           -
-          3794
+          3603
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.applyReactions
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          OpenableExt.this.StateUtils(state).applyReactions(OpenableExt.this.Reactions.open(SimpleOpenable.this.subject, SimpleOpenable.this.requiredKey, SimpleOpenable.this.consumeKey), SimpleOpenable.this.onOpenExtra.getOrElse[OpenableExt.this.Reaction](OpenableExt.this.Reactions.empty))
+          OpenableExt.this.Reaction.combine(OpenableExt.this.Reactions.open(SimpleOpenable.this.subject, SimpleOpenable.this.requiredKey), SimpleOpenable.this.onOpenExtra)
         </td>
       </tr><tr>
         <td>
-          97
+          94
         </td>
         <td>
-          312
+          346
         </td>
         <td>
-          3701
+          3553
           -
-          3708
+          3560
         </td>
         <td>
           Select
@@ -510,15 +586,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          94
         </td>
         <td>
-          313
+          347
         </td>
         <td>
-          3710
+          3562
           -
-          3721
+          3573
         </td>
         <td>
           Select
@@ -534,39 +610,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          94
         </td>
         <td>
-          314
+          348
         </td>
         <td>
-          3723
+          3538
           -
-          3733
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.consumeKey
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          SimpleOpenable.this.consumeKey
-        </td>
-      </tr><tr>
-        <td>
-          97
-        </td>
-        <td>
-          315
-        </td>
-        <td>
-          3686
-          -
-          3734
+          3574
         </td>
         <td>
           Apply
@@ -578,67 +630,187 @@
           
         </td>
         <td style="background: #AEF1AE">
-          OpenableExt.this.Reactions.open(SimpleOpenable.this.subject, SimpleOpenable.this.requiredKey, SimpleOpenable.this.consumeKey)
+          OpenableExt.this.Reactions.open(SimpleOpenable.this.subject, SimpleOpenable.this.requiredKey)
         </td>
       </tr><tr>
         <td>
-          98
+          95
         </td>
         <td>
-          316
+          349
         </td>
         <td>
-          3768
+          3584
           -
-          3783
+          3595
         </td>
         <td>
           Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.empty
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.onOpenExtra
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          OpenableExt.this.Reactions.empty
+          SimpleOpenable.this.onOpenExtra
         </td>
       </tr><tr>
         <td>
-          98
+          99
         </td>
         <td>
-          317
+          351
         </td>
         <td>
-          3746
+          3682
           -
-          3784
+          3689
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          352
+        </td>
+        <td>
+          3660
+          -
+          3690
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Option.getOrElse
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt.Messages.FailedToOpen.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleOpenable.this.onOpenExtra.getOrElse[OpenableExt.this.Reaction](OpenableExt.this.Reactions.empty)
+          OpenableExt.this.Messages.FailedToOpen.apply(SimpleOpenable.this.subject)
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          353
+        </td>
+        <td>
+          3642
+          -
+          3691
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.messages
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          OpenableExt.this.Reaction.messages(OpenableExt.this.Messages.FailedToOpen.apply(SimpleOpenable.this.subject))
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          354
+        </td>
+        <td>
+          3768
+          -
+          3775
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleOpenable.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          355
+        </td>
+        <td>
+          3745
+          -
+          3776
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt.Messages.AlreadyOpened.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          OpenableExt.this.Messages.AlreadyOpened.apply(SimpleOpenable.this.subject)
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          356
+        </td>
+        <td>
+          3727
+          -
+          3777
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.messages
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          OpenableExt.this.Reaction.messages(OpenableExt.this.Messages.AlreadyOpened.apply(SimpleOpenable.this.subject))
         </td>
       </tr><tr>
         <td>
           112
         </td>
         <td>
-          319
+          357
         </td>
         <td>
-          4079
+          4013
           -
-          4134
+          4062
         </td>
         <td>
           Apply
@@ -650,7 +822,31 @@
           
         </td>
         <td style="background: #AEF1AE">
-          OpenableExt.this.SimpleOpenable.apply(requiredKey, consumeKey, onOpenExtra)(x$2)
+          OpenableExt.this.SimpleOpenable.apply(scala.Some.apply[OpenableExt.this.Key](requiredKey), onOpenExtra)(x$2)
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          358
+        </td>
+        <td>
+          4157
+          -
+          4193
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.SimpleOpenable.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          OpenableExt.this.SimpleOpenable.apply(scala.None, onOpenExtra)(x$3)
         </td>
       </tr>
     </table>
