@@ -22,14 +22,14 @@ trait ContainerExt
   case class SimpleContainer(
     itemRefs: Set[ItemRef],
     openable: Openable
-  )(implicit subject: I)
+  )(implicit val subject: I)
     extends Container
     with Delegate {
 
     override def delegateTriggers: ItemTriggers = openable.triggers
 
     override def receiverTriggers: ItemTriggers = {
-      case (Open, _, maybeKey, s)
+      case (Open, maybeKey, s)
           if s.isInLocation(subject) && openable.canBeOpened(maybeKey)(s)
             && !openable.isOpen =>
         revealItems
@@ -40,11 +40,10 @@ trait ContainerExt
     override def isOpen: Boolean = openable.isOpen
 
     override def revealItems: Reaction =
-      s =>
-        Reaction.combine(
-          openable.open,
-          Reactions.revealItems(items(s))
-        )(s)
+      for {
+        s1 <- openable.open
+        s2 <- Reactions.revealItems(items(s1))
+      } yield s2
   }
 
   object Container {

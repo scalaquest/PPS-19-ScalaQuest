@@ -27,18 +27,18 @@ trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonRe
    *   Reaction to be executed when the item has been successfully eaten, after the standard
    *   [[Reaction]]. It can be omitted.
    */
-  case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit subject: I)
+  case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit val subject: I)
     extends Eatable {
 
     override def triggers: ItemTriggers = {
-      case (Eat, item, None, state) if state.isInScope(item) => eat
+      case (Eat, None, state) if state.isInScope(subject) => eat
     }
 
     def eat: Reaction =
-      Reaction.combine(
-        Reactions.eat(subject),
-        onEatExtra
-      )
+      for {
+        _ <- Reactions.eat(subject)
+        s <- onEatExtra
+      } yield s
   }
 
   /**

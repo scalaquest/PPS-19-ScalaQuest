@@ -24,7 +24,8 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
    */
   case class SimpleGenericBehavior(
     override val triggers: ItemTriggers
-  ) extends GenericBehavior
+  )(implicit val subject: I)
+    extends GenericBehavior
 
   /**
    * Companion object for [[Takeable]]. Shortcut for the standard implementation.
@@ -32,6 +33,6 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
   object GenericBehavior {
 
     def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericBehavior =
-      _ => SimpleGenericBehavior(triggers)
+      SimpleGenericBehavior(triggers)(_)
   }
 }

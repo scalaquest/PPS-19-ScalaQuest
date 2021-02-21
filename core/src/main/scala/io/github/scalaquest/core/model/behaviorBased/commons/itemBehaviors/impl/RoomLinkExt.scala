@@ -43,7 +43,7 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
     endRoomDirection: Direction,
     openable: Option[Openable] = None,
     onEnterExtra: Reaction = Reaction.empty
-  )(implicit subject: I)
+  )(implicit val subject: I)
     extends RoomLink
     with Delegate {
 
@@ -56,34 +56,32 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
       openable map (_.triggers) getOrElse PartialFunction.empty: ItemTriggers
 
     override def receiverTriggers: ItemTriggers = {
-      case (Open, _, maybeKey, s)
-          if s.isInLocation(subject) && openable.fold(true)(_.canBeOpened(maybeKey)(s))
+      case (Open, maybeKey, s)
+          if s.isInLocation(subject) && openable.forall(_.canBeOpened(maybeKey)(s))
             && !isOpen && openable.isDefined =>
         open
 
-      case (Enter, _, None, s) if s.isInLocation(subject) && openable.fold(true)(_.isOpen) =>
+      case (Enter, None, s) if s.isInLocation(subject) && openable.forall(_.isOpen) =>
         enter
-      case (Enter, _, _, _) =>
+
+      case (Enter, _, _) =>
         Reaction.messages(Messages.FailedToEnter(subject))
     }
 
     override def enter: Reaction =
-      s =>
-        Reaction.combine(
-          Reactions.enter(endRoom(s)),
-          onEnterExtra
-        )(s)
+      for {
+        s1 <- Reaction.empty
+        _  <- Reactions.enter(endRoom(s1))
+        s2 <- onEnterExtra
+      } yield s2
 
     override def open: Reaction =
-      Reaction.combine(
-        openable map (_.open) getOrElse Reaction.empty,
-        Reaction(
-          (locationRoomLens composeLens roomDirectionsLens)
-            .modify(_ + (endRoomDirection -> endRoomRef))
-        )
-      )
+      for {
+        s1 <- openable map (_.open) getOrElse Reaction.empty
+        s2 <- Reactions.addDirectionToLocation(endRoomDirection, endRoom(s1))
+      } yield s2
 
-    override def endRoom(implicit s: S): RM = s.rooms(endRoomRef)
+    override def endRoom(implicit state: S): RM = state.rooms(endRoomRef)
 
     override def isOpen: Boolean = openable forall (_.isOpen)
   }

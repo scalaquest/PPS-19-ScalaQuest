@@ -40,19 +40,22 @@ trait OpenableExt
   case class SimpleOpenable(
     requiredKey: Option[Key] = None,
     onOpenExtra: Reaction = Reaction.empty
-  )(implicit subject: I)
+  )(implicit val subject: I)
     extends Openable {
     var _isOpen: Boolean = false
 
     override def isOpen: Boolean = _isOpen
 
     override def triggers: ItemTriggers = {
-      case (Open, item, maybeKey, state)
-          if state.isInLocation(item) && canBeOpened(maybeKey)(state) && !isOpen =>
+      case (Open, maybeKey, state)
+          if state.isInLocation(subject) && canBeOpened(maybeKey)(state) && !isOpen =>
         open
 
-      case (Open, _, _, _) if !isOpen => failToOpen
-      case (Open, _, _, _) if isOpen  => alreadyOpened
+      case (Open, _, _) =>
+        if (!isOpen)
+          Reaction.messages(Messages.FailedToOpen(subject))
+        else
+          Reaction.messages(Messages.AlreadyOpened(subject))
     }
 
     /**
@@ -90,15 +93,11 @@ trait OpenableExt
     def open: Reaction = {
       _isOpen = true
 
-      Reaction.combine(
-        Reactions.open(subject, requiredKey),
-        onOpenExtra
-      )
+      for {
+        _ <- Reactions.open(subject, requiredKey)
+        s <- onOpenExtra
+      } yield s
     }
-
-    def failToOpen: Reaction = Reaction.messages(Messages.FailedToOpen(subject))
-
-    def alreadyOpened: Reaction = Reaction.messages(Messages.AlreadyOpened(subject))
   }
 
   /**

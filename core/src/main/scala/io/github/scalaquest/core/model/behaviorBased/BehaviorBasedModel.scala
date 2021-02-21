@@ -36,7 +36,7 @@ abstract class BehaviorBasedModel extends Model {
         .map(_.triggers)
         .reduceOption(_ orElse _)
         .getOrElse(PartialFunction.empty)
-        .lift((action, this, maybeSideItem, state))
+        .lift((action, maybeSideItem, state))
   }
 
   /**
@@ -44,7 +44,7 @@ abstract class BehaviorBasedModel extends Model {
    * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
    * [[ItemBehavior]] is based into this construct.
    */
-  type ItemTriggers = PartialFunction[(Action, I, Option[I], S), Reaction]
+  type ItemTriggers = PartialFunction[(Action, Option[I], S), Reaction]
 
   /**
    * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
@@ -52,6 +52,7 @@ abstract class BehaviorBasedModel extends Model {
    */
   abstract class ItemBehavior {
     def triggers: ItemTriggers = PartialFunction.empty
+    def subject: I
   }
 
   /**

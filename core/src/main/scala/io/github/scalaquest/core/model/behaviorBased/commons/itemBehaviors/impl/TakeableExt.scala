@@ -26,11 +26,11 @@ trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonR
    *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
    *   omitted.
    */
-  case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit subject: I)
+  case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit val subject: I)
     extends Takeable {
 
     override def triggers: ItemTriggers = {
-      case (Take, item, None, state) if state.isInLocation(item) => take
+      case (Take, None, state) if state.isInLocation(subject) => take
     }
 
     /**
@@ -41,10 +41,10 @@ trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonR
      *   eventual extra reaction.
      */
     override def take: Reaction =
-      Reaction.combine(
-        Reactions.take(subject),
-        onTakeExtra
-      )
+      for {
+        _ <- Reactions.take(subject)
+        s <- onTakeExtra
+      } yield s
   }
 
   /**

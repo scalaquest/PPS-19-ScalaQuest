@@ -10,15 +10,15 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("sleeping"), "snorlax"),
       {
-        case (Wake, _, Some(i), _) if i == pokeflute => CustomReactions.wakeSnorlax
-        case _                                       => Reactions.finishGame(false)
+        case (Wake, Some(i), _) if i == pokeflute => CustomReactions.wakeSnorlax
+        case _                                    => Reactions.finishGame(false)
       }
     )
 
   def pokeflute: GenericItem =
     GenericItem.withGenBehavior(
       i("pokeflute"),
-      { case (Play, _, _, s) =>
+      { case (Play, None, s) =>
         if (s.location.items(s).contains(snorlax))
           CustomReactions.wakeSnorlax
         else
@@ -32,13 +32,13 @@ object Items {
     GenericItem.withGenBehavior(
       i("charizard"),
       {
-        case (Actions.Attack, _, Some(i), _) if i == pikachu =>
+        case (Actions.Attack, Some(i), _) if i == pikachu =>
           CustomReactions.attackCharizard
 
-        case (Actions.Catch, _, Some(i), _) if i == pokeball =>
+        case (Actions.Catch, Some(i), _) if i == pokeball =>
           CustomReactions.catchCharizard
 
-        case (Actions.Catch, _, None, _) =>
+        case (Actions.Catch, None, _) =>
           CustomReactions.catchCharizard
       }
     )
@@ -47,9 +47,9 @@ object Items {
     GenericItem.withGenBehavior(
       i("pokeball"),
       {
-        case (Throw, _, None, s) if s.location.items(s).contains(charizard) =>
+        case (Throw, None, s) if s.location.items(s).contains(charizard) =>
           CustomReactions.catchCharizard
-        case (Throw, _, Some(i), s) if s.location.items(s).contains(charizard) && i == charizard =>
+        case (Throw, Some(i), s) if s.location.items(s).contains(charizard) && i == charizard =>
           CustomReactions.catchCharizard
       }
     )
