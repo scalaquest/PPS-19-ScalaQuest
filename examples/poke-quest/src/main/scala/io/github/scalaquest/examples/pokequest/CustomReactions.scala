@@ -10,7 +10,7 @@ object CustomReactions {
   def wakeSnorlax: React =
     for {
       _ <- Reactions.addDirectionToLocation(Direction.North, Geography.forest)
-      _ <- Reaction(Update((locationRoomLens composeLens roomItemsLens).modify(_ - snorlax.ref)))
+      _ <- Reactions.modifyLocationItems(_ - snorlax.ref)
       s <- Reaction.messages(Pusher.SnorlaxWoke)
     } yield s
 

@@ -4,11 +4,16 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into [[BehaviorBasedModel]] the Eatable behavior.
  */
-trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait EatableExt
+  extends BehaviorBasedModel
+  with CommonMessagesExt
+  with CommonReactionsExt
+  with StateUtilsExt {
 
   /**
    * A [[ItemBehavior]] associated to an [[Item]] that can be eaten. After an item is eaten, it
@@ -36,7 +41,9 @@ trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonRe
 
     def eat: Reaction =
       for {
-        _ <- Reactions.eat(subject)
+        _ <- Reactions.modifyLocationItems(_ - subject.ref)
+        _ <- Reactions.modifyBag(_ - subject.ref)
+        _ <- Reaction.messages(Messages.Eaten(subject))
         s <- onEatExtra
       } yield s
   }

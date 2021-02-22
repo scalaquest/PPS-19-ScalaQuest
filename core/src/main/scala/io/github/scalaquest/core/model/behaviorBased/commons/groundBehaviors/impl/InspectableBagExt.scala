@@ -30,10 +30,11 @@ trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with C
     override def triggers: GroundTriggers = { case (InspectBag, _) => inspectBag }
 
     override def inspectBag: Reaction =
-      Reaction.combine(
-        Reactions.inspectBag,
-        onInspectExtra
-      )
+      for {
+        s1 <- Reaction.empty
+        _  <- Reaction.messages(Messages.InspectedBag(s1.bag))
+        s2 <- onInspectExtra
+      } yield s2
   }
 
   /**

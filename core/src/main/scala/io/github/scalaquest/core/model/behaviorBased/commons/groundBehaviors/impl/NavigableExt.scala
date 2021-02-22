@@ -5,12 +5,17 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigable behavior for the
  * [[BehaviorBasedModel.Ground]].
  */
-trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait NavigableExt
+  extends BehaviorBasedModel
+  with CommonMessagesExt
+  with CommonReactionsExt
+  with StateUtilsExt {
 
   /**
    * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
@@ -33,10 +38,11 @@ trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with Common
     }
 
     override def movePlayer(targetRoom: RM): Reaction =
-      Reaction.combine(
-        Reactions.navigate(targetRoom),
-        onNavigateExtra
-      )
+      for {
+        _ <- Reactions.modifyLocation(targetRoom)
+        _ <- Reaction.messages(Messages.Navigated(targetRoom))
+        s <- onNavigateExtra
+      } yield s
 
     def failedToNavigate(direction: Direction): Reaction =
       Reaction.appendMessage(Messages.FailedToNavigate(direction))(Reaction.empty)

@@ -5,11 +5,13 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 trait ContainerExt
   extends BehaviorBasedModel
   with CommonMessagesExt
   with CommonReactionsExt
+  with StateUtilsExt
   with OpenableExt {
 
   abstract class Container extends ItemBehavior {
@@ -42,7 +44,8 @@ trait ContainerExt
     override def revealItems: Reaction =
       for {
         s1 <- openable.open
-        s2 <- Reactions.revealItems(items(s1))
+        _  <- Reactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
+        s2 <- Reaction.messages(Messages.ReversedIntoLocation(items(s1)))
       } yield s2
   }
 

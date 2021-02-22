@@ -35,10 +35,13 @@ trait InspectableLocationExt
     override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
 
     override def inspectLocation: Reaction =
-      Reaction.combine(
-        Reactions.inspectLocation,
-        onInspectExtra
-      )
+      for {
+        s1 <- Reaction.empty
+        _ <- Reaction.messages(
+          Messages.Inspected(s1.location, s1.location.items(s1), s1.location.neighbors(s1))
+        )
+        s2 <- onInspectExtra
+      } yield s2
   }
 
   /**

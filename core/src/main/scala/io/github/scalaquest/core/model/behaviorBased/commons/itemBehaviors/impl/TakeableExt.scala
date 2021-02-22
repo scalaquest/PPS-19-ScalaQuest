@@ -4,11 +4,16 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
  */
-trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait TakeableExt
+  extends BehaviorBasedModel
+  with CommonMessagesExt
+  with CommonReactionsExt
+  with StateUtilsExt {
 
   /**
    * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
@@ -42,7 +47,9 @@ trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonR
      */
     override def take: Reaction =
       for {
-        _ <- Reactions.take(subject)
+        _ <- Reactions.modifyLocationItems(_ - subject.ref)
+        _ <- Reactions.modifyBag(_ + subject.ref)
+        _ <- Reaction.messages(Messages.Taken(subject))
         s <- onTakeExtra
       } yield s
   }

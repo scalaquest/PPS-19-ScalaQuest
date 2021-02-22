@@ -5,6 +5,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into the [[BehaviorBasedModel]] the Openable behavior.
@@ -13,7 +14,8 @@ trait OpenableExt
   extends BehaviorBasedModel
   with KeyExt
   with CommonMessagesExt
-  with CommonReactionsExt {
+  with CommonReactionsExt
+  with StateUtilsExt {
 
   /**
    * A [[ItemBehavior]] associated to an [[Item]] that can be opened a single time.
@@ -94,7 +96,14 @@ trait OpenableExt
       _isOpen = true
 
       for {
-        _ <- Reactions.open(subject, requiredKey)
+        _ <-
+          if (requiredKey.exists(_.disposable)) Reactions.modifyBag(_ - requiredKey.get.ref)
+          else Reaction.empty
+        _ <-
+          if (requiredKey.exists(_.disposable))
+            Reactions.modifyLocationItems(_ - requiredKey.get.ref)
+          else Reaction.empty
+        _ <- Reaction.messages(Messages.Opened(subject))
         s <- onOpenExtra
       } yield s
     }
