@@ -23,6 +23,15 @@ trait CommonReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with C
 
     def modifyLocation(location: RM): Reaction = Reaction(locationRoomLens.set(location))
 
+    /**
+     * Create a Reaction that add a neighbor room to the actual player location.
+     * @param direction
+     *   the new visible direction.
+     * @param room
+     *   the new visible room.
+     * @return
+     *   the Reaction described above.
+     */
     def addDirectionToLocation(direction: Direction, room: RM): Reaction =
       Reaction(
         (locationRoomLens composeLens roomDirectionsLens).modify(_ + (direction -> room.ref))
