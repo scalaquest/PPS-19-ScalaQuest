@@ -3,7 +3,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 import io.github.scalaquest.core.model.{Action, Direction}
 
 /**
- * [[Action]] s already implemented in the game.
+ * A set of ready-to-use actions, used into various parts of the Common package.
  */
 object CommonActions {
 

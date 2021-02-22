@@ -11,9 +11,9 @@ import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.Com
 trait CommonGroundExt extends BehaviorBasedModel with CommonGroundBehaviorsExt {
 
   /**
-   * A [[Ground]] implementation with all the common [[GroundBehavior]].
+   * A Ground implementation that includes all the common GroundBehaviors.
    * @param additionalBehaviors
-   *   additional [[GroundBehavior]] that manage this class.
+   *   GroundBehaviors to include in addition to the common ones.
    */
   case class CommonGround(additionalBehaviors: Seq[GroundBehavior] = Seq())
     extends BehaviorBasedGround {

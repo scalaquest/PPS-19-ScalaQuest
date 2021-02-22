@@ -12,14 +12,15 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
 
   /**
-   * A [[GroundBehavior]] that enables the possibility to know the items present into the Bag.
+   * A [[GroundBehavior]] that enables the possibility to know what items are contained into the
+   * bag.
    */
   abstract class InspectableBag extends GroundBehavior {
 
     /**
-     * Inspection of the Bag.
+     * A [[Reaction]] that communicates to the user the items contained into the bag.
      * @return
-     *   a [[Reaction]] that inspect the Bag
+     *   A [[Reaction]] that communicates to the user the items contained into the bag.
      */
     def inspectBag: Reaction
   }
@@ -28,8 +29,7 @@ trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with C
    * A standard implementation for [[InspectableBag]].
    *
    * @param onInspectExtra
-   *   [[Reaction]] to be executed when the player successfully inspected the bag. It can be
-   *   omitted.
+   *   [[Reaction]] to be executed when the player successfully inspects the bag. It can be omitted.
    */
   case class SimpleInspectableBag(onInspectExtra: Reaction = Reaction.empty)
     extends InspectableBag {

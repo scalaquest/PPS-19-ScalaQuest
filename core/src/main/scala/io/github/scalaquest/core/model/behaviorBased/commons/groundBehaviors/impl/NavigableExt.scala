@@ -23,11 +23,11 @@ trait NavigableExt
   abstract class Navigable extends GroundBehavior {
 
     /**
-     * Move the player into a selected Room [[RM]].
+     * Sets the location of the player to the given Room.
      * @param targetRoom
-     *   the selected room.
+     *   The room into which move the Player.
      * @return
-     *   the Reaction that move the player into the targetRoom.
+     *   A Reaction that sets the location of the player to the given Room.
      */
     def movePlayer(targetRoom: RM): Reaction
   }

@@ -16,14 +16,15 @@ trait EatableExt
   with StateUtilsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that can be eaten. After an item is eaten, it
-   * should be removed from the player bag (or from the current room, if it was there).
+   * An ItemBehavior associated to an Item that can be eaten. After an item is eaten, it should be
+   * removed from the player bag (or from the current room, if it was there).
    */
   abstract class Eatable extends ItemBehavior {
 
     /**
+     * A Reaction that should remove the Item from the player bag (or from the location).
      * @return
-     *   the eat [[Reaction]]
+     *   A Reaction that should remove the Item from the player bag (or from the location).
      */
     def eat: Reaction
   }
@@ -59,11 +60,12 @@ trait EatableExt
   object Eatable {
 
     /**
-     * Facilitates for the simple implementation of Eatable.
+     * A function that builds an Eatable behavior given a subject Item.
      * @param onEatExtra
-     *   a possible extra behavior.
+     *   Reaction to be executed when the item has been successfully eaten, after the standard
+     *   Reaction. It can be omitted.
      * @return
-     *   a builder that given an Item build a SimpleEatable instance.
+     *   A function that builds an Eatable behavior given a subject Item.
      */
     def builder(onEatExtra: Reaction = Reaction.empty): I => Eatable = SimpleEatable(onEatExtra)(_)
   }

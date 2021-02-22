@@ -8,8 +8,8 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * A mixable trait that add the container behavior. This behavior allow to show some hidden
- * [[BehaviorBasedModel.ItemBehavior]] when the container item is opened.
+ * A mixable trait that add the container behavior. This behavior allows an Item to be opened, and
+ * to release a set of Items into the current Room when opened.
  */
 trait ContainerExt
   extends BehaviorBasedModel
@@ -19,46 +19,51 @@ trait ContainerExt
   with OpenableExt {
 
   /**
-   * The container base.
+   * An ItemBehavior that enables the possibility to open the item, and to reveal a set of Items
+   * into the current Room when opened.
    */
   abstract class Container extends ItemBehavior {
 
     /**
-     * The hidden items that have to be added to the current player location.
+     * Items that will be added to the location after opening the subject.
      * @param state
-     *   the actual game state.
+     *   The actual game state. Used to extract the actual Items from their refs.
      * @return
-     *   the revelead items.
+     *   Items that will be added to the location after opening the subject.
      */
     def items(implicit state: S): Set[I]
 
     /**
+     * Reaction triggered when the Item is opened: it reveals a set of Items into the current Room
+     * when opened.
      * @return
-     *   a Reaction that reveal the Items.
+     *   Reaction triggered when the Item is opened.
      */
     def revealItems: Reaction
 
     /**
+     * The Openable behavior associated to the Item.
      * @return
-     *   an openable behavior.
+     *   The Openable behavior associated to the Item.
      */
     def openable: Openable
 
     /**
+     * The "openness" state of the Item, initially closed.
      * @return
-     *   true if the container is open, false otherwise.
+     *   True if the container is open, False otherwise.
      */
     def isOpen: Boolean
   }
 
   /**
-   * Simple implementation for a Container.
+   * The standard implementation for the Container.
    * @param itemRefs
-   *   the item reference to all the hidden items contained.
+   *   Refs to the Items that will be added to the location after opening the subject.
    * @param openable
-   *   an [[Openable]] behavior.
+   *   The Openable behavior associated to the subject Item.
    * @param subject
-   *   the item that have the Container behavior.
+   *   The item that owes the Container behavior.
    */
   case class SimpleContainer(
     itemRefs: Set[ItemRef],
@@ -95,22 +100,24 @@ trait ContainerExt
   object Container {
 
     /**
-     * A container builder openable without a key.
+     * A builder for a container that do not requires a Key to be opened.
      * @param items
-     *   the items contained into the container.
+     *   Items that will be added to the location after opening the subject.
      * @return
-     *   a builder for a container giving him an extra item.
+     *   A builder for a container that do not requires a Key to be opened.
      */
     def unlockedBuilder(
       items: Set[I]
     ): I => Container = i => SimpleContainer(items.map(_.ref), Openable.unlockedBuilder()(i))(i)
 
     /**
-     * A container builder that could be open only with a specific key.
+     * A builder for a container that requires a Key to be opened.
      * @param items
-     *   the items contained into the container.
+     *   Items that will be added to the location after opening the subject.
+     * @param key
+     *   The Key required to open the containerized item.
      * @return
-     *   a builder for a container giving him an extra item.
+     *   A builder for a container that requires a Key to be opened.
      */
     def lockedBuilder(
       items: Set[I],

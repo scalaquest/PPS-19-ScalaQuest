@@ -10,22 +10,21 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
-   * player.
+   * An ItemBehavior with some triggers. It is useful in order to wrap [[ItemBehavior]] into a
+   * facility builder.
    */
   abstract class GenericBehavior extends ItemBehavior {
 
     /**
+     * Triggers associated to the behavior.
      * @return
-     *   generic triggers associated to this ItemBehavior.
+     *   Triggers associated to the behavior.
      */
     def triggers: ItemTriggers
   }
 
   /**
-   * Standard implementation of
-   *
-   * The behavior of an Item that could be put into the Bag of the player from the current room.
+   * Standard implementation of GenericBehavior.
    */
   case class SimpleGenericBehavior(
     override val triggers: ItemTriggers
@@ -38,11 +37,11 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
   object GenericBehavior {
 
     /**
-     * Builder shortcut for the standard implementation of [[SimpleGenericBehavior]].
+     * A function that builds a GenericBehavior given a subject Item.
      * @param triggers
-     *   the [[ItemTriggers]] associated to the item.
+     *   The [[ItemTriggers]] associated to the item.
      * @return
-     *   an instance of [[SimpleGenericBehavior]].
+     *   A function that builds a GenericBehavior given a subject Item.
      */
     def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericBehavior =
       SimpleGenericBehavior(triggers)(_)

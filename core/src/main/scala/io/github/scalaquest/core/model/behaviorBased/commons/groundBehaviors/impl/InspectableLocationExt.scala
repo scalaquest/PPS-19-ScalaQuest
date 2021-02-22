@@ -15,15 +15,14 @@ trait InspectableLocationExt
   with CommonReactionsExt {
 
   /**
-   * A [[GroundBehavior]] that enables the possibility to know the items present into the current
-   * [[Room]].
+   * A [[GroundBehavior]] that enables the possibility to describe the current room.
    */
   abstract class InspectableLocation extends GroundBehavior {
 
     /**
-     * Inspection of the current player's location.
+     * A [[Reaction]] that communicates to the user a description of the current location.
      * @return
-     *   a Reaction with the inspection of current player's location.
+     *   A [[Reaction]] that communicates to the user a description of the current location.
      */
     def inspectLocation: Reaction
   }
@@ -31,8 +30,7 @@ trait InspectableLocationExt
   /**
    * A standard implementation for [[InspectableLocation]].
    * @param onInspectExtra
-   *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
-   *   omitted.
+   *   [[Reaction]] to be executed when the player successfully inspect the room. It can be omitted.
    */
   case class SimpleInspectableLocation(onInspectExtra: Reaction = Reaction.empty)
     extends InspectableLocation {
@@ -57,7 +55,7 @@ trait InspectableLocationExt
     /**
      * Shortcut for the standard implementation.
      * @param onInspectExtra
-     *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
+     *   [[Reaction]] to be executed when the player successfully inspect the room. It can be
      *   omitted.
      * @return
      *   the instance of [[SimpleInspectableLocation]].
