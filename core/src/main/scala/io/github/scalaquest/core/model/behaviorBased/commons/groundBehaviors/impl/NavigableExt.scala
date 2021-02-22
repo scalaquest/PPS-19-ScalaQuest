@@ -21,6 +21,14 @@ trait NavigableExt
    * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
    */
   abstract class Navigable extends GroundBehavior {
+
+    /**
+     * Move the player into a selected Room [[RM]].
+     * @param targetRoom
+     *   the selected room.
+     * @return
+     *   the Reaction that move the player into the targetRoom.
+     */
     def movePlayer(targetRoom: RM): Reaction
   }
 
@@ -53,6 +61,14 @@ trait NavigableExt
    */
   object Navigable {
 
+    /**
+     * Create a Navigable [[GroundBehavior]].
+     * @param onNavigateExtra
+     *   [[Reaction]] to be executed when the player successfully navigate in a new Room, using
+     *   navigation Actions after the standard [[Reaction]]. It can be omitted.
+     * @return
+     *   the instance of [[SimpleNavigable]].
+     */
     def apply(onNavigateExtra: Reaction = Reaction.empty): Navigable =
       SimpleNavigable(onNavigateExtra)
   }

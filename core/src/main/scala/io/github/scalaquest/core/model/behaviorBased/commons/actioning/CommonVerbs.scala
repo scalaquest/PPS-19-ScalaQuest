@@ -25,6 +25,11 @@ object CommonVerbs {
     }.map { case (name, dir) => Intransitive("go", Go(dir), Some(name)) }
   }
 
+  /**
+   * All the common verbs.
+   * @return
+   *   all the common verbs.
+   */
   def apply(): Set[Verb] =
     Set(
       Transitive("take", Take),

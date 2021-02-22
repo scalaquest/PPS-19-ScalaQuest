@@ -14,6 +14,23 @@ trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
 
   override type S = SimpleState
 
+  /**
+   * Class that implement the [[Model.State]] interface.
+   * @param actions
+   *   a Map that found for each verb the specific [[Action]].
+   * @param rooms
+   *   a Map that found for each room reference the updated Room.
+   * @param items
+   *   a Map that found for each item reference the updated Item.
+   * @param ground
+   *   the ground implementation used in this State.
+   * @param _bag
+   *   the player's bag reference.
+   * @param _location
+   *   the room reference where player start the match.
+   * @param ended
+   *   true if game is ended, false otherwise.
+   */
   case class SimpleState(
     actions: Map[VerbPrep, Action],
     rooms: Map[RoomRef, RM],
@@ -27,8 +44,26 @@ trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
     override def location: RM = rooms(_location)
   }
 
+  /**
+   * Companion object with apply for SimpleState.
+   */
   object State {
 
+    /**
+     * Facility methods for SimpleState.
+     * @param actions
+     *   a Map that found for each verb the specific [[Action]].
+     * @param rooms
+     *   a Map that found for each room reference the updated Room.
+     * @param items
+     *   a Map that found for each item reference the updated Item.
+     * @param ground
+     *   the ground implementation used in this State.
+     * @param ended
+     *   true if game is ended, false otherwise.
+     * @return
+     *   the instance of SimpleState.
+     */
     def apply(
       actions: Map[VerbPrep, Action],
       rooms: Map[RoomRef, RM],

@@ -20,6 +20,12 @@ trait TakeableExt
    * player.
    */
   abstract class Takeable extends ItemBehavior {
+
+    /**
+     * The take [[Reaction]].
+     * @return
+     *   the take [[Reaction]].
+     */
     def take: Reaction
   }
 

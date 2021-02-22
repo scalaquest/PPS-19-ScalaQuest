@@ -4,12 +4,21 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.{Direction, Message}
 
 /**
- * Trait that adds to the [[BehaviorBasedModel]] the [[Message]] s used into common implementations.
+ * A mixable trait that adds to the [[BehaviorBasedModel]] the [[Message]] s used into common
+ * implementations.
  */
 trait CommonMessagesExt extends BehaviorBasedModel {
 
+  /**
+   * Object with some common messages.
+   */
   object Messages {
 
+    /**
+     * A [[Message]] generated when the player starts the match.
+     * @param msg
+     *   the message content.
+     */
     case class Welcome(msg: String) extends Message
 
     /**
@@ -35,15 +44,27 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      */
     case class Navigated(room: RM) extends Message
 
+    /**
+     * A [[Message]] generated when the user's attempt to navigate in a non-navigable direction.
+     * allow it.
+     * @param direction
+     *   The closed direction.
+     */
     case class FailedToNavigate(direction: Direction) extends Message
 
+    /**
+     * A [[Message]] generated when the user's attempt to enter into an object that does not allow.
+     * it.
+     * @param item
+     *   The blocked item.
+     */
     case class FailedToEnter(item: I) extends Message
 
     /**
      * A [[Message]] generated when the user wants to know its current position, and the neighbor
      * rooms of the current one.
      * @param room
-     *   The current room og the player.
+     *   The current room of the player.
      * @param neighbors
      *   The rooms directly linked and accessible from the current, via cardinal points.
      */
@@ -63,10 +84,25 @@ trait CommonMessagesExt extends BehaviorBasedModel {
      */
     case class Opened(item: I) extends Message
 
+    /**
+     * A [[Message]] generated when the user opens an item that contains some hidden items.
+     * @param items
+     *   the hidden items.
+     */
     case class ReversedIntoLocation(items: Set[I]) extends Message
 
+    /**
+     * A [[Message]] generated when the user's attempt to open a non-opening object.
+     * @param item
+     *   The closed item.
+     */
     case class FailedToOpen(item: I) extends Message
 
+    /**
+     * A [[Message]] generated when the user's attempt to open an already open item.
+     * @param item
+     *   The already opened item.
+     */
     case class AlreadyOpened(item: I) extends Message
 
     /**

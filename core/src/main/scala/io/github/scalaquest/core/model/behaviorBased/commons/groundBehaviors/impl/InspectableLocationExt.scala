@@ -19,12 +19,17 @@ trait InspectableLocationExt
    * [[Room]].
    */
   abstract class InspectableLocation extends GroundBehavior {
+
+    /**
+     * Inspection of the current player's location.
+     * @return
+     *   a Reaction with the inspection of current player's location.
+     */
     def inspectLocation: Reaction
   }
 
   /**
    * A standard implementation for [[InspectableLocation]].
-   *
    * @param onInspectExtra
    *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
    *   omitted.
@@ -45,10 +50,18 @@ trait InspectableLocationExt
   }
 
   /**
-   * Companion object for [[InspectableLocation]]. Shortcut for the standard implementation.
+   * Companion object for [[InspectableLocation]].
    */
   object InspectableLocation {
 
+    /**
+     * Shortcut for the standard implementation.
+     * @param onInspectExtra
+     *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
+     *   omitted.
+     * @return
+     *   the instance of [[SimpleInspectableLocation]].
+     */
     def apply(onInspectExtra: Reaction = Reaction.empty): InspectableLocation =
       SimpleInspectableLocation(onInspectExtra)
   }

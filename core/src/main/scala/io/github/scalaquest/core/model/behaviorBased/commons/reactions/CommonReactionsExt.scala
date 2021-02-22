@@ -29,12 +29,13 @@ trait CommonReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with C
       )
 
     /**
-     * The Finish Game [[Reaction]].
-     *
+     * Create a Reaction that ends the match in two possible scenario:
+     *   - player win
+     *   - player lose
      * @param win
-     *   true if player have won the game, false otherwise.
+     *   true if game is finished with a victory, false for a defeat.
      * @return
-     *   The FinishGame [[Reaction]]
+     *   the Reaction cited above.
      */
     def finishGame(win: Boolean): Reaction =
       for {
