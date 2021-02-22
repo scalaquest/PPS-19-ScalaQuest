@@ -12,6 +12,11 @@ trait KeyExt extends BehaviorBasedModel {
    * A [[BehaviorBasedItem]] that should be used to open/close items with a Openable behavior.
    */
   trait Key extends BehaviorBasedItem {
+
+    /**
+     * @return
+     *   true if key is cancelled after his use, false otherwise.
+     */
     def disposable: Boolean
   }
 
@@ -32,6 +37,17 @@ trait KeyExt extends BehaviorBasedModel {
    */
   object Key {
 
+    /**
+     * Facilitates the creation of a Key.
+     * @param description
+     *   the key's [[ItemDescription]].
+     * @param disposable
+     *   true if key is disposable, false otherwise.
+     * @param extraBehavBuilders
+     *   some possible extra behavior for the key.
+     * @return
+     *   an instance of SimpleDoor.
+     */
     def apply(
       description: ItemDescription,
       disposable: Boolean = true,

@@ -21,77 +21,84 @@ trait CommonReactionsExt
   with AddDirectionToLocationExt { self =>
 
   /**
-   * Companioni Object with the effective implementation of the common [[Reaction]] s.
+   * Companion Object with the effective implementation of the common [[Reaction]] s.
    */
   object Reactions {
 
     /**
-     * The Eatable [[Reaction]].
+     * A Reaction that eat an eatable item.
      * @param item
-     *   that have to be eaten.
+     *   the item have to be eaten.
      * @return
-     *   Eaten [[Reaction]]
+     *   the Reaction composed by:
+     *   - remove the item from room or bag.
+     *   - an eaten message.
      */
     def eat(item: I): Reaction = self.eat(item)
 
     /**
-     * The RoomLink [[Reaction]].
+     * A Reaction that move the player in a new room.
      * @param room
-     *   that have to be reached.
+     *   the room where player have just entered.
      * @return
-     *   RoomLink [[Reaction]]
+     *   a Reaction composed by:
+     *   - the new location is the room cited above.
+     *   - a message for the navigation of the player.
      */
     def enter(room: RM): Reaction = self.enter(room)
 
     /**
-     * The Takeable [[Reaction]].
+     * Add to the player's bag the specific item.
      * @param item
      *   that have to be taken.
      * @return
-     *   Taken [[Reaction]]
+     *   a Reaction with:
+     *   - removes the item from the actual player room and add it to the player's bag.
+     *   - message for an object that is just taken.
      */
     def take(item: I): Reaction = self.take(item)
 
     /**
      * The Inspect Location [[Reaction]].
      * @return
-     *   The Inspect Location [[Reaction]].
+     *   all the visible items. The items could be in the player's bag or in the actual location
+     *   room.
      */
     def inspectLocation: Reaction = self.inspectLocation
 
     /**
-     * The Navigate [[Reaction]].
+     * Change player Room.
      * @param room
-     *   that have to be reached.
+     *   new player location.
      * @return
-     *   Navigate [[Reaction]]
+     *   the Reaction with the feature cited above.
      */
     def navigate(room: RM): Reaction = self.navigate(room)
 
     /**
-     * The Finish Game [[Reaction]].
+     * Create a Reaction that ends the match in two possible scenario:
+     *   - player win
+     *   - player lose
      * @param win
-     *   true if player have won the game, false otherwise.
+     *   true if game is finished with a victory, false for a defeat.
      * @return
-     *   The FinishGame [[Reaction]]
+     *   the Reaction cited above.
      */
     def finishGame(win: Boolean): Reaction = self.finishGame(win)
 
     /**
      * The Inspect Bag [[Reaction]].
      * @return
-     *   The Inspect Bag [[Reaction]].
+     *   the items contained actually in the bag.
      */
     def inspectBag: Reaction = self.inspectBag
 
     /**
-     * The Openable [[Reaction]].
+     * Open a specific Item.
      * @param itemToOpen
      *   is the item that have to be opened.
      * @param requiredKey
      *   if present is the requiredKey to open the item, otherwise key isn't necessary.
-     * @param iskeyConsumable
-     *   is true if key after his use have to be destroyed, false otherwise.
      * @return
      */
     def open(
@@ -99,8 +106,24 @@ trait CommonReactionsExt
       requiredKey: Option[Key]
     ): Reaction = self.open(itemToOpen, requiredKey)
 
+    /**
+     * A Reaction that makes visible some items.
+     * @param items
+     *   the items that will be revealed.
+     * @return
+     *   the Reaction described above.
+     */
     def revealItems(items: Set[I]): Reaction = self.revealItems(items)
 
+    /**
+     * Create a Reaction that add a neighbor room to the actual player location.
+     * @param direction
+     *   the new visible direction.
+     * @param room
+     *   the new visible room.
+     * @return
+     *   the Reaction described above.
+     */
     def addDirectionToLocation(direction: Direction, room: RM): Reaction =
       self.addDirectionToLocation(direction, room)
   }

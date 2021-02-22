@@ -5,7 +5,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessa
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 
 /**
- * A Reaction used to finish the Game. Two possible scenarios:
+ * A mixable trait that add a Reaction used to finish the Game. Two possible scenarios:
  *   - player win
  *   - player lose
  */
@@ -14,6 +14,15 @@ private[reactions] trait FinishGameExt
   with CommonMessagesExt
   with ReactionUtilsExt {
 
+  /**
+   * Create a Reaction that ends the match in two possible scenario:
+   *   - player win
+   *   - player lose
+   * @param win
+   *   true if game is finished with a victory, false for a defeat.
+   * @return
+   *   the Reaction cited above.
+   */
   private[reactions] def finishGame(win: Boolean): Reaction =
     Reaction(
       matchEndedLens.set(true),

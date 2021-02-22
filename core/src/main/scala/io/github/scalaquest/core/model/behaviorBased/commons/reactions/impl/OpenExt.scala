@@ -6,7 +6,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessa
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 
 /**
- * A Reaction generated when a player open an openable Item.
+ * A Mixable trait that add a Reaction generated when a player open an openable Item.
  */
 private[reactions] trait OpenExt
   extends BehaviorBasedModel
@@ -14,6 +14,14 @@ private[reactions] trait OpenExt
   with CommonMessagesExt
   with ReactionUtilsExt {
 
+  /**
+   * Open a specific Item.
+   * @param itemToOpen
+   *   is the item that have to be opened.
+   * @param requiredKey
+   *   if present is the requiredKey to open the item, otherwise key isn't necessary.
+   * @return
+   */
   private[reactions] def open(
     itemToOpen: I,
     requiredKey: Option[Key]

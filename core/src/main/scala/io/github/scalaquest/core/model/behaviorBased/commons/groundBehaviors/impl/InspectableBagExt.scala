@@ -15,6 +15,12 @@ trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with C
    * A [[GroundBehavior]] that enables the possibility to know the items present into the Bag.
    */
   abstract class InspectableBag extends GroundBehavior {
+
+    /**
+     * Inspection of the Bag.
+     * @return
+     *   a [[Reaction]] that inspect the Bag
+     */
     def inspectBag: Reaction
   }
 
@@ -25,7 +31,8 @@ trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with C
    *   [[Reaction]] to be executed when the player successfully inspected the bag. It can be
    *   omitted.
    */
-  case class SimpleInspectableBag(onInspectExtra: Reaction) extends InspectableBag {
+  case class SimpleInspectableBag(onInspectExtra: Reaction = Reaction.empty)
+    extends InspectableBag {
 
     override def triggers: GroundTriggers = { case (InspectBag, _) => inspectBag }
 
@@ -37,10 +44,17 @@ trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with C
   }
 
   /**
-   * Companion object for [[InspectableBag]]. Shortcut for the standard implementation.
+   * Companion object for [[InspectableBag]].
    */
   object InspectableBag {
 
+    /**
+     * Shortcut for the standard implementation.
+     * @param onInspectExtra
+     *   an additional [[Reaction]] generated when user inspect the bag.
+     * @return
+     *   an instance of [[SimpleInspectableBag]].
+     */
     def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
       SimpleInspectableBag(onInspectExtra)
   }

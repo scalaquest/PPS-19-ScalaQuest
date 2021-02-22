@@ -5,7 +5,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessa
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.{ReactionUtilsExt, StateUtilsExt}
 
 /**
- * A Reaction used to enter in a new Room.
+ * A mixable trait with a method for a Reaction used to enter in a new Room.
  */
 private[reactions] trait EnterExt
   extends BehaviorBasedModel
@@ -13,6 +13,15 @@ private[reactions] trait EnterExt
   with CommonMessagesExt
   with ReactionUtilsExt {
 
+  /**
+   * A Reaction that move the player in a new room.
+   * @param room
+   *   the room where player have just entered.
+   * @return
+   *   a Reaction composed by:
+   *   - the new location is the room cited above.
+   *   - a message for the navigation of the player.
+   */
   private[reactions] def enter(room: RM): Reaction =
     Reaction(
       locationRoomLens.set(room),

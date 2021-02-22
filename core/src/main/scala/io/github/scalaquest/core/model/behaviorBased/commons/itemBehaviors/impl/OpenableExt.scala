@@ -19,9 +19,34 @@ trait OpenableExt
    * A [[ItemBehavior]] associated to an [[Item]] that can be opened a single time.
    */
   abstract class Openable extends ItemBehavior {
+
+    /**
+     * @return
+     *   true if object is already opened, false otherwise.
+     */
     def isOpen: Boolean
+
+    /**
+     * @return
+     *   a [[Some]] of the [[Key]] if key is required, [[None]] otherwise.
+     */
     def requiredKey: Option[Key]
+
+    /**
+     * Check if the openable [[Item]] can be opened with a key.
+     * @param usedKey
+     *   the key to check if open the [[Item]].
+     * @param state
+     *   the actual state.
+     * @return
+     *   true if the openable item can be opened with the key, false otherwise.
+     */
     def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
+
+    /**
+     * @return
+     *   the [[Reaction]] generated when this [[ItemBehavior]] is opened.
+     */
     def open: Reaction
   }
 
@@ -96,8 +121,16 @@ trait OpenableExt
       )
     }
 
+    /**
+     * @return
+     *   the reaction generated when the item failed to opened.
+     */
     def failToOpen: Reaction = Reaction.messages(Messages.FailedToOpen(subject))
 
+    /**
+     * @return
+     *   the reaction generated when the item is already opened.
+     */
     def alreadyOpened: Reaction = Reaction.messages(Messages.AlreadyOpened(subject))
   }
 
@@ -106,11 +139,27 @@ trait OpenableExt
    */
   object Openable {
 
+    /**
+     * A builder for openable that require a specific key to open the [[ItemBehavior]].
+     * @param requiredKey
+     *   the key required in order to open the [[Openable]] item.
+     * @param onOpenExtra
+     *   an extra behavior generated when the item is opened.
+     * @return
+     *   an openable instance giving him the specific item.
+     */
     def lockedBuilder(
       requiredKey: Key,
       onOpenExtra: Reaction = Reaction.empty
     ): I => Openable = SimpleOpenable(Some(requiredKey), onOpenExtra)(_)
 
+    /**
+     * A builder for openable without a specific key to open the [[ItemBehavior]].
+     * @param onOpenExtra
+     *   an extra behavior generated when the item is opened.
+     * @return
+     *   an openable instance giving him the specific item.
+     */
     def unlockedBuilder(
       onOpenExtra: Reaction = Reaction.empty
     ): I => Openable = SimpleOpenable(None, onOpenExtra)(_)

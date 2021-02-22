@@ -31,16 +31,43 @@ trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
    */
   object GenericItem {
 
+    /**
+     * Facilitates the creation of a [[GenericItem]].
+     * @param description
+     *   the item's description.
+     * @param extraBehavBuilders
+     *   some possible extra behavior for the item.
+     * @return
+     *   the [[SimpleGenericItem]] instance.
+     */
     def apply(
       description: ItemDescription,
       extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
     ): GenericItem = SimpleGenericItem(description, ItemRef(description), extraBehavBuilders)
 
+    /**
+     * A generic item with only one behavior.
+     * @param description
+     *   the generic item description.
+     * @param behavior
+     *   the item behavior.
+     * @return
+     *   the [[SimpleGenericItem]] instance.
+     */
     def withSingleBehavior(
       description: ItemDescription,
       behavior: I => ItemBehavior
     ): GenericItem = SimpleGenericItem(description, ItemRef(description), Seq(behavior))
 
+    /**
+     * A generic item with some behaviors triggers.
+     * @param description
+     *   the generic item description.
+     * @param behaviorTriggers
+     *   behavior triggers.
+     * @return
+     *   the [[SimpleGenericItem]] instance.
+     */
     def withGenBehavior(
       description: ItemDescription,
       behaviorTriggers: ItemTriggers

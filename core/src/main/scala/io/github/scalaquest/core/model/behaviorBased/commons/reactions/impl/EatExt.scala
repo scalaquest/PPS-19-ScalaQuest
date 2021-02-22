@@ -5,13 +5,22 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessa
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
 
 /**
- * A Reaction that eat the item.
+ * A mixable trait with a method for a Reaction that eat the eatable item.
  */
 private[reactions] trait EatExt
   extends BehaviorBasedModel
   with CommonMessagesExt
   with ReactionUtilsExt {
 
+  /**
+   * A Reaction that eat an eatable item.
+   * @param item
+   *   the item have to be eaten.
+   * @return
+   *   the Reaction composed by:
+   *   - remove the item from room or bag.
+   *   - an eaten message.
+   */
   private[reactions] def eat(item: I): Reaction =
     Reaction(
       Update(

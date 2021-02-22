@@ -15,6 +15,12 @@ trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonR
    * player.
    */
   abstract class Takeable extends ItemBehavior {
+
+    /**
+     * The take [[Reaction]].
+     * @return
+     *   the take [[Reaction]].
+     */
     def take: Reaction
   }
 

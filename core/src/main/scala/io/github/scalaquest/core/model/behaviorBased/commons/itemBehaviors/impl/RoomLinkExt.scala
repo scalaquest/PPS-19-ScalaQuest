@@ -16,10 +16,43 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
    * [[Openable]].
    */
   abstract class RoomLink extends ItemBehavior {
+
+    /**
+     * Check if RoomLink is accessible or not.
+     * @return
+     *   true if RoomLink is ready to use, false otherwise.
+     */
     def isOpen: Boolean
+
+    /**
+     * RoomLink could have also the [[Openable]] Behavior.
+     * @return
+     *   [[Some]] of [[Openable]] if is present, [[None]] otherwise.
+     */
     def openable: Option[Openable]
+
+    /**
+     * The room that would be reached using RoomLink.
+     * @param s
+     *   the current state.
+     * @return
+     *   the room that would be reached using RoomLink.
+     */
     def endRoom(implicit s: S): RM
+
+    /**
+     * [[Reaction]] that could be used with RoomLink. RoomLink have to redefine the openable
+     * behavior if is present.
+     * @return
+     *   the specific opened Reaction cited above.
+     */
     def open: Reaction
+
+    /**
+     * [[Reaction]] generated when RoomLink is used.
+     * @return
+     *   the specific entered Reaction cited above.
+     */
     def enter: Reaction
   }
 
@@ -93,6 +126,19 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
    */
   object RoomLink {
 
+    /**
+     * Create a builder for generate the [[RoomLink]].
+     * @param endRoom
+     *   the room that have to be reached using the RoomLink.
+     * @param endRoomDirection
+     *   the direction of room that have to be reached using the RoomLink.
+     * @param openableBuilder
+     *   the openable builder used for generate openable behavior
+     * @param onEnterExtra
+     *   an extra behavior generated when player enter in the [[Room]].
+     * @return
+     *   a builder that passed an [[Item]] create the RoomLink.
+     */
     def builder(
       endRoom: RM,
       endRoomDirection: Direction,
@@ -107,6 +153,18 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
           onEnterExtra
         )(i)
 
+    /**
+     * Create a builder for generate the [[RoomLink]] without openable behavior. This means that the
+     * RoomLink is ready to use.
+     * @param endRoom
+     *   the room that have to be reached using the RoomLink.
+     * @param endRoomDirection
+     *   the direction of room that have to be reached using the RoomLink.
+     * @param onEnterExtra
+     *   an extra behavior generated when player enter in the [[Room]].
+     * @return
+     *   a builder that passed an [[Item]] create the RoomLink.
+     */
     def openedBuilder(
       endRoom: RM,
       endRoomDirection: Direction,
@@ -120,6 +178,20 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
           onEnterExtra
         )(i)
 
+    /**
+     * Create a builder for generate the [[RoomLink]] with an openable behavior. This means that the
+     * roomlink have to be opened before the use.
+     * @param endRoom
+     *   the room that have to be reached using the RoomLink.
+     * @param endRoomDirection
+     *   the direction of room that have to be reached using the RoomLink.
+     * @param onEnterExtra
+     *   an extra behavior generated when player enter in the [[Room]].
+     * @param onOpenExtra
+     *   an extra behavior generated when player open the [[Item]].
+     * @return
+     *   a builder that passed an [[Item]] create the RoomLink.
+     */
     def closedUnlockedBuilder(
       endRoom: RM,
       endRoomDirection: Direction,
@@ -134,6 +206,20 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
           onEnterExtra
         )(i)
 
+    /**
+     * Create a builder for generate the [[RoomLink]] with an openable behavior. This means that the
+     * roomlink have to be opened, in this case with a [[Key]], before the use.
+     * @param endRoom
+     *   the room that have to be reached using the RoomLink.
+     * @param endRoomDirection
+     *   the direction of room that have to be reached using the RoomLink.
+     * @param onEnterExtra
+     *   an extra behavior generated when player enter in the [[Room]].
+     * @param onOpenExtra
+     *   an extra behavior generated when player open the [[Item]].
+     * @return
+     *   a builder that passed an [[Item]] create the RoomLink.
+     */
     def closedLockedBuilder(
       key: Key,
       endRoom: RM,

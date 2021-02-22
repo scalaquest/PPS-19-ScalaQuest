@@ -14,6 +14,11 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
    * player.
    */
   abstract class GenericBehavior extends ItemBehavior {
+
+    /**
+     * @return
+     *   generic triggers associated to this ItemBehavior.
+     */
     def triggers: ItemTriggers
   }
 
@@ -27,10 +32,17 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
   ) extends GenericBehavior
 
   /**
-   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
+   * Companion object for Generic Behavior.
    */
   object GenericBehavior {
 
+    /**
+     * Builder shortcut for the standard implementation of [[SimpleGenericBehavior]].
+     * @param triggers
+     *   the [[ItemTriggers]] associated to the item.
+     * @return
+     *   an instance of [[SimpleGenericBehavior]].
+     */
     def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericBehavior =
       _ => SimpleGenericBehavior(triggers)
   }

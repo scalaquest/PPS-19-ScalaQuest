@@ -40,8 +40,20 @@ trait SimpleRoomExt extends Model {
       _neighbors().map(x => x._1 -> state.rooms(x._2))
   }
 
+  /**
+   * Companion object with apply for SimpleRoom.
+   */
   object Room {
 
+    /**
+     * A base implementation for [[Room]].
+     * @param name
+     *   the [[Room]] name.
+     * @param neighbors
+     *   a Map that define all neighbors.
+     * @param items
+     *   all the items in the Match.
+     */
     def apply(
       name: String,
       neighbors: => Map[Direction, RoomRef] = Map.empty,

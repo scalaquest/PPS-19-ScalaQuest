@@ -15,6 +15,11 @@ trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonRe
    * should be removed from the player bag (or from the current room, if it was there).
    */
   abstract class Eatable extends ItemBehavior {
+
+    /**
+     * @return
+     *   the eat [[Reaction]]
+     */
     def eat: Reaction
   }
 
@@ -34,7 +39,7 @@ trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonRe
       case (Eat, item, None, state) if state.isInScope(item) => eat
     }
 
-    def eat: Reaction =
+    override def eat: Reaction =
       Reaction.combine(
         Reactions.eat(subject),
         onEatExtra
@@ -42,9 +47,17 @@ trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonRe
   }
 
   /**
-   * Companion object for [[Eatable]]. Shortcut for the standard implementation.
+   * Companion object for [[Eatable]].
    */
   object Eatable {
+
+    /**
+     * Facilitates for the simple implementation of Eatable.
+     * @param onEatExtra
+     *   a possible extra behavior.
+     * @return
+     *   a builder that given an Item build a SimpleEatable instance.
+     */
     def builder(onEatExtra: Reaction = Reaction.empty): I => Eatable = SimpleEatable(onEatExtra)(_)
   }
 }

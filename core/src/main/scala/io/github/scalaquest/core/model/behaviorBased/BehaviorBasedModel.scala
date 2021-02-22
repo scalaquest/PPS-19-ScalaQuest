@@ -51,6 +51,12 @@ abstract class BehaviorBasedModel extends Model {
    * [[BehaviorBasedModel]] is based into this construct.
    */
   abstract class ItemBehavior {
+
+    /**
+     * All the [[ItemTriggers]] of this [[ItemBehavior]].
+     * @return
+     *   the [[ItemTriggers]].
+     */
     def triggers: ItemTriggers = PartialFunction.empty
   }
 
@@ -102,6 +108,13 @@ abstract class BehaviorBasedModel extends Model {
    * triggers) is implemented here.
    */
   abstract class BehaviorBasedGround extends Ground {
+
+    /**
+     * [[GroundBehavior]] s associated to the Ground.
+     *
+     * @return
+     *   [[GroundBehavior]] s associated to the Ground.
+     */
     def behaviors: Seq[GroundBehavior] = Seq.empty
 
     override def use(action: Action)(implicit state: S): Option[Reaction] =
@@ -123,6 +136,13 @@ abstract class BehaviorBasedModel extends Model {
    * [[BehaviorBasedModel]] is based into this construct.
    */
   abstract class GroundBehavior {
+
+    /**
+     * [[GroundTriggers]] s associated to the Ground.
+     *
+     * @return
+     *   [[GroundTriggers]] s associated to the Ground.
+     */
     def triggers: GroundTriggers = PartialFunction.empty
   }
 }

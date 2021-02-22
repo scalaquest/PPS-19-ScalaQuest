@@ -17,6 +17,10 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
   extends ComposableStringPusher {
   import model.Messages._
 
+  /**
+   * Recognize every common message and output its content.
+   * @return
+   */
   final def base: StringMessageTriggers = {
     case Inspected(room, items, neighbors) =>
       val ordItems = items.toList.sortWith(_.toString < _.toString)
@@ -68,8 +72,25 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
  * Object with some useful construct for create a [[CommonStringPusher]].
  */
 object CommonStringPusher {
+
+  /**
+   * Create the pusher giving him only the game's model.
+   * @param model
+   *   the actual model game.
+   * @return
+   *   an instance of CommonStringPusher.
+   */
   def apply(model: CommonMessagesExt): CommonStringPusher = new CommonStringPusher(model) {}
 
+  /**
+   * Create the pusher giving him only the game's model.
+   * @param model
+   *   the actual model game.
+   * @param _additionalTriggers
+   *   add some customized triggers with regard to the base ones.
+   * @return
+   *   an instance of CommonStringPusher.
+   */
   def apply(
     model: CommonMessagesExt,
     _additionalTriggers: MessageTriggers[String]
