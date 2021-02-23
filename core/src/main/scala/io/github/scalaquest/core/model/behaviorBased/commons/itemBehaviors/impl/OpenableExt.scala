@@ -1,10 +1,10 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
 import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
@@ -13,8 +13,8 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 trait OpenableExt
   extends BehaviorBasedModel
   with KeyExt
-  with CommonMessagesExt
-  with CommonReactionsExt
+  with CMessagesExt
+  with CReactionsExt
   with StateUtilsExt {
 
   /**
@@ -95,9 +95,9 @@ trait OpenableExt
 
       case (Open, _, _) =>
         if (!isOpen)
-          Reaction.messages(Messages.FailedToOpen(subject))
+          Reaction.messages(CMessages.FailedToOpen(subject))
         else
-          Reaction.messages(Messages.AlreadyOpened(subject))
+          Reaction.messages(CMessages.AlreadyOpened(subject))
     }
 
     override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
@@ -112,13 +112,13 @@ trait OpenableExt
 
       for {
         _ <-
-          if (requiredKey.exists(_.disposable)) Reactions.modifyBag(_ - requiredKey.get.ref)
+          if (requiredKey.exists(_.disposable)) CReactions.modifyBag(_ - requiredKey.get.ref)
           else Reaction.empty
         _ <-
           if (requiredKey.exists(_.disposable))
-            Reactions.modifyLocationItems(_ - requiredKey.get.ref)
+            CReactions.modifyLocationItems(_ - requiredKey.get.ref)
           else Reaction.empty
-        _ <- Reaction.messages(Messages.Opened(subject))
+        _ <- Reaction.messages(CMessages.Opened(subject))
         s <- onOpenExtra
       } yield s
     }

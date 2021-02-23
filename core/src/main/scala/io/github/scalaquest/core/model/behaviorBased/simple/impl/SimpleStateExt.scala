@@ -3,14 +3,14 @@ package io.github.scalaquest.core.model.behaviorBased.simple.impl
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model._
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CommonGroundExt
+import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CGroundExt
 import monocle.Lens
 import monocle.macros.GenLens
 
 /**
  * Extension for the model. Adds a base implementation of the [[Model.State]].
  */
-trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
+trait SimpleStateExt extends BehaviorBasedModel with CGroundExt {
 
   override type S = SimpleState
 
@@ -68,7 +68,7 @@ trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
       actions: Map[VerbPrep, Action],
       rooms: Map[RoomRef, RM],
       items: Map[ItemRef, I],
-      ground: G = CommonGround(),
+      ground: G = CGround(),
       bag: Set[ItemRef] = Set.empty,
       location: RoomRef,
       ended: Boolean = false

@@ -2,13 +2,13 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.{Direction, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{Enter, Open}
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Enter, Open}
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 
 /**
  * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>RoomLink</b> behavior.
  */
-trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactionsExt {
+trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CReactionsExt {
 
   /**
    * An <b>ItemBehavior</b> associated to a <b>BehaviorBasedItem</b> that enables the possibility to
@@ -110,21 +110,21 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
         enter
 
       case (Enter, _, _) =>
-        Reaction.messages(Messages.FailedToEnter(subject))
+        Reaction.messages(CMessages.FailedToEnter(subject))
     }
 
     override def enter: Reaction =
       for {
         s1 <- Reaction.empty
-        _  <- Reactions.modifyLocation(endRoom(s1))
-        _  <- Reaction.messages(Messages.Navigated(endRoom(s1)))
+        _  <- CReactions.modifyLocation(endRoom(s1))
+        _  <- Reaction.messages(CMessages.Navigated(endRoom(s1)))
         s2 <- onEnterExtra
       } yield s2
 
     override def open: Reaction =
       for {
         s1 <- openable map (_.open) getOrElse Reaction.empty
-        s2 <- Reactions.addDirectionToLocation(endRoomDirection, endRoom(s1))
+        s2 <- CReactions.addDirectionToLocation(endRoomDirection, endRoom(s1))
       } yield s2
 
     override def endRoom(implicit state: S): RM = state.rooms(endRoomRef)

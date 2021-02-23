@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.simple
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{
   Go,
   Inspect,
   Open,

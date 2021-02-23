@@ -7,15 +7,14 @@ import io.github.scalaquest.core.model.{ComposableStringPusher, Direction}
 import scala.annotation.tailrec
 
 /**
- * A [[ComposableStringPusher]] that have can handle the messages contained into
- * [[CommonMessagesExt]].
+ * A [[ComposableStringPusher]] that have can handle the messages contained into [[CMessagesExt]].
  *
  * @param model
  *   contains the Messages to interpret.
  */
-abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesExt)
+abstract class CStringPusher(model: BehaviorBasedModel with CMessagesExt)
   extends ComposableStringPusher {
-  import model.Messages._
+  import model.CMessages._
 
   /**
    * Recognize every common message and output its content.
@@ -50,7 +49,7 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
   }
 
   @tailrec
-  private def printItems(tail: List[CommonMessagesExt#I], acc: String = ""): String = {
+  private def printItems(tail: List[CMessagesExt#I], acc: String = ""): String = {
     tail match {
       case ::(head, Nil)  => s"${acc}a ${head.toString}."
       case ::(head, next) => printItems(next, s"${acc}a ${head.toString}, ")
@@ -58,7 +57,7 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
     }
   }
 
-  private def printNeighbors(neighbors: Map[Direction, CommonMessagesExt#RM]): String = {
+  private def printNeighbors(neighbors: Map[Direction, CMessagesExt#RM]): String = {
     neighbors match {
       case ns if ns.isEmpty => "\nYou cannot go anywhere now."
       case ns =>
@@ -69,9 +68,9 @@ abstract class CommonStringPusher(model: BehaviorBasedModel with CommonMessagesE
 }
 
 /**
- * Object with some useful construct for create a [[CommonStringPusher]].
+ * Object with some useful construct for create a [[CStringPusher]].
  */
-object CommonStringPusher {
+object CStringPusher {
 
   /**
    * Create the pusher giving him only the game's model.
@@ -80,7 +79,7 @@ object CommonStringPusher {
    * @return
    *   an instance of CommonStringPusher.
    */
-  def apply(model: CommonMessagesExt): CommonStringPusher = new CommonStringPusher(model) {}
+  def apply(model: CMessagesExt): CStringPusher = new CStringPusher(model) {}
 
   /**
    * Create the pusher giving him only the game's model.
@@ -92,10 +91,10 @@ object CommonStringPusher {
    *   an instance of CommonStringPusher.
    */
   def apply(
-    model: CommonMessagesExt,
+    model: CMessagesExt,
     _additionalTriggers: MessageTriggers[String]
-  ): CommonStringPusher = {
-    new CommonStringPusher(model) {
+  ): CStringPusher = {
+    new CStringPusher(model) {
       override def extra: MessageTriggers[String] = _additionalTriggers
     }
   }

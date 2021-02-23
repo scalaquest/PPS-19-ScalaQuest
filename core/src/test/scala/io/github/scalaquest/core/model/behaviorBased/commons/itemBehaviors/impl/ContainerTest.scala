@@ -6,7 +6,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
 import io.github.scalaquest.core.model.ItemDescription.dsl.i
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
 
 class ContainerTest extends AnyWordSpec with Matchers {
   "A Container behavior" when {
@@ -34,7 +34,7 @@ class ContainerTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(initialState)._2)
-        } yield msgs should contain(Messages.FailedToOpen(containerItem))
+        } yield msgs should contain(CMessages.FailedToOpen(containerItem))
       }
 
       "open and show the items after has been opened" in {
@@ -46,8 +46,8 @@ class ContainerTest extends AnyWordSpec with Matchers {
           msgs      <- Right(react(initialState)._2)
           itemInLoc <- Right(modState.location.items(modState))
         } yield {
-          msgs should contain(Messages.ReversedIntoLocation(Set(apple)))
-          msgs should contain(Messages.Opened(containerItem))
+          msgs should contain(CMessages.ReversedIntoLocation(Set(apple)))
+          msgs should contain(CMessages.Opened(containerItem))
           itemInLoc should contain(apple)
         }
       }
@@ -78,8 +78,8 @@ class ContainerTest extends AnyWordSpec with Matchers {
           msgs      <- Right(react(initialState)._2)
           itemInLoc <- Right(modState.location.items(modState))
         } yield {
-          msgs should contain(Messages.ReversedIntoLocation(Set(apple)))
-          msgs should contain(Messages.Opened(containerItem))
+          msgs should contain(CMessages.ReversedIntoLocation(Set(apple)))
+          msgs should contain(CMessages.Opened(containerItem))
           itemInLoc should contain(apple)
         }
       }

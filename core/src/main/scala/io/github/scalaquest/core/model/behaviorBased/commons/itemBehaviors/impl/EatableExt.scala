@@ -1,9 +1,9 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Eat
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
@@ -11,8 +11,8 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
  */
 trait EatableExt
   extends BehaviorBasedModel
-  with CommonMessagesExt
-  with CommonReactionsExt
+  with CMessagesExt
+  with CReactionsExt
   with StateUtilsExt {
 
   /**
@@ -48,9 +48,9 @@ trait EatableExt
 
     override def eat: Reaction =
       for {
-        _ <- Reactions.modifyLocationItems(_ - subject.ref)
-        _ <- Reactions.modifyBag(_ - subject.ref)
-        _ <- Reaction.messages(Messages.Eaten(subject))
+        _ <- CReactions.modifyLocationItems(_ - subject.ref)
+        _ <- CReactions.modifyBag(_ - subject.ref)
+        _ <- Reaction.messages(CMessages.Eaten(subject))
         s <- onEatExtra
       } yield s
   }

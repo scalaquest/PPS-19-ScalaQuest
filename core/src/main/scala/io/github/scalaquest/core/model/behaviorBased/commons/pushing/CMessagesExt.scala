@@ -7,12 +7,12 @@ import io.github.scalaquest.core.model.{Direction, Message}
  * A mixable trait that adds to the [[BehaviorBasedModel]] the [[Message]] s used into common
  * implementations.
  */
-trait CommonMessagesExt extends BehaviorBasedModel {
+trait CMessagesExt extends BehaviorBasedModel {
 
   /**
    * Object with some common messages.
    */
-  object Messages {
+  object CMessages {
 
     /**
      * A [[Message]] generated when the player starts the match.

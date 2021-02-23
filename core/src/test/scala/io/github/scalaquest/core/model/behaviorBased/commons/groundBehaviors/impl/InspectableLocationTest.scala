@@ -5,11 +5,11 @@ import io.github.scalaquest.core.TestsUtils.model.{
   BehaviorBasedGround,
   GroundBehavior,
   InspectableLocation,
-  Messages
+  CMessages
 }
 import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Inspect
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -26,7 +26,7 @@ class InspectableLocationTest extends AnyWordSpec with Matchers {
       "An inspect Action is provided" should {
         "describe the room, the items in it, the neighbors" in {
           val targetResult =
-            Messages.Inspected(
+            CMessages.Inspected(
               startRoom,
               Set(TestsUtils.key, door),
               Map(Direction.North -> targetRoom)

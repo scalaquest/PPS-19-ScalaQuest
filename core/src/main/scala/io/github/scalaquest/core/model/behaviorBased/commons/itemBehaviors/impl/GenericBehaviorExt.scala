@@ -1,13 +1,13 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 
 /**
  * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>GenericBehavior</b>.
  */
-trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait GenericBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
 
   /**
    * An ItemBehavior with some triggers. It is useful in order to wrap <b>ItemBehavior</b> into a

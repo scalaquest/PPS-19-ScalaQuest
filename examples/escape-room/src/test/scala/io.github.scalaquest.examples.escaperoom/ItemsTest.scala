@@ -1,6 +1,6 @@
 package io.github.scalaquest.examples.escaperoom
 
-import model.Messages._
+import model.CMessages._
 import model._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

@@ -2,9 +2,9 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.ItemRef
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
@@ -12,8 +12,8 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
  */
 trait ContainerExt
   extends BehaviorBasedModel
-  with CommonMessagesExt
-  with CommonReactionsExt
+  with CMessagesExt
+  with CReactionsExt
   with StateUtilsExt
   with OpenableExt {
 
@@ -88,8 +88,8 @@ trait ContainerExt
     override def revealItems: Reaction =
       for {
         s1 <- openable.open
-        _  <- Reactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
-        s2 <- Reaction.messages(Messages.ReversedIntoLocation(items(s1)))
+        _  <- CReactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
+        s2 <- Reaction.messages(CMessages.ReversedIntoLocation(items(s1)))
       } yield s2
   }
 

@@ -5,39 +5,41 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt
 
 /**
- * A mixable trait that add an implementation for [[ContainerExt.Container]] behavior.
+ * A mixable trait that add an implementation for <b>Container</b> behavior.
  */
 trait ChestExt extends BehaviorBasedModel with ContainerExt {
 
   /**
-   * The Chest interface.
+   * A <b>BehaviorBasedItem</b> that can be opened, and reveals a set of items when opened.
    */
   trait Chest extends BehaviorBasedItem {
 
     /**
-     * Control if chest is already opened
+     * The "openness" state of the item, as a boolean value. Initially closed.
      * @return
-     *   true if chest is already opened, false otherwise.
+     *   True if item is already opened, False otherwise.
      */
     def isOpen: Boolean
 
     /**
+     * A <b>Chest</b> has always an associated <b>Container</b> behavior, that can be referenced
+     * from here.
      * @return
-     *   the specific container behavior.
+     *   The <b>Container</b> behavior of the item.
      */
     def container: Container
   }
 
   /**
-   * A Simple implementation for [[Chest]].
+   * A standard implementation for <b>Chest</b>.
    * @param description
-   *   the chest item description.
+   *   An [[ItemDescription]] for the item.
    * @param ref
-   *   the unique reference to the item.
+   *   A unique reference to the item.
    * @param containerBuilder
-   *   the container builder.
+   *   A builder for the container behavior associated to the item.
    * @param extraBehavBuilders
-   *   extra behavior on opening the item.
+   *   Additional behaviors associated to the item.
    */
   case class SimpleChest(
     description: ItemDescription,
@@ -51,20 +53,20 @@ trait ChestExt extends BehaviorBasedModel with ContainerExt {
   }
 
   /**
-   * Companion object with useful methods in order to facilitates the creation of a [[SimpleChest]].
+   * Companion object for <b>Chest</b>.
    */
   object Chest {
 
     /**
-     * Create a SimpleChest.
+     * Creates a standard <b>Chest</b>.
      * @param description
-     *   the [[ItemDescription]] of the chest.
+     *   An [[ItemDescription]] for the item.
      * @param containerBuilder
-     *   the container builder.
+     *   A builder for the container behavior associated to the item.
      * @param extraBehavBuilder
-     *   possible extra behavior when is open the container item.
+     *   Additional behaviors associated to the item.
      * @return
-     *   an instance of SimpleChest.
+     *   A instance for a standard <b>Chest</b>.
      */
     def apply(
       description: ItemDescription,

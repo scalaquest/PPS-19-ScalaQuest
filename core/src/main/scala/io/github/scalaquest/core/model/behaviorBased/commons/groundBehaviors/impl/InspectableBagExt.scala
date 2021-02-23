@@ -1,35 +1,36 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.InspectBag
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.InspectBag
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableBag behavior for the
- * Ground.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>InspectableBag
+ * GroundBehavior</b>.
  */
-trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait InspectableBagExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
 
   /**
-   * A [[GroundBehavior]] that enables the possibility to know what items are contained into the
+   * A <b>GroundBehavior</b> that enables the possibility to know what items are contained into the
    * bag.
    */
   abstract class InspectableBag extends GroundBehavior {
 
     /**
-     * A [[Reaction]] that communicates to the user the items contained into the bag.
+     * A <b>Reaction</b> that communicates to the user the items contained into the bag.
      * @return
-     *   A [[Reaction]] that communicates to the user the items contained into the bag.
+     *   A <b>Reaction</b> that communicates to the user the items contained into the bag.
      */
     def inspectBag: Reaction
   }
 
   /**
-   * A standard implementation for [[InspectableBag]].
+   * A standard implementation for <b>InspectableBag</b>.
    *
    * @param onInspectExtra
-   *   [[Reaction]] to be executed when the player successfully inspects the bag. It can be omitted.
+   *   <b>Reaction</b> to be executed when the player successfully inspects the bag. It can be
+   *   omitted.
    */
   case class SimpleInspectableBag(onInspectExtra: Reaction = Reaction.empty)
     extends InspectableBag {
@@ -39,22 +40,22 @@ trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with C
     override def inspectBag: Reaction =
       for {
         s1 <- Reaction.empty
-        _  <- Reaction.messages(Messages.InspectedBag(s1.bag))
+        _  <- Reaction.messages(CMessages.InspectedBag(s1.bag))
         s2 <- onInspectExtra
       } yield s2
   }
 
   /**
-   * Companion object for [[InspectableBag]].
+   * Companion object for <b>InspectableBag</b>.
    */
   object InspectableBag {
 
     /**
      * Shortcut for the standard implementation.
      * @param onInspectExtra
-     *   an additional [[Reaction]] generated when user inspect the bag.
+     *   An additional <b>Reaction</b> generated when user inspects the bag.
      * @return
-     *   an instance of [[SimpleInspectableBag]].
+     *   An instance of <b>SimpleInspectableBag</b>.
      */
     def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
       SimpleInspectableBag(onInspectExtra)
