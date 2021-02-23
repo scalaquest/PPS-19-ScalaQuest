@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.im
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Go
 import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
@@ -29,7 +29,7 @@ class NavigableTest extends AnyWordSpec with Matchers {
             currRoom <- Right(updState.location)
           } yield {
             currRoom shouldBe targetRoom
-            msgs should contain(Messages.Navigated(targetRoom))
+            msgs should contain(CMessages.Navigated(targetRoom))
           }
         }
 
@@ -43,7 +43,7 @@ class NavigableTest extends AnyWordSpec with Matchers {
             currRoom <- Right(updState.location)
           } yield {
             currRoom shouldBe startRoom
-            msgs should contain(Messages.FailedToNavigate(Direction.South))
+            msgs should contain(CMessages.FailedToNavigate(Direction.South))
           }
         }
       }

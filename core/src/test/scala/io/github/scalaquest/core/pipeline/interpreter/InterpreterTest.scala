@@ -3,13 +3,9 @@ package io.github.scalaquest.core.pipeline.interpreter
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.TestsUtils._
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
-  Go,
-  Open,
-  Take
-}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Go, Open, Take}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.CommonGround
+import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel.CGround
 import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -20,7 +16,7 @@ class InterpreterTest extends AnyWordSpec with Matchers {
 
     "given an Intransitive Statement" should {
       val resolverResult   = ResolverResult(Statement.Intransitive(Go(Direction.North)))
-      val maybeExpReaction = CommonGround().use(Go(Direction.North))(simpleState)
+      val maybeExpReaction = CGround().use(Go(Direction.North))(simpleState)
 
       "return the right Reaction" in {
         checkResult(interpreter, resolverResult, maybeExpReaction)

@@ -2,8 +2,20 @@ package io.github.scalaquest.core.model
 
 import io.github.scalaquest.core.model.TriggerPusher.MessageTriggers
 
+/**
+ * Pusher that push in output [[Message]] s of the Game.
+ * @tparam A
+ *   generic for any output Type.
+ */
 trait MessagePusher[A] {
 
+  /**
+   * Push the [[Message]] s in output.
+   * @param input
+   *   the messages that have to be pushed.
+   * @return
+   *   the pushed messages in the selected output type.
+   */
   def push(input: Seq[Message]): A
 }
 
@@ -43,9 +55,12 @@ abstract class TriggerPusher[A] extends MessagePusher[A] {
     triggers.lift(input)
   }
 
+  /**
+   * Define how two [[A]] have to be combined.
+   */
   def combine(x: A, y: A): A
 
-  final def push(input: Seq[Message]): A =
+  override final def push(input: Seq[Message]): A =
     input.flatMap(eval).reduceOption(combine).getOrElse(notFound)
 }
 
@@ -101,6 +116,17 @@ trait Composable[A] extends TriggerPusher[A] {
  * the various [[TriggerPusher]], that are actually [[PartialFunction]] s.
  */
 object TriggerPusher {
-  type MessageTriggers[A]    = PartialFunction[Message, A]
+
+  /**
+   * The implementations of MessageTriggers is a PartialFunction with [[Message]] and a generic type
+   * [[A]].
+   * @tparam A
+   *   the generic type to expose in output.
+   */
+  type MessageTriggers[A] = PartialFunction[Message, A]
+
+  /**
+   * A trigger Pusher that works with String.
+   */
   type StringMessageTriggers = MessageTriggers[String]
 }

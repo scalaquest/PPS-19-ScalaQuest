@@ -17,7 +17,7 @@ object Items {
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      Eatable.builder(onEatExtra = Reactions.finishGame(false))
+      Eatable.builder(onEatExtra = CReactions.finishGame(false))
     )
 
   val basementHatch: Door = Door(
@@ -48,7 +48,7 @@ object Items {
 
   val doorway: GenericItem = GenericItem.withSingleBehavior(
     i(d("big"), "doorway"),
-    Openable.lockedBuilder(crowbar, onOpenExtra = Reactions.finishGame(win = true))
+    Openable.lockedBuilder(crowbar, onOpenExtra = CReactions.finishGame(win = true))
   )
 
   def allTheItems: Set[BehaviorBasedItem] =

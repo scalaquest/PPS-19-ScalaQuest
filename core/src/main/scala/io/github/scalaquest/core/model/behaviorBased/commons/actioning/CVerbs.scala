@@ -2,12 +2,12 @@ package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 
 import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
 import io.github.scalaquest.core.model.Direction
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions._
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions._
 
 /**
- * [[Verb]] s already implemented in the game.
+ * <b>Verbs</b> already implemented in the game.
  */
-object CommonVerbs {
+object CVerbs {
 
   private def movements: Set[Verb] = {
     Set(
@@ -25,6 +25,11 @@ object CommonVerbs {
     }.map { case (name, dir) => Intransitive("go", Go(dir), Some(name)) }
   }
 
+  /**
+   * All the common <b>verbs</b>.
+   * @return
+   *   all the common verbs.
+   */
   def apply(): Set[Verb] =
     Set(
       Transitive("take", Take),

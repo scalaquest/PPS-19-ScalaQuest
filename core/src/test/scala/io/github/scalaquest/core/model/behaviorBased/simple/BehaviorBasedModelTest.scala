@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.simple
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{
   Go,
   Inspect,
   Open,
@@ -10,7 +10,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import TestsUtils._
+import TestsUtils.{model, _}
 import TestsUtils.model._
 
 class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
@@ -18,9 +18,11 @@ class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
   "A BehaviorBasedItem" when {
     "have some triggers" should {
       val behavior = new ItemBehavior {
-        override def triggers: model.ItemTriggers = { case (Take, _, _, _) =>
+        override def triggers: model.ItemTriggers = { case (Take, _, _) =>
           Reaction.empty
         }
+
+        override def subject: model.I = apple
       }
 
       val item = new BehaviorBasedItem {
@@ -84,7 +86,9 @@ class BehaviorBasedModelTest extends AnyWordSpec with Matchers {
   }
 
   "An ItemBehavior" should {
-    val itemBehavior = new ItemBehavior {}
+    val itemBehavior = new ItemBehavior {
+      override def subject: model.I = apple
+    }
 
     "contain ItemTriggers as a PartialFunction" in {
       itemBehavior.triggers shouldBe PartialFunction.empty

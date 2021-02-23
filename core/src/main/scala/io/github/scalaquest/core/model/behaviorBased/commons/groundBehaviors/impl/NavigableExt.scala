@@ -2,29 +2,43 @@ package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.im
 
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Go
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Go
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Navigable behavior for the
- * [[BehaviorBasedModel.Ground]].
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>Navigable
+ * GroundBehavior</b>.
  */
-trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait NavigableExt
+  extends BehaviorBasedModel
+  with CMessagesExt
+  with CReactionsExt
+  with StateUtilsExt {
 
   /**
-   * A [[GroundBehavior]] that enables the possibility to navigate Rooms using Directions.
+   * A <b>GroundBehavior</b> that enables the possibility to change the location using
+   * <b>Directions<b>.
    */
   abstract class Navigable extends GroundBehavior {
+
+    /**
+     * Sets the location of the player to the given <b>Room</b>.
+     * @param targetRoom
+     *   The <b>Room</b> into which move the player.
+     * @return
+     *   A <b>Reaction</b> that sets the location of the player to the given <b>Room</b>.
+     */
     def movePlayer(targetRoom: RM): Reaction
   }
 
   /**
-   * Standard implementation of [[Navigable]].
+   * Standard implementation of <b>Navigable</b>.
    *
    * @param onNavigateExtra
-   *   [[Reaction]] to be executed when the player successfully navigate in a new Room, using
-   *   navigation Actions after the standard [[Reaction]]. It can be omitted.
+   *   <b>Reaction</b> to be executed when the player successfully navigate in a new <b>Room</b>. It
+   *   can be omitted.
    */
   case class SimpleNavigable(onNavigateExtra: Reaction = Reaction.empty) extends Navigable {
 
@@ -33,20 +47,29 @@ trait NavigableExt extends BehaviorBasedModel with CommonMessagesExt with Common
     }
 
     override def movePlayer(targetRoom: RM): Reaction =
-      Reaction.combine(
-        Reactions.navigate(targetRoom),
-        onNavigateExtra
-      )
+      for {
+        _ <- CReactions.modifyLocation(targetRoom)
+        _ <- Reaction.messages(CMessages.Navigated(targetRoom))
+        s <- onNavigateExtra
+      } yield s
 
     def failedToNavigate(direction: Direction): Reaction =
-      Reaction.appendMessage(Messages.FailedToNavigate(direction))(Reaction.empty)
+      Reaction.appendMessage(CMessages.FailedToNavigate(direction))(Reaction.empty)
   }
 
   /**
-   * Companion object for [[Navigable]]. Shortcut for the standard implementation.
+   * Companion object for <b>Navigable</b>.
    */
   object Navigable {
 
+    /**
+     * Shortcut for the standard implementation.
+     * @param onNavigateExtra
+     *   <b>Reaction<b> to be executed when the player successfully navigate in a new <b>Room</b>.
+     *   It can be omitted.
+     * @return
+     *   The instance of <b>Navigable</b>.
+     */
     def apply(onNavigateExtra: Reaction = Reaction.empty): Navigable =
       SimpleNavigable(onNavigateExtra)
   }

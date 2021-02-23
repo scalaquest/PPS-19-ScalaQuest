@@ -6,9 +6,10 @@ import io.github.scalaquest.core.model.behaviorBased.simple.impl.{SimpleRoomExt,
 import monocle.Lens
 
 /**
- * This represents the Model with a standard implementation: items share an internal implementation
- * based on behaviors, with some commonly used items and behaviors. The state uses a simple
- * implementation, that keeps track of the rooms' composition, and a bag for the player.
+ * This represents the <b>Model</b> with a standard implementation: <b>items</b> share an internal
+ * implementation based on <b>behaviors</b>, with some commonly used items and behaviors. The state
+ * uses a simple implementation, that keeps track of the <b>rooms</b>' composition, and a <b>bag</b>
+ * for the player.
  */
 object SimpleModel
   extends BehaviorBasedModel

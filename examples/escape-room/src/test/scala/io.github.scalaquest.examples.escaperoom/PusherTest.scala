@@ -1,7 +1,7 @@
 package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
-import model.Messages._
+import model.CMessages._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
