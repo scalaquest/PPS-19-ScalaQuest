@@ -5,18 +5,18 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessa
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 
 /**
- * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>GenericBehavior</b>.
  */
 trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
 
   /**
-   * An ItemBehavior with some triggers. It is useful in order to wrap [[ItemBehavior]] into a
+   * An ItemBehavior with some triggers. It is useful in order to wrap <b>ItemBehavior</b> into a
    * facility builder.
    */
   abstract class GenericBehavior extends ItemBehavior {
 
     /**
-     * Triggers associated to the behavior.
+     * <b>ItemTriggers</b> associated to the behavior.
      * @return
      *   Triggers associated to the behavior.
      */
@@ -24,7 +24,7 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
   }
 
   /**
-   * Standard implementation of GenericBehavior.
+   * Standard implementation of <b>GenericBehavior</b>.
    */
   case class SimpleGenericBehavior(
     override val triggers: ItemTriggers
@@ -32,16 +32,16 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with 
     extends GenericBehavior
 
   /**
-   * Companion object for Generic Behavior.
+   * Companion object for <b>GenericBehavior</b>.
    */
   object GenericBehavior {
 
     /**
-     * A function that builds a GenericBehavior given a subject Item.
+     * A function that builds a <b>GenericBehavior</b> given a subject.
      * @param triggers
-     *   The [[ItemTriggers]] associated to the item.
+     *   The <b>ItemTriggers</b> associated to the subject.
      * @return
-     *   A function that builds a GenericBehavior given a subject Item.
+     *   A function that builds a <b>GenericBehavior</b> given a subject.
      */
     def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericBehavior =
       SimpleGenericBehavior(triggers)(_)

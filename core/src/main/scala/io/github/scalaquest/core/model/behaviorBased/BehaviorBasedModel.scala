@@ -58,6 +58,12 @@ abstract class BehaviorBasedModel extends Model {
      *   the [[ItemTriggers]].
      */
     def triggers: ItemTriggers = PartialFunction.empty
+
+    /**
+     * The <b>BehaviorBasedItem</b> that owe the behavior.
+     * @return
+     *   The <b>BehaviorBasedItem</b> that owe the behavior.
+     */
     def subject: I
   }
 

@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>Takeable</b> behavior.
  */
 trait TakeableExt
   extends BehaviorBasedModel
@@ -16,25 +16,24 @@ trait TakeableExt
   with StateUtilsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
-   * player.
+   * An <b>ItemBehavior</b> aassociated to a <b>BehaviorBasedItem</b> that can be taken and put away
+   * into the bag of the player.
    */
   abstract class Takeable extends ItemBehavior {
 
     /**
-     * The take [[Reaction]].
+     * A <b>Reaction</b> that moves the subject from the location to the bag.
      * @return
-     *   the take [[Reaction]].
+     *   A <b>Reaction</b> that moves the subject from the location to the bag.
      */
     def take: Reaction
   }
 
   /**
-   * Standard implementation of the Takeable.
+   * Standard implementation of <b>Takeable</b>.
    *
-   * The behavior of an Item that could be put into the Bag of the player from the current room.
    * @param onTakeExtra
-   *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
+   *   <b>Reaction</b> to be executed after after the standard take <b>Reaction</b>. It can be
    *   omitted.
    */
   case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit val subject: I)
@@ -44,13 +43,6 @@ trait TakeableExt
       case (Take, None, state) if state.isInLocation(subject) => take
     }
 
-    /**
-     * Returns a Reaction that removes the item from the current room, put it into the bag, executes
-     * the eventual extra reaction.
-     * @return
-     *   A Reaction that removes the item from the current room, put it into the bag, executes the
-     *   eventual extra reaction.
-     */
     override def take: Reaction =
       for {
         _ <- Reactions.modifyLocationItems(_ - subject.ref)
@@ -61,10 +53,19 @@ trait TakeableExt
   }
 
   /**
-   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
+   * Companion object for <b>Takeable</b>.
    */
   object Takeable {
 
+    /**
+     * Builder that returns a standard <b>Takeable</b> behavior given a subject.
+     *
+     * @param onTakeExtra
+     *   <b>Reaction</b> to be executed after after the standard take <b>Reaction</b>. It can be
+     *   omitted.
+     * @return
+     *   Builder that returns a standard <b>Takeable</b> behavior given a subject.
+     */
     def builder(onTakeExtra: Reaction = Reaction.empty): I => Takeable =
       SimpleTakeable(onTakeExtra)(_)
   }

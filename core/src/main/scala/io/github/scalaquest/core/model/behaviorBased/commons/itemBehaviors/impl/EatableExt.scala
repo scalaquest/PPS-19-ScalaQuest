@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into [[BehaviorBasedModel]] the Eatable behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>Eatable</b> Behavior.
  */
 trait EatableExt
   extends BehaviorBasedModel
@@ -16,8 +16,9 @@ trait EatableExt
   with StateUtilsExt {
 
   /**
-   * An ItemBehavior associated to an Item that can be eaten. After an item is eaten, it should be
-   * removed from the player bag (or from the current room, if it was there).
+   * An <b>ItemBehavior</b> associated to an <b>BehaviorBasedItem</b> that can be eaten. After an
+   * item is eaten, it should be removed from the player bag (or from the current room, if it was
+   * there).
    */
   abstract class Eatable extends ItemBehavior {
 
@@ -36,7 +37,7 @@ trait EatableExt
    * room.
    * @param onEatExtra
    *   Reaction to be executed when the item has been successfully eaten, after the standard
-   *   [[Reaction]]. It can be omitted.
+   *   <b>Reaction</b>. It can be omitted.
    */
   case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit val subject: I)
     extends Eatable {

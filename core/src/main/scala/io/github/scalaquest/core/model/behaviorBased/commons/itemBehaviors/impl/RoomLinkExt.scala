@@ -6,70 +6,80 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonAct
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
 
 /**
- * The trait makes possible to mix into [[BehaviorBasedModel]] the RoomLink behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>RoomLink</b> behavior.
  */
 trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactionsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that enables the possibility to move into another
-   * [[Room]]. Conceptually, an [[Item]] that exposes a [[RoomLink]] behavior could also be
-   * [[Openable]].
+   * An <b>ItemBehavior</b> associated to a <b>BehaviorBasedItem</b> that enables the possibility to
+   * change the player location when entered, like a <b>Door</b>. Conceptually, an subject that
+   * exposes a <b>RoomLink</b> behavior could also be opened before permitting to the player to
+   * enter.
    */
   abstract class RoomLink extends ItemBehavior {
 
     /**
-     * Check if RoomLink is accessible or not.
+     * The "openness" state of the subject, as a boolean value. An open subject is conceptually
+     * "ready-to-use", as it can be entered. Always open, if the subject is not openable.
      * @return
-     *   true if RoomLink is ready to use, false otherwise.
+     *   True if RoomLink is open, false otherwise.
      */
     def isOpen: Boolean
 
     /**
-     * RoomLink could have also the [[Openable]] Behavior.
+     * If the subject have to be opened before entering, the <b>RoomLink</b> should include [[Some]]
+     * <b>Openable</b> behavior here. If the subject is set as always open, it can be set to
+     * [[None]].
      * @return
-     *   [[Some]] of [[Openable]] if is present, [[None]] otherwise.
+     *   [[Some]] with an <b>Openable</b> behavior if the subject should be opened before entering,
+     *   [[None]] otherwise.
      */
     def openable: Option[Openable]
 
     /**
-     * The room that would be reached using RoomLink.
+     * The <b>Room</b> that will be set as the new location of the player, after entering the
+     * subject.
      * @param s
-     *   the current state.
+     *   The current <b>State</b>.
      * @return
-     *   the room that would be reached using RoomLink.
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   subject.
      */
     def endRoom(implicit s: S): RM
 
     /**
-     * [[Reaction]] that could be used with RoomLink. RoomLink have to redefine the openable
-     * behavior if is present.
+     * A <b>Reaction</b> that sets the subject in an open state. Internally, it should exploit the
+     * <b>Openable::open</b> <b>Reaction</b>, if an <b>Openable</b> is passed.
      * @return
-     *   the specific opened Reaction cited above.
+     *   A <b>Reaction</b> that sets the subject in an open state.
      */
     def open: Reaction
 
     /**
-     * [[Reaction]] generated when RoomLink is used.
+     * A <b>Reaction</b> that sets the new location of the player to <b>RoomLink::endRoom</b>, and
+     * notifies the move to the user.
      * @return
-     *   the specific entered Reaction cited above.
+     *   A <b>Reaction</b> that sets the new location of the player to <b>RoomLink::endRoom</b>, and
+     *   notifies the move to the user.
      */
     def enter: Reaction
   }
 
   /**
-   * Standard implementation of the RoomLink.
+   * Standard implementation of <b>RoomLink</b>.
    *
-   * This is a behavior associated to an item that is a link between two rooms (a door, for
-   * instance), and that could be opened to pass into it. The user can "Enter" into it, resulting
-   * into move it into the connected Room. another room.
    * @param endRoomRef
-   *   The room into which the user is projected after entering the object.
+   *   The [[RoomRef]] of the <b>Room</b> that will be set as the new location of the player, after
+   *   entering the subject.
+   * @param endRoomDirection
+   *   The [[Direction]] that will be associated to the end room, when available to enter.
    * @param openable
-   *   The Openable behavior associated to the roomLink. If not passed, the item can be entered
-   *   without opening.
+   *   If the subject have to be opened before entering, the <b>RoomLink</b> should include [[Some]]
+   *   <b>Openable</b> behavior here. If the subject is set as always open, it can be set to
+   *   [[None]].
    * @param onEnterExtra
-   *   Reaction to be executed into the State when entered, after the standard Reaction. It can be
-   *   omitted.
+   *   <b>Reaction</b> to be executed into the <b>State</b> when entered, after the standard
+   *   <b>Reaction</b>. It can be omitted.
    */
   case class SimpleRoomLink(
     endRoomRef: RoomRef,
@@ -81,9 +91,11 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
     with Delegate {
 
     /**
-     * If an openable is passed, it is passed as father behavior.
+     * If the subject can also be opened, che associated <b>Openable</b> triggers are used as a
+     * delegate.
      * @return
-     *   The father behavior triggers.
+     *   The <b>Openable</b> triggers, if the openable is passed; an empty [[PartialFunction]]
+     *   otherwise.
      */
     override def delegateTriggers: ItemTriggers =
       openable map (_.triggers) getOrElse PartialFunction.empty: ItemTriggers
@@ -121,22 +133,25 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
   }
 
   /**
-   * Companion object for [[RoomLink]]. Shortcut for the standard implementation.
+   * Companion object for <b>RoomLink</b>.
    */
   object RoomLink {
 
     /**
-     * Create a builder for generate the [[RoomLink]].
+     * Builder to generate a simple <b>RoomLink</b>, given a subject.
+     *
      * @param endRoom
-     *   the room that have to be reached using the RoomLink.
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   subject.
      * @param endRoomDirection
-     *   the direction of room that have to be reached using the RoomLink.
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
      * @param openableBuilder
-     *   the openable builder used for generate openable behavior
+     *   A function that returns the <b>Openable</b> behavior associated to the subject, when the
+     *   subject is passed.
      * @param onEnterExtra
-     *   an extra behavior generated when player enter in the [[Room]].
+     *   An extra behavior generated when player enter the target room.
      * @return
-     *   a builder that passed an [[Item]] create the RoomLink.
+     *   Builder to generate a simple <b>RoomLink</b>, given a subject.
      */
     def builder(
       endRoom: RM,
@@ -153,43 +168,40 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
         )(i)
 
     /**
-     * Create a builder for generate the [[RoomLink]] without openable behavior. This means that the
-     * RoomLink is ready to use.
+     * Builder to generate a <b>RoomLink</b> (given a subject) that is open yet, an can be entered
+     * directly.
+     *
      * @param endRoom
-     *   the room that have to be reached using the RoomLink.
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   subject.
      * @param endRoomDirection
-     *   the direction of room that have to be reached using the RoomLink.
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
      * @param onEnterExtra
-     *   an extra behavior generated when player enter in the [[Room]].
+     *   An extra behavior generated when player enter the target room.
      * @return
-     *   a builder that passed an [[Item]] create the RoomLink.
+     *   Builder to generate a simple <b>RoomLink</b>, given a subject.
      */
     def openedBuilder(
       endRoom: RM,
       endRoomDirection: Direction,
       onEnterExtra: Reaction = Reaction.empty
-    ): I => RoomLink =
-      i =>
-        SimpleRoomLink(
-          endRoom.ref,
-          endRoomDirection,
-          None,
-          onEnterExtra
-        )(i)
+    ): I => RoomLink = builder(endRoom, endRoomDirection, None, onEnterExtra)
 
     /**
-     * Create a builder for generate the [[RoomLink]] with an openable behavior. This means that the
-     * roomlink have to be opened before the use.
+     * Builder to generate a <b>RoomLink</b> (given a subject) that is closed without <b>Key</b>,
+     * and can be entered after being opened.
+     *
      * @param endRoom
-     *   the room that have to be reached using the RoomLink.
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   subject.
      * @param endRoomDirection
-     *   the direction of room that have to be reached using the RoomLink.
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
      * @param onEnterExtra
-     *   an extra behavior generated when player enter in the [[Room]].
+     *   An extra behavior generated when player enter the target room.
      * @param onOpenExtra
-     *   an extra behavior generated when player open the [[Item]].
+     *   An extra behavior generated when player opens the subject.
      * @return
-     *   a builder that passed an [[Item]] create the RoomLink.
+     *   Builder to generate a simple <b>RoomLink</b>, given a subject.
      */
     def closedUnlockedBuilder(
       endRoom: RM,
@@ -197,27 +209,25 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
       onEnterExtra: Reaction = Reaction.empty,
       onOpenExtra: Reaction = Reaction.empty
     ): I => RoomLink =
-      i =>
-        SimpleRoomLink(
-          endRoom.ref,
-          endRoomDirection,
-          Some(Openable.unlockedBuilder(onOpenExtra)(i)),
-          onEnterExtra
-        )(i)
+      builder(endRoom, endRoomDirection, Some(Openable.unlockedBuilder(onOpenExtra)), onEnterExtra)
 
     /**
-     * Create a builder for generate the [[RoomLink]] with an openable behavior. This means that the
-     * roomlink have to be opened, in this case with a [[Key]], before the use.
+     * Builder to generate a <b>RoomLink</b> (given a subject) that is closed with a <b>Key</b>, and
+     * can be entered after being opened.
+     *
+     * @param key
+     *   The <b>Key</b> to be used to open the subject.
      * @param endRoom
-     *   the room that have to be reached using the RoomLink.
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   subject.
      * @param endRoomDirection
-     *   the direction of room that have to be reached using the RoomLink.
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
      * @param onEnterExtra
-     *   an extra behavior generated when player enter in the [[Room]].
+     *   An extra behavior generated when player enter the target room.
      * @param onOpenExtra
-     *   an extra behavior generated when player open the [[Item]].
+     *   An extra behavior generated when player opens the subject.
      * @return
-     *   a builder that passed an [[Item]] create the RoomLink.
+     *   Builder to generate a simple <b>RoomLink</b>, given a subject.
      */
     def closedLockedBuilder(
       key: Key,
@@ -226,12 +236,11 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactio
       onEnterExtra: Reaction = Reaction.empty,
       onOpenExtra: Reaction = Reaction.empty
     ): I => RoomLink =
-      i =>
-        SimpleRoomLink(
-          endRoom.ref,
-          endRoomDirection,
-          Some(Openable.lockedBuilder(key, onOpenExtra)(i)),
-          onEnterExtra
-        )(i)
+      builder(
+        endRoom,
+        endRoomDirection,
+        Some(Openable.lockedBuilder(key, onOpenExtra)),
+        onEnterExtra
+      )
   }
 }

@@ -8,7 +8,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonRea
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into the [[BehaviorBasedModel]] the Openable behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>Openable</b> behavior.
  */
 trait OpenableExt
   extends BehaviorBasedModel
@@ -18,51 +18,66 @@ trait OpenableExt
   with StateUtilsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that can be opened a single time.
+   * An <b>ItemBehavior</b> associated to a <b>BehaviorBasedItem</b> that can be opened a single
+   * time.
    */
   abstract class Openable extends ItemBehavior {
 
     /**
+     * The "openness" state of the subject, as a boolean value. Initially closed.
      * @return
-     *   true if object is already opened, false otherwise.
+     *   True if subject is already opened, False otherwise.
      */
     def isOpen: Boolean
 
     /**
+     * The <b>Key</b> to be used to open the subject. If the subject can be opened without
+     * <b>Key</b>, it can be set to [[None]].
      * @return
-     *   a [[Some]] of the [[Key]] if key is required, [[None]] otherwise.
+     *   [[Some]] with the <b>Key</b> if key is required, [[None]] otherwise.
      */
     def requiredKey: Option[Key]
 
     /**
-     * Check if the openable [[Item]] can be opened with a key.
-     * @param usedKey
-     *   the key to check if open the [[Item]].
+     * Checks whether the subject can be opened with the current configuration.
+     *
      * @param state
-     *   the actual state.
+     *   The current <b>State</b>.
+     * @param usedKey
+     *   The eventual key passed explicitly by the user, e.g. , with a statement like "open the item
+     *   with the key".
      * @return
-     *   true if the openable item can be opened with the key, false otherwise.
+     *   True if:
+     *   - A <b>Key</b> was passed explicitly, is effectively into the bag of the player (or in the
+     *     location) and that <b>Key</b> is effectively required to open the subject.
+     *   - No <b>Key</b> was passed explicitly, is effectively into the bag of the player and that
+     *     <b>Key</b> is effectively required to open the subject.
+     *   - No <b>Key</b> was passed explicitly, and no <b>Key</b> is required.
+     *
+     * False otherwise.
      */
     def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
 
     /**
+     * A <b>Reaction</b> that sets the subject in an open state.
      * @return
-     *   the [[Reaction]] generated when this [[ItemBehavior]] is opened.
+     *   A <b>Reaction</b> that sets the subject in an open state.
      */
     def open: Reaction
   }
 
   /**
-   * Standard implementation of the common Openable behavior.
+   * Standard implementation of the <b>Openable</b> behavior.
    *
-   * This is a behavior associated to an Item that can be opened a single time. Open The standard
-   * [[Reaction]] consists into changing an internal variable that indicates the "openness" of the
-   * Openable, when Statement "open Item (with something)" ais called.
+   * This is a behavior associated to an Item that can be opened a single time. The standard
+   * <b>Reaction</b> consists into changing an internal variable that indicates the "openness" of
+   * the subject, when <b>Statement</b> "open subject (with something)" is called.
    * @param requiredKey
-   *   The key required to open the Item. If not passed the Item can be opened without Key.
+   *   The <b>Key</b> required to open the Item. If not passed, the Item does not require a
+   *   <b>Key</b> to be opened.
    * @param onOpenExtra
-   *   Reaction to be executed into the State when opened, after the standard Reaction. It can be
-   *   omitted.
+   *   <b>Reaction</b> to be executed into the State when opened, after the standard
+   *   <b>Reaction</b>. It can be omitted.
    */
   case class SimpleOpenable(
     requiredKey: Option[Key] = None,
@@ -85,26 +100,6 @@ trait OpenableExt
           Reaction.messages(Messages.AlreadyOpened(subject))
     }
 
-    /**
-     * Checks whether the Item can be opened with the current configuration. The usedKey is the
-     * eventual Key passed explicitly by the user, with a statement like "open the item with the
-     * key".
-     *
-     * @param state
-     *   The current State.
-     * @param usedKey
-     *   The eventual key passed explicitly by the user, e.g. , with a statement like "open the item
-     *   with the key".
-     * @return
-     *   True if:
-     *   - A key was passed explicitly, is effectively into the Bag of the Player (or in the current
-     *     room) and that key is effectively required to open the Item.
-     *   - No key was passed explicitly, is effectively into the Bag of the Player and that key is
-     *     effectively required to open the Item.
-     *   - No key was passed explicitly, and no key is required.
-     *
-     * False otherwise.
-     */
     override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
       usedKey match {
         case Some(key) => requiredKey.contains(key)
@@ -112,12 +107,7 @@ trait OpenableExt
       }
     }
 
-    /**
-     * Sets the Item in an open state and executes eventual extra actions.
-     * @return
-     *   A Reaction that sets the Item in an open state and executes eventual extra actions.
-     */
-    def open: Reaction = {
+    override def open: Reaction = {
       _isOpen = true
 
       for {
@@ -135,18 +125,18 @@ trait OpenableExt
   }
 
   /**
-   * Companion object for [[Openable]]. Shortcut for the standard implementation.
+   * Companion object for <b>Openable</b>.
    */
   object Openable {
 
     /**
-     * A builder for openable that require a specific key to open the [[ItemBehavior]].
+     * Builder for an <b>Openable</b> that requires a specific <b>Key</b> to open the subject.
      * @param requiredKey
-     *   the key required in order to open the [[Openable]] item.
+     *   The key required in order to open the subject.
      * @param onOpenExtra
-     *   an extra behavior generated when the item is opened.
+     *   An extra <b>ItemBehavior</b> generated when the subject is opened. It can be omitted.
      * @return
-     *   an openable instance giving him the specific item.
+     *   A builder for an <b>Openable</b> that requirea a specific <b>Key</b> to open the subject.
      */
     def lockedBuilder(
       requiredKey: Key,
@@ -154,11 +144,12 @@ trait OpenableExt
     ): I => Openable = SimpleOpenable(Some(requiredKey), onOpenExtra)(_)
 
     /**
-     * A builder for openable without a specific key to open the [[ItemBehavior]].
+     * Builder for an <b>Openable</b> that not requires a specific <b>Key</b> to open the subject.
      * @param onOpenExtra
-     *   an extra behavior generated when the item is opened.
+     *   An extra <b>ItemBehavior</b> generated when the subject is opened. It can be omitted.
      * @return
-     *   an openable instance giving him the specific item.
+     *   A builder for an <b>Openable</b> that not requires a specific <b>Key</b> to open the
+     *   subject.
      */
     def unlockedBuilder(
       onOpenExtra: Reaction = Reaction.empty
