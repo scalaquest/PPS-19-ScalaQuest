@@ -4,13 +4,13 @@ import io.github.scalaquest.core.TestsUtils.{apple, door, startRoom, targetRoom}
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import io.github.scalaquest.core.TestsUtils.model.Messages._
+import io.github.scalaquest.core.TestsUtils.model.CMessages._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class CommonStringPusherTest extends AnyWordSpec with Matchers {
   "A CommonStringPusher" should {
-    val commonStringPusher = CommonStringPusher(SimpleModel)
+    val commonStringPusher = CStringPusher(SimpleModel)
 
     "handle Inspected messages" should {
       "not return any rooms if there aren't neighbors" in {

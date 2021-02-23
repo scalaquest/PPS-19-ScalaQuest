@@ -1,37 +1,49 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 
 /**
- * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>GenericBehavior</b>.
  */
-trait GenericBehaviorExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait GenericBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
-   * player.
+   * An ItemBehavior with some triggers. It is useful in order to wrap <b>ItemBehavior</b> into a
+   * facility builder.
    */
   abstract class GenericBehavior extends ItemBehavior {
+
+    /**
+     * <b>ItemTriggers</b> associated to the behavior.
+     * @return
+     *   Triggers associated to the behavior.
+     */
     def triggers: ItemTriggers
   }
 
   /**
-   * Standard implementation of
-   *
-   * The behavior of an Item that could be put into the Bag of the player from the current room.
+   * Standard implementation of <b>GenericBehavior</b>.
    */
   case class SimpleGenericBehavior(
     override val triggers: ItemTriggers
-  ) extends GenericBehavior
+  )(implicit val subject: I)
+    extends GenericBehavior
 
   /**
-   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
+   * Companion object for <b>GenericBehavior</b>.
    */
   object GenericBehavior {
 
+    /**
+     * A function that builds a <b>GenericBehavior</b> given a subject.
+     * @param triggers
+     *   The <b>ItemTriggers</b> associated to the subject.
+     * @return
+     *   A function that builds a <b>GenericBehavior</b> given a subject.
+     */
     def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericBehavior =
-      _ => SimpleGenericBehavior(triggers)
+      SimpleGenericBehavior(triggers)(_)
   }
 }

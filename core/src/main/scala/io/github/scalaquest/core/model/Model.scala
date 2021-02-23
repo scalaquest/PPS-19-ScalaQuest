@@ -14,10 +14,32 @@ import monocle.Lens
  * }}}
  */
 trait Model { model: Model =>
+
+  /**
+   * The specific implementation adopted for [[State]] in the specific model implementation.
+   */
   type S <: State
+
+  /**
+   * The specific implementation adopted for [[Item]] in the specific model implementation.
+   */
   type I <: Item
+
+  /**
+   * The specific implementation adopted for [[Ground]] in the specific model implementation.
+   */
   type G <: Ground
+
+  /**
+   * The specific implementation adopted for [[Room]] in the specific model implementation.
+   */
   type RM <: Room
+
+  /**
+   * The specific implementation adopted for [[Reaction]] in the specific model implementation. A
+   * [[Reaction]] is a function that given a [[S]] produce a new [[S]] and a sequence of
+   * [[Message]].
+   */
   type Reaction = S => (S, Seq[Message])
 
   /**
@@ -207,12 +229,59 @@ trait Model { model: Model =>
     override def hashCode(): Int = ref.hashCode()
   }
 
+  /**
+   * A [[Lens]] used to retrieve the player location [[RM]] given a [[S]].
+   * @return
+   *   the cited above Lens.
+   */
   def locationRoomLens: Lens[S, RM]
+
+  /**
+   * A [[Lens]] used to retrieve a Map with all the [[RoomRef]] to the [[RM]].
+   * @return
+   *   the cited above Lens.
+   */
   def roomsLens: Lens[S, Map[RoomRef, RM]]
+
+  /**
+   * A [[Lens]] used to retrieve a Map with all the [[ItemRef]] to the [[I]].
+   * @return
+   *   the cited above Lens.
+   */
   def itemsLens: Lens[S, Map[ItemRef, I]]
+
+  /**
+   * A [[Lens]] used to retrieve if the match is already ended.
+   * @return
+   *   the cited above Lens.
+   */
   def matchEndedLens: Lens[S, Boolean]
+
+  /**
+   * A [[Lens]] used to retrieve a ItemRef.
+   * @return
+   *   the cited above Lens.
+   */
   def bagLens: Lens[S, Set[ItemRef]]
+
+  /**
+   * A [[Lens]] used to retrieve the RoomRef referent to player location Room given a [[S]].
+   * @return
+   *   the cited above Lens.
+   */
   def locationLens: Lens[S, RoomRef]
+
+  /**
+   * A [[Lens]] used to retrieve all the Items (indicated with ItemRef) presents in the [[RM]].
+   * @return
+   *   the cited above Lens.
+   */
   def roomItemsLens: Lens[RM, Set[ItemRef]]
+
+  /**
+   * A [[Lens]] used to retrieve all the possible direction given a [[RM]].
+   * @return
+   *   the cited above Lens.
+   */
   def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]]
 }

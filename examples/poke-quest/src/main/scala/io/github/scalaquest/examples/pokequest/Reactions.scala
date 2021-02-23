@@ -2,15 +2,15 @@ package io.github.scalaquest.examples.pokequest
 
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.examples.pokequest.Items.snorlax
-import model.{Reaction, Reactions, Update, locationRoomLens, roomItemsLens, matchEndedLens}
+import model.{Reaction, CReactions, matchEndedLens}
 
-object CustomReactions {
+object Reactions {
   var charizardWeaken = false
 
   def wakeSnorlax: React =
     for {
-      _ <- Reactions.addDirectionToLocation(Direction.North, Geography.forest)
-      _ <- Reaction(Update((locationRoomLens composeLens roomItemsLens).modify(_ - snorlax.ref)))
+      _ <- CReactions.addDirectionToLocation(Direction.North, Geography.forest)
+      _ <- CReactions.modifyLocationItems(_ - snorlax.ref)
       s <- Reaction.messages(Pusher.SnorlaxWoke)
     } yield s
 
@@ -27,7 +27,7 @@ object CustomReactions {
 
   def catchCharizard: React =
     if (charizardWeaken) {
-      Reactions.finishGame(true)
+      CReactions.finishGame(true)
 
     } else {
       for {

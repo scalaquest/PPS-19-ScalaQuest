@@ -5,12 +5,9 @@ import io.github.scalaquest.core.TestsUtils.model.{
   BehaviorBasedGround,
   GroundBehavior,
   InspectableBag,
-  Messages
+  CMessages
 }
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
-  Eat,
-  InspectBag
-}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Eat, InspectBag}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -28,7 +25,7 @@ class InspectableBagTest extends AnyWordSpec with Matchers {
         for {
           react <- SimpleGround.use(InspectBag)(simpleState) toRight fail("Reaction not generated")
           msgs  <- Right(react(simpleState)._2)
-        } yield msgs should contain(Messages.InspectedBag(Set(apple)))
+        } yield msgs should contain(CMessages.InspectedBag(Set(apple)))
       }
     }
 
@@ -43,7 +40,7 @@ class InspectableBagTest extends AnyWordSpec with Matchers {
             appleEatenReact(simpleState)._1
           ) toRight fail("Reaction not generated")
           msgs <- Right(inspectedBagReact(appleEatenReact(simpleState)._1)._2)
-        } yield msgs should contain(Messages.InspectedBag(Set.empty))
+        } yield msgs should contain(CMessages.InspectedBag(Set.empty))
       }
     }
   }

@@ -1,32 +1,33 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Inspect
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Inspect
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableLocation behavior
- * for the Ground.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>InspectableLocation
+ * GroundBehavior</b>.
  */
-trait InspectableLocationExt
-  extends BehaviorBasedModel
-  with CommonMessagesExt
-  with CommonReactionsExt {
+trait InspectableLocationExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
 
   /**
-   * A [[GroundBehavior]] that enables the possibility to know the items present into the current
-   * [[Room]].
+   * A <b>GroundBehavior</b> that enables the possibility to describe the location.
    */
   abstract class InspectableLocation extends GroundBehavior {
+
+    /**
+     * A <b>Reaction</b> that communicates to the user a description of the current location.
+     * @return
+     *   A <b>Reaction</b> that communicates to the user a description of the current location.
+     */
     def inspectLocation: Reaction
   }
 
   /**
-   * A standard implementation for [[InspectableLocation]].
-   *
+   * A standard implementation for <b>InspectableLocation</b>.
    * @param onInspectExtra
-   *   [[Reaction]] to be executed when the player successfully inspected the room. It can be
+   *   <b>Reaction</b> to be executed when the player successfully inspect the location. It can be
    *   omitted.
    */
   case class SimpleInspectableLocation(onInspectExtra: Reaction = Reaction.empty)
@@ -35,17 +36,28 @@ trait InspectableLocationExt
     override def triggers: GroundTriggers = { case (Inspect, _) => inspectLocation }
 
     override def inspectLocation: Reaction =
-      Reaction.combine(
-        Reactions.inspectLocation,
-        onInspectExtra
-      )
+      for {
+        s1 <- Reaction.empty
+        _ <- Reaction.messages(
+          CMessages.Inspected(s1.location, s1.location.items(s1), s1.location.neighbors(s1))
+        )
+        s2 <- onInspectExtra
+      } yield s2
   }
 
   /**
-   * Companion object for [[InspectableLocation]]. Shortcut for the standard implementation.
+   * Companion object for <b>InspectableLocation</b>.
    */
   object InspectableLocation {
 
+    /**
+     * Shortcut for the standard implementation.
+     * @param onInspectExtra
+     *   <b>Reaction</b> to be executed when the player successfully inspect the location. It can be
+     *   omitted.
+     * @return
+     *   the instance of <b>InspectableLocation</b>.
+     */
     def apply(onInspectExtra: Reaction = Reaction.empty): InspectableLocation =
       SimpleInspectableLocation(onInspectExtra)
   }

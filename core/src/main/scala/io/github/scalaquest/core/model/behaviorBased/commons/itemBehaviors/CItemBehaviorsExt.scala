@@ -15,7 +15,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.
  * ScalaQuest Core. It requires the storyteller to implement all the required [[monocle.Lens]], used
  * by the implementation to access and re-generate the concrete State.
  */
-trait CommonItemBehaviorsExt
+trait CItemBehaviorsExt
   extends BehaviorBasedModel
   with TakeableExt
   with EatableExt

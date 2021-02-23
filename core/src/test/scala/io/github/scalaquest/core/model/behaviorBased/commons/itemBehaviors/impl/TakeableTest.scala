@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Take
 import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
@@ -29,7 +29,7 @@ class TakeableTest extends AnyWordSpec with Matchers {
             msgs     <- Right(react(stateWithTargetInRoom)._2)
           } yield {
             modState.location.items(modState) should not contain targetItem
-            msgs should contain(Messages.Taken(targetItem))
+            msgs should contain(CMessages.Taken(targetItem))
           }
         }
 

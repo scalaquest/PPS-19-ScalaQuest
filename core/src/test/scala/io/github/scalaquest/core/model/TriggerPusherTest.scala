@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class TriggerPusherTest extends AnyWordSpec with Matchers {
-  import TestsUtils.model.Messages._
+  import TestsUtils.model.CMessages._
 
   "A TriggerPusher" when {
     "have some defined trigger" should {

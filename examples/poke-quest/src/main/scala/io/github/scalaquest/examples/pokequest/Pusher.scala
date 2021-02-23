@@ -1,8 +1,8 @@
 package io.github.scalaquest.examples.pokequest
 
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonStringPusher
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CStringPusher
 import io.github.scalaquest.core.model.{Message, StringPusher}
-import model.Messages._
+import model.CMessages._
 
 object Pusher {
 
@@ -13,7 +13,7 @@ object Pusher {
   case object KilledCharizard          extends Message
   case object FailedToCaptureCharizard extends Message
 
-  val defaultPusher: StringPusher = CommonStringPusher(
+  val defaultPusher: StringPusher = CStringPusher(
     model,
     {
       case FreePlayFlute => "What a sweet melody!"

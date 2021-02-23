@@ -13,7 +13,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.{
  * When mixed into a Model, it enables the implementation for the common items provided by
  * ScalaQuest Core.
  */
-trait CommonItemsExt
+trait CItemsExt
   extends BehaviorBasedModel
   with DoorExt
   with GenericItemExt
