@@ -5,30 +5,42 @@ import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Door Item.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>Door BehaviorBasedItem</b>.
  */
 trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
 
   /**
-   * A [[BehaviorBasedItem]] that should work as a link between two different [[Room]] s.
+   * A <b>BehaviorBasedItem</b> that should work as a link between two different rooms.
    */
   trait Door extends BehaviorBasedItem {
 
     /**
+     * The "openness" state of the item, as a boolean value. Initially closed.
      * @return
-     *   true if the door is open, false otherwise.
+     *   True if item is already opened, False otherwise.
      */
     def isOpen: Boolean
 
     /**
+     * A <b>Door</b> has always an associated <b>RoomLink</b> behavior, that can be referenced from
+     * here.
      * @return
-     *   the specific [[RoomLink]] behavior.
+     *   The <b>RoomLink</b> behavior of the item.
      */
     def roomLink: RoomLink
   }
 
   /**
-   * Standard implementation of the common [[Door]].
+   * Standard implementation of <b>Door</b>.
+   *
+   * @param description
+   *   An [[ItemDescription]] for the item.
+   * @param ref
+   *   A unique reference to the item.
+   * @param roomLinkBuilder
+   *   A builder for the <b>RoomLink</b> behavior associated to the item.
+   * @param extraBehavBuilders
+   *   Additional behaviors associated to the item.
    */
   case class SimpleDoor(
     description: ItemDescription,
@@ -42,46 +54,48 @@ trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
   }
 
   /**
-   * Companion object for [[Door]]. Makes the initialization more succinct.
+   * Companion object for <b>Door</b>.
    */
   object Door {
 
     /**
-     * Facilitates the creation of a [[SimpleDoor]].
+     * Creates a standard <b>Door</b>.
      * @param description
-     *   the door's [[ItemDescription]].
+     *   An [[ItemDescription]] for the item.
      * @param roomLinkBuilder
-     *   the roomLink behavior builder.
-     * @param extraBehavBuilder
-     *   some possible extra behavior.
+     *   A builder for the <b>RoomLink</b> behavior associated to the item.
+     * @param extraBehavBuilders
+     *   Additional behaviors associated to the item.
      * @return
-     *   an instance of SimpleDoor.
+     *   An instance of a standard <b>Door</b>.
      */
     def apply(
       description: ItemDescription,
       roomLinkBuilder: I => RoomLink,
-      extraBehavBuilder: Seq[I => ItemBehavior] = Seq.empty
-    ): Door = SimpleDoor(description, ItemRef(description), roomLinkBuilder, extraBehavBuilder)
+      extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): Door = SimpleDoor(description, ItemRef(description), roomLinkBuilder, extraBehavBuilders)
 
     /**
-     * Facilitates the creation for a [[SimpleDoor]] that could be opened only with the right
-     * [[Key]].
+     * Creates a Door-Key pair, in which the given <b>Key</b> can be used to open the associated
+     * <b>Door</b>.
+     *
      * @param key
-     *   the specific key that could open the Door.
+     *   The <b>Key</b> to use to open the <b>Door</b>.
      * @param doorDesc
-     *   the door's [[ItemDescription]].
+     *   An [[ItemDescription]] for the <b>Door</b>.
      * @param endRoom
-     *   the room on the other side of the door.
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   <b>Door</b>.
      * @param endRoomDirection
-     *   the direction where endRoom is placed respect the current player's location.
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
      * @param onOpenExtra
      *   extra reaction generated when door is opened.
      * @param onEnterExtra
-     *   extra reaction generated when door is crossed.
+     *   An extra behavior generated when player enter the target room.
      * @param extraBehavBuilders
-     *   extra behavior for the items.
+     *   An extra behavior generated when player opens the subject.
      * @return
-     *   an instance of SimpleDoor.
+     *   A tuple containing the generated <b>Door</b>, and the <b>Key</b> required to open it.
      */
     def createLockedWithKey(
       key: Key,
@@ -101,7 +115,7 @@ trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
           onOpenExtra = onOpenExtra,
           onEnterExtra = onEnterExtra
         ),
-        extraBehavBuilder = extraBehavBuilders
+        extraBehavBuilders = extraBehavBuilders
       )
 
       (door, key)
