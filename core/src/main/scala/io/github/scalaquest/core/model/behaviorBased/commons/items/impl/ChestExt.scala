@@ -5,7 +5,7 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt
 
 /**
- * A mixable trait that add an implementation for <b>Container</b> behavior.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>Chest BehaviorBasedItem</b>.
  */
 trait ChestExt extends BehaviorBasedModel with ContainerExt {
 
@@ -37,7 +37,7 @@ trait ChestExt extends BehaviorBasedModel with ContainerExt {
    * @param ref
    *   A unique reference to the item.
    * @param containerBuilder
-   *   A builder for the container behavior associated to the item.
+   *   A builder for the <b>Container</b> behavior associated to the item.
    * @param extraBehavBuilders
    *   Additional behaviors associated to the item.
    */
@@ -62,11 +62,11 @@ trait ChestExt extends BehaviorBasedModel with ContainerExt {
      * @param description
      *   An [[ItemDescription]] for the item.
      * @param containerBuilder
-     *   A builder for the container behavior associated to the item.
+     *   A builder for the <b>Container</b> behavior associated to the item.
      * @param extraBehavBuilder
      *   Additional behaviors associated to the item.
      * @return
-     *   A instance for a standard <b>Chest</b>.
+     *   An instance of a standard <b>Chest</b>.
      */
     def apply(
       description: ItemDescription,

@@ -4,24 +4,33 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Key Item.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>Key BehaviorBasedItem</b>.
  */
 trait KeyExt extends BehaviorBasedModel {
 
   /**
-   * A [[BehaviorBasedItem]] that should be used to open/close items with a Openable behavior.
+   * A <b>BehaviorBasedItem</b> that should be used to open/close items with an <b>Openable</b>
+   * behavior.
    */
   trait Key extends BehaviorBasedItem {
 
     /**
+     * A disposable key is cancelled from the game after being used to open something.
      * @return
-     *   true if key is cancelled after his use, false otherwise.
+     *   True if key is cancelled after his use, False otherwise.
      */
     def disposable: Boolean
   }
 
   /**
-   * Standard implementation of the common [[Key]].
+   * Standard implementation of <b>Key</b>.
+   *
+   * @param description
+   *   An [[ItemDescription]] for the item.
+   * @param ref
+   *   A unique reference to the item.
+   * @param extraBehavBuilders
+   *   Additional behaviors associated to the item.
    */
   case class SimpleKey(
     description: ItemDescription,
@@ -33,20 +42,18 @@ trait KeyExt extends BehaviorBasedModel {
   }
 
   /**
-   * Companion object for [[Key]]. Makes the initialization more succinct.
+   * Companion object for <b>Key</b>.
    */
   object Key {
 
     /**
-     * Facilitates the creation of a Key.
+     * Creates a standard <b>Key</b>.
      * @param description
-     *   the key's [[ItemDescription]].
-     * @param disposable
-     *   true if key is disposable, false otherwise.
+     *   An [[ItemDescription]] for the item.
      * @param extraBehavBuilders
-     *   some possible extra behavior for the key.
+     *   Additional behaviors associated to the item.
      * @return
-     *   an instance of SimpleDoor.
+     *   An instance of a standard <b>Key</b>.
      */
     def apply(
       description: ItemDescription,

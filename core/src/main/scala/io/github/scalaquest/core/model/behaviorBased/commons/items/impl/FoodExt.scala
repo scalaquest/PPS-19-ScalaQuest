@@ -5,24 +5,35 @@ import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Food Item.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>Food BehaviorBasedItem</b>.
  */
 trait FoodExt extends BehaviorBasedModel with EatableExt {
 
   /**
-   * A [[BehaviorBasedItem]] that can be eaten by the player.
+   * A <b>BehaviorBasedItem</b> that can be eaten by the player.
    */
   trait Food extends BehaviorBasedItem {
 
     /**
+     * A <b>Food</b> has always an associated <b>Eatable</b> behavior, that can be referenced from
+     * here.
      * @return
-     *   the [[Eatable]] behavior.
+     *   The <b>Eatable</b> behavior of the item.
      */
     def eatable: Eatable
   }
 
   /**
-   * Standard implementation of the [[Food]] Item.
+   * Standard implementation of <b>Food</b>.
+   *
+   * @param description
+   *   An [[ItemDescription]] for the item.
+   * @param ref
+   *   A unique reference to the item.
+   * @param eatableBuilder
+   *   A builder for the <b>Eatable</b> behavior associated to the item.
+   * @param extraBehavBuilders
+   *   Additional behaviors associated to the item.
    */
   case class SimpleFood(
     description: ItemDescription,
@@ -35,20 +46,20 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
   }
 
   /**
-   * Companion object for [[Food]]. Makes the initialization more succinct.
+   * Companion object for <b>Food</b>.
    */
   object Food {
 
     /**
-     * Facilitates the creation of a [[SimpleFood]].
+     * Creates a standard <b>Food</b>.
      * @param description
-     *   the food's [[ItemDescription]].
+     *   An [[ItemDescription]] for the item.
      * @param eatableBuilder
-     *   the eatable behavior builder.
+     *   A builder for the <b>Eatable</b> behavior associated to the item.
      * @param extraBehavBuilders
-     *   some possible extra behavior for the items.
+     *   Additional behaviors associated to the item.
      * @return
-     *   an instance of SimpleDoor.
+     *   An instance of a standard <b>Door</b>.
      */
     def apply(
       description: ItemDescription,

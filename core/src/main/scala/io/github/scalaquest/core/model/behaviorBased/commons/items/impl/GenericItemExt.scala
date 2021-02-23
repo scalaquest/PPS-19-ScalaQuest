@@ -5,40 +5,47 @@ import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 
 /**
- * The trait makes possible to mix into a [[BehaviorBasedModel]] the Generic Item.
+ * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>GenericItem</b>.
  */
 trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
 
   /**
-   * A standard [[BehaviorBasedItem]], completely and freely configurable, without a specific
+   * A standard <b>BehaviorBasedItem</b> completely and freely configurable, without a specific
    * category.
    */
   trait GenericItem extends BehaviorBasedItem
 
   /**
-   * Standard implementation of the common [[GenericItem]].
+   * Standard implementation of <b>GenericItem</b>.
+   *
+   * @param description
+   *   An [[ItemDescription]] for the item.
+   * @param ref
+   *   A unique reference to the item.
+   * @param behaviorsBuilders
+   *   All the behaviors associated to the item.
    */
   case class SimpleGenericItem(
     description: ItemDescription,
     ref: ItemRef,
-    extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    behaviorsBuilders: Seq[I => ItemBehavior] = Seq.empty
   ) extends GenericItem {
-    override val behaviors: Seq[ItemBehavior] = extraBehavBuilders.map(_(this))
+    override val behaviors: Seq[ItemBehavior] = behaviorsBuilders.map(_(this))
   }
 
   /**
-   * Companion object for [[GenericItem]]. Makes the initialization more succinct.
+   * Companion object for <b>GenericItem</b>.
    */
   object GenericItem {
 
     /**
-     * Facilitates the creation of a [[GenericItem]].
+     * A standard <b>GenericItem</b>.
      * @param description
-     *   the item's description.
+     *   An [[ItemDescription]] for the item.
      * @param extraBehavBuilders
-     *   some possible extra behavior for the item.
+     *   Builder of all the behaviors associated to the item.
      * @return
-     *   the [[SimpleGenericItem]] instance.
+     *   An instance of a standard <b>GenericItem</b>.
      */
     def apply(
       description: ItemDescription,
@@ -46,13 +53,13 @@ trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
     ): GenericItem = SimpleGenericItem(description, ItemRef(description), extraBehavBuilders)
 
     /**
-     * A generic item with only one behavior.
+     * A <b>GenericItem</b> with a single behavior.
      * @param description
-     *   the generic item description.
+     *   An [[ItemDescription]] for the item.
      * @param behavior
-     *   the item behavior.
+     *   Builder for the single behavior associated to the item.
      * @return
-     *   the [[SimpleGenericItem]] instance.
+     *   An instance of a <b>GenericItem</b> with a single behavior.
      */
     def withSingleBehavior(
       description: ItemDescription,
@@ -60,13 +67,13 @@ trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
     ): GenericItem = SimpleGenericItem(description, ItemRef(description), Seq(behavior))
 
     /**
-     * A generic item with some behaviors triggers.
+     * A <b>GenericItem</b> with a single behavior, created on-the-fly by some <b>ItemTriggers</b>.
      * @param description
      *   the generic item description.
      * @param behaviorTriggers
-     *   behavior triggers.
+     *   Triggers for the single behavior associated to the item.
      * @return
-     *   the [[SimpleGenericItem]] instance.
+     *   An instance of a <b>GenericItem</b> with a single behavior.
      */
     def withGenBehavior(
       description: ItemDescription,
