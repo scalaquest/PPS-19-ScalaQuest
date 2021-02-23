@@ -9,34 +9,34 @@ import io.github.scalaquest.core.model.{Direction, Model}
 trait StateUtilsExt extends Model {
 
   /**
-   * Add some utility methods for [[Model.State]] implementation.
+   * Add some utility methods for [[State]] implementation.
    * @param state
-   *   the state ([[S]])
+   *   A state ([[S]])
    */
   implicit class StateUtils(state: S) {
     implicit val s: S = state
 
     /**
-     * Check if an [[Model.Item]] is in Bag.
+     * Check if an [[Item]] is in Bag.
      * @param item
-     *   the item ([[I]]) to check.
+     *   The item ([[I]]) to check.
      * @return
      *   True if item is in bag, false otherwise.
      */
     def isInBag(item: I): Boolean = state.bag.contains(item)
 
     /**
-     * Check if an [[Model.Item]] is in the actual player location [[Model.Room]].
+     * Check if an [[Item]] is in the actual player location [[Room]].
      * @param item
-     *   the item ([[I]]) to check
+     *   The item ([[I]]) to check.
      * @return
      *   True if item is in location, false otherwise.
      */
     def isInLocation(item: I): Boolean = state.location.items.contains(item)
 
     /**
-     * Check if an [[Model.Item]] is visible. Two possible conditions:
-     *   - item is in the actual player location [[Model.Room]].
+     * Check if an [[Item]] is visible. Two possible conditions:
+     *   - item is in the actual player location [[Room]].
      *   - item is in bag.
      * @param item
      *   the item ([[I]]) to check.
@@ -46,15 +46,16 @@ trait StateUtilsExt extends Model {
     def isInScope(item: I): Boolean = state.isInLocation(item) || state.isInBag(item)
 
     /**
-     * Check if player have a neighbor Room for a given Direction.
+     * Check if player have a neighbor [[Room]] for a given Direction.
      * @param direction
-     *   the given Direction.
+     *   The given [[Direction]].
      * @return
-     *   an Option that contain the neighbor Room ([[RM]]) if present, [[None]] otherwise.
+     *   [[Option]] that contain the neighbor Room ([[RM]]) if present, [[None]] otherwise.
      */
     def locationNeighbor(direction: Direction): Option[RM] = state.location.neighbor(direction)
 
     /**
+     * Responds with all neighbor [[Room]] for the current location.
      * @return
      *   all the neighbor Rooms ([[RM]]).
      */
@@ -62,17 +63,18 @@ trait StateUtilsExt extends Model {
       Direction.all.map(state.locationNeighbor(_)).collect({ case Some(room) => room })
 
     /**
+     * Responds with all the [[Item]] s present in the player location [[Room]].
      * @return
-     *   all the [[Model.Item]] s present in the player location Room.
+     *   All the [[Item]] s present in the player location [[Room]].
      */
     def locationItems: Set[I] = state.location.items
 
     /**
      * Copy the State [[S]] and add an item to the player location Room.
      * @param item
-     *   the [[Model.I]] to add.
+     *   The <b>item</b> [[I]] to add.
      * @return
-     *   a new State with the item in the player location Room.
+     *   A new <b>State</b> with the <b>item</b> added into the player's location.
      */
     def copyWithItemInLocation(item: I): S = {
       val stateWithTarget    = itemsLens.modify(_ + (item.ref -> item))(state)
@@ -83,9 +85,9 @@ trait StateUtilsExt extends Model {
     /**
      * Copy the State [[S]] and add an item to the player's bag.
      * @param item
-     *   the [[Model.I]] to add.
+     *   The <b>item</b> [[I]] to add to the State.
      * @return
-     *   a new State with the item in the player's bag.
+     *   The new <b>State</b> with the <b>item</b> in the player's <b>bag</b>.
      */
     def copyWithItemInBag(item: I): S = {
       val stateWithTarget = itemsLens.modify(_ + (item.ref -> item))(state)

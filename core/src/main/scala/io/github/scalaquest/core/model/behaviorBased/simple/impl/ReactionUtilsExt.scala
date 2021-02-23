@@ -11,53 +11,53 @@ trait ReactionUtilsExt extends BehaviorBasedModel {
   /**
    * A class that wrap a reaction and it map and flatmap methods.
    * @param r
-   *   the wrapped Reaction.
+   *   The wrapped <b>Reaction</b>.
    */
   implicit class EnhancedReaction(r: Reaction) {
 
     /**
-     * Use Reaction.map method with this and an other reaction.
+     * Use <b>Reaction.map</b> method with this and an other <b>Reaction</b>.
      * @param g
-     *   the other reaction
+     *   The other <b>Reaction</b>.
      * @return
-     *   a new Reaction that is the Reaction.map of the two reactions.
+     *   A new <b>Reaction</b> that is the <b>Reaction::map</b> of the two reactions.
      */
     def map(g: S => S): Reaction = Reaction.map(g)(r)
 
     /**
-     * Use Reaction.flatmap method with this and an other reaction.
+     * Use <b>Reaction::flatmap</b> method with this and an other <b>Reaction</b>.
      * @param g
-     *   the other reaction.
+     *   The other <b>Reaction</b>.
      * @return
-     *   a new Reaction that is the Reaction.flatmap of the two reactions.
+     *   A new <b>Reaction</b> that is the <b>Reaction::flatmap</b> of the two reactions.
      */
     def flatMap(g: S => Reaction): Reaction = Reaction.flatMap(g)(r)
   }
 
   /**
-   * Object with some methods to work on Reaction.
+   * Object with some methods to work on <b>Reaction</b>.
    */
   object Reaction {
 
     /**
-     * Append a specific Message to a Reaction.
+     * Append a specific [[Message]] to a <b>Reaction</b>.
      * @param msg
-     *   the message to be appended.
+     *   The <b>message</b> to be appended.
      * @param r
-     *   the Reaction that will have the message appended.
+     *   The <b>Reaction</b> that will have the message appended.
      * @return
-     *   a new Reaction.
+     *   A new <b>Reaction</b> with the <b>message</b> appended.
      */
     def appendMessage(msg: Message)(r: Reaction): Reaction = appendMessages(Seq(msg))(r)
 
     /**
-     * Append some specific Messages to a Reaction.
+     * Append some specific [[Message]] s to a <b>Reaction</b>.
      * @param msgs
-     *   the messages to be appended.
+     *   The <b>messages</b> to be appended.
      * @param r
-     *   the Reaction that will have the messages appended.
+     *   The <b>Reaction</b> that will have the messages appended.
      * @return
-     *   a new Reaction.
+     *   A new <b>Reaction</b> with the <b>messages</b> appended.
      */
     def appendMessages(msgs: Seq[Message])(r: Reaction): Reaction =
       s => {
@@ -66,94 +66,98 @@ trait ReactionUtilsExt extends BehaviorBasedModel {
       }
 
     /**
-     * Create a Reaction from a function [[S]] => [[S]] and some messages.
+     * Create a <b>Reaction</b> from a function <b>State => State</b> and some <b>messages</b>.
      * @param f
-     *   the function.
+     *   A function <b>State => State</b> that giving a State provide an updated on it.
      * @param messages
-     *   the messages.
+     *   The <b>messages</b> of <b>Reaction</b>.
      * @return
-     *   A new Reaction.
+     *   A new <b>Reaction</b> with as function <b>f</b> and for messages <b>messages</b>.
      */
     def apply(f: S => S, messages: Message*): Reaction = create(f, messages)
 
     /**
-     * Combine two Reactions.
+     * Combine two <b>Reaction</b>s using the <b>Reaction::flatmap</b>.
      * @param a
-     *   a Reaction.
+     *   A <b>Reaction</b>.
      * @param b
-     *   other Reaction.
+     *   An other <b>Reaction</b>.
      * @return
-     *   The new Reaction.
+     *   The new <b>Reaction</b>, result combining of the precedent ones.
      */
     def combine(a: Reaction, b: Reaction): Reaction = a.flatMap(_ => b)
 
     /**
-     * Create a Reaction from a function [[S]] => [[S]] and some messages.
+     * Create a <b>Reaction</b> from a function <b>State => State</b> and some <b>messages</b>.
      * @param f
-     *   the function.
+     *   A function <b>State => State</b> that giving a State provide an updated on it.
      * @param messages
-     *   the messages of the Reactions.
+     *   The <b>messages</b> of <b>Reaction</b>.
      * @return
-     *   a new Reaction with the settings chosen before.
+     *   The new <b>Reaction</b> as function <b>f</b> and for messages <b>messages</b>.
      */
     def create(f: S => S, messages: Seq[Message]): Reaction = s => (f(s), messages)
 
     /**
-     * Create a Reaction empty:
+     * Create an <b>empty Reaction</b>:
      *   - no message.
      *   - function identity [[S]] => [[S]]
      * @return
-     *   the Reaction.
+     *   The empty <b>Reaction</b>.
      */
     def empty: Reaction = create(identity[S], Seq.empty)
 
     /**
-     * The flatmap implemented for Reactions.
+     * The <b>flatmap</b> implemented for <b>Reactions</b>:
+     *   - product a <b>State</b> applying the two <b>Reactions</b>
+     *   - concatenate as message the two <b>messages</b> of the Reactions.
      * @param g
-     *   a function [[S]] to Reaction.
-     * @param f
-     *   a Reaction.
+     *   A function <b>State => Reaction</b>.
+     * @param r
+     *   A <b>Reaction</b>.
      * @return
-     *   a new Reaction.
+     *   A new <b>Reaction</b> combining the function <b>g</b> and the reaction <b>r</b>.
      */
-    def flatMap(g: S => Reaction)(f: Reaction): Reaction = { s =>
-      val (s1, m1) = f(s)
+    def flatMap(g: S => Reaction)(r: Reaction): Reaction = { s =>
+      val (s1, m1) = r(s)
       val (s2, m2) = g(s1)(s1)
       (s2, m1 ++ m2)
     }
 
     /**
-     * The map implemented for Reactions.
+     * The <b>map</b> implemented for <b>Reactions</b>:
+     *   - product a <b>State</b> applying a <b>Reaction</b> on a function <b>State => State</b>
+     *   - concatenate as message the two <b>messages</b> of the <b>Reactions</b>.
      * @param g
-     *   a function [[S]] to Reaction.
-     * @param f
-     *   a Reaction.
+     *   A function <b>State => Reaction</b>.
+     * @param r
+     *   A <b>Reaction</b>.
      * @return
-     *   a new Reaction.
+     *   A new <b>Reaction</b> combining the function <b>g</b> and the reaction <b>r</b>.
      */
-    def map(g: S => S)(f: Reaction): Reaction =
+    def map(g: S => S)(r: Reaction): Reaction =
       s => {
-        val (s1, m1) = f(s)
+        val (s1, m1) = r(s)
         (g(s1), m1)
       }
 
     /**
-     * Add messages to an empty Reaction.
+     * Add <b>messages</b> to an <b>empty Reaction</b>.
      * @param msgs
-     *   messages to append to Reaction.
+     *   <b>Messages</b> to append to <b>Reaction</b>.
      * @return
-     *   The Reaction.
+     *   The <b>empty Reaction</b> with the <b>messages</b>.
      */
     def messages(msgs: Message*): Reaction = appendMessages(msgs)(empty)
 
     /**
      * A Reaction created with:
-     *   - a function [[S]] => [[S]] with any state to a specific State.
+     *   - a function <b>S => S</b> with any state to a specific State.
      *   - empty messages.
      * @param s
-     *   the State provided from any state.
+     *   The State provided from any state.
      * @return
-     *   a new Reaction.
+     *   A new <b>Reaction</b> as described above.
      */
     def pure(s: S): Reaction = create(_ => s, Seq.empty)
 

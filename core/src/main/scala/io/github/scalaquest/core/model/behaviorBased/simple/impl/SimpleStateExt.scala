@@ -17,19 +17,19 @@ trait SimpleStateExt extends BehaviorBasedModel with CGroundExt {
   /**
    * Class that implement the [[Model.State]] interface.
    * @param actions
-   *   a Map that found for each verb the specific [[Action]].
+   *   [[Map]] that found for each <b>verb</b> the specific [[Action]].
    * @param rooms
-   *   a Map that found for each room reference the updated Room.
+   *   [[Map]] that found for each <b>room</b> reference the updated [[Room]].
    * @param items
-   *   a Map that found for each item reference the updated Item.
+   *   [[Map]] that found for each <b>item</b> reference the updated [[Item]].
    * @param ground
-   *   the ground implementation used in this State.
+   *   <b>Ground</b> implementation used in this <b>State</b>.
    * @param _bag
-   *   the player's bag reference.
+   *   Player's <b>bag</b> reference.
    * @param _location
-   *   the room reference where player start the match.
+   *   <b>Room</b> reference where player start the match.
    * @param ended
-   *   true if game is ended, false otherwise.
+   *   True if game is ended, false otherwise.
    */
   case class SimpleState(
     actions: Map[VerbPrep, Action],
@@ -52,17 +52,15 @@ trait SimpleStateExt extends BehaviorBasedModel with CGroundExt {
     /**
      * Facility methods for SimpleState.
      * @param actions
-     *   a Map that found for each verb the specific [[Action]].
+     *   [[Map]] that found for each <b>verb</b> the specific [[Action]].
      * @param rooms
-     *   a Map that found for each room reference the updated Room.
+     *   [[Map]] that found for each <b>room</b> reference the updated [[Room]].
      * @param items
-     *   a Map that found for each item reference the updated Item.
+     *   [[Map]] that found for each <b>item</b> reference the updated [[Item]].
      * @param ground
-     *   the ground implementation used in this State.
+     *   <b>Ground</b> implementation used in this <b>State</b>.
      * @param ended
-     *   true if game is ended, false otherwise.
-     * @return
-     *   the instance of SimpleState.
+     *   True if game is ended, false otherwise.
      */
     def apply(
       actions: Map[VerbPrep, Action],
