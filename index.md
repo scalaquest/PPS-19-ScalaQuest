@@ -10,13 +10,13 @@ continue in the game (e.g. [Zork](https://en.wikipedia.org/wiki/Zork)).
 ## Official documentation
 
 The official documentation of the project consists in:
-- [PPS Report](https://scalaquest.github.io/Reports/reports/pps.html) and
-  [LSS Report](https://scalaquest.github.io/Reports/reports/lss.html). The
+- [PPS Report](https://scalaquest.github.io/Reports/docs/pps-report.html) and
+  [LSS Report](https://scalaquest.github.io/Reports/docs/lss-report.html). The
   previous links shows a web version of reports, auto-generated from the
   [report sources](https://github.com/scalaquest/reports). You can also
   consult them in a [LaTeX PDF](https://github.com/scalaquest/reports/releases/latest)
   format;
-- An [appendix document](https://scalaquest.github.io/Reports/reports/appendix.html)
+- An [appendix document](https://scalaquest.github.io/Reports/docs/appendix.html)
   including the Scrum Overview, a summary of what has been done in each Scrum,
   with an index of linked issues and PR for each one. The document has been
   incrementally updated at each Scrum Review meeting. The document is also
