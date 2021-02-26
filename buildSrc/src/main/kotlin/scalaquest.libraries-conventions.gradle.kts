@@ -10,20 +10,23 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
 
+    // Apply maven-publish and signing to publish releasees to Maven Central.
     `maven-publish`
     signing
 }
 
-// libraries need 75% coverage at least
+// Libraries need 75% coverage at least.
 scoverage {
     minimumRate.set(0.75.toBigDecimal())
 }
 
+// Including sources and javadoc JARs is necessary to publish with Maven.
 java {
     withJavadocJar()
     withSourcesJar()
 }
 
+// Customizing the manifest file.
 tasks.jar {
     manifest {
         attributes(mapOf("Implementation-Title" to project.name,
@@ -31,6 +34,8 @@ tasks.jar {
     }
 }
 
+// Maven-publish plugin configuration. This creates a publication for each
+// library, named with the subproject's name.
 publishing {
     publications {
         create<MavenPublication>(name) {
@@ -45,8 +50,9 @@ publishing {
                 }
             }
 
+            // Repository credentials are set using environment variable, if available. If not
+            // available, credentials are searched into the project properties.
             repositories {
-
                 maven {
                     name = "MavenCentral"
                     url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
@@ -114,6 +120,8 @@ publishing {
     }
 }
 
+// Signing configuration. Ascii-armored private key and passphrase are set using environment
+// variables, when available. If not available, credentials are searched into the project properties.
 signing {
     val signingPassword = System.getenv("SIGNING_PASSWORD")
         ?: findProperty("signingPassword")?.toString()

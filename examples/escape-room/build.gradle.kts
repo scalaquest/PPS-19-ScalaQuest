@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    // the example is based on the Scalaquest Shell version.
+    // the example is based on the ScalaQuest Cli module.
     implementation(project(":cli"))
 }
 
