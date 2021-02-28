@@ -6,26 +6,44 @@ import model.{GenericItem}
 object Items {
   def allItems: Set[I] = Set()
 
+  def sortingHat: GenericItem =
+    GenericItem.withGenBehavior(
+      i(d("old", "sorting"), "hat"), {
+        ???
+      }
+    )
+
+  def stone: GenericItem =
+    GenericItem.withGenBehavior(
+      i(d("little"), "stone"), {
+        ???
+      }
+    )
+
+  def ginny: GenericItem =
+    GenericItem.withGenBehavior(
+      i(d("weasley"), "ginny"), {
+        ???
+      }
+    )
+
   def tomDiary: GenericItem =
     GenericItem.withGenBehavior(
-      i(d("tom's"), "diary"),
-      {
+      i(d("tom"), "diary"), {
         ???
       }
     )
 
   def tom: GenericItem =
     GenericItem.withGenBehavior(
-      i("tom"),
-      {
+      i("tom"), {
         ???
       }
     )
 
   def gryffindorSword: GenericItem =
     GenericItem.withGenBehavior(
-      i(d("gryffindor"), "sword"),
-      {
+      i(d("gryffindor"), "sword"), {
         ???
       }
     )
@@ -34,7 +52,10 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("terrible"), "basilisk"),
       {
-        ???
+        case (Actions.Attack, _, None, _) =>
+          CustomReactions.attackBasilisk
+        case (Actions.Attack, _, Some(i), _) if i == gryffindorSword =>
+          CustomReactions.killBasilisk
       }
     )
 

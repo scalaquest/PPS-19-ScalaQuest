@@ -8,6 +8,7 @@ import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import model.State
 
 object DragonQuest extends GameCLIApp(SimpleModel) {
+
   override def state: S =
     State(
       actions = verbToAction,
