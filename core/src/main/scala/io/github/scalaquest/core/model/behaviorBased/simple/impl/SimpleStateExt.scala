@@ -3,17 +3,34 @@ package io.github.scalaquest.core.model.behaviorBased.simple.impl
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import io.github.scalaquest.core.model._
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CommonGroundExt
+import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CGroundExt
 import monocle.Lens
 import monocle.macros.GenLens
 
 /**
  * Extension for the model. Adds a base implementation of the [[Model.State]].
  */
-trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
+trait SimpleStateExt extends BehaviorBasedModel with CGroundExt {
 
   override type S = SimpleState
 
+  /**
+   * Class that implement the [[Model.State]] interface.
+   * @param actions
+   *   [[Map]] that found for each <b>verb</b> the specific [[Action]].
+   * @param rooms
+   *   [[Map]] that found for each <b>room</b> reference the updated [[Room]].
+   * @param items
+   *   [[Map]] that found for each <b>item</b> reference the updated [[Item]].
+   * @param ground
+   *   <b>Ground</b> implementation used in this <b>State</b>.
+   * @param _bag
+   *   Player's <b>bag</b> reference.
+   * @param _location
+   *   <b>Room</b> reference where player start the match.
+   * @param ended
+   *   True if game is ended, false otherwise.
+   */
   case class SimpleState(
     actions: Map[VerbPrep, Action],
     rooms: Map[RoomRef, RM],
@@ -27,13 +44,29 @@ trait SimpleStateExt extends BehaviorBasedModel with CommonGroundExt {
     override def location: RM = rooms(_location)
   }
 
+  /**
+   * Companion object with apply for SimpleState.
+   */
   object State {
 
+    /**
+     * Facility methods for SimpleState.
+     * @param actions
+     *   [[Map]] that found for each <b>verb</b> the specific [[Action]].
+     * @param rooms
+     *   [[Map]] that found for each <b>room</b> reference the updated [[Room]].
+     * @param items
+     *   [[Map]] that found for each <b>item</b> reference the updated [[Item]].
+     * @param ground
+     *   <b>Ground</b> implementation used in this <b>State</b>.
+     * @param ended
+     *   True if game is ended, false otherwise.
+     */
     def apply(
       actions: Map[VerbPrep, Action],
       rooms: Map[RoomRef, RM],
       items: Map[ItemRef, I],
-      ground: G = CommonGround(),
+      ground: G = CGround(),
       bag: Set[ItemRef] = Set.empty,
       location: RoomRef,
       ended: Boolean = false

@@ -3,19 +3,19 @@ package io.github.scalaquest.examples.pokequest
 import io.github.scalaquest.cli.GameCLIApp
 import io.github.scalaquest.core.dictionary.verbs.Verb
 import io.github.scalaquest.core.model.{Message, StringPusher}
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonVerbs
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CVerbs
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import model.{Messages, State}
+import model.{CMessages, State}
 
 object PokeQuest extends GameCLIApp(SimpleModel) {
 
   override def items: Set[I] = Items.allTheItems
 
-  override def verbs: Set[Verb] = CommonVerbs() ++ Actions.customVerbs
+  override def verbs: Set[Verb] = CVerbs() ++ Actions.customVerbs
 
   override def initialMessages: Seq[Message] =
     Seq(
-      Messages.Welcome("""
+      CMessages.Welcome("""
         |Welcome in the PokeQuest Game! You are a Ash, from Vermilion City, and you are looking forward to
         |capture new Pokemons. Your faithful Pikachu is always following you, in your adventures.
         |So you start walking to reach the forest, but arrived to the city exit, you notice a

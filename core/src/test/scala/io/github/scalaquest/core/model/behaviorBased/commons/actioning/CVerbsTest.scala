@@ -3,10 +3,10 @@ package io.github.scalaquest.core.model.behaviorBased.commons.actioning
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class CommonVerbsTest extends AnyWordSpec with Matchers {
+class CVerbsTest extends AnyWordSpec with Matchers {
   "CommonVerbs" should {
     "Contain a set of commonly used verbs, with their name" in {
-      CommonVerbs() shouldBe a[Set[_]]
+      CVerbs() shouldBe a[Set[_]]
     }
   }
 }

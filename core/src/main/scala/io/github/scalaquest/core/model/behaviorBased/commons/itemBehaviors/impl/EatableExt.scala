@@ -1,20 +1,32 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
-import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Eat
+import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
- * The trait makes possible to mix into [[BehaviorBasedModel]] the Eatable behavior.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>Eatable</b> Behavior.
  */
-trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+trait EatableExt
+  extends BehaviorBasedModel
+  with CMessagesExt
+  with CReactionsExt
+  with StateUtilsExt {
 
   /**
-   * A [[ItemBehavior]] associated to an [[Item]] that can be eaten. After an item is eaten, it
-   * should be removed from the player bag (or from the current room, if it was there).
+   * An <b>ItemBehavior</b> associated to an <b>BehaviorBasedItem</b> that can be eaten. After an
+   * item is eaten, it should be removed from the player bag (or from the current room, if it was
+   * there).
    */
   abstract class Eatable extends ItemBehavior {
+
+    /**
+     * A Reaction that should remove the Item from the player bag (or from the location).
+     * @return
+     *   A Reaction that should remove the Item from the player bag (or from the location).
+     */
     def eat: Reaction
   }
 
@@ -25,26 +37,37 @@ trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonRe
    * room.
    * @param onEatExtra
    *   Reaction to be executed when the item has been successfully eaten, after the standard
-   *   [[Reaction]]. It can be omitted.
+   *   <b>Reaction</b>. It can be omitted.
    */
-  case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit subject: I)
+  case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit val subject: I)
     extends Eatable {
 
     override def triggers: ItemTriggers = {
-      case (Eat, item, None, state) if state.isInScope(item) => eat
+      case (Eat, None, state) if state.isInScope(subject) => eat
     }
 
-    def eat: Reaction =
-      Reaction.combine(
-        Reactions.eat(subject),
-        onEatExtra
-      )
+    override def eat: Reaction =
+      for {
+        _ <- CReactions.modifyLocationItems(_ - subject.ref)
+        _ <- CReactions.modifyBag(_ - subject.ref)
+        _ <- Reaction.messages(CMessages.Eaten(subject))
+        s <- onEatExtra
+      } yield s
   }
 
   /**
-   * Companion object for [[Eatable]]. Shortcut for the standard implementation.
+   * Companion object for [[Eatable]].
    */
   object Eatable {
+
+    /**
+     * A function that builds an Eatable behavior given a subject Item.
+     * @param onEatExtra
+     *   Reaction to be executed when the item has been successfully eaten, after the standard
+     *   Reaction. It can be omitted.
+     * @return
+     *   A function that builds an Eatable behavior given a subject Item.
+     */
     def builder(onEatExtra: Reaction = Reaction.empty): I => Eatable = SimpleEatable(onEatExtra)(_)
   }
 }

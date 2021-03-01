@@ -13,13 +13,13 @@ trait SimpleRoomExt extends Model {
   /**
    * A base implementation for [[Room]].
    * @param name
-   *   the [[Room]] name.
+   *   The [[Room]] name.
    * @param _items
-   *   the [[ItemRef]] that refers to the [[Model.Item]] contained by this [[SimpleRoom]].
+   *   the [[ItemRef]] that refers to the <b>Item</b> contained by this <b>SimpleRoom</b>.
    * @param _neighbors
-   *   a [[Map]] with neighbors of this [[SimpleRoom]].
+   *   [[Map]] with neighbors of this <b>SimpleRoom</b>.
    * @param ref
-   *   the [[RoomRef]] for this [[SimpleRoom]].
+   *   The [[RoomRef]] for this <b>SimpleRoom</b>.
    */
   case class SimpleRoom(
     name: String,
@@ -40,8 +40,20 @@ trait SimpleRoomExt extends Model {
       _neighbors().map(x => x._1 -> state.rooms(x._2))
   }
 
+  /**
+   * Companion object with apply for <b>SimpleRoom</b>.
+   */
   object Room {
 
+    /**
+     * A base implementation for <b>Room</b>.
+     * @param name
+     *   The <b>Room</b> name.
+     * @param neighbors
+     *   Map that define all <b>neighbors</b> of this room.
+     * @param items
+     *   All the <b>items</b> in this match.
+     */
     def apply(
       name: String,
       neighbors: => Map[Direction, RoomRef] = Map.empty,

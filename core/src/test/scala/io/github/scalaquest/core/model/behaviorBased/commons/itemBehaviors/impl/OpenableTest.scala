@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
 import io.github.scalaquest.core.model.ItemDescription
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -22,7 +22,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
           )
           msgs <- Right(react(state)._2)
         } yield {
-          msgs should contain(Messages.Opened(targetItem))
+          msgs should contain(CMessages.Opened(targetItem))
         }
       }
 
@@ -36,7 +36,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs should contain(Messages.FailedToOpen(targetItem))
+        } yield msgs should contain(CMessages.FailedToOpen(targetItem))
       }
 
       "say that the door is already opened, if already opened" in {
@@ -52,7 +52,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(openAgainReact(openedState)._2)
-        } yield msgs should contain(Messages.AlreadyOpened(targetItem))
+        } yield msgs should contain(CMessages.AlreadyOpened(targetItem))
       }
     }
 
@@ -65,7 +65,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs should contain(Messages.Opened(targetItem))
+        } yield msgs should contain(CMessages.Opened(targetItem))
 
       }
       "not open with any Key" in {
@@ -77,7 +77,7 @@ class OpenableTest extends AnyWordSpec with Matchers {
             "Reaction not generated"
           )
           msgs <- Right(react(state)._2)
-        } yield msgs should contain(Messages.FailedToOpen(targetItem))
+        } yield msgs should contain(CMessages.FailedToOpen(targetItem))
       }
     }
   }

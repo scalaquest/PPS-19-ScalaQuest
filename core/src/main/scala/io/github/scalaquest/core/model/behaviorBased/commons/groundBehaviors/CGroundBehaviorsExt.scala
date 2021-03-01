@@ -14,7 +14,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.imp
  *
  * This trait enable the player to inspect his bag, a room and he can also move in another room.
  */
-trait CommonGroundBehaviorsExt
+trait CGroundBehaviorsExt
   extends BehaviorBasedModel
   with NavigableExt
   with InspectableLocationExt
