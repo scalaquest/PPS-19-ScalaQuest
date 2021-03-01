@@ -20,7 +20,7 @@ object Pusher {
         "You throw the stone faraway and the terrible basilisk leaves the tunnel."
       case BasiliskMovedToTunnel => "The basilisk follow you in the tunnel."
       case KilledByBasilisk      => "The terrible basilisk has just killed you!"
-      case KilledByTom           => "AVADA KEDAVRA!!! You lose!"
+      case KilledByTom           => "AVADA KEDAVRA!!!"
       case Won =>
         "You destroy the cursed diary. Tom is nearly related with the diary and he dies too. You save Ginny."
     }

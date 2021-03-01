@@ -15,7 +15,6 @@ object Geography extends ApplicationGeography[RM] {
   def tunnel: RM =
     Room(
       name = "tunnel",
-      neighbors = Map(Direction.West -> chamberOfSecrets.ref),
       items = Set(
         Items.stone.ref
       )
@@ -27,12 +26,10 @@ object Geography extends ApplicationGeography[RM] {
       neighbors = Map(Direction.East -> tunnel.ref),
       items = Set(
         Items.basilisk.ref,
-        Items.basiliskTooth.ref,
         Items.tom.ref,
         Items.tomDiary.ref,
         Items.ginny.ref,
-        Items.sortingHat.ref,
-        Items.gryffindorSword.ref
+        Items.sortingHat.ref
       )
     )
 }
