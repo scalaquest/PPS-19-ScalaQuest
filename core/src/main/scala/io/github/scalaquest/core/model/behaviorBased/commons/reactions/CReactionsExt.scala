@@ -48,6 +48,16 @@ trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessa
     def modifyLocation(location: RM): Reaction = Reaction(locationRoomLens.set(location))
 
     /**
+     * <b>Reaction</b> that switches the location of the player, and modifies the given <b>Room</b>.
+     * @param location
+     *   The new location of the player.
+     * @return
+     *   <b>Reaction</b> that switches the location of the player, and modifies the given
+     *   <b>Room</b>.
+     */
+    def switchLocation(location: RM): Reaction = Reaction(locationLens.set(location.ref))
+
+    /**
      * <b>Reaction</b> that adds a neighbor <b>Room</b> to the actual player location.
      * @param direction
      *   the new visible direction.
