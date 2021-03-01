@@ -5,16 +5,17 @@ import model.{GenericItem, Chest, CReactions, Takeable}
 
 object Items {
 
-  def allTheItems: Set[I] = Set(
-    basilisk,
-    basiliskTooth,
-    sortingHat,
-    tom,
-    tomDiary,
-    ginny,
-    gryffindorSword,
-    stone
-  )
+  def allTheItems: Set[I] =
+    Set(
+      basilisk,
+      basiliskTooth,
+      sortingHat,
+      tom,
+      tomDiary,
+      ginny,
+      gryffindorSword,
+      stone
+    )
 
   def basiliskTooth: GenericItem =
     GenericItem.withSingleBehavior(
