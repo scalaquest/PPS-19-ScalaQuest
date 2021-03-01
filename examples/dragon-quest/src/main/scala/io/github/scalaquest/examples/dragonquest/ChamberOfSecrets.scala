@@ -27,9 +27,10 @@ object ChamberOfSecrets extends ApplicationGeography[RM] {
       neighbors = Map(Direction.East -> tunnel.ref),
       items = Set(
         Items.basilisk.ref,
+        Items.basiliskTooth.ref,
         Items.tom.ref,
-        Items.ginny.ref,
         Items.tomDiary.ref,
+        Items.ginny.ref,
         Items.sortingHat.ref,
         Items.gryffindorSword.ref
       )

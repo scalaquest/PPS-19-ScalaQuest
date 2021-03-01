@@ -4,14 +4,24 @@ import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import model.{GenericItem}
 
 object Items {
+
+  import model._
+
   def allItems: Set[I] = Set()
 
-  def sortingHat: GenericItem =
+  def basiliskTooth: GenericItem =
     GenericItem.withGenBehavior(
-      i(d("old", "sorting"), "hat"), {
+      i(d("basilisk"), "tooth"),
+      {
         ???
       }
     )
+
+  def sortingHat: Chest = Chest.createUnlocked(
+    i(d("old", "sorting"), "hat"),
+    Set(gryffindorSword)
+  )
+
 
   def stone: GenericItem =
     GenericItem.withGenBehavior(
@@ -44,7 +54,7 @@ object Items {
   def gryffindorSword: GenericItem =
     GenericItem.withGenBehavior(
       i(d("gryffindor"), "sword"), {
-        ???
+        //case (Actions.)
       }
     )
 
@@ -52,10 +62,10 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("terrible"), "basilisk"),
       {
-        case (Actions.Attack, _, None, _) =>
-          CustomReactions.attackBasilisk
         case (Actions.Attack, _, Some(i), _) if i == gryffindorSword =>
           CustomReactions.killBasilisk
+        case (_, _, _, _) =>
+          CustomReactions.killedByBasilisk
       }
     )
 
