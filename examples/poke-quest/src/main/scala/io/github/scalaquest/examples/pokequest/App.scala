@@ -7,11 +7,14 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CVerbs
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import model.{CMessages, State}
 
-object PokeQuest extends GameCLIApp(SimpleModel) {
+/**
+ * The entry point of the example.
+ */
+object App extends GameCLIApp(SimpleModel) {
 
   override def items: Set[I] = Items.allTheItems
 
-  override def verbs: Set[Verb] = CVerbs() ++ Actions.customVerbs
+  override def verbs: Set[Verb] = CVerbs() ++ Actions.verbs
 
   override def initialMessages: Seq[Message] =
     Seq(
@@ -32,5 +35,5 @@ object PokeQuest extends GameCLIApp(SimpleModel) {
       location = Geography.vermillionCity.ref
     )
 
-  override def messagePusher: StringPusher = Pusher.defaultPusher
+  override def messagePusher: StringPusher = Messages.pusher
 }

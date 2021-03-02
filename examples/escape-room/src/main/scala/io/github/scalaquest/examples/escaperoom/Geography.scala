@@ -4,7 +4,10 @@ import io.github.scalaquest.core.application.ApplicationGeography
 import io.github.scalaquest.core.model.Direction
 import model.Room
 
-object House extends ApplicationGeography[RM] {
+/**
+ * The rooms required by the example.
+ */
+object Geography extends ApplicationGeography[RM] {
 
   override def allTheRooms: Set[RM] =
     Set(

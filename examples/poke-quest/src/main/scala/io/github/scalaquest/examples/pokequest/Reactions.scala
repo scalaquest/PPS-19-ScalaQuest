@@ -4,6 +4,9 @@ import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.examples.pokequest.Items.snorlax
 import model.{Reaction, CReactions, matchEndedLens}
 
+/**
+ * Custom reactions required by the example.
+ */
 object Reactions {
   var charizardWeaken = false
 
@@ -11,28 +14,25 @@ object Reactions {
     for {
       _ <- CReactions.addDirectionToLocation(Direction.North, Geography.forest)
       _ <- CReactions.modifyLocationItems(_ - snorlax.ref)
-      s <- Reaction.messages(Pusher.SnorlaxWoke)
+      s <- CReactions.addMessage(Messages.SnorlaxWoke)
     } yield s
 
   def attackCharizard: React =
     if (charizardWeaken) {
       for {
         _ <- Reaction(matchEndedLens.set(true))
-        s <- Reaction.messages(Pusher.KilledCharizard)
+        s <- CReactions.addMessage(Messages.KilledCharizard)
       } yield s
     } else {
       charizardWeaken = true
-      Reaction.messages(Pusher.WeakenCharizard)
+      CReactions.addMessage(Messages.WeakenCharizard)
     }
 
   def catchCharizard: React =
-    if (charizardWeaken) {
-      CReactions.finishGame(true)
-
-    } else {
+    if (charizardWeaken) CReactions.finishGame(true)
+    else
       for {
         _ <- Reaction(matchEndedLens.set(true))
-        s <- Reaction.messages(Pusher.FailedToCaptureCharizard)
+        s <- CReactions.addMessage(Messages.FailedToCaptureCharizard)
       } yield s
-    }
 }

@@ -4,18 +4,18 @@ import io.github.scalaquest.core.model.Direction
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class HouseTests extends AnyWordSpec with Matchers {
+class GeographyTests extends AnyWordSpec with Matchers {
   "The House object" should {
     "contains a basement with a coffer, a crowbar, a hatch" in {
-      House.basement.items(EscapeRoom.state) shouldBe Set(Items.chest, Items.crowbar, Items.hatch)
+      Geography.basement.items(App.state) shouldBe Set(Items.chest, Items.crowbar, Items.hatch)
     }
 
     "contains a basement not linked with other room" in {
-      House.basement.neighbors(EscapeRoom.state) shouldBe Map.empty
+      Geography.basement.neighbors(App.state) shouldBe Map.empty
     }
 
     "contains a living room with the two apples, the basement hatch, the doorway" in {
-      House.livingRoom.items(EscapeRoom.state) shouldBe Set(
+      Geography.livingRoom.items(App.state) shouldBe Set(
         Items.greenApple,
         Items.redApple,
         Items.basementHatch,
@@ -24,18 +24,18 @@ class HouseTests extends AnyWordSpec with Matchers {
     }
 
     "contains a living room linked to the North side with a bathroom" in {
-      House.livingRoom.neighbors(EscapeRoom.state) shouldBe Map(
-        Direction.North -> House.bathroom,
-        Direction.Down  -> House.basement
+      Geography.livingRoom.neighbors(App.state) shouldBe Map(
+        Direction.North -> Geography.bathroom,
+        Direction.Down  -> Geography.basement
       )
     }
 
     "contains an empty bathroom" in {
-      House.bathroom.items(EscapeRoom.state) shouldBe Set.empty
+      Geography.bathroom.items(App.state) shouldBe Set.empty
     }
 
     "contains a bathroom linked on the South side with the living room" in {
-      House.bathroom.neighbors(EscapeRoom.state) shouldBe Map(Direction.South -> House.livingRoom)
+      Geography.bathroom.neighbors(App.state) shouldBe Map(Direction.South -> Geography.livingRoom)
     }
   }
 }
