@@ -38,7 +38,7 @@ trait InspectableLocationExt extends BehaviorBasedModel with CMessagesExt with C
     override def inspectLocation: Reaction =
       for {
         s1 <- Reaction.empty
-        _ <- Reaction.messages(
+        _ <- CReactions.addMessage(
           CMessages.Inspected(s1.location, s1.location.items(s1), s1.location.neighbors(s1))
         )
         s2 <- onInspectExtra
