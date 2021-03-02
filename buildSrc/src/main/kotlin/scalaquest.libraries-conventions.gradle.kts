@@ -85,11 +85,6 @@ publishing {
                         email.set("riccardo.maldini@gmail.com")
                     }
                     developer {
-                        id.set("riccm")
-                        name.set("Riccardo Maldini")
-                        email.set("riccardo.maldini@gmail.com")
-                    }
-                    developer {
                         id.set("filin")
                         name.set("Filippo Nardini")
                         email.set("filippo.nardini@studio.unibo.it")
