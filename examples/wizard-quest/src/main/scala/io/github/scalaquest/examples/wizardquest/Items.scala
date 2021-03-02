@@ -1,9 +1,11 @@
 package io.github.scalaquest.examples.wizardquest
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.examples.wizardquest.Actions.LookInside
 import model.{CReactions, GenericItem, Takeable}
 
+/**
+ * The items required by the example.
+ */
 object Items {
 
   def allTheItems: Set[I] =
@@ -28,7 +30,7 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("old", "sorting"), "hat"),
       {
-        case (LookInside, _, _) if !Reactions.isInitState && !Reactions.swordShown =>
+        case (Actions.LookInside, _, _) if !Reactions.isInitState && !Reactions.swordShown =>
           Reactions.showTheSword
       }
     )
@@ -36,16 +38,10 @@ object Items {
   def stone: GenericItem =
     GenericItem.withGenBehavior(
       i(d("little"), "stone"),
-      { case (Actions.Throw, None, _) =>
-        Reactions.basiliskMovesBack
-      }
+      { case (Actions.Throw, None, _) => Reactions.basiliskMovesBack }
     )
 
-  def ginny: GenericItem =
-    GenericItem.withGenBehavior(
-      i(d("weasley"), "ginny"),
-      PartialFunction.empty
-    )
+  def ginny: GenericItem = GenericItem.empty(i(d("weasley"), "ginny"))
 
   def tomDiary: GenericItem =
     GenericItem.withGenBehavior(
@@ -58,9 +54,7 @@ object Items {
   def tom: GenericItem =
     GenericItem.withGenBehavior(
       i("tom"),
-      { case (_, _, _) =>
-        Reactions.getKilledByTom
-      }
+      { case (_, _, _) => Reactions.getKilledByTom }
     )
 
   def gryffindorSword: GenericItem =
@@ -77,5 +71,4 @@ object Items {
         case (_, _, _)                                            => Reactions.getKilledByBasilisk
       }
     )
-
 }

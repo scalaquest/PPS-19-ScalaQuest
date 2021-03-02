@@ -67,6 +67,17 @@ trait GenericItemExt extends BehaviorBasedModel with GenericItemBehaviorExt {
     ): GenericItem = SimpleGenericItem(description, ItemRef(description), Seq(behavior))
 
     /**
+     * An item with no behaviors.
+     * @param description
+     *   An [[ItemDescription]] for the item.
+     * @return
+     *   An item with no behaviors.
+     */
+    def empty(
+      description: ItemDescription
+    ): GenericItem = SimpleGenericItem(description, ItemRef(description), Seq())
+
+    /**
      * A <b>GenericItem</b> with a single behavior, created on-the-fly by some <b>ItemTriggers</b>.
      * @param description
      *   the generic item description.

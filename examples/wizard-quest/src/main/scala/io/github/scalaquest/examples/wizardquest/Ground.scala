@@ -4,6 +4,9 @@ import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions
 import model.{BehaviorBasedGround, CGround, CReactions}
 
+/**
+ * A custom ground for the example.
+ */
 object Ground {
 
   def ground: BehaviorBasedGround =
@@ -15,7 +18,7 @@ object Ground {
           _ <- CReactions.modifyLocationItems(_ - Items.basilisk.ref)
           _ <- CReactions.modifyRoomItems(Geography.tunnel.ref, _ + Items.basilisk.ref)
           _ <- CReactions.switchLocation(Geography.tunnel)
-          s <- CReactions.addMessage(Pusher.EscapingFromBasilisk)
+          s <- CReactions.addMessage(Messages.EscapingFromBasilisk)
         } yield s
     })
 }
