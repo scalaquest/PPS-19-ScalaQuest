@@ -95,9 +95,9 @@ trait OpenableExt
 
       case (Open, _, _) =>
         if (!isOpen)
-          Reaction.messages(CMessages.FailedToOpen(subject))
+          CReactions.addMessage(CMessages.FailedToOpen(subject))
         else
-          Reaction.messages(CMessages.AlreadyOpened(subject))
+          CReactions.addMessage(CMessages.AlreadyOpened(subject))
     }
 
     override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
@@ -118,7 +118,7 @@ trait OpenableExt
           if (requiredKey.exists(_.disposable))
             CReactions.modifyLocationItems(_ - requiredKey.get.ref)
           else Reaction.empty
-        _ <- Reaction.messages(CMessages.Opened(subject))
+        _ <- CReactions.addMessage(CMessages.Opened(subject))
         s <- onOpenExtra
       } yield s
     }

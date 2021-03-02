@@ -116,8 +116,8 @@ trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CReactionsExt
     override def enter: Reaction =
       for {
         s1 <- Reaction.empty
-        _  <- CReactions.modifyLocation(endRoom(s1))
-        _  <- Reaction.messages(CMessages.Navigated(endRoom(s1)))
+        _  <- CReactions.switchLocation(endRoomRef)
+        _  <- CReactions.addMessage(CMessages.Navigated(endRoom(s1)))
         s2 <- onEnterExtra
       } yield s2
 
