@@ -5,15 +5,15 @@ import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesEx
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 
 /**
- * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>GenericBehavior</b>.
+ * The trait makes possible to add into the [[BehaviorBasedModel]] the <b>GenericItemBehavior</b>.
  */
-trait GenericBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
+trait GenericItemBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
 
   /**
    * An ItemBehavior with some triggers. It is useful in order to wrap <b>ItemBehavior</b> into a
    * facility builder.
    */
-  abstract class GenericBehavior extends ItemBehavior {
+  abstract class GenericItemBehavior extends ItemBehavior {
 
     /**
      * <b>ItemTriggers</b> associated to the behavior.
@@ -24,17 +24,17 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReac
   }
 
   /**
-   * Standard implementation of <b>GenericBehavior</b>.
+   * Standard implementation of <b>GenericItemBehavior</b>.
    */
-  case class SimpleGenericBehavior(
+  case class SimpleGenericItemBehavior(
     override val triggers: ItemTriggers
   )(implicit val subject: I)
-    extends GenericBehavior
+    extends GenericItemBehavior
 
   /**
-   * Companion object for <b>GenericBehavior</b>.
+   * Companion object for <b>GenericItemBehavior</b>.
    */
-  object GenericBehavior {
+  object GenericItemBehavior {
 
     /**
      * A function that builds a <b>GenericBehavior</b> given a subject.
@@ -43,7 +43,7 @@ trait GenericBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReac
      * @return
      *   A function that builds a <b>GenericBehavior</b> given a subject.
      */
-    def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericBehavior =
-      SimpleGenericBehavior(triggers)(_)
+    def builder(triggers: ItemTriggers = PartialFunction.empty): I => GenericItemBehavior =
+      SimpleGenericItemBehavior(triggers)(_)
   }
 }

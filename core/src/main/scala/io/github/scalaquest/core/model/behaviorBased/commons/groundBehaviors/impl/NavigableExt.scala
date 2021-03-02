@@ -48,8 +48,8 @@ trait NavigableExt
 
     override def movePlayer(targetRoom: RM): Reaction =
       for {
-        _ <- CReactions.modifyLocation(targetRoom)
-        _ <- Reaction.messages(CMessages.Navigated(targetRoom))
+        _ <- CReactions.switchLocation(targetRoom)
+        _ <- CReactions.addMessage(CMessages.Navigated(targetRoom))
         s <- onNavigateExtra
       } yield s
 

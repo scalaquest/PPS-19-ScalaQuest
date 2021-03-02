@@ -4,7 +4,7 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.{
   ContainerExt,
   EatableExt,
-  GenericBehaviorExt,
+  GenericItemBehaviorExt,
   OpenableExt,
   RoomLinkExt,
   TakeableExt
@@ -22,4 +22,4 @@ trait CItemBehaviorsExt
   with OpenableExt
   with RoomLinkExt
   with ContainerExt
-  with GenericBehaviorExt
+  with GenericItemBehaviorExt
