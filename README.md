@@ -71,10 +71,10 @@ dependencies {
 
   // Add the cli as dependency. This is sufficient to start 
   // building your game. Change the version to the latest available.
-  implementation("io.scalaquest:cli:0.3.0")
+  implementation("io.github.scalaquest:cli:0.3.0")
   
   // Add the core as dependency. Change the version to the latest available.
-  implementation("io.scalaquest:core:0.3.0")
+  implementation("io.github.scalaquest:core:0.3.0")
 }
 ```
 
@@ -92,6 +92,6 @@ and include them as project dependencies.
 
 ScalaQuest includes some examples that shows how to correctly use the library.
 You can use them as your game template, if you don't want to start from scratch.
-Download the [latest EscapeRoom or PokeQuest releases](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
-unzip the choosen game and run it from your terminal (`bin/gamename` for Unix
+Download the [latest EscapeRoom, WizardQuest or PokeQuest releases](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
+unzip the chosen game and run it from your terminal (`bin/gamename` for Unix
 devices, `bin/gamename.bat` for Windows ones).
