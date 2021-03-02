@@ -1,13 +1,13 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericBehaviorExt
+import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericItemBehaviorExt
 import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>GenericItem</b>.
  */
-trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
+trait GenericItemExt extends BehaviorBasedModel with GenericItemBehaviorExt {
 
   /**
    * A standard <b>BehaviorBasedItem</b> completely and freely configurable, without a specific
@@ -82,7 +82,7 @@ trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
       SimpleGenericItem(
         description,
         ItemRef(description),
-        Seq(GenericBehavior.builder(behaviorTriggers))
+        Seq(GenericItemBehavior.builder(behaviorTriggers))
       )
   }
 }

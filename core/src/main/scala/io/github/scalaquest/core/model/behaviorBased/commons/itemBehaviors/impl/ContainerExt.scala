@@ -89,7 +89,7 @@ trait ContainerExt
       for {
         s1 <- openable.open
         _  <- CReactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
-        s2 <- Reaction.messages(CMessages.ReversedIntoLocation(items(s1)))
+        s2 <- CReactions.addMessage(CMessages.ReversedIntoLocation(items(s1)))
       } yield s2
   }
 

@@ -40,7 +40,7 @@ trait InspectableBagExt extends BehaviorBasedModel with CMessagesExt with CReact
     override def inspectBag: Reaction =
       for {
         s1 <- Reaction.empty
-        _  <- Reaction.messages(CMessages.InspectedBag(s1.bag))
+        _  <- CReactions.addMessage(CMessages.InspectedBag(s1.bag))
         s2 <- onInspectExtra
       } yield s2
   }
