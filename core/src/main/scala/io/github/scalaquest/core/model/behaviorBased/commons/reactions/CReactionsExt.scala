@@ -35,7 +35,7 @@ trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessa
      *   <b>Reaction</b> that modifies the items contained into the player's location.
      */
     def modifyLocationItems(modifier: Set[ItemRef] => Set[ItemRef]): Reaction =
-      Reaction((locationRoomLens composeLens roomItemsLens).modify(modifier))
+      s => modifyRoomItems(s.location.ref, modifier)(s)
 
     /**
      * <b>Reaction</b> that changes the location of the player, given a <b>RoomRef</b>.
@@ -63,6 +63,22 @@ trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessa
      *   <b>Reaction</b> that adds a <b>Message</b> to the ones to be returned.
      */
     def addMessage(message: Message): Reaction = Reaction.messages(message)
+
+    /**
+     * Modifies the set of items of the given room.
+     * @param roomRef
+     *   The ref of the room to modify.
+     * @param itemsModifier
+     *   A function that indicates how to modify the items contained into the room.
+     * @return
+     *   Modifies the set of items of the given room.
+     */
+    def modifyRoomItems(roomRef: RoomRef, itemsModifier: Set[ItemRef] => Set[ItemRef]): Reaction =
+      s => {
+        val modifiedRoom = roomItemsLens.modify(itemsModifier)(roomsLens.get(s)(roomRef))
+        val react        = Reaction(roomsLens.modify(_ + (roomRef -> modifiedRoom)))
+        react(s)
+      }
 
     /**
      * <b>Reaction</b> that adds a neighbor <b>Room</b> to the actual player location.

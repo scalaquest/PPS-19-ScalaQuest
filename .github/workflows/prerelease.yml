@@ -58,6 +58,7 @@ jobs:
           assets_path: |
             ./examples/escape-room/build/distributions
             ./examples/poke-quest/build/distributions
+            ./examples/wizard-quest/build/distributions
             ./cli/build/libs
             ./core/build/libs
 

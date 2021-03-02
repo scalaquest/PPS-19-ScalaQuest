@@ -3,6 +3,9 @@ package io.github.scalaquest.examples.pokequest
 import io.github.scalaquest.core.model.Action
 import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Transitive, Verb}
 
+/**
+ * Custom actions required by the example, and the verbs linked to them.
+ */
 object Actions {
   case object Play   extends Action
   case object Attack extends Action
@@ -11,7 +14,7 @@ object Actions {
   case object Catch  extends Action
   case object Throw  extends Action
 
-  def customVerbs: Set[Verb] =
+  def verbs: Set[Verb] =
     Set(
       Transitive("play", Play),
       Transitive("wake", Wake),

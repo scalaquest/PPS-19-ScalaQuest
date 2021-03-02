@@ -7,7 +7,7 @@ import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CVerbs
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import model.{CMessages, State}
 
-object EscapeRoom extends GameCLIApp(SimpleModel) {
+object App extends GameCLIApp(SimpleModel) {
 
   override def items: Set[I] = Items.allTheItems
 
@@ -24,10 +24,10 @@ object EscapeRoom extends GameCLIApp(SimpleModel) {
   override def state: S =
     State(
       actions = verbToAction,
-      rooms = House.refToRoom,
+      rooms = Geography.refToRoom,
       items = refToItem,
-      location = House.basement.ref
+      location = Geography.basement.ref
     )
 
-  override def messagePusher: StringPusher = Pusher.defaultPusher
+  override def messagePusher: StringPusher = Messages.pusher
 }
