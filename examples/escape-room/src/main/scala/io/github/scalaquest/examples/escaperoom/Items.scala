@@ -12,7 +12,6 @@ import model.{
   Chest,
   Takeable,
   CReactions,
-  Reaction,
   GenericItem,
   Openable,
   BehaviorBasedItem
