@@ -10,5 +10,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("io.github.scalaquest.examples.dragon-quest.DragonQuest")
+    mainClass.set("io.github.scalaquest.examples.wizardquest.WizardQuest")
 }

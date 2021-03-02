@@ -1,7 +1,8 @@
-package io.github.scalaquest.examples.dragonquest
+package io.github.scalaquest.examples.wizardquest
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import model.{GenericItem, Chest, CReactions, Takeable}
+import io.github.scalaquest.examples.wizardquest.Actions.LookInside
+import model.{CReactions, GenericItem, Takeable}
 
 object Items {
 
@@ -23,17 +24,20 @@ object Items {
       Takeable.builder()
     )
 
-  def sortingHat: Chest =
-    Chest.createUnlocked(
+  def sortingHat: GenericItem =
+    GenericItem.withGenBehavior(
       i(d("old", "sorting"), "hat"),
-      Set(gryffindorSword)
+      {
+        case (LookInside, _, _) if !Reactions.isInitState && !Reactions.swordShown =>
+          Reactions.showTheSword
+      }
     )
 
   def stone: GenericItem =
     GenericItem.withGenBehavior(
       i(d("little"), "stone"),
       { case (Actions.Throw, None, _) =>
-        Reactions.moveBasiliskToChamber
+        Reactions.basiliskMovesBack
       }
     )
 
@@ -47,8 +51,7 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("tom"), "diary"),
       {
-        case (Actions.Attack, Some(i), _) if i == basiliskTooth =>
-          CReactions.finishGame(true)
+        case (Actions.Attack, Some(i), _) if i == basiliskTooth => CReactions.finishGame(true)
       }
     )
 
@@ -56,7 +59,7 @@ object Items {
     GenericItem.withGenBehavior(
       i("tom"),
       { case (_, _, _) =>
-        Reactions.killedByTom
+        Reactions.getKilledByTom
       }
     )
 
@@ -70,10 +73,8 @@ object Items {
     GenericItem.withGenBehavior(
       i(d("terrible"), "basilisk"),
       {
-        case (Actions.Attack, Some(i), _) if i == gryffindorSword =>
-          Reactions.killBasilisk
-        case (_, _, _) =>
-          Reactions.killedByBasilisk
+        case (Actions.Attack, Some(i), _) if i == gryffindorSword => Reactions.killTheBasilisk
+        case (_, _, _)                                            => Reactions.getKilledByBasilisk
       }
     )
 

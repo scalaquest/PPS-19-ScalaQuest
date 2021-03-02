@@ -1,4 +1,4 @@
-package io.github.scalaquest.examples.dragonquest
+package io.github.scalaquest.examples.wizardquest
 
 import io.github.scalaquest.core.application.ApplicationGeography
 import io.github.scalaquest.core.model.Direction
@@ -22,7 +22,7 @@ object Geography extends ApplicationGeography[RM] {
 
   def chamberOfSecrets: RM =
     Room(
-      name = "chamberOfSecrets",
+      name = "chamber of Secrets",
       neighbors = Map(Direction.East -> tunnel.ref),
       items = Set(
         Items.basilisk.ref,
