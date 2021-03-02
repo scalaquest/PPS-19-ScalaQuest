@@ -39,7 +39,7 @@ continue in the game (e.g. [Zork](https://en.wikipedia.org/wiki/Zork)).
 The official documentation of the project consists in:
 - [PPS Report](https://scalaquest.github.io/Reports/docs/pps-report.html) and
   [LSS Report](https://scalaquest.github.io/Reports/docs/lss-report.html). The
-  previous links shows a web version of reports, auto-generated from the
+  previous links show a web version of reports, auto-generated from the
   [report sources](https://github.com/scalaquest/Reports). You can also
   consult them in a [LaTeX PDF](https://github.com/scalaquest/Reports/releases/latest)
   format;
@@ -71,10 +71,10 @@ dependencies {
 
   // Add the cli as dependency. This is sufficient to start 
   // building your game. Change the version to the latest available.
-  implementation("io.github.scalaquest:cli:0.3.0")
+  implementation("io.github.scalaquest:cli:0.3.1")
   
   // Add the core as dependency. Change the version to the latest available.
-  implementation("io.github.scalaquest:core:0.3.0")
+  implementation("io.github.scalaquest:core:0.3.1")
 }
 ```
 
