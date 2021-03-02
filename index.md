@@ -12,15 +12,15 @@ continue in the game (e.g. [Zork](https://en.wikipedia.org/wiki/Zork)).
 The official documentation of the project consists in:
 - [PPS Report](https://scalaquest.github.io/Reports/docs/pps-report.html) and
   [LSS Report](https://scalaquest.github.io/Reports/docs/lss-report.html). The
-  previous links shows a web version of reports, auto-generated from the
-  [report sources](https://github.com/scalaquest/reports). You can also
-  consult them in a [LaTeX PDF](https://github.com/scalaquest/reports/releases/latest)
+  previous links show a web version of reports, auto-generated from the
+  [report sources](https://github.com/scalaquest/Reports). You can also
+  consult them in a [LaTeX PDF](https://github.com/scalaquest/Reports/releases/latest)
   format;
 - An [appendix document](https://scalaquest.github.io/Reports/docs/appendix.html)
   including the Scrum Overview, a summary of what has been done in each Scrum,
   with an index of linked issues and PR for each one. The document has been
   incrementally updated at each Scrum Review meeting. The document is also
-  available as a [LaTeX PDF](https://github.com/scalaquest/reports/releases/latest);
+  available as a [LaTeX PDF](https://github.com/scalaquest/Reports/releases/latest);
 - The [project backlog](https://github.com/orgs/scalaquest/projects/1),
   publicly available as a GitHub Projects board;
 - The official Scaladoc of the [Core](https://scalaquest.github.io/PPS-19-ScalaQuest/scaladoc/core/index.html)
@@ -28,22 +28,42 @@ The official documentation of the project consists in:
 - The official Coverage reports for the [Core](https://scalaquest.github.io/PPS-19-ScalaQuest/coverage/core/index.html)
   and [CLI](https://scalaquest.github.io/PPS-19-ScalaQuest/coverage/cli/index.html) modules.
 
+
 ## How to use the game creation framework?
 
-You can use `core` or `cli` libraries by downloading them from the
-[release page](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
-and including them as project dependencies.
-
 Including the `cli` jar is sufficient to start programming your CLI game, as the
-module includes `core` as an internal dependency.
+module includes `core` as an internal dependency. Importing the `core` solely is recommended only
+if you want to define your personal game interface, different from the standard
+CLI (a web interface, for example).
 
-Importing the `core` solely is recommended only if you want to define your
-personal game interface, different from the standard CLI (e.g. a web interface).
+You can use `core` or `cli` libraries by including them as dependencies for your Gradle project.
+Add this lines to the `build.gradle.kts`:
+
+```kotlin
+dependencies {
+
+  // Add the cli as dependency. This is sufficient to start 
+  // building your game. Change the version to the latest available.
+  implementation("io.github.scalaquest:cli:0.3.1")
+  
+  // Add the core as dependency. Change the version to the latest available.
+  implementation("io.github.scalaquest:core:0.3.1")
+}
+```
+
+You can find [here](https://mvnrepository.com/artifact/io.github.scalaquest/core) the latest version
+for the `core`, and [here](https://mvnrepository.com/artifact/io.github.scalaquest/cli) the latest
+version for the `cli`.
+
+Alternatively, you download the libraries from the
+[release page](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
+and include them as project dependencies.
+
 
 ## How to play the example games?
 
 ScalaQuest includes some examples that shows how to correctly use the library.
 You can use them as your game template, if you don't want to start from scratch.
-Download the [latest EscapeRoom or PokeQuest releases](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
-unzip the choosen game and run it from your terminal (`bin/gamename` for Unix
+Download the [latest EscapeRoom, WizardQuest or PokeQuest releases](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
+unzip the chosen game and run it from your terminal (`bin/gamename` for Unix
 devices, `bin/gamename.bat` for Windows ones).
