@@ -2,9 +2,10 @@ package io.github.scalaquest.examples.wizardquest
 
 import io.github.scalaquest.cli.GameCLIApp
 import io.github.scalaquest.core.dictionary.verbs.Verb
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CVerbs
 import io.github.scalaquest.core.model.{Message, MessagePusher}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
-import model.{State, CMessages}
+import model.{CMessages, State}
 
 /**
  * The entry point of the example.
@@ -30,9 +31,9 @@ object App extends GameCLIApp(SimpleModel) {
         |""".stripMargin)
     )
 
-  override def messagePusher: MessagePusher[String] = Pusher.defaultPusher
+  override def messagePusher: MessagePusher[String] = Messages.pusher
 
-  override def verbs: Set[Verb] = Verbs.allTheVerbs
+  override def verbs: Set[Verb] = CVerbs() ++ Actions.verbs
 
   override def items: Set[I] = Items.allTheItems
 }
