@@ -23,7 +23,6 @@ dependencies {
     //These implementation dependencies specifies versions for the external plugins
     // used inside the project convention plugins (i.e. common, examples, libraries)
     implementation("org.danilopianini:git-sensitive-semantic-versioning:_")
-    implementation("org.danilopianini:publish-on-central:_")
     implementation("com.github.maiflai:gradle-scalatest:_")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:_")
     implementation("gradle.plugin.org.scoverage:gradle-scoverage:_")

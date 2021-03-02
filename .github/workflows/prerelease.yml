@@ -46,8 +46,8 @@ jobs:
           release_name: ${{ env.RELEASE_VERSION }}
           prerelease: true
 
-      - name: Generate distributions
-        run: ./gradlew distZip
+      - name: Generate assets
+        run: ./gradlew build
 
       - name: Upload release assets
         uses: dwenegar/upload-release-assets@v1
@@ -61,3 +61,12 @@ jobs:
             ./examples/wizard-quest/build/distributions
             ./cli/build/libs
             ./core/build/libs
+
+      - name: Publish to Maven Central
+        run: |
+          ./gradlew publishAllPublicationsToMavenCentralRepository
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}

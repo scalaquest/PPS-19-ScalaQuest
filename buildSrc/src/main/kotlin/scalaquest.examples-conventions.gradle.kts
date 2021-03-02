@@ -4,14 +4,14 @@
  */
 
 plugins {
-    // Apply the common convention plugin for shared build configuration between library and application projects
+    // Apply the common convention plugin for shared build configuration between library and application projects.
     id("scalaquest.common-scala-conventions")
 
-    // Apply the application plugin to add support for building a CLI application in Java
+    // Apply the application plugin to add support for building a CLI application in Java.
     application
 }
 
-// examples do not need coverage checks
+// The coverage threshold into the examples is not mandatory.
 scoverage {
     minimumRate.set(0.toBigDecimal())
 }

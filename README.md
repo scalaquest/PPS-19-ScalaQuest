@@ -57,15 +57,36 @@ The official documentation of the project consists in:
 
 ## How to use the game creation framework?
 
-You can use `core` or `cli` libraries by downloading them from the
-[release page](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
-and including them as project dependencies.
 
 Including the `cli` jar is sufficient to start programming your CLI game, as the
-module includes `core` as an internal dependency.
+module includes `core` as an internal dependency. Importing the `core` solely is recommended only
+if you want to define your personal game interface, different from the standard 
+CLI (a web interface, for example).
 
-Importing the `core` solely is recommended only if you want to define your
-personal game interface, different from the standard CLI (e.g. a web interface).
+You can use `core` or `cli` libraries by including them as dependencies for your Gradle project.
+Add this lines to the `build.gradle.kts`:
+
+```kotlin
+dependencies {
+
+  // Add the cli as dependency. This is sufficient to start 
+  // building your game. Change the version to the latest available.
+  implementation("io.scalaquest:cli:0.3.0")
+  
+  // Add the core as dependency. Change the version to the latest available.
+  implementation("io.scalaquest:core:0.3.0")
+}
+```
+
+
+You can find [here](https://mvnrepository.com/artifact/io.github.scalaquest/core) the latest version 
+for the `core`, and [here](https://mvnrepository.com/artifact/io.github.scalaquest/cli) the latest 
+version for the `cli`.
+
+Alternatively, you download the libraries from the
+[release page](https://github.com/scalaquest/PPS-19-ScalaQuest/releases/latest),
+and include them as project dependencies.
+
 
 ## How to play the example games?
 
