@@ -11,6 +11,9 @@ plugins {
     `java-library`
 }
 
+dependencies {
+    implementation("com.lihaoyi:upickle_2.13:1.2.3")
+}
 // libraries need 75% coverage at least
 scoverage {
     minimumRate.set(0.75.toBigDecimal())
