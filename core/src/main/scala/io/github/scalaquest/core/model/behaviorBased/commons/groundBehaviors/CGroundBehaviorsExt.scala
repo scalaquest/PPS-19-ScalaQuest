@@ -2,6 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors
 
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.{
+  GenericGroundBehaviorExt,
   InspectableBagExt,
   InspectableLocationExt,
   NavigableExt
@@ -19,3 +20,4 @@ trait CGroundBehaviorsExt
   with NavigableExt
   with InspectableLocationExt
   with InspectableBagExt
+  with GenericGroundBehaviorExt

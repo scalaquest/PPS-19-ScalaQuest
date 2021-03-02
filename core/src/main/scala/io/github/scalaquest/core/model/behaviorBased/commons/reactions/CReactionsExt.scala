@@ -1,6 +1,6 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.reactions
 
-import io.github.scalaquest.core.model.{Direction, ItemRef}
+import io.github.scalaquest.core.model.{Direction, ItemRef, Message, RoomRef}
 import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
@@ -38,24 +38,31 @@ trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessa
       Reaction((locationRoomLens composeLens roomItemsLens).modify(modifier))
 
     /**
-     * <b>Reaction</b> that changes the location of the player, and modifies the given <b>Room</b>.
+     * <b>Reaction</b> that changes the location of the player, given a <b>RoomRef</b>.
      * @param location
-     *   The new location of the player.
+     *   The new location of the player, as a <b>RoomRef</b>.
      * @return
-     *   <b>Reaction</b> that changes the location of the player, and modifies the given
-     *   <b>Room</b>.
+     *   <b>Reaction</b> that switches the location of the player.
      */
-    def modifyLocation(location: RM): Reaction = Reaction(locationRoomLens.set(location))
+    def switchLocation(location: RoomRef): Reaction = Reaction(locationLens.set(location))
 
     /**
-     * <b>Reaction</b> that switches the location of the player, and modifies the given <b>Room</b>.
+     * <b>Reaction</b> that changes the location of the player.
      * @param location
      *   The new location of the player.
      * @return
-     *   <b>Reaction</b> that switches the location of the player, and modifies the given
-     *   <b>Room</b>.
+     *   <b>Reaction</b> that switches the location of the player.
      */
-    def switchLocation(location: RM): Reaction = Reaction(locationLens.set(location.ref))
+    def switchLocation(location: RM): Reaction = switchLocation(location.ref)
+
+    /**
+     * <b>Reaction</b> that adds a <b>Message</b> to the ones to be returned.
+     * @param message
+     *   The new <b>Message</b>.
+     * @return
+     *   <b>Reaction</b> that adds a <b>Message</b> to the ones to be returned.
+     */
+    def addMessage(message: Message): Reaction = Reaction.messages(message)
 
     /**
      * <b>Reaction</b> that adds a neighbor <b>Room</b> to the actual player location.
@@ -85,6 +92,5 @@ trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessa
         _ <- Reaction(matchEndedLens.set(true))
         s <- Reaction.messages(if (win) CMessages.Won else CMessages.Lost)
       } yield s
-
   }
 }

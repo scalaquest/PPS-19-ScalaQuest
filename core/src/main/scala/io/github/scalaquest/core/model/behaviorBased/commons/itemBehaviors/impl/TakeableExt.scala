@@ -47,7 +47,7 @@ trait TakeableExt
       for {
         _ <- CReactions.modifyLocationItems(_ - subject.ref)
         _ <- CReactions.modifyBag(_ + subject.ref)
-        _ <- Reaction.messages(CMessages.Taken(subject))
+        _ <- CReactions.addMessage(CMessages.Taken(subject))
         s <- onTakeExtra
       } yield s
   }

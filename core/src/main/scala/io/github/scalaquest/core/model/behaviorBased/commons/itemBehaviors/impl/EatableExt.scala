@@ -50,7 +50,7 @@ trait EatableExt
       for {
         _ <- CReactions.modifyLocationItems(_ - subject.ref)
         _ <- CReactions.modifyBag(_ - subject.ref)
-        _ <- Reaction.messages(CMessages.Eaten(subject))
+        _ <- CReactions.addMessage(CMessages.Eaten(subject))
         s <- onEatExtra
       } yield s
   }
