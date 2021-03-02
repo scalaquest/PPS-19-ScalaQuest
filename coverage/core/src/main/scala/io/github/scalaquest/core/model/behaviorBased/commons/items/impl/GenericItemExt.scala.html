@@ -25,57 +25,102 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericBehaviorExt
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericItemBehaviorExt
 </span>5 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 </span>6 <span style=''>
 </span>7 <span style=''>/**
-</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Generic Item.
+</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;GenericItem&lt;/b&gt;.
 </span>9 <span style=''> */
-</span>10 <span style=''>trait GenericItemExt extends BehaviorBasedModel with GenericBehaviorExt {
+</span>10 <span style=''>trait GenericItemExt extends BehaviorBasedModel with GenericItemBehaviorExt {
 </span>11 <span style=''>
 </span>12 <span style=''>  /**
-</span>13 <span style=''>   * A standard [[BehaviorBasedItem]], completely and freely configurable, without a specific
+</span>13 <span style=''>   * A standard &lt;b&gt;BehaviorBasedItem&lt;/b&gt; completely and freely configurable, without a specific
 </span>14 <span style=''>   * category.
 </span>15 <span style=''>   */
 </span>16 <span style=''>  trait GenericItem extends BehaviorBasedItem
 </span>17 <span style=''>
 </span>18 <span style=''>  /**
-</span>19 <span style=''>   * Standard implementation of the common [[GenericItem]].
-</span>20 <span style=''>   */
-</span>21 <span style=''>  case class SimpleGenericItem(
-</span>22 <span style=''>    description: ItemDescription,
-</span>23 <span style=''>    ref: ItemRef,
-</span>24 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>25 <span style=''>  ) extends GenericItem {
-</span>26 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>extraBehavBuilders.map(_(this))</span><span style=''>
-</span>27 <span style=''>  }
-</span>28 <span style=''>
-</span>29 <span style=''>  /**
-</span>30 <span style=''>   * Companion object for [[GenericItem]]. Makes the initialization more succinct.
-</span>31 <span style=''>   */
-</span>32 <span style=''>  object GenericItem {
-</span>33 <span style=''>
-</span>34 <span style=''>    def apply(
-</span>35 <span style=''>      description: ItemDescription,
-</span>36 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>37 <span style=''>    ): GenericItem = </span><span style='background: #AEF1AE'>SimpleGenericItem(description, ItemRef(description), extraBehavBuilders)</span><span style=''>
-</span>38 <span style=''>
-</span>39 <span style=''>    def withSingleBehavior(
-</span>40 <span style=''>      description: ItemDescription,
-</span>41 <span style=''>      behavior: I =&gt; ItemBehavior
-</span>42 <span style=''>    ): GenericItem = </span><span style='background: #F0ADAD'>SimpleGenericItem(description, ItemRef(description), Seq(behavior))</span><span style=''>
-</span>43 <span style=''>
-</span>44 <span style=''>    def withGenBehavior(
-</span>45 <span style=''>      description: ItemDescription,
-</span>46 <span style=''>      behaviorTriggers: ItemTriggers
-</span>47 <span style=''>    ): GenericItem =
-</span>48 <span style=''>      </span><span style='background: #F0ADAD'>SimpleGenericItem(
-</span>49 <span style=''></span><span style='background: #F0ADAD'>        description,
-</span>50 <span style=''></span><span style='background: #F0ADAD'>        ItemRef(description),
-</span>51 <span style=''></span><span style='background: #F0ADAD'>        Seq(GenericBehavior.builder(behaviorTriggers))
-</span>52 <span style=''></span><span style='background: #F0ADAD'>      )</span><span style=''>
-</span>53 <span style=''>  }
-</span>54 <span style=''>}
+</span>19 <span style=''>   * Standard implementation of &lt;b&gt;GenericItem&lt;/b&gt;.
+</span>20 <span style=''>   *
+</span>21 <span style=''>   * @param description
+</span>22 <span style=''>   *   An [[ItemDescription]] for the item.
+</span>23 <span style=''>   * @param ref
+</span>24 <span style=''>   *   A unique reference to the item.
+</span>25 <span style=''>   * @param behaviorsBuilders
+</span>26 <span style=''>   *   All the behaviors associated to the item.
+</span>27 <span style=''>   */
+</span>28 <span style=''>  case class SimpleGenericItem(
+</span>29 <span style=''>    description: ItemDescription,
+</span>30 <span style=''>    ref: ItemRef,
+</span>31 <span style=''>    behaviorsBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>32 <span style=''>  ) extends GenericItem {
+</span>33 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>behaviorsBuilders.map(_(this))</span><span style=''>
+</span>34 <span style=''>  }
+</span>35 <span style=''>
+</span>36 <span style=''>  /**
+</span>37 <span style=''>   * Companion object for &lt;b&gt;GenericItem&lt;/b&gt;.
+</span>38 <span style=''>   */
+</span>39 <span style=''>  object GenericItem {
+</span>40 <span style=''>
+</span>41 <span style=''>    /**
+</span>42 <span style=''>     * A standard &lt;b&gt;GenericItem&lt;/b&gt;.
+</span>43 <span style=''>     * @param description
+</span>44 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>45 <span style=''>     * @param extraBehavBuilders
+</span>46 <span style=''>     *   Builder of all the behaviors associated to the item.
+</span>47 <span style=''>     * @return
+</span>48 <span style=''>     *   An instance of a standard &lt;b&gt;GenericItem&lt;/b&gt;.
+</span>49 <span style=''>     */
+</span>50 <span style=''>    def apply(
+</span>51 <span style=''>      description: ItemDescription,
+</span>52 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>53 <span style=''>    ): GenericItem = </span><span style='background: #AEF1AE'>SimpleGenericItem(description, ItemRef(description), extraBehavBuilders)</span><span style=''>
+</span>54 <span style=''>
+</span>55 <span style=''>    /**
+</span>56 <span style=''>     * A &lt;b&gt;GenericItem&lt;/b&gt; with a single behavior.
+</span>57 <span style=''>     * @param description
+</span>58 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>59 <span style=''>     * @param behavior
+</span>60 <span style=''>     *   Builder for the single behavior associated to the item.
+</span>61 <span style=''>     * @return
+</span>62 <span style=''>     *   An instance of a &lt;b&gt;GenericItem&lt;/b&gt; with a single behavior.
+</span>63 <span style=''>     */
+</span>64 <span style=''>    def withSingleBehavior(
+</span>65 <span style=''>      description: ItemDescription,
+</span>66 <span style=''>      behavior: I =&gt; ItemBehavior
+</span>67 <span style=''>    ): GenericItem = </span><span style='background: #F0ADAD'>SimpleGenericItem(description, ItemRef(description), Seq(behavior))</span><span style=''>
+</span>68 <span style=''>
+</span>69 <span style=''>    /**
+</span>70 <span style=''>     * An item with no behaviors.
+</span>71 <span style=''>     * @param description
+</span>72 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>73 <span style=''>     * @return
+</span>74 <span style=''>     *   An item with no behaviors.
+</span>75 <span style=''>     */
+</span>76 <span style=''>    def empty(
+</span>77 <span style=''>      description: ItemDescription
+</span>78 <span style=''>    ): GenericItem = </span><span style='background: #F0ADAD'>SimpleGenericItem(description, ItemRef(description), Seq())</span><span style=''>
+</span>79 <span style=''>
+</span>80 <span style=''>    /**
+</span>81 <span style=''>     * A &lt;b&gt;GenericItem&lt;/b&gt; with a single behavior, created on-the-fly by some &lt;b&gt;ItemTriggers&lt;/b&gt;.
+</span>82 <span style=''>     * @param description
+</span>83 <span style=''>     *   the generic item description.
+</span>84 <span style=''>     * @param behaviorTriggers
+</span>85 <span style=''>     *   Triggers for the single behavior associated to the item.
+</span>86 <span style=''>     * @return
+</span>87 <span style=''>     *   An instance of a &lt;b&gt;GenericItem&lt;/b&gt; with a single behavior.
+</span>88 <span style=''>     */
+</span>89 <span style=''>    def withGenBehavior(
+</span>90 <span style=''>      description: ItemDescription,
+</span>91 <span style=''>      behaviorTriggers: ItemTriggers
+</span>92 <span style=''>    ): GenericItem =
+</span>93 <span style=''>      </span><span style='background: #F0ADAD'>SimpleGenericItem(
+</span>94 <span style=''></span><span style='background: #F0ADAD'>        description,
+</span>95 <span style=''></span><span style='background: #F0ADAD'>        ItemRef(description),
+</span>96 <span style=''></span><span style='background: #F0ADAD'>        Seq(GenericItemBehavior.builder(behaviorTriggers))
+</span>97 <span style=''></span><span style='background: #F0ADAD'>      )</span><span style=''>
+</span>98 <span style=''>  }
+</span>99 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -90,15 +135,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          26
+          33
         </td>
         <td>
-          429
+          512
         </td>
         <td>
-          958
+          1171
           -
-          965
+          1178
         </td>
         <td>
           Apply
@@ -114,15 +159,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          33
         </td>
         <td>
-          430
+          513
         </td>
         <td>
-          935
+          1149
           -
-          966
+          1179
         </td>
         <td>
           Apply
@@ -134,19 +179,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleGenericItem.this.extraBehavBuilders.map[GenericItemExt.this.ItemBehavior](((x$1: GenericItemExt.this.I =&gt; GenericItemExt.this.ItemBehavior) =&gt; x$1.apply(this)))
+          SimpleGenericItem.this.behaviorsBuilders.map[GenericItemExt.this.ItemBehavior](((x$1: GenericItemExt.this.I =&gt; GenericItemExt.this.ItemBehavior) =&gt; x$1.apply(this)))
         </td>
       </tr><tr>
         <td>
-          37
+          53
         </td>
         <td>
-          431
+          514
         </td>
         <td>
-          1255
+          1722
           -
-          1275
+          1742
         </td>
         <td>
           Apply
@@ -162,15 +207,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          53
         </td>
         <td>
-          432
+          515
         </td>
         <td>
-          1224
+          1691
           -
-          1296
+          1763
         </td>
         <td>
           Apply
@@ -186,15 +231,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          67
         </td>
         <td>
-          433
+          516
         </td>
         <td>
-          1448
+          2227
           -
-          1468
+          2247
         </td>
         <td>
           Apply
@@ -210,15 +255,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          67
         </td>
         <td>
-          434
+          517
         </td>
         <td>
-          1470
+          2249
           -
-          1483
+          2262
         </td>
         <td>
           Apply
@@ -234,15 +279,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          67
         </td>
         <td>
-          435
+          518
         </td>
         <td>
-          1417
+          2196
           -
-          1484
+          2263
         </td>
         <td>
           Apply
@@ -258,39 +303,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          78
         </td>
         <td>
-          439
+          519
         </td>
         <td>
-          1611
+          2540
           -
-          1743
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.GenericItemExt.SimpleGenericItem.apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          GenericItemExt.this.SimpleGenericItem.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), scala.`package`.Seq.apply[GenericItemExt.this.I =&gt; GenericItemExt.this.GenericBehavior](GenericItemExt.this.GenericBehavior.builder(behaviorTriggers)))
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          436
-        </td>
-        <td>
-          1659
-          -
-          1679
+          2560
         </td>
         <td>
           Apply
@@ -306,39 +327,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          78
         </td>
         <td>
-          437
+          520
         </td>
         <td>
-          1693
+          2562
           -
-          1734
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericBehaviorExt.GenericBehavior.builder
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          GenericItemExt.this.GenericBehavior.builder(behaviorTriggers)
-        </td>
-      </tr><tr>
-        <td>
-          51
-        </td>
-        <td>
-          438
-        </td>
-        <td>
-          1689
-          -
-          1735
+          2567
         </td>
         <td>
           Apply
@@ -350,7 +347,127 @@
           
         </td>
         <td style="background: #F0ADAD">
-          scala.`package`.Seq.apply[GenericItemExt.this.I =&gt; GenericItemExt.this.GenericBehavior](GenericItemExt.this.GenericBehavior.builder(behaviorTriggers))
+          scala.`package`.Seq.apply[Nothing]()
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          521
+        </td>
+        <td>
+          2509
+          -
+          2568
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.GenericItemExt.SimpleGenericItem.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GenericItemExt.this.SimpleGenericItem.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), scala.`package`.Seq.apply[Nothing]())
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          525
+        </td>
+        <td>
+          3057
+          -
+          3193
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.GenericItemExt.SimpleGenericItem.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GenericItemExt.this.SimpleGenericItem.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), scala.`package`.Seq.apply[GenericItemExt.this.I =&gt; GenericItemExt.this.GenericItemBehavior](GenericItemExt.this.GenericItemBehavior.builder(behaviorTriggers)))
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          522
+        </td>
+        <td>
+          3105
+          -
+          3125
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.ItemRef.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          io.github.scalaquest.core.model.ItemRef.apply(description)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          523
+        </td>
+        <td>
+          3139
+          -
+          3184
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericItemBehaviorExt.GenericItemBehavior.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GenericItemExt.this.GenericItemBehavior.builder(behaviorTriggers)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          524
+        </td>
+        <td>
+          3135
+          -
+          3185
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SeqFactory.Delegate.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Seq.apply[GenericItemExt.this.I =&gt; GenericItemExt.this.GenericItemBehavior](GenericItemExt.this.GenericItemBehavior.builder(behaviorTriggers))
         </td>
       </tr>
     </table>

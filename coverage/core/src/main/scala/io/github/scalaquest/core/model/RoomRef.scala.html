@@ -35,9 +35,21 @@
 </span>11 <span style=''> */
 </span>12 <span style=''>object RoomRef {
 </span>13 <span style=''>
-</span>14 <span style=''>  private case class StringRef(name: String) extends RoomRef
-</span>15 <span style=''>  def apply(roomName: String): RoomRef = </span><span style='background: #AEF1AE'>StringRef(roomName)</span><span style=''>
-</span>16 <span style=''>}
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * The String Reference to a [[Model.Room]].
+</span>16 <span style=''>   * @param name
+</span>17 <span style=''>   *   the name of [[Model.Room]].
+</span>18 <span style=''>   */
+</span>19 <span style=''>  private final case class StringRef(name: String) extends RoomRef
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * A factory to build the [[RoomRef]] based on a [[String]] (hopefully, the room name).
+</span>23 <span style=''>   * @param roomName
+</span>24 <span style=''>   *   the (hopefully) room name.
+</span>25 <span style=''>   * @return
+</span>26 <span style=''>   */
+</span>27 <span style=''>  def apply(roomName: String): RoomRef = </span><span style='background: #AEF1AE'>StringRef(roomName)</span><span style=''>
+</span>28 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -52,15 +64,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          15
+          27
         </td>
         <td>
           181
         </td>
         <td>
-          370
+          658
           -
-          389
+          677
         </td>
         <td>
           Apply

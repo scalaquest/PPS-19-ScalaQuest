@@ -27,58 +27,194 @@
 </span>3 <span style=''>import io.github.scalaquest.core.model.Message
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 </span>5 <span style=''>
-</span>6 <span style=''>trait ReactionUtilsExt extends BehaviorBasedModel {
-</span>7 <span style=''>
-</span>8 <span style=''>  implicit class EnhancedReaction(r: Reaction) {
-</span>9 <span style=''>    def map(g: S =&gt; S): Reaction = </span><span style='background: #AEF1AE'>Reaction.map(g)(r)</span><span style=''>
+</span>6 <span style=''>/**
+</span>7 <span style=''> * Extension for the model. Adds some common implementation of the [[BehaviorBasedModel]].
+</span>8 <span style=''> */
+</span>9 <span style=''>trait ReactionUtilsExt extends BehaviorBasedModel {
 </span>10 <span style=''>
-</span>11 <span style=''>    def flatMap(g: S =&gt; Reaction): Reaction = </span><span style='background: #AEF1AE'>Reaction.flatMap(g)(r)</span><span style=''>
-</span>12 <span style=''>  }
-</span>13 <span style=''>
-</span>14 <span style=''>  object Reaction {
-</span>15 <span style=''>
-</span>16 <span style=''>    def appendMessage(msg: Message)(r: Reaction): Reaction = </span><span style='background: #AEF1AE'>appendMessages(Seq(msg))(r)</span><span style=''>
+</span>11 <span style=''>  /**
+</span>12 <span style=''>   * A class that wrap a reaction and it map and flatmap methods.
+</span>13 <span style=''>   * @param r
+</span>14 <span style=''>   *   The wrapped &lt;b&gt;Reaction&lt;/b&gt;.
+</span>15 <span style=''>   */
+</span>16 <span style=''>  implicit class EnhancedReaction(r: Reaction) {
 </span>17 <span style=''>
-</span>18 <span style=''>    def appendMessages(msgs: Seq[Message])(r: Reaction): Reaction =
-</span>19 <span style=''>      s =&gt; {
-</span>20 <span style=''>        val (s1, m1) = r(s)
-</span>21 <span style=''>        </span><span style='background: #AEF1AE'>(s1, m1 ++ msgs)</span><span style=''>
-</span>22 <span style=''>      }
-</span>23 <span style=''>
-</span>24 <span style=''>    def apply(f: S =&gt; S, messages: Message*): Reaction = </span><span style='background: #AEF1AE'>create(f, messages)</span><span style=''>
-</span>25 <span style=''>
-</span>26 <span style=''>    def combine(a: Reaction, b: Reaction): Reaction = </span><span style='background: #AEF1AE'>a.flatMap(_ =&gt; b)</span><span style=''>
-</span>27 <span style=''>
-</span>28 <span style=''>    def create(f: S =&gt; S, messages: Seq[Message]): Reaction = s =&gt; </span><span style='background: #AEF1AE'>(f(s), messages)</span><span style=''>
-</span>29 <span style=''>
-</span>30 <span style=''>    def empty: Reaction = </span><span style='background: #AEF1AE'>create(identity[S], Seq.empty)</span><span style=''>
-</span>31 <span style=''>
-</span>32 <span style=''>    def flatMap(g: S =&gt; Reaction)(f: Reaction): Reaction = { s =&gt;
-</span>33 <span style=''>      val (s1, m1) = f(s)
-</span>34 <span style=''>      val (s2, m2) = g(s1)(s1)
-</span>35 <span style=''>      </span><span style='background: #AEF1AE'>(s2, m1 ++ m2)</span><span style=''>
-</span>36 <span style=''>    }
-</span>37 <span style=''>
-</span>38 <span style=''>    def map(g: S =&gt; S)(f: Reaction): Reaction =
-</span>39 <span style=''>      s =&gt; {
-</span>40 <span style=''>        val (s1, m1) = f(s)
-</span>41 <span style=''>        </span><span style='background: #AEF1AE'>(g(s1), m1)</span><span style=''>
-</span>42 <span style=''>      }
-</span>43 <span style=''>
-</span>44 <span style=''>    def messages(msgs: Message*): Reaction = </span><span style='background: #AEF1AE'>appendMessages(msgs)(empty)</span><span style=''>
-</span>45 <span style=''>
-</span>46 <span style=''>    def pure(s: S): Reaction = </span><span style='background: #F0ADAD'>create(_ =&gt; s, Seq.empty)</span><span style=''>
-</span>47 <span style=''>
-</span>48 <span style=''>  }
-</span>49 <span style=''>
-</span>50 <span style=''>  object Update {
-</span>51 <span style=''>    private type U = S =&gt; S
+</span>18 <span style=''>    /**
+</span>19 <span style=''>     * Use &lt;b&gt;Reaction.map&lt;/b&gt; method with this and an other &lt;b&gt;Reaction&lt;/b&gt;.
+</span>20 <span style=''>     * @param g
+</span>21 <span style=''>     *   The other &lt;b&gt;Reaction&lt;/b&gt;.
+</span>22 <span style=''>     * @return
+</span>23 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; that is the &lt;b&gt;Reaction::map&lt;/b&gt; of the two reactions.
+</span>24 <span style=''>     */
+</span>25 <span style=''>    def map(g: S =&gt; S): Reaction = </span><span style='background: #AEF1AE'>Reaction.map(g)(r)</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>    /**
+</span>28 <span style=''>     * Use &lt;b&gt;Reaction::flatmap&lt;/b&gt; method with this and an other &lt;b&gt;Reaction&lt;/b&gt;.
+</span>29 <span style=''>     * @param g
+</span>30 <span style=''>     *   The other &lt;b&gt;Reaction&lt;/b&gt;.
+</span>31 <span style=''>     * @return
+</span>32 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; that is the &lt;b&gt;Reaction::flatmap&lt;/b&gt; of the two reactions.
+</span>33 <span style=''>     */
+</span>34 <span style=''>    def flatMap(g: S =&gt; Reaction): Reaction = </span><span style='background: #AEF1AE'>Reaction.flatMap(g)(r)</span><span style=''>
+</span>35 <span style=''>  }
+</span>36 <span style=''>
+</span>37 <span style=''>  /**
+</span>38 <span style=''>   * Object with some methods to work on &lt;b&gt;Reaction&lt;/b&gt;.
+</span>39 <span style=''>   */
+</span>40 <span style=''>  object Reaction {
+</span>41 <span style=''>
+</span>42 <span style=''>    /**
+</span>43 <span style=''>     * Append a specific [[Message]] to a &lt;b&gt;Reaction&lt;/b&gt;.
+</span>44 <span style=''>     * @param msg
+</span>45 <span style=''>     *   The &lt;b&gt;message&lt;/b&gt; to be appended.
+</span>46 <span style=''>     * @param r
+</span>47 <span style=''>     *   The &lt;b&gt;Reaction&lt;/b&gt; that will have the message appended.
+</span>48 <span style=''>     * @return
+</span>49 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; with the &lt;b&gt;message&lt;/b&gt; appended.
+</span>50 <span style=''>     */
+</span>51 <span style=''>    def appendMessage(msg: Message)(r: Reaction): Reaction = </span><span style='background: #AEF1AE'>appendMessages(Seq(msg))(r)</span><span style=''>
 </span>52 <span style=''>
-</span>53 <span style=''>    def apply(fs: U*): U = </span><span style='background: #AEF1AE'>fs.reduceOption(_ andThen _) getOrElse </span><span style='background: #F0ADAD'>identity[S]</span><span style=''>
-</span>54 <span style=''>
-</span>55 <span style=''>    def empty: U = </span><span style='background: #AEF1AE'>identity[S]</span><span style=''>
-</span>56 <span style=''>  }
-</span>57 <span style=''>}
+</span>53 <span style=''>    /**
+</span>54 <span style=''>     * Append some specific [[Message]] s to a &lt;b&gt;Reaction&lt;/b&gt;.
+</span>55 <span style=''>     * @param msgs
+</span>56 <span style=''>     *   The &lt;b&gt;messages&lt;/b&gt; to be appended.
+</span>57 <span style=''>     * @param r
+</span>58 <span style=''>     *   The &lt;b&gt;Reaction&lt;/b&gt; that will have the messages appended.
+</span>59 <span style=''>     * @return
+</span>60 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; with the &lt;b&gt;messages&lt;/b&gt; appended.
+</span>61 <span style=''>     */
+</span>62 <span style=''>    def appendMessages(msgs: Seq[Message])(r: Reaction): Reaction =
+</span>63 <span style=''>      s =&gt; {
+</span>64 <span style=''>        val (s1, m1) = r(s)
+</span>65 <span style=''>        </span><span style='background: #AEF1AE'>(s1, m1 ++ msgs)</span><span style=''>
+</span>66 <span style=''>      }
+</span>67 <span style=''>
+</span>68 <span style=''>    /**
+</span>69 <span style=''>     * Create a &lt;b&gt;Reaction&lt;/b&gt; from a function &lt;b&gt;State =&gt; State&lt;/b&gt; and some &lt;b&gt;messages&lt;/b&gt;.
+</span>70 <span style=''>     * @param f
+</span>71 <span style=''>     *   A function &lt;b&gt;State =&gt; State&lt;/b&gt; that giving a State provide an updated on it.
+</span>72 <span style=''>     * @param messages
+</span>73 <span style=''>     *   The &lt;b&gt;messages&lt;/b&gt; of &lt;b&gt;Reaction&lt;/b&gt;.
+</span>74 <span style=''>     * @return
+</span>75 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; with as function &lt;b&gt;f&lt;/b&gt; and for messages &lt;b&gt;messages&lt;/b&gt;.
+</span>76 <span style=''>     */
+</span>77 <span style=''>    def apply(f: S =&gt; S, messages: Message*): Reaction = </span><span style='background: #AEF1AE'>create(f, messages)</span><span style=''>
+</span>78 <span style=''>
+</span>79 <span style=''>    /**
+</span>80 <span style=''>     * Combine two &lt;b&gt;Reaction&lt;/b&gt;s using the &lt;b&gt;Reaction::flatmap&lt;/b&gt;.
+</span>81 <span style=''>     * @param a
+</span>82 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt;.
+</span>83 <span style=''>     * @param b
+</span>84 <span style=''>     *   An other &lt;b&gt;Reaction&lt;/b&gt;.
+</span>85 <span style=''>     * @return
+</span>86 <span style=''>     *   The new &lt;b&gt;Reaction&lt;/b&gt;, result combining of the precedent ones.
+</span>87 <span style=''>     */
+</span>88 <span style=''>    def combine(a: Reaction, b: Reaction): Reaction = </span><span style='background: #AEF1AE'>a.flatMap(_ =&gt; b)</span><span style=''>
+</span>89 <span style=''>
+</span>90 <span style=''>    /**
+</span>91 <span style=''>     * Create a &lt;b&gt;Reaction&lt;/b&gt; from a function &lt;b&gt;State =&gt; State&lt;/b&gt; and some &lt;b&gt;messages&lt;/b&gt;.
+</span>92 <span style=''>     * @param f
+</span>93 <span style=''>     *   A function &lt;b&gt;State =&gt; State&lt;/b&gt; that giving a State provide an updated on it.
+</span>94 <span style=''>     * @param messages
+</span>95 <span style=''>     *   The &lt;b&gt;messages&lt;/b&gt; of &lt;b&gt;Reaction&lt;/b&gt;.
+</span>96 <span style=''>     * @return
+</span>97 <span style=''>     *   The new &lt;b&gt;Reaction&lt;/b&gt; as function &lt;b&gt;f&lt;/b&gt; and for messages &lt;b&gt;messages&lt;/b&gt;.
+</span>98 <span style=''>     */
+</span>99 <span style=''>    def create(f: S =&gt; S, messages: Seq[Message]): Reaction = s =&gt; </span><span style='background: #AEF1AE'>(f(s), messages)</span><span style=''>
+</span>100 <span style=''>
+</span>101 <span style=''>    /**
+</span>102 <span style=''>     * Create an &lt;b&gt;empty Reaction&lt;/b&gt;:
+</span>103 <span style=''>     *   - no message.
+</span>104 <span style=''>     *   - function identity [[S]] =&gt; [[S]]
+</span>105 <span style=''>     * @return
+</span>106 <span style=''>     *   The empty &lt;b&gt;Reaction&lt;/b&gt;.
+</span>107 <span style=''>     */
+</span>108 <span style=''>    def empty: Reaction = </span><span style='background: #AEF1AE'>create(identity[S], Seq.empty)</span><span style=''>
+</span>109 <span style=''>
+</span>110 <span style=''>    /**
+</span>111 <span style=''>     * The &lt;b&gt;flatmap&lt;/b&gt; implemented for &lt;b&gt;Reactions&lt;/b&gt;:
+</span>112 <span style=''>     *   - product a &lt;b&gt;State&lt;/b&gt; applying the two &lt;b&gt;Reactions&lt;/b&gt;
+</span>113 <span style=''>     *   - concatenate as message the two &lt;b&gt;messages&lt;/b&gt; of the Reactions.
+</span>114 <span style=''>     * @param g
+</span>115 <span style=''>     *   A function &lt;b&gt;State =&gt; Reaction&lt;/b&gt;.
+</span>116 <span style=''>     * @param r
+</span>117 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt;.
+</span>118 <span style=''>     * @return
+</span>119 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; combining the function &lt;b&gt;g&lt;/b&gt; and the reaction &lt;b&gt;r&lt;/b&gt;.
+</span>120 <span style=''>     */
+</span>121 <span style=''>    def flatMap(g: S =&gt; Reaction)(r: Reaction): Reaction = { s =&gt;
+</span>122 <span style=''>      val (s1, m1) = r(s)
+</span>123 <span style=''>      val (s2, m2) = g(s1)(s1)
+</span>124 <span style=''>      </span><span style='background: #AEF1AE'>(s2, m1 ++ m2)</span><span style=''>
+</span>125 <span style=''>    }
+</span>126 <span style=''>
+</span>127 <span style=''>    /**
+</span>128 <span style=''>     * The &lt;b&gt;map&lt;/b&gt; implemented for &lt;b&gt;Reactions&lt;/b&gt;:
+</span>129 <span style=''>     *   - product a &lt;b&gt;State&lt;/b&gt; applying a &lt;b&gt;Reaction&lt;/b&gt; on a function &lt;b&gt;State =&gt; State&lt;/b&gt;
+</span>130 <span style=''>     *   - concatenate as message the two &lt;b&gt;messages&lt;/b&gt; of the &lt;b&gt;Reactions&lt;/b&gt;.
+</span>131 <span style=''>     * @param g
+</span>132 <span style=''>     *   A function &lt;b&gt;State =&gt; Reaction&lt;/b&gt;.
+</span>133 <span style=''>     * @param r
+</span>134 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt;.
+</span>135 <span style=''>     * @return
+</span>136 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; combining the function &lt;b&gt;g&lt;/b&gt; and the reaction &lt;b&gt;r&lt;/b&gt;.
+</span>137 <span style=''>     */
+</span>138 <span style=''>    def map(g: S =&gt; S)(r: Reaction): Reaction =
+</span>139 <span style=''>      s =&gt; {
+</span>140 <span style=''>        val (s1, m1) = r(s)
+</span>141 <span style=''>        </span><span style='background: #AEF1AE'>(g(s1), m1)</span><span style=''>
+</span>142 <span style=''>      }
+</span>143 <span style=''>
+</span>144 <span style=''>    /**
+</span>145 <span style=''>     * Add &lt;b&gt;messages&lt;/b&gt; to an &lt;b&gt;empty Reaction&lt;/b&gt;.
+</span>146 <span style=''>     * @param msgs
+</span>147 <span style=''>     *   &lt;b&gt;Messages&lt;/b&gt; to append to &lt;b&gt;Reaction&lt;/b&gt;.
+</span>148 <span style=''>     * @return
+</span>149 <span style=''>     *   The &lt;b&gt;empty Reaction&lt;/b&gt; with the &lt;b&gt;messages&lt;/b&gt;.
+</span>150 <span style=''>     */
+</span>151 <span style=''>    def messages(msgs: Message*): Reaction = </span><span style='background: #AEF1AE'>appendMessages(msgs)(empty)</span><span style=''>
+</span>152 <span style=''>
+</span>153 <span style=''>    /**
+</span>154 <span style=''>     * A Reaction created with:
+</span>155 <span style=''>     *   - a function &lt;b&gt;S =&gt; S&lt;/b&gt; with any state to a specific State.
+</span>156 <span style=''>     *   - empty messages.
+</span>157 <span style=''>     * @param s
+</span>158 <span style=''>     *   The State provided from any state.
+</span>159 <span style=''>     * @return
+</span>160 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; as described above.
+</span>161 <span style=''>     */
+</span>162 <span style=''>    def pure(s: S): Reaction = </span><span style='background: #F0ADAD'>create(_ =&gt; s, Seq.empty)</span><span style=''>
+</span>163 <span style=''>
+</span>164 <span style=''>  }
+</span>165 <span style=''>
+</span>166 <span style=''>  /**
+</span>167 <span style=''>   * An object used to create the Reaction part composed solely by the function [[S]] =&gt; [[S]].
+</span>168 <span style=''>   */
+</span>169 <span style=''>  object Update {
+</span>170 <span style=''>
+</span>171 <span style=''>    /**
+</span>172 <span style=''>     * An Update [[U]] is the function [[S]] =&gt; [[S]].
+</span>173 <span style=''>     */
+</span>174 <span style=''>    private type U = S =&gt; S
+</span>175 <span style=''>
+</span>176 <span style=''>    /**
+</span>177 <span style=''>     * Concatenate more [[U]].
+</span>178 <span style=''>     * @param fs
+</span>179 <span style=''>     *   all the [[U]] to concatenate.
+</span>180 <span style=''>     * @return
+</span>181 <span style=''>     *   a [[U]] that is the reduction of [[U]] cited above, function identity of [[S]] if [[U]] are
+</span>182 <span style=''>     *   not presents.
+</span>183 <span style=''>     */
+</span>184 <span style=''>    def apply(fs: U*): U = </span><span style='background: #AEF1AE'>fs.reduceOption(_ andThen _) getOrElse </span><span style='background: #F0ADAD'>identity[S]</span><span style=''>
+</span>185 <span style=''>
+</span>186 <span style=''>    /**
+</span>187 <span style=''>     * The [[U]] empty value.
+</span>188 <span style=''>     * @return
+</span>189 <span style=''>     *   the identity of [[S]].
+</span>190 <span style=''>     */
+</span>191 <span style=''>    def empty: U = </span><span style='background: #AEF1AE'>identity[S]</span><span style=''>
+</span>192 <span style=''>  }
+</span>193 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -93,15 +229,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          9
+          25
         </td>
         <td>
-          549
+          595
         </td>
         <td>
-          340
+          815
           -
-          341
+          816
         </td>
         <td>
           Select
@@ -117,15 +253,15 @@
         </td>
       </tr><tr>
         <td>
-          9
+          25
         </td>
         <td>
-          550
+          596
         </td>
         <td>
-          324
+          799
           -
-          342
+          817
         </td>
         <td>
           Apply
@@ -141,15 +277,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          34
         </td>
         <td>
-          551
+          597
         </td>
         <td>
-          410
+          1141
           -
-          411
+          1142
         </td>
         <td>
           Select
@@ -165,15 +301,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          34
         </td>
         <td>
-          552
+          598
         </td>
         <td>
-          390
+          1121
           -
-          412
+          1143
         </td>
         <td>
           Apply
@@ -189,15 +325,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          51
         </td>
         <td>
-          553
+          599
         </td>
         <td>
-          500
+          1600
           -
-          527
+          1627
         </td>
         <td>
           Apply
@@ -213,15 +349,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          64
         </td>
         <td>
-          554
+          600
         </td>
         <td>
-          623
+          2031
           -
-          623
+          2031
         </td>
         <td>
           Select
@@ -237,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          64
         </td>
         <td>
-          555
+          601
         </td>
         <td>
-          627
+          2035
           -
-          627
+          2035
         </td>
         <td>
           Select
@@ -261,15 +397,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          65
         </td>
         <td>
-          556
+          602
         </td>
         <td>
-          651
+          2059
           -
-          661
+          2069
         </td>
         <td>
           Apply
@@ -285,15 +421,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          65
         </td>
         <td>
-          557
+          603
         </td>
         <td>
-          646
+          2054
           -
-          662
+          2070
         </td>
         <td>
           Apply
@@ -309,15 +445,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          77
         </td>
         <td>
-          558
+          604
         </td>
         <td>
-          729
+          2531
           -
-          748
+          2550
         </td>
         <td>
           Apply
@@ -333,15 +469,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          88
         </td>
         <td>
-          559
+          605
         </td>
         <td>
-          804
+          2878
           -
-          821
+          2895
         </td>
         <td>
           Apply
@@ -357,15 +493,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          99
         </td>
         <td>
-          560
+          606
         </td>
         <td>
-          891
+          3356
           -
-          895
+          3360
         </td>
         <td>
           Apply
@@ -381,15 +517,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          99
         </td>
         <td>
-          561
+          607
         </td>
         <td>
-          890
+          3355
           -
-          906
+          3371
         </td>
         <td>
           Apply
@@ -405,15 +541,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          108
         </td>
         <td>
-          562
+          608
         </td>
         <td>
-          941
+          3580
           -
-          952
+          3591
         </td>
         <td>
           Apply
@@ -429,15 +565,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          108
         </td>
         <td>
-          563
+          609
         </td>
         <td>
-          954
+          3593
           -
-          963
+          3602
         </td>
         <td>
           TypeApply
@@ -453,15 +589,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          108
         </td>
         <td>
-          564
+          610
         </td>
         <td>
-          934
+          3573
           -
-          964
+          3603
         </td>
         <td>
           Apply
@@ -477,15 +613,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          122
         </td>
         <td>
-          565
+          611
         </td>
         <td>
-          1043
+          4113
           -
-          1043
+          4113
         </td>
         <td>
           Select
@@ -501,15 +637,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          122
         </td>
         <td>
-          566
+          612
         </td>
         <td>
-          1047
+          4117
           -
-          1047
+          4117
         </td>
         <td>
           Select
@@ -525,15 +661,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          123
         </td>
         <td>
-          567
+          613
         </td>
         <td>
-          1069
+          4139
           -
-          1069
+          4139
         </td>
         <td>
           Select
@@ -549,15 +685,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          123
         </td>
         <td>
-          568
+          614
         </td>
         <td>
-          1073
+          4143
           -
-          1073
+          4143
         </td>
         <td>
           Select
@@ -573,15 +709,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          124
         </td>
         <td>
-          569
+          615
         </td>
         <td>
-          1100
+          4170
           -
-          1108
+          4178
         </td>
         <td>
           Apply
@@ -597,15 +733,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          124
         </td>
         <td>
-          570
+          616
         </td>
         <td>
-          1095
+          4165
           -
-          1109
+          4179
         </td>
         <td>
           Apply
@@ -621,15 +757,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          140
         </td>
         <td>
-          571
+          617
         </td>
         <td>
-          1191
+          4724
           -
-          1191
+          4724
         </td>
         <td>
           Select
@@ -645,15 +781,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          140
         </td>
         <td>
-          572
+          618
         </td>
         <td>
-          1195
+          4728
           -
-          1195
+          4728
         </td>
         <td>
           Select
@@ -669,15 +805,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          141
         </td>
         <td>
-          573
+          619
         </td>
         <td>
-          1215
+          4748
           -
-          1220
+          4753
         </td>
         <td>
           Apply
@@ -693,15 +829,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          141
         </td>
         <td>
-          574
+          620
         </td>
         <td>
-          1214
+          4747
           -
-          1225
+          4758
         </td>
         <td>
           Apply
@@ -717,15 +853,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          151
         </td>
         <td>
-          575
+          621
         </td>
         <td>
-          1301
+          5056
           -
-          1306
+          5061
         </td>
         <td>
           Select
@@ -741,15 +877,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          151
         </td>
         <td>
-          576
+          622
         </td>
         <td>
-          1280
+          5035
           -
-          1307
+          5062
         </td>
         <td>
           Apply
@@ -765,15 +901,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          162
         </td>
         <td>
-          577
+          623
         </td>
         <td>
-          1355
+          5383
           -
-          1364
+          5392
         </td>
         <td>
           TypeApply
@@ -789,15 +925,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          162
         </td>
         <td>
-          578
+          624
         </td>
         <td>
-          1340
+          5368
           -
-          1365
+          5393
         </td>
         <td>
           Apply
@@ -813,15 +949,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          184
         </td>
         <td>
-          579
+          625
         </td>
         <td>
-          1462
+          5912
           -
-          1473
+          5923
         </td>
         <td>
           Apply
@@ -837,15 +973,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          184
         </td>
         <td>
-          580
+          626
         </td>
         <td>
-          1485
+          5935
           -
-          1496
+          5946
         </td>
         <td>
           Apply
@@ -861,15 +997,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          184
         </td>
         <td>
-          581
+          627
         </td>
         <td>
-          1446
+          5896
           -
-          1496
+          5946
         </td>
         <td>
           Apply
@@ -885,15 +1021,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          191
         </td>
         <td>
-          582
+          628
         </td>
         <td>
-          1517
+          6060
           -
-          1528
+          6071
         </td>
         <td>
           Apply

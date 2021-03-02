@@ -32,35 +32,93 @@
 </span>8 <span style=''> */
 </span>9 <span style=''>trait StateUtilsExt extends Model {
 </span>10 <span style=''>
-</span>11 <span style=''>  implicit class StateUtils(state: S) {
-</span>12 <span style=''>    implicit val s: S = </span><span style='background: #AEF1AE'>state</span><span style=''>
-</span>13 <span style=''>
-</span>14 <span style=''>    def isInBag(item: I): Boolean = </span><span style='background: #AEF1AE'>state.bag.contains(item)</span><span style=''>
-</span>15 <span style=''>
-</span>16 <span style=''>    def isInLocation(item: I): Boolean = </span><span style='background: #AEF1AE'>state.location.items.contains(item)</span><span style=''>
-</span>17 <span style=''>
-</span>18 <span style=''>    def isInScope(item: I): Boolean = </span><span style='background: #AEF1AE'>state.isInLocation(item) || state.isInBag(item)</span><span style=''>
-</span>19 <span style=''>
-</span>20 <span style=''>    // shortcuts
-</span>21 <span style=''>    def locationNeighbor(direction: Direction): Option[RM] = </span><span style='background: #AEF1AE'>state.location.neighbor(direction)</span><span style=''>
-</span>22 <span style=''>
-</span>23 <span style=''>    def locationNeighbors: Set[RM] =
-</span>24 <span style=''>      </span><span style='background: #F0ADAD'>Direction.all.map(state.locationNeighbor(_)).collect({ case Some(room) =&gt; room })</span><span style=''>
-</span>25 <span style=''>
-</span>26 <span style=''>    def locationItems: Set[I] = </span><span style='background: #F0ADAD'>state.location.items</span><span style=''>
+</span>11 <span style=''>  /**
+</span>12 <span style=''>   * Add some utility methods for [[State]] implementation.
+</span>13 <span style=''>   * @param state
+</span>14 <span style=''>   *   A state ([[S]])
+</span>15 <span style=''>   */
+</span>16 <span style=''>  implicit class StateUtils(state: S) {
+</span>17 <span style=''>    implicit val s: S = </span><span style='background: #AEF1AE'>state</span><span style=''>
+</span>18 <span style=''>
+</span>19 <span style=''>    /**
+</span>20 <span style=''>     * Check if an [[Item]] is in Bag.
+</span>21 <span style=''>     * @param item
+</span>22 <span style=''>     *   The item ([[I]]) to check.
+</span>23 <span style=''>     * @return
+</span>24 <span style=''>     *   True if item is in bag, false otherwise.
+</span>25 <span style=''>     */
+</span>26 <span style=''>    def isInBag(item: I): Boolean = </span><span style='background: #AEF1AE'>state.bag.contains(item)</span><span style=''>
 </span>27 <span style=''>
-</span>28 <span style=''>    def copyWithItemInLocation(item: I): S = {
-</span>29 <span style=''>      val stateWithTarget    = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
-</span>30 <span style=''>      val currRoomWithTarget = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ + item.ref)(state.location)</span><span style=''>
-</span>31 <span style=''>      </span><span style='background: #AEF1AE'>roomsLens.modify(_ + (currRoomWithTarget.ref -&gt; currRoomWithTarget))(stateWithTarget)</span><span style=''>
-</span>32 <span style=''>    }
-</span>33 <span style=''>
-</span>34 <span style=''>    def copyWithItemInBag(item: I): S = {
-</span>35 <span style=''>      val stateWithTarget = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
-</span>36 <span style=''>      </span><span style='background: #AEF1AE'>bagLens.modify(_ + item.ref)(stateWithTarget)</span><span style=''>
-</span>37 <span style=''>    }
-</span>38 <span style=''>  }
-</span>39 <span style=''>}
+</span>28 <span style=''>    /**
+</span>29 <span style=''>     * Check if an [[Item]] is in the actual player location [[Room]].
+</span>30 <span style=''>     * @param item
+</span>31 <span style=''>     *   The item ([[I]]) to check.
+</span>32 <span style=''>     * @return
+</span>33 <span style=''>     *   True if item is in location, false otherwise.
+</span>34 <span style=''>     */
+</span>35 <span style=''>    def isInLocation(item: I): Boolean = </span><span style='background: #AEF1AE'>state.location.items.contains(item)</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>    /**
+</span>38 <span style=''>     * Check if an [[Item]] is visible. Two possible conditions:
+</span>39 <span style=''>     *   - item is in the actual player location [[Room]].
+</span>40 <span style=''>     *   - item is in bag.
+</span>41 <span style=''>     * @param item
+</span>42 <span style=''>     *   the item ([[I]]) to check.
+</span>43 <span style=''>     * @return
+</span>44 <span style=''>     *   True if item is in location or in bag, false otherwise.
+</span>45 <span style=''>     */
+</span>46 <span style=''>    def isInScope(item: I): Boolean = </span><span style='background: #AEF1AE'>state.isInLocation(item) || state.isInBag(item)</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>    /**
+</span>49 <span style=''>     * Check if player have a neighbor [[Room]] for a given Direction.
+</span>50 <span style=''>     * @param direction
+</span>51 <span style=''>     *   The given [[Direction]].
+</span>52 <span style=''>     * @return
+</span>53 <span style=''>     *   [[Option]] that contain the neighbor Room ([[RM]]) if present, [[None]] otherwise.
+</span>54 <span style=''>     */
+</span>55 <span style=''>    def locationNeighbor(direction: Direction): Option[RM] = </span><span style='background: #AEF1AE'>state.location.neighbor(direction)</span><span style=''>
+</span>56 <span style=''>
+</span>57 <span style=''>    /**
+</span>58 <span style=''>     * Responds with all neighbor [[Room]] for the current location.
+</span>59 <span style=''>     * @return
+</span>60 <span style=''>     *   all the neighbor Rooms ([[RM]]).
+</span>61 <span style=''>     */
+</span>62 <span style=''>    def locationNeighbors: Set[RM] =
+</span>63 <span style=''>      </span><span style='background: #F0ADAD'>Direction.all.map(state.locationNeighbor(_)).collect({ case Some(room) =&gt; room })</span><span style=''>
+</span>64 <span style=''>
+</span>65 <span style=''>    /**
+</span>66 <span style=''>     * Responds with all the [[Item]] s present in the player location [[Room]].
+</span>67 <span style=''>     * @return
+</span>68 <span style=''>     *   All the [[Item]] s present in the player location [[Room]].
+</span>69 <span style=''>     */
+</span>70 <span style=''>    def locationItems: Set[I] = </span><span style='background: #F0ADAD'>state.location.items</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>    /**
+</span>73 <span style=''>     * Copy the State [[S]] and add an item to the player location Room.
+</span>74 <span style=''>     * @param item
+</span>75 <span style=''>     *   The &lt;b&gt;item&lt;/b&gt; [[I]] to add.
+</span>76 <span style=''>     * @return
+</span>77 <span style=''>     *   A new &lt;b&gt;State&lt;/b&gt; with the &lt;b&gt;item&lt;/b&gt; added into the player's location.
+</span>78 <span style=''>     */
+</span>79 <span style=''>    def copyWithItemInLocation(item: I): S = {
+</span>80 <span style=''>      val stateWithTarget    = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>81 <span style=''>      val currRoomWithTarget = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ + item.ref)(state.location)</span><span style=''>
+</span>82 <span style=''>      </span><span style='background: #AEF1AE'>roomsLens.modify(_ + (currRoomWithTarget.ref -&gt; currRoomWithTarget))(stateWithTarget)</span><span style=''>
+</span>83 <span style=''>    }
+</span>84 <span style=''>
+</span>85 <span style=''>    /**
+</span>86 <span style=''>     * Copy the State [[S]] and add an item to the player's bag.
+</span>87 <span style=''>     * @param item
+</span>88 <span style=''>     *   The &lt;b&gt;item&lt;/b&gt; [[I]] to add to the State.
+</span>89 <span style=''>     * @return
+</span>90 <span style=''>     *   The new &lt;b&gt;State&lt;/b&gt; with the &lt;b&gt;item&lt;/b&gt; in the player's &lt;b&gt;bag&lt;/b&gt;.
+</span>91 <span style=''>     */
+</span>92 <span style=''>    def copyWithItemInBag(item: I): S = {
+</span>93 <span style=''>      val stateWithTarget = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>94 <span style=''>      </span><span style='background: #AEF1AE'>bagLens.modify(_ + item.ref)(stateWithTarget)</span><span style=''>
+</span>95 <span style=''>    }
+</span>96 <span style=''>  }
+</span>97 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -75,15 +133,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          12
+          17
         </td>
         <td>
-          611
+          657
         </td>
         <td>
-          356
+          469
           -
-          361
+          474
         </td>
         <td>
           Select
@@ -99,15 +157,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          26
         </td>
         <td>
-          612
+          658
         </td>
         <td>
-          399
+          687
           -
-          423
+          711
         </td>
         <td>
           Apply
@@ -123,15 +181,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          35
         </td>
         <td>
-          613
+          659
         </td>
         <td>
-          466
+          966
           -
-          501
+          1001
         </td>
         <td>
           Apply
@@ -147,15 +205,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          46
         </td>
         <td>
-          614
+          660
         </td>
         <td>
-          541
+          1343
           -
-          546
+          1348
         </td>
         <td>
           Select
@@ -171,15 +229,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          46
         </td>
         <td>
-          615
+          661
         </td>
         <td>
-          569
+          1371
           -
-          588
+          1390
         </td>
         <td>
           Apply
@@ -195,15 +253,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          46
         </td>
         <td>
-          616
+          662
         </td>
         <td>
-          541
+          1343
           -
-          588
+          1390
         </td>
         <td>
           Apply
@@ -219,15 +277,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          55
         </td>
         <td>
-          617
+          663
         </td>
         <td>
-          691
+          1728
           -
-          691
+          1728
         </td>
         <td>
           Select
@@ -243,15 +301,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          55
         </td>
         <td>
-          618
+          664
         </td>
         <td>
-          668
+          1705
           -
-          702
+          1739
         </td>
         <td>
           ApplyToImplicitArgs
@@ -267,15 +325,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          63
         </td>
         <td>
-          619
+          665
         </td>
         <td>
-          765
+          1944
           -
-          790
+          1969
         </td>
         <td>
           Apply
@@ -291,15 +349,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          63
         </td>
         <td>
-          620
+          666
         </td>
         <td>
-          800
+          1979
           -
-          800
+          1979
         </td>
         <td>
           Apply
@@ -315,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          63
         </td>
         <td>
-          621
+          667
         </td>
         <td>
-          747
+          1926
           -
-          828
+          2007
         </td>
         <td>
           Apply
@@ -355,15 +413,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          70
         </td>
         <td>
-          622
+          668
         </td>
         <td>
-          877
+          2237
           -
-          877
+          2237
         </td>
         <td>
           Select
@@ -379,15 +437,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          70
         </td>
         <td>
-          623
+          669
         </td>
         <td>
-          862
+          2222
           -
-          882
+          2242
         </td>
         <td>
           ApplyToImplicitArgs
@@ -403,15 +461,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          80
         </td>
         <td>
-          624
+          670
         </td>
         <td>
-          984
+          2589
           -
-          1000
+          2605
         </td>
         <td>
           Apply
@@ -427,15 +485,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          80
         </td>
         <td>
-          625
+          671
         </td>
         <td>
-          979
+          2584
           -
-          1001
+          2606
         </td>
         <td>
           Apply
@@ -451,15 +509,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          80
         </td>
         <td>
-          626
+          672
         </td>
         <td>
-          1003
+          2608
           -
-          1008
+          2613
         </td>
         <td>
           Select
@@ -475,15 +533,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          80
         </td>
         <td>
-          627
+          673
         </td>
         <td>
-          962
+          2567
           -
-          1009
+          2614
         </td>
         <td>
           Apply
@@ -499,15 +557,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          81
         </td>
         <td>
-          628
+          674
         </td>
         <td>
-          1066
+          2671
           -
-          1074
+          2679
         </td>
         <td>
           Select
@@ -523,15 +581,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          81
         </td>
         <td>
-          629
+          675
         </td>
         <td>
-          1062
+          2667
           -
-          1074
+          2679
         </td>
         <td>
           Apply
@@ -547,15 +605,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          81
         </td>
         <td>
-          630
+          676
         </td>
         <td>
-          1076
+          2681
           -
-          1090
+          2695
         </td>
         <td>
           Select
@@ -571,15 +629,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          81
         </td>
         <td>
-          631
+          677
         </td>
         <td>
-          1041
+          2646
           -
-          1091
+          2696
         </td>
         <td>
           Apply
@@ -595,15 +653,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          82
         </td>
         <td>
-          632
+          678
         </td>
         <td>
-          1098
+          2703
           -
-          1183
+          2788
         </td>
         <td>
           Apply
@@ -619,15 +677,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          93
         </td>
         <td>
-          633
+          679
         </td>
         <td>
-          1283
+          3134
           -
-          1299
+          3150
         </td>
         <td>
           Apply
@@ -643,15 +701,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          93
         </td>
         <td>
-          634
+          680
         </td>
         <td>
-          1278
+          3129
           -
-          1300
+          3151
         </td>
         <td>
           Apply
@@ -667,15 +725,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          93
         </td>
         <td>
-          635
+          681
         </td>
         <td>
-          1302
+          3153
           -
-          1307
+          3158
         </td>
         <td>
           Select
@@ -691,15 +749,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          93
         </td>
         <td>
-          636
+          682
         </td>
         <td>
-          1261
+          3112
           -
-          1308
+          3159
         </td>
         <td>
           Apply
@@ -715,15 +773,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          94
         </td>
         <td>
-          637
+          683
         </td>
         <td>
-          1315
+          3166
           -
-          1360
+          3211
         </td>
         <td>
           Apply

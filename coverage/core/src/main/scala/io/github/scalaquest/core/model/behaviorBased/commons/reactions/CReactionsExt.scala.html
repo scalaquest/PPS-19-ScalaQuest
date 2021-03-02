@@ -1,0 +1,885 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/reactions/CReactionsExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.{Direction, ItemRef, Message, RoomRef}
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * A mixable trait that contains some common &lt;b&gt;Reactions&lt;/b&gt;.
+</span>10 <span style=''> */
+</span>11 <span style=''>trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessagesExt {
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * Companion Object with the effective implementation of the common [[Reaction]] s.
+</span>15 <span style=''>   */
+</span>16 <span style=''>  object CReactions {
+</span>17 <span style=''>
+</span>18 <span style=''>    /**
+</span>19 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that modifies the content of the player's bag, following the instructions
+</span>20 <span style=''>     * from the given function.
+</span>21 <span style=''>     * @param modifier
+</span>22 <span style=''>     *   A function that indicates how to modify the bag.
+</span>23 <span style=''>     * @return
+</span>24 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that modifies the content of the player's bag.
+</span>25 <span style=''>     */
+</span>26 <span style=''>    def modifyBag(modifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
+</span>27 <span style=''>      </span><span style='background: #AEF1AE'>Reaction(bagLens.modify(modifier))</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>    /**
+</span>30 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that modifies the items contained into the player's location, following the
+</span>31 <span style=''>     * instructions from the given function.
+</span>32 <span style=''>     * @param modifier
+</span>33 <span style=''>     *   A function that indicates how to modify the items contained into the player's location.
+</span>34 <span style=''>     * @return
+</span>35 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that modifies the items contained into the player's location.
+</span>36 <span style=''>     */
+</span>37 <span style=''>    def modifyLocationItems(modifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
+</span>38 <span style=''>      s =&gt; </span><span style='background: #AEF1AE'>modifyRoomItems(s.location.ref, modifier)(s)</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>    /**
+</span>41 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that changes the location of the player, given a &lt;b&gt;RoomRef&lt;/b&gt;.
+</span>42 <span style=''>     * @param location
+</span>43 <span style=''>     *   The new location of the player, as a &lt;b&gt;RoomRef&lt;/b&gt;.
+</span>44 <span style=''>     * @return
+</span>45 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that switches the location of the player.
+</span>46 <span style=''>     */
+</span>47 <span style=''>    def switchLocation(location: RoomRef): Reaction = </span><span style='background: #AEF1AE'>Reaction(locationLens.set(location))</span><span style=''>
+</span>48 <span style=''>
+</span>49 <span style=''>    /**
+</span>50 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that changes the location of the player.
+</span>51 <span style=''>     * @param location
+</span>52 <span style=''>     *   The new location of the player.
+</span>53 <span style=''>     * @return
+</span>54 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that switches the location of the player.
+</span>55 <span style=''>     */
+</span>56 <span style=''>    def switchLocation(location: RM): Reaction = </span><span style='background: #AEF1AE'>switchLocation(location.ref)</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>    /**
+</span>59 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that adds a &lt;b&gt;Message&lt;/b&gt; to the ones to be returned.
+</span>60 <span style=''>     * @param message
+</span>61 <span style=''>     *   The new &lt;b&gt;Message&lt;/b&gt;.
+</span>62 <span style=''>     * @return
+</span>63 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that adds a &lt;b&gt;Message&lt;/b&gt; to the ones to be returned.
+</span>64 <span style=''>     */
+</span>65 <span style=''>    def addMessage(message: Message): Reaction = </span><span style='background: #AEF1AE'>Reaction.messages(message)</span><span style=''>
+</span>66 <span style=''>
+</span>67 <span style=''>    /**
+</span>68 <span style=''>     * Modifies the set of items of the given room.
+</span>69 <span style=''>     * @param roomRef
+</span>70 <span style=''>     *   The ref of the room to modify.
+</span>71 <span style=''>     * @param itemsModifier
+</span>72 <span style=''>     *   A function that indicates how to modify the items contained into the room.
+</span>73 <span style=''>     * @return
+</span>74 <span style=''>     *   Modifies the set of items of the given room.
+</span>75 <span style=''>     */
+</span>76 <span style=''>    def modifyRoomItems(roomRef: RoomRef, itemsModifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
+</span>77 <span style=''>      s =&gt; {
+</span>78 <span style=''>        val modifiedRoom = </span><span style='background: #AEF1AE'>roomItemsLens.modify(itemsModifier)(roomsLens.get(s)(roomRef))</span><span style=''>
+</span>79 <span style=''>        val react        = </span><span style='background: #AEF1AE'>Reaction(roomsLens.modify(_ + (roomRef -&gt; modifiedRoom)))</span><span style=''>
+</span>80 <span style=''>        </span><span style='background: #AEF1AE'>react(s)</span><span style=''>
+</span>81 <span style=''>      }
+</span>82 <span style=''>
+</span>83 <span style=''>    /**
+</span>84 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that adds a neighbor &lt;b&gt;Room&lt;/b&gt; to the actual player location.
+</span>85 <span style=''>     * @param direction
+</span>86 <span style=''>     *   the new visible direction.
+</span>87 <span style=''>     * @param room
+</span>88 <span style=''>     *   the new visible room.
+</span>89 <span style=''>     * @return
+</span>90 <span style=''>     *   the Reaction described above.
+</span>91 <span style=''>     */
+</span>92 <span style=''>    def addDirectionToLocation(direction: Direction, room: RM): Reaction =
+</span>93 <span style=''>      </span><span style='background: #AEF1AE'>Reaction(
+</span>94 <span style=''></span><span style='background: #AEF1AE'>        (locationRoomLens composeLens roomDirectionsLens).modify(_ + (direction -&gt; room.ref))
+</span>95 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>96 <span style=''>
+</span>97 <span style=''>    /**
+</span>98 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that ends the match in two possible scenario:
+</span>99 <span style=''>     *   - The player wins
+</span>100 <span style=''>     *   - The player loses
+</span>101 <span style=''>     * @param win
+</span>102 <span style=''>     *   True if game is finished with a victory, False for a defeat.
+</span>103 <span style=''>     * @return
+</span>104 <span style=''>     *   the Reaction cited above.
+</span>105 <span style=''>     */
+</span>106 <span style=''>    def finishGame(win: Boolean): Reaction =
+</span>107 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>108 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Reaction(matchEndedLens.set(true))
+</span>109 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- Reaction.messages(if (win) CMessages.Won else CMessages.Lost)
+</span>110 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>111 <span style=''>  }
+</span>112 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          554
+        </td>
+        <td>
+          1068
+          -
+          1092
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.bagLens.modify(modifier)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          555
+        </td>
+        <td>
+          1059
+          -
+          1093
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.apply(CReactionsExt.this.bagLens.modify(modifier))
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          556
+        </td>
+        <td>
+          1568
+          -
+          1612
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactions.this.modifyRoomItems(s.location.ref, modifier).apply(s)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          557
+        </td>
+        <td>
+          1948
+          -
+          1974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.set
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.locationLens.set(location)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          558
+        </td>
+        <td>
+          1939
+          -
+          1975
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.apply(CReactionsExt.this.locationLens.set(location))
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          559
+        </td>
+        <td>
+          2267
+          -
+          2279
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          location.ref
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          560
+        </td>
+        <td>
+          2252
+          -
+          2280
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.switchLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactions.this.switchLocation(location.ref)
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          561
+        </td>
+        <td>
+          2575
+          -
+          2601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.messages
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.messages(message)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          562
+        </td>
+        <td>
+          3089
+          -
+          3114
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapOps.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.roomsLens.get(s).apply(roomRef)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          563
+        </td>
+        <td>
+          3053
+          -
+          3115
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.roomItemsLens.modify(itemsModifier).apply(CReactionsExt.this.roomsLens.get(s).apply(roomRef))
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          564
+        </td>
+        <td>
+          3174
+          -
+          3197
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](roomRef).-&gt;[CReactionsExt.this.RM](modifiedRoom)
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          565
+        </td>
+        <td>
+          3169
+          -
+          3198
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.+[CReactionsExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](roomRef).-&gt;[CReactionsExt.this.RM](modifiedRoom))
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          566
+        </td>
+        <td>
+          3152
+          -
+          3199
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.roomsLens.modify(((x$1: Map[io.github.scalaquest.core.model.RoomRef,CReactionsExt.this.RM]) =&gt; x$1.+[CReactionsExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](roomRef).-&gt;[CReactionsExt.this.RM](modifiedRoom))))
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          567
+        </td>
+        <td>
+          3143
+          -
+          3200
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.apply(CReactionsExt.this.roomsLens.modify(((x$1: Map[io.github.scalaquest.core.model.RoomRef,CReactionsExt.this.RM]) =&gt; x$1.+[CReactionsExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](roomRef).-&gt;[CReactionsExt.this.RM](modifiedRoom)))))
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          568
+        </td>
+        <td>
+          3209
+          -
+          3217
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Function1.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          react.apply(s)
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          574
+        </td>
+        <td>
+          3575
+          -
+          3686
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.apply(CReactionsExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](CReactionsExt.this.roomDirectionsLens).modify(((x$2: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$2.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref)))))
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          569
+        </td>
+        <td>
+          3623
+          -
+          3641
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.roomDirectionsLens
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.roomDirectionsLens
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          570
+        </td>
+        <td>
+          3668
+          -
+          3676
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Room.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          room.ref
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          571
+        </td>
+        <td>
+          3655
+          -
+          3676
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          572
+        </td>
+        <td>
+          3650
+          -
+          3677
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.MapOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref))
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          573
+        </td>
+        <td>
+          3594
+          -
+          3678
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.modify
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](CReactionsExt.this.roomDirectionsLens).modify(((x$2: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$2.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](direction).-&gt;[io.github.scalaquest.core.model.RoomRef](room.ref))))
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          575
+        </td>
+        <td>
+          4045
+          -
+          4069
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          monocle.PLens.set
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.matchEndedLens.set(true)
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          576
+        </td>
+        <td>
+          4036
+          -
+          4070
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.apply(CReactionsExt.this.matchEndedLens.set(true))
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          583
+        </td>
+        <td>
+          4017
+          -
+          4161
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.EnhancedReaction(CReactionsExt.this.Reaction.apply(CReactionsExt.this.matchEndedLens.set(true))).flatMap(((x$3: CReactionsExt.this.S) =&gt; (x$3: CReactionsExt.this.S @unchecked) match {
+  case _ =&gt; CReactionsExt.this.EnhancedReaction(CReactionsExt.this.Reaction.messages(if (win)
+  CReactionsExt.this.CMessages.Won
+else
+  CReactionsExt.this.CMessages.Lost)).map(((s: CReactionsExt.this.S) =&gt; s))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          577
+        </td>
+        <td>
+          4111
+          -
+          4124
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Won
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.CMessages.Won
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          578
+        </td>
+        <td>
+          4111
+          -
+          4124
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Won
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.CMessages.Won
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          579
+        </td>
+        <td>
+          4130
+          -
+          4144
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Lost
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.CMessages.Lost
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          580
+        </td>
+        <td>
+          4130
+          -
+          4144
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Lost
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.CMessages.Lost
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          581
+        </td>
+        <td>
+          4084
+          -
+          4145
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.messages
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.Reaction.messages(if (win)
+  CReactionsExt.this.CMessages.Won
+else
+  CReactionsExt.this.CMessages.Lost)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          582
+        </td>
+        <td>
+          4079
+          -
+          4161
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CReactionsExt.this.EnhancedReaction(CReactionsExt.this.Reaction.messages(if (win)
+  CReactionsExt.this.CMessages.Won
+else
+  CReactionsExt.this.CMessages.Lost)).map(((s: CReactionsExt.this.S) =&gt; s))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

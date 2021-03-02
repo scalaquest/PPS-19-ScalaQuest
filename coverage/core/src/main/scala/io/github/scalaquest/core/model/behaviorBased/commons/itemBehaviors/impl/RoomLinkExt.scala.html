@@ -26,154 +26,248 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.{Direction, RoomRef}
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{Enter, Open}
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Enter, Open}
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 </span>7 <span style=''>
 </span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to mix into [[BehaviorBasedModel]] the RoomLink behavior.
+</span>9 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;RoomLink&lt;/b&gt; behavior.
 </span>10 <span style=''> */
-</span>11 <span style=''>trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CommonReactionsExt {
+</span>11 <span style=''>trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CReactionsExt {
 </span>12 <span style=''>
 </span>13 <span style=''>  /**
-</span>14 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that enables the possibility to move into another
-</span>15 <span style=''>   * [[Room]]. Conceptually, an [[Item]] that exposes a [[RoomLink]] behavior could also be
-</span>16 <span style=''>   * [[Openable]].
-</span>17 <span style=''>   */
-</span>18 <span style=''>  abstract class RoomLink extends ItemBehavior {
-</span>19 <span style=''>    def isOpen: Boolean
-</span>20 <span style=''>    def openable: Option[Openable]
-</span>21 <span style=''>    def endRoom(implicit s: S): RM
-</span>22 <span style=''>    def open: Reaction
-</span>23 <span style=''>    def enter: Reaction
-</span>24 <span style=''>  }
-</span>25 <span style=''>
-</span>26 <span style=''>  /**
-</span>27 <span style=''>   * Standard implementation of the RoomLink.
-</span>28 <span style=''>   *
-</span>29 <span style=''>   * This is a behavior associated to an item that is a link between two rooms (a door, for
-</span>30 <span style=''>   * instance), and that could be opened to pass into it. The user can &quot;Enter&quot; into it, resulting
-</span>31 <span style=''>   * into move it into the connected Room. another room.
-</span>32 <span style=''>   * @param endRoomRef
-</span>33 <span style=''>   *   The room into which the user is projected after entering the object.
-</span>34 <span style=''>   * @param openable
-</span>35 <span style=''>   *   The Openable behavior associated to the roomLink. If not passed, the item can be entered
-</span>36 <span style=''>   *   without opening.
-</span>37 <span style=''>   * @param onEnterExtra
-</span>38 <span style=''>   *   Reaction to be executed into the State when entered, after the standard Reaction. It can be
-</span>39 <span style=''>   *   omitted.
-</span>40 <span style=''>   */
-</span>41 <span style=''>  case class SimpleRoomLink(
-</span>42 <span style=''>    endRoomRef: RoomRef,
-</span>43 <span style=''>    endRoomDirection: Direction,
-</span>44 <span style=''>    openable: Option[Openable] = None,
-</span>45 <span style=''>    onEnterExtra: Reaction = Reaction.empty
-</span>46 <span style=''>  )(implicit subject: I)
-</span>47 <span style=''>    extends RoomLink
-</span>48 <span style=''>    with Delegate {
+</span>14 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; associated to a &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that enables the possibility to
+</span>15 <span style=''>   * change the player location when entered, like a &lt;b&gt;Door&lt;/b&gt;. Conceptually, an subject that
+</span>16 <span style=''>   * exposes a &lt;b&gt;RoomLink&lt;/b&gt; behavior could also be opened before permitting to the player to
+</span>17 <span style=''>   * enter.
+</span>18 <span style=''>   */
+</span>19 <span style=''>  abstract class RoomLink extends ItemBehavior {
+</span>20 <span style=''>
+</span>21 <span style=''>    /**
+</span>22 <span style=''>     * The &quot;openness&quot; state of the subject, as a boolean value. An open subject is conceptually
+</span>23 <span style=''>     * &quot;ready-to-use&quot;, as it can be entered. Always open, if the subject is not openable.
+</span>24 <span style=''>     * @return
+</span>25 <span style=''>     *   True if RoomLink is open, false otherwise.
+</span>26 <span style=''>     */
+</span>27 <span style=''>    def isOpen: Boolean
+</span>28 <span style=''>
+</span>29 <span style=''>    /**
+</span>30 <span style=''>     * If the subject have to be opened before entering, the &lt;b&gt;RoomLink&lt;/b&gt; should include [[Some]]
+</span>31 <span style=''>     * &lt;b&gt;Openable&lt;/b&gt; behavior here. If the subject is set as always open, it can be set to
+</span>32 <span style=''>     * [[None]].
+</span>33 <span style=''>     * @return
+</span>34 <span style=''>     *   [[Some]] with an &lt;b&gt;Openable&lt;/b&gt; behavior if the subject should be opened before entering,
+</span>35 <span style=''>     *   [[None]] otherwise.
+</span>36 <span style=''>     */
+</span>37 <span style=''>    def openable: Option[Openable]
+</span>38 <span style=''>
+</span>39 <span style=''>    /**
+</span>40 <span style=''>     * The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>41 <span style=''>     * subject.
+</span>42 <span style=''>     * @param s
+</span>43 <span style=''>     *   The current &lt;b&gt;State&lt;/b&gt;.
+</span>44 <span style=''>     * @return
+</span>45 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>46 <span style=''>     *   subject.
+</span>47 <span style=''>     */
+</span>48 <span style=''>    def endRoom(implicit s: S): RM
 </span>49 <span style=''>
 </span>50 <span style=''>    /**
-</span>51 <span style=''>     * If an openable is passed, it is passed as father behavior.
-</span>52 <span style=''>     * @return
-</span>53 <span style=''>     *   The father behavior triggers.
-</span>54 <span style=''>     */
-</span>55 <span style=''>    override def delegateTriggers: ItemTriggers =
-</span>56 <span style=''>      </span><span style='background: #AEF1AE'>openable map (_.triggers) getOrElse PartialFunction.empty</span><span style=''>: ItemTriggers
+</span>51 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state. Internally, it should exploit the
+</span>52 <span style=''>     * &lt;b&gt;Openable::open&lt;/b&gt; &lt;b&gt;Reaction&lt;/b&gt;, if an &lt;b&gt;Openable&lt;/b&gt; is passed.
+</span>53 <span style=''>     * @return
+</span>54 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
+</span>55 <span style=''>     */
+</span>56 <span style=''>    def open: Reaction
 </span>57 <span style=''>
-</span>58 <span style=''>    override def receiverTriggers: ItemTriggers = {
-</span>59 <span style=''>      case (Open, _, maybeKey, s)
-</span>60 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.fold(</span><span style='background: #F0ADAD'>true</span><span style='background: #AEF1AE'>)(_.canBeOpened(maybeKey)(s))
-</span>61 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !isOpen &amp;&amp; openable.isDefined</span><span style=''> =&gt;
-</span>62 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
-</span>63 <span style=''>
-</span>64 <span style=''>      case (Enter, _, None, s) if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.fold(true)(_.isOpen)</span><span style=''> =&gt;
-</span>65 <span style=''>        </span><span style='background: #AEF1AE'>enter</span><span style=''>
-</span>66 <span style=''>      case (Enter, _, _, _) =&gt;
-</span>67 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.messages(Messages.FailedToEnter(subject))</span><span style=''>
-</span>68 <span style=''>    }
-</span>69 <span style=''>
-</span>70 <span style=''>    override def enter: Reaction =
-</span>71 <span style=''>      s =&gt;
-</span>72 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.combine(
-</span>73 <span style=''></span><span style='background: #AEF1AE'>          Reactions.enter(endRoom(s)),
-</span>74 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
-</span>75 <span style=''></span><span style='background: #AEF1AE'>        )(s)</span><span style=''>
-</span>76 <span style=''>
-</span>77 <span style=''>    override def open: Reaction =
-</span>78 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
-</span>79 <span style=''></span><span style='background: #AEF1AE'>        openable map (_.open) getOrElse </span><span style='background: #F0ADAD'>Reaction.empty</span><span style='background: #AEF1AE'>,
-</span>80 <span style=''></span><span style='background: #AEF1AE'>        Reaction(
-</span>81 <span style=''></span><span style='background: #AEF1AE'>          (locationRoomLens composeLens roomDirectionsLens)
-</span>82 <span style=''></span><span style='background: #AEF1AE'>            .modify(_ + (endRoomDirection -&gt; endRoomRef))
-</span>83 <span style=''></span><span style='background: #AEF1AE'>        )
-</span>84 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>85 <span style=''>
-</span>86 <span style=''>    override def endRoom(implicit s: S): RM = </span><span style='background: #AEF1AE'>s.rooms(endRoomRef)</span><span style=''>
-</span>87 <span style=''>
-</span>88 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable forall (_.isOpen)</span><span style=''>
-</span>89 <span style=''>  }
-</span>90 <span style=''>
-</span>91 <span style=''>  /**
-</span>92 <span style=''>   * Companion object for [[RoomLink]]. Shortcut for the standard implementation.
-</span>93 <span style=''>   */
-</span>94 <span style=''>  object RoomLink {
-</span>95 <span style=''>
-</span>96 <span style=''>    def builder(
-</span>97 <span style=''>      endRoom: RM,
-</span>98 <span style=''>      endRoomDirection: Direction,
-</span>99 <span style=''>      openableBuilder: Option[I =&gt; Openable] = None,
-</span>100 <span style=''>      onEnterExtra: Reaction = Reaction.empty
-</span>101 <span style=''>    ): I =&gt; RoomLink =
-</span>102 <span style=''>      i =&gt;
-</span>103 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
-</span>104 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
-</span>105 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
-</span>106 <span style=''></span><span style='background: #AEF1AE'>          openableBuilder.map(_(i)),
-</span>107 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
-</span>108 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
-</span>109 <span style=''>
-</span>110 <span style=''>    def openedBuilder(
-</span>111 <span style=''>      endRoom: RM,
-</span>112 <span style=''>      endRoomDirection: Direction,
-</span>113 <span style=''>      onEnterExtra: Reaction = Reaction.empty
-</span>114 <span style=''>    ): I =&gt; RoomLink =
-</span>115 <span style=''>      i =&gt;
-</span>116 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
-</span>117 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
-</span>118 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
-</span>119 <span style=''></span><span style='background: #AEF1AE'>          None,
-</span>120 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
-</span>121 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
-</span>122 <span style=''>
-</span>123 <span style=''>    def closedUnlockedBuilder(
-</span>124 <span style=''>      endRoom: RM,
-</span>125 <span style=''>      endRoomDirection: Direction,
-</span>126 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
-</span>127 <span style=''>      onOpenExtra: Reaction = Reaction.empty
-</span>128 <span style=''>    ): I =&gt; RoomLink =
-</span>129 <span style=''>      i =&gt;
-</span>130 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
-</span>131 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
-</span>132 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
-</span>133 <span style=''></span><span style='background: #AEF1AE'>          Some(Openable.unlockedBuilder(onOpenExtra)(i)),
-</span>134 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
-</span>135 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
-</span>136 <span style=''>
-</span>137 <span style=''>    def closedLockedBuilder(
-</span>138 <span style=''>      key: Key,
-</span>139 <span style=''>      endRoom: RM,
-</span>140 <span style=''>      endRoomDirection: Direction,
-</span>141 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
-</span>142 <span style=''>      onOpenExtra: Reaction = Reaction.empty
-</span>143 <span style=''>    ): I =&gt; RoomLink =
-</span>144 <span style=''>      i =&gt;
-</span>145 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
-</span>146 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
-</span>147 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
-</span>148 <span style=''></span><span style='background: #AEF1AE'>          Some(Openable.lockedBuilder(key, onOpenExtra)(i)),
-</span>149 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
-</span>150 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
-</span>151 <span style=''>  }
-</span>152 <span style=''>}
+</span>58 <span style=''>    /**
+</span>59 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the new location of the player to &lt;b&gt;RoomLink::endRoom&lt;/b&gt;, and
+</span>60 <span style=''>     * notifies the move to the user.
+</span>61 <span style=''>     * @return
+</span>62 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the new location of the player to &lt;b&gt;RoomLink::endRoom&lt;/b&gt;, and
+</span>63 <span style=''>     *   notifies the move to the user.
+</span>64 <span style=''>     */
+</span>65 <span style=''>    def enter: Reaction
+</span>66 <span style=''>  }
+</span>67 <span style=''>
+</span>68 <span style=''>  /**
+</span>69 <span style=''>   * Standard implementation of &lt;b&gt;RoomLink&lt;/b&gt;.
+</span>70 <span style=''>   *
+</span>71 <span style=''>   * @param endRoomRef
+</span>72 <span style=''>   *   The [[RoomRef]] of the &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after
+</span>73 <span style=''>   *   entering the subject.
+</span>74 <span style=''>   * @param endRoomDirection
+</span>75 <span style=''>   *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>76 <span style=''>   * @param openable
+</span>77 <span style=''>   *   If the subject have to be opened before entering, the &lt;b&gt;RoomLink&lt;/b&gt; should include [[Some]]
+</span>78 <span style=''>   *   &lt;b&gt;Openable&lt;/b&gt; behavior here. If the subject is set as always open, it can be set to
+</span>79 <span style=''>   *   [[None]].
+</span>80 <span style=''>   * @param onEnterExtra
+</span>81 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed into the &lt;b&gt;State&lt;/b&gt; when entered, after the standard
+</span>82 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt;. It can be omitted.
+</span>83 <span style=''>   */
+</span>84 <span style=''>  case class SimpleRoomLink(
+</span>85 <span style=''>    endRoomRef: RoomRef,
+</span>86 <span style=''>    endRoomDirection: Direction,
+</span>87 <span style=''>    openable: Option[Openable] = None,
+</span>88 <span style=''>    onEnterExtra: Reaction = Reaction.empty
+</span>89 <span style=''>  )(implicit val subject: I)
+</span>90 <span style=''>    extends RoomLink
+</span>91 <span style=''>    with Delegate {
+</span>92 <span style=''>
+</span>93 <span style=''>    /**
+</span>94 <span style=''>     * If the subject can also be opened, che associated &lt;b&gt;Openable&lt;/b&gt; triggers are used as a
+</span>95 <span style=''>     * delegate.
+</span>96 <span style=''>     * @return
+</span>97 <span style=''>     *   The &lt;b&gt;Openable&lt;/b&gt; triggers, if the openable is passed; an empty [[PartialFunction]]
+</span>98 <span style=''>     *   otherwise.
+</span>99 <span style=''>     */
+</span>100 <span style=''>    override def delegateTriggers: ItemTriggers =
+</span>101 <span style=''>      </span><span style='background: #AEF1AE'>openable map (_.triggers) getOrElse PartialFunction.empty</span><span style=''>: ItemTriggers
+</span>102 <span style=''>
+</span>103 <span style=''>    override def receiverTriggers: ItemTriggers = {
+</span>104 <span style=''>      case (Open, maybeKey, s)
+</span>105 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.forall(_.canBeOpened(maybeKey)(s))
+</span>106 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !isOpen &amp;&amp; openable.isDefined</span><span style=''> =&gt;
+</span>107 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
+</span>108 <span style=''>
+</span>109 <span style=''>      case (Enter, None, s) if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.forall(_.isOpen)</span><span style=''> =&gt;
+</span>110 <span style=''>        </span><span style='background: #AEF1AE'>enter</span><span style=''>
+</span>111 <span style=''>
+</span>112 <span style=''>      case (Enter, _, _) =&gt;
+</span>113 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.messages(CMessages.FailedToEnter(subject))</span><span style=''>
+</span>114 <span style=''>    }
+</span>115 <span style=''>
+</span>116 <span style=''>    override def enter: Reaction =
+</span>117 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>118 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
+</span>119 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.switchLocation(endRoomRef)
+</span>120 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.addMessage(CMessages.Navigated(endRoom(s1)))
+</span>121 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onEnterExtra
+</span>122 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>123 <span style=''>
+</span>124 <span style=''>    override def open: Reaction =
+</span>125 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>126 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- openable map (_.open) getOrElse </span><span style='background: #F0ADAD'>Reaction.empty</span><span style='background: #AEF1AE'>
+</span>127 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- CReactions.addDirectionToLocation(endRoomDirection, endRoom(s1))
+</span>128 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>129 <span style=''>
+</span>130 <span style=''>    override def endRoom(implicit state: S): RM = </span><span style='background: #AEF1AE'>state.rooms(endRoomRef)</span><span style=''>
+</span>131 <span style=''>
+</span>132 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable forall (_.isOpen)</span><span style=''>
+</span>133 <span style=''>  }
+</span>134 <span style=''>
+</span>135 <span style=''>  /**
+</span>136 <span style=''>   * Companion object for &lt;b&gt;RoomLink&lt;/b&gt;.
+</span>137 <span style=''>   */
+</span>138 <span style=''>  object RoomLink {
+</span>139 <span style=''>
+</span>140 <span style=''>    /**
+</span>141 <span style=''>     * Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>142 <span style=''>     *
+</span>143 <span style=''>     * @param endRoom
+</span>144 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>145 <span style=''>     *   subject.
+</span>146 <span style=''>     * @param endRoomDirection
+</span>147 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>148 <span style=''>     * @param openableBuilder
+</span>149 <span style=''>     *   A function that returns the &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject, when the
+</span>150 <span style=''>     *   subject is passed.
+</span>151 <span style=''>     * @param onEnterExtra
+</span>152 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>153 <span style=''>     * @return
+</span>154 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>155 <span style=''>     */
+</span>156 <span style=''>    def builder(
+</span>157 <span style=''>      endRoom: RM,
+</span>158 <span style=''>      endRoomDirection: Direction,
+</span>159 <span style=''>      openableBuilder: Option[I =&gt; Openable] = None,
+</span>160 <span style=''>      onEnterExtra: Reaction = Reaction.empty
+</span>161 <span style=''>    ): I =&gt; RoomLink =
+</span>162 <span style=''>      i =&gt;
+</span>163 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
+</span>164 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
+</span>165 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
+</span>166 <span style=''></span><span style='background: #AEF1AE'>          openableBuilder.map(_(i)),
+</span>167 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
+</span>168 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
+</span>169 <span style=''>
+</span>170 <span style=''>    /**
+</span>171 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is open yet, an can be entered
+</span>172 <span style=''>     * directly.
+</span>173 <span style=''>     *
+</span>174 <span style=''>     * @param endRoom
+</span>175 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>176 <span style=''>     *   subject.
+</span>177 <span style=''>     * @param endRoomDirection
+</span>178 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>179 <span style=''>     * @param onEnterExtra
+</span>180 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>181 <span style=''>     * @return
+</span>182 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>183 <span style=''>     */
+</span>184 <span style=''>    def openedBuilder(
+</span>185 <span style=''>      endRoom: RM,
+</span>186 <span style=''>      endRoomDirection: Direction,
+</span>187 <span style=''>      onEnterExtra: Reaction = Reaction.empty
+</span>188 <span style=''>    ): I =&gt; RoomLink = </span><span style='background: #AEF1AE'>builder(endRoom, endRoomDirection, None, onEnterExtra)</span><span style=''>
+</span>189 <span style=''>
+</span>190 <span style=''>    /**
+</span>191 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is closed without &lt;b&gt;Key&lt;/b&gt;,
+</span>192 <span style=''>     * and can be entered after being opened.
+</span>193 <span style=''>     *
+</span>194 <span style=''>     * @param endRoom
+</span>195 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>196 <span style=''>     *   subject.
+</span>197 <span style=''>     * @param endRoomDirection
+</span>198 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>199 <span style=''>     * @param onEnterExtra
+</span>200 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>201 <span style=''>     * @param onOpenExtra
+</span>202 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>203 <span style=''>     * @return
+</span>204 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>205 <span style=''>     */
+</span>206 <span style=''>    def closedUnlockedBuilder(
+</span>207 <span style=''>      endRoom: RM,
+</span>208 <span style=''>      endRoomDirection: Direction,
+</span>209 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>210 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>211 <span style=''>    ): I =&gt; RoomLink =
+</span>212 <span style=''>      </span><span style='background: #AEF1AE'>builder(endRoom, endRoomDirection, Some(Openable.unlockedBuilder(onOpenExtra)), onEnterExtra)</span><span style=''>
+</span>213 <span style=''>
+</span>214 <span style=''>    /**
+</span>215 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is closed with a &lt;b&gt;Key&lt;/b&gt;, and
+</span>216 <span style=''>     * can be entered after being opened.
+</span>217 <span style=''>     *
+</span>218 <span style=''>     * @param key
+</span>219 <span style=''>     *   The &lt;b&gt;Key&lt;/b&gt; to be used to open the subject.
+</span>220 <span style=''>     * @param endRoom
+</span>221 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>222 <span style=''>     *   subject.
+</span>223 <span style=''>     * @param endRoomDirection
+</span>224 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>225 <span style=''>     * @param onEnterExtra
+</span>226 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>227 <span style=''>     * @param onOpenExtra
+</span>228 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>229 <span style=''>     * @return
+</span>230 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>231 <span style=''>     */
+</span>232 <span style=''>    def closedLockedBuilder(
+</span>233 <span style=''>      key: Key,
+</span>234 <span style=''>      endRoom: RM,
+</span>235 <span style=''>      endRoomDirection: Direction,
+</span>236 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>237 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>238 <span style=''>    ): I =&gt; RoomLink =
+</span>239 <span style=''>      </span><span style='background: #AEF1AE'>builder(
+</span>240 <span style=''></span><span style='background: #AEF1AE'>        endRoom,
+</span>241 <span style=''></span><span style='background: #AEF1AE'>        endRoomDirection,
+</span>242 <span style=''></span><span style='background: #AEF1AE'>        Some(Openable.lockedBuilder(key, onOpenExtra)),
+</span>243 <span style=''></span><span style='background: #AEF1AE'>        onEnterExtra
+</span>244 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>245 <span style=''>  }
+</span>246 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -188,15 +282,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          56
+          101
         </td>
         <td>
-          359
+          421
         </td>
         <td>
-          2138
+          3932
           -
-          2148
+          3942
         </td>
         <td>
           Select
@@ -212,15 +306,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          101
         </td>
         <td>
-          360
+          422
         </td>
         <td>
-          2160
+          3954
           -
-          2181
+          3975
         </td>
         <td>
           TypeApply
@@ -236,15 +330,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          101
         </td>
         <td>
-          361
+          423
         </td>
         <td>
-          2124
+          3918
           -
-          2181
+          3975
         </td>
         <td>
           Apply
@@ -260,15 +354,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          103
         </td>
         <td>
-          379
+          439
         </td>
         <td>
-          2247
+          4041
           -
-          2247
+          4041
         </td>
         <td>
           Apply
@@ -284,15 +378,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          105
         </td>
         <td>
-          362
+          424
         </td>
         <td>
-          2311
+          4102
           -
-          2318
+          4109
         </td>
         <td>
           Select
@@ -308,39 +402,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          105
         </td>
         <td>
-          363
+          425
         </td>
         <td>
-          2337
+          4130
           -
-          2341
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          true
-        </td>
-      </tr><tr>
-        <td>
-          60
-        </td>
-        <td>
-          364
-        </td>
-        <td>
-          2343
-          -
-          2369
+          4156
         </td>
         <td>
           Apply
@@ -356,39 +426,39 @@
         </td>
       </tr><tr>
         <td>
-          60
+          105
         </td>
         <td>
-          365
+          426
         </td>
         <td>
-          2323
+          4114
           -
-          2370
+          4157
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Option.fold
+          scala.Option.forall
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleRoomLink.this.openable.fold[Boolean](true)(((x$2: RoomLinkExt.this.Openable) =&gt; x$2.canBeOpened(maybeKey)(s)))
+          SimpleRoomLink.this.openable.forall(((x$2: RoomLinkExt.this.Openable) =&gt; x$2.canBeOpened(maybeKey)(s)))
         </td>
       </tr><tr>
         <td>
-          61
+          106
         </td>
         <td>
-          366
+          427
         </td>
         <td>
-          2386
+          4173
           -
-          2393
+          4180
         </td>
         <td>
           Select
@@ -404,15 +474,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          106
         </td>
         <td>
-          367
+          428
         </td>
         <td>
-          2397
+          4184
           -
-          2415
+          4202
         </td>
         <td>
           Select
@@ -428,15 +498,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          106
         </td>
         <td>
-          368
+          429
         </td>
         <td>
-          2296
+          4087
           -
-          2415
+          4202
         </td>
         <td>
           Apply
@@ -448,19 +518,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.StateUtils(s).isInLocation(SimpleRoomLink.this.subject).&amp;&amp;(SimpleRoomLink.this.openable.fold[Boolean](true)(((x$2: RoomLinkExt.this.Openable) =&gt; x$2.canBeOpened(maybeKey)(s)))).&amp;&amp;(SimpleRoomLink.this.isOpen.unary_!).&amp;&amp;(SimpleRoomLink.this.openable.isDefined)
+          RoomLinkExt.this.StateUtils(s).isInLocation(SimpleRoomLink.this.subject).&amp;&amp;(SimpleRoomLink.this.openable.forall(((x$2: RoomLinkExt.this.Openable) =&gt; x$2.canBeOpened(maybeKey)(s)))).&amp;&amp;(SimpleRoomLink.this.isOpen.unary_!).&amp;&amp;(SimpleRoomLink.this.openable.isDefined)
         </td>
       </tr><tr>
         <td>
-          62
+          107
         </td>
         <td>
-          369
+          430
         </td>
         <td>
-          2427
+          4214
           -
-          2431
+          4218
         </td>
         <td>
           Select
@@ -476,15 +546,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          109
         </td>
         <td>
-          370
+          431
         </td>
         <td>
-          2482
+          4266
           -
-          2489
+          4273
         </td>
         <td>
           Select
@@ -500,39 +570,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          109
         </td>
         <td>
-          371
+          432
         </td>
         <td>
-          2508
+          4294
           -
-          2512
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          true
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          372
-        </td>
-        <td>
-          2514
-          -
-          2522
+          4302
         </td>
         <td>
           Select
@@ -548,39 +594,39 @@
         </td>
       </tr><tr>
         <td>
-          64
+          109
         </td>
         <td>
-          373
+          433
         </td>
         <td>
-          2494
+          4278
           -
-          2523
+          4303
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Option.fold
+          scala.Option.forall
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleRoomLink.this.openable.fold[Boolean](true)(((x$3: RoomLinkExt.this.Openable) =&gt; x$3.isOpen))
+          SimpleRoomLink.this.openable.forall(((x$3: RoomLinkExt.this.Openable) =&gt; x$3.isOpen))
         </td>
       </tr><tr>
         <td>
-          64
+          109
         </td>
         <td>
-          374
+          434
         </td>
         <td>
-          2467
+          4251
           -
-          2523
+          4303
         </td>
         <td>
           Apply
@@ -592,19 +638,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.StateUtils(s).isInLocation(SimpleRoomLink.this.subject).&amp;&amp;(SimpleRoomLink.this.openable.fold[Boolean](true)(((x$3: RoomLinkExt.this.Openable) =&gt; x$3.isOpen)))
+          RoomLinkExt.this.StateUtils(s).isInLocation(SimpleRoomLink.this.subject).&amp;&amp;(SimpleRoomLink.this.openable.forall(((x$3: RoomLinkExt.this.Openable) =&gt; x$3.isOpen)))
         </td>
       </tr><tr>
         <td>
-          65
+          110
         </td>
         <td>
-          375
+          435
         </td>
         <td>
-          2535
+          4315
           -
-          2540
+          4320
         </td>
         <td>
           Select
@@ -620,15 +666,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          113
         </td>
         <td>
-          376
+          436
         </td>
         <td>
-          2621
+          4400
           -
-          2628
+          4407
         </td>
         <td>
           Select
@@ -644,39 +690,39 @@
         </td>
       </tr><tr>
         <td>
-          67
+          113
         </td>
         <td>
-          377
+          437
         </td>
         <td>
-          2598
+          4376
           -
-          2629
+          4408
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt.Messages.FailedToEnter.apply
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.FailedToEnter.apply
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.Messages.FailedToEnter.apply(SimpleRoomLink.this.subject)
+          RoomLinkExt.this.CMessages.FailedToEnter.apply(SimpleRoomLink.this.subject)
         </td>
       </tr><tr>
         <td>
-          67
+          113
         </td>
         <td>
-          378
+          438
         </td>
         <td>
-          2580
+          4358
           -
-          2630
+          4409
         </td>
         <td>
           Apply
@@ -688,67 +734,293 @@
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.Reaction.messages(RoomLinkExt.this.Messages.FailedToEnter.apply(SimpleRoomLink.this.subject))
+          RoomLinkExt.this.Reaction.messages(RoomLinkExt.this.CMessages.FailedToEnter.apply(SimpleRoomLink.this.subject))
         </td>
       </tr><tr>
         <td>
-          75
+          118
         </td>
         <td>
-          380
+          440
         </td>
         <td>
-          2692
+          4478
           -
-          2784
+          4492
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Function1.apply
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.empty
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.Reaction.combine(RoomLinkExt.this.Reactions.enter(SimpleRoomLink.this.endRoom(s)), SimpleRoomLink.this.onEnterExtra).apply(s)
+          RoomLinkExt.this.Reaction.empty
         </td>
       </tr><tr>
         <td>
-          78
+          118
         </td>
         <td>
-          391
+          450
         </td>
         <td>
-          2826
+          4458
           -
-          3053
+          4658
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.Reaction.combine(SimpleRoomLink.this.openable.map[RoomLinkExt.this.Reaction](((x$4: RoomLinkExt.this.Openable) =&gt; x$4.open)).getOrElse[RoomLinkExt.this.Reaction](RoomLinkExt.this.Reaction.empty), RoomLinkExt.this.Reaction.apply(RoomLinkExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](RoomLinkExt.this.roomDirectionsLens).modify(((x$5: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$5.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](SimpleRoomLink.this.endRoomDirection).-&gt;[io.github.scalaquest.core.model.RoomRef](SimpleRoomLink.this.endRoomRef))))))
+          RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.Reaction.empty).flatMap(((s1: RoomLinkExt.this.S) =&gt; RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.switchLocation(SimpleRoomLink.this.endRoomRef)).flatMap(((x$5: RoomLinkExt.this.S) =&gt; (x$5: RoomLinkExt.this.S @unchecked) match {
+  case _ =&gt; RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.addMessage(RoomLinkExt.this.CMessages.Navigated.apply(SimpleRoomLink.this.endRoom(s1)))).flatMap(((x$4: RoomLinkExt.this.S) =&gt; (x$4: RoomLinkExt.this.S @unchecked) match {
+    case _ =&gt; RoomLinkExt.this.EnhancedReaction(SimpleRoomLink.this.onEnterExtra).map(((s2: RoomLinkExt.this.S) =&gt; s2))
+  }))
+}))))
         </td>
       </tr><tr>
         <td>
-          79
+          119
         </td>
         <td>
-          381
+          441
         </td>
         <td>
-          2866
+          4533
           -
-          2872
+          4543
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.endRoomRef
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.endRoomRef
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          442
+        </td>
+        <td>
+          4507
+          -
+          4544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.switchLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.CReactions.switchLocation(SimpleRoomLink.this.endRoomRef)
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          449
+        </td>
+        <td>
+          4501
+          -
+          4658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.switchLocation(SimpleRoomLink.this.endRoomRef)).flatMap(((x$5: RoomLinkExt.this.S) =&gt; (x$5: RoomLinkExt.this.S @unchecked) match {
+  case _ =&gt; RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.addMessage(RoomLinkExt.this.CMessages.Navigated.apply(SimpleRoomLink.this.endRoom(s1)))).flatMap(((x$4: RoomLinkExt.this.S) =&gt; (x$4: RoomLinkExt.this.S @unchecked) match {
+    case _ =&gt; RoomLinkExt.this.EnhancedReaction(SimpleRoomLink.this.onEnterExtra).map(((s2: RoomLinkExt.this.S) =&gt; s2))
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          443
+        </td>
+        <td>
+          4601
+          -
+          4612
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.endRoom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.endRoom(s1)
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          444
+        </td>
+        <td>
+          4581
+          -
+          4613
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Navigated.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.CMessages.Navigated.apply(SimpleRoomLink.this.endRoom(s1))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          445
+        </td>
+        <td>
+          4559
+          -
+          4614
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.addMessage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.CReactions.addMessage(RoomLinkExt.this.CMessages.Navigated.apply(SimpleRoomLink.this.endRoom(s1)))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          448
+        </td>
+        <td>
+          4553
+          -
+          4658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.addMessage(RoomLinkExt.this.CMessages.Navigated.apply(SimpleRoomLink.this.endRoom(s1)))).flatMap(((x$4: RoomLinkExt.this.S) =&gt; (x$4: RoomLinkExt.this.S @unchecked) match {
+  case _ =&gt; RoomLinkExt.this.EnhancedReaction(SimpleRoomLink.this.onEnterExtra).map(((s2: RoomLinkExt.this.S) =&gt; s2))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          446
+        </td>
+        <td>
+          4629
+          -
+          4641
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.onEnterExtra
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.onEnterExtra
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          447
+        </td>
+        <td>
+          4623
+          -
+          4658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.EnhancedReaction(SimpleRoomLink.this.onEnterExtra).map(((s2: RoomLinkExt.this.S) =&gt; s2))
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          451
+        </td>
+        <td>
+          4734
+          -
+          4740
         </td>
         <td>
           Select
@@ -760,19 +1032,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$4.open
+          x$6.open
         </td>
       </tr><tr>
         <td>
-          79
+          126
         </td>
         <td>
-          382
+          452
         </td>
         <td>
-          2884
+          4752
           -
-          2898
+          4766
         </td>
         <td>
           Select
@@ -788,15 +1060,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          126
         </td>
         <td>
-          383
+          453
         </td>
         <td>
-          2852
+          4720
           -
-          2898
+          4766
         </td>
         <td>
           Apply
@@ -808,67 +1080,43 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleRoomLink.this.openable.map[RoomLinkExt.this.Reaction](((x$4: RoomLinkExt.this.Openable) =&gt; x$4.open)).getOrElse[RoomLinkExt.this.Reaction](RoomLinkExt.this.Reaction.empty)
+          SimpleRoomLink.this.openable.map[RoomLinkExt.this.Reaction](((x$6: RoomLinkExt.this.Openable) =&gt; x$6.open)).getOrElse[RoomLinkExt.this.Reaction](RoomLinkExt.this.Reaction.empty)
         </td>
       </tr><tr>
         <td>
-          80
+          126
         </td>
         <td>
-          390
+          458
         </td>
         <td>
-          2908
+          4700
           -
-          3045
+          4862
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.apply
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.Reaction.apply(RoomLinkExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](RoomLinkExt.this.roomDirectionsLens).modify(((x$5: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$5.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](SimpleRoomLink.this.endRoomDirection).-&gt;[io.github.scalaquest.core.model.RoomRef](SimpleRoomLink.this.endRoomRef)))))
+          RoomLinkExt.this.EnhancedReaction(SimpleRoomLink.this.openable.map[RoomLinkExt.this.Reaction](((x$6: RoomLinkExt.this.Openable) =&gt; x$6.open)).getOrElse[RoomLinkExt.this.Reaction](RoomLinkExt.this.Reaction.empty)).flatMap(((s1: RoomLinkExt.this.S) =&gt; RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.addDirectionToLocation(SimpleRoomLink.this.endRoomDirection, SimpleRoomLink.this.endRoom(s1))).map(((s2: RoomLinkExt.this.S) =&gt; s2))))
         </td>
       </tr><tr>
         <td>
-          81
+          127
         </td>
         <td>
-          384
+          454
         </td>
         <td>
-          2958
+          4815
           -
-          2976
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.Model.roomDirectionsLens
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          RoomLinkExt.this.roomDirectionsLens
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          385
-        </td>
-        <td>
-          3003
-          -
-          3019
+          4831
         </td>
         <td>
           Select
@@ -884,15 +1132,87 @@
         </td>
       </tr><tr>
         <td>
-          82
+          127
         </td>
         <td>
-          386
+          455
         </td>
         <td>
-          3023
+          4833
           -
-          3033
+          4844
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.endRoom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleRoomLink.this.endRoom(s1)
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          456
+        </td>
+        <td>
+          4781
+          -
+          4845
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.addDirectionToLocation
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.CReactions.addDirectionToLocation(SimpleRoomLink.this.endRoomDirection, SimpleRoomLink.this.endRoom(s1))
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          457
+        </td>
+        <td>
+          4775
+          -
+          4862
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.EnhancedReaction(RoomLinkExt.this.CReactions.addDirectionToLocation(SimpleRoomLink.this.endRoomDirection, SimpleRoomLink.this.endRoom(s1))).map(((s2: RoomLinkExt.this.S) =&gt; s2))
+        </td>
+      </tr><tr>
+        <td>
+          130
+        </td>
+        <td>
+          459
+        </td>
+        <td>
+          4926
+          -
+          4936
         </td>
         <td>
           Select
@@ -908,111 +1228,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          130
         </td>
         <td>
-          387
+          460
         </td>
         <td>
-          3003
+          4914
           -
-          3033
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](SimpleRoomLink.this.endRoomDirection).-&gt;[io.github.scalaquest.core.model.RoomRef](SimpleRoomLink.this.endRoomRef)
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          388
-        </td>
-        <td>
-          2998
-          -
-          3034
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.MapOps.+
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          x$5.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](SimpleRoomLink.this.endRoomDirection).-&gt;[io.github.scalaquest.core.model.RoomRef](SimpleRoomLink.this.endRoomRef))
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          389
-        </td>
-        <td>
-          2929
-          -
-          3035
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          monocle.PLens.modify
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          RoomLinkExt.this.locationRoomLens.composeLens[Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef], Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]](RoomLinkExt.this.roomDirectionsLens).modify(((x$5: Map[io.github.scalaquest.core.model.Direction,io.github.scalaquest.core.model.RoomRef]) =&gt; x$5.+[io.github.scalaquest.core.model.RoomRef](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.Direction](SimpleRoomLink.this.endRoomDirection).-&gt;[io.github.scalaquest.core.model.RoomRef](SimpleRoomLink.this.endRoomRef))))
-        </td>
-      </tr><tr>
-        <td>
-          86
-        </td>
-        <td>
-          392
-        </td>
-        <td>
-          3109
-          -
-          3119
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.endRoomRef
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          SimpleRoomLink.this.endRoomRef
-        </td>
-      </tr><tr>
-        <td>
-          86
-        </td>
-        <td>
-          393
-        </td>
-        <td>
-          3101
-          -
-          3120
+          4937
         </td>
         <td>
           Apply
@@ -1024,19 +1248,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          s.rooms.apply(SimpleRoomLink.this.endRoomRef)
+          state.rooms.apply(SimpleRoomLink.this.endRoomRef)
         </td>
       </tr><tr>
         <td>
-          88
+          132
         </td>
         <td>
-          394
+          461
         </td>
         <td>
-          3174
+          4991
           -
-          3182
+          4999
         </td>
         <td>
           Select
@@ -1048,19 +1272,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$6.isOpen
+          x$7.isOpen
         </td>
       </tr><tr>
         <td>
-          88
+          132
         </td>
         <td>
-          395
+          462
         </td>
         <td>
-          3157
+          4974
           -
-          3183
+          5000
         </td>
         <td>
           Apply
@@ -1072,19 +1296,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          SimpleRoomLink.this.openable.forall(((x$6: RoomLinkExt.this.Openable) =&gt; x$6.isOpen))
+          SimpleRoomLink.this.openable.forall(((x$7: RoomLinkExt.this.Openable) =&gt; x$7.isOpen))
         </td>
       </tr><tr>
         <td>
-          108
+          168
         </td>
         <td>
-          396
+          463
         </td>
         <td>
-          3516
+          5989
           -
-          3655
+          6128
         </td>
         <td>
           Apply
@@ -1096,79 +1320,199 @@
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.SimpleRoomLink.apply(endRoom.ref, endRoomDirection, openableBuilder.map[RoomLinkExt.this.Openable](((x$7: RoomLinkExt.this.I =&gt; RoomLinkExt.this.Openable) =&gt; x$7.apply(i))), onEnterExtra)(i)
+          RoomLinkExt.this.SimpleRoomLink.apply(endRoom.ref, endRoomDirection, openableBuilder.map[RoomLinkExt.this.Openable](((x$8: RoomLinkExt.this.I =&gt; RoomLinkExt.this.Openable) =&gt; x$8.apply(i))), onEnterExtra)(i)
         </td>
       </tr><tr>
         <td>
-          121
+          188
         </td>
         <td>
-          397
+          464
         </td>
         <td>
-          3822
+          6896
           -
-          3940
+          6900
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.apply
+          scala.None
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.SimpleRoomLink.apply(endRoom.ref, endRoomDirection, scala.None, onEnterExtra)(i)
+          scala.None
         </td>
       </tr><tr>
         <td>
-          135
+          188
         </td>
         <td>
-          398
+          465
         </td>
         <td>
-          4161
+          6861
           -
-          4321
+          6915
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.apply
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.builder
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.SimpleRoomLink.apply(endRoom.ref, endRoomDirection, scala.Some.apply[RoomLinkExt.this.Openable](RoomLinkExt.this.Openable.unlockedBuilder(onOpenExtra).apply(i)), onEnterExtra)(i)
+          RoomLink.this.builder(endRoom, endRoomDirection, scala.None, onEnterExtra)
         </td>
       </tr><tr>
         <td>
-          150
+          212
         </td>
         <td>
-          399
+          466
         </td>
         <td>
-          4556
+          7870
           -
-          4719
+          7907
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.SimpleRoomLink.apply
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.Openable.unlockedBuilder
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          RoomLinkExt.this.SimpleRoomLink.apply(endRoom.ref, endRoomDirection, scala.Some.apply[RoomLinkExt.this.Openable](RoomLinkExt.this.Openable.lockedBuilder(key, onOpenExtra).apply(i)), onEnterExtra)(i)
+          RoomLinkExt.this.Openable.unlockedBuilder(onOpenExtra)
+        </td>
+      </tr><tr>
+        <td>
+          212
+        </td>
+        <td>
+          467
+        </td>
+        <td>
+          7865
+          -
+          7908
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[RoomLinkExt.this.I =&gt; RoomLinkExt.this.Openable](RoomLinkExt.this.Openable.unlockedBuilder(onOpenExtra))
+        </td>
+      </tr><tr>
+        <td>
+          212
+        </td>
+        <td>
+          468
+        </td>
+        <td>
+          7830
+          -
+          7923
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLink.this.builder(endRoom, endRoomDirection, scala.Some.apply[RoomLinkExt.this.I =&gt; RoomLinkExt.this.Openable](RoomLinkExt.this.Openable.unlockedBuilder(onOpenExtra)), onEnterExtra)
+        </td>
+      </tr><tr>
+        <td>
+          239
+        </td>
+        <td>
+          471
+        </td>
+        <td>
+          8925
+          -
+          9061
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLink.this.builder(endRoom, endRoomDirection, scala.Some.apply[RoomLinkExt.this.I =&gt; RoomLinkExt.this.Openable](RoomLinkExt.this.Openable.lockedBuilder(key, onOpenExtra)), onEnterExtra)
+        </td>
+      </tr><tr>
+        <td>
+          242
+        </td>
+        <td>
+          469
+        </td>
+        <td>
+          8990
+          -
+          9030
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.Openable.lockedBuilder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoomLinkExt.this.Openable.lockedBuilder(key, onOpenExtra)
+        </td>
+      </tr><tr>
+        <td>
+          242
+        </td>
+        <td>
+          470
+        </td>
+        <td>
+          8985
+          -
+          9031
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[RoomLinkExt.this.I =&gt; RoomLinkExt.this.Openable](RoomLinkExt.this.Openable.lockedBuilder(key, onOpenExtra))
         </td>
       </tr>
     </table>

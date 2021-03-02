@@ -1,0 +1,115 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/groundBehaviors/impl/GenericGroundBehaviorExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>6 <span style=''>
+</span>7 <span style=''>/**
+</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;GenericGroundBehavior
+</span>9 <span style=''> * GroundBehavior&lt;/b&gt;.
+</span>10 <span style=''> */
+</span>11 <span style=''>trait GenericGroundBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * A GroundBehavior with some triggers. It is useful in order to wrap &lt;b&gt;GroundBehavior&lt;/b&gt; into a
+</span>15 <span style=''>   * facility builder.
+</span>16 <span style=''>   */
+</span>17 <span style=''>  abstract class GenericGroundBehavior extends GroundBehavior {
+</span>18 <span style=''>
+</span>19 <span style=''>    /**
+</span>20 <span style=''>     * &lt;b&gt;GroundTriggers&lt;/b&gt; associated to the behavior.
+</span>21 <span style=''>     * @return
+</span>22 <span style=''>     *   Triggers associated to the behavior.
+</span>23 <span style=''>     */
+</span>24 <span style=''>    def triggers: GroundTriggers
+</span>25 <span style=''>  }
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * Standard implementation of &lt;b&gt;GenericGroundBehavior&lt;/b&gt;.
+</span>29 <span style=''>   */
+</span>30 <span style=''>  case class SimpleGenericGroundBehavior(
+</span>31 <span style=''>    override val triggers: GroundTriggers
+</span>32 <span style=''>  ) extends GenericGroundBehavior
+</span>33 <span style=''>
+</span>34 <span style=''>  /**
+</span>35 <span style=''>   * Companion object for &lt;b&gt;GenericGroundBehavior&lt;/b&gt;.
+</span>36 <span style=''>   */
+</span>37 <span style=''>  object GenericGroundBehavior {
+</span>38 <span style=''>
+</span>39 <span style=''>    /**
+</span>40 <span style=''>     * A &lt;b&gt;GenericBehavior&lt;/b&gt; built by its triggers.
+</span>41 <span style=''>     * @param triggers
+</span>42 <span style=''>     *   The &lt;b&gt;GroundTriggers&lt;/b&gt; associated to the ground.
+</span>43 <span style=''>     * @return
+</span>44 <span style=''>     *   A &lt;b&gt;GenericBehavior&lt;/b&gt; built by its triggers.
+</span>45 <span style=''>     */
+</span>46 <span style=''>    def apply(triggers: GroundTriggers = PartialFunction.empty): GenericGroundBehavior =
+</span>47 <span style=''>      </span><span style='background: #F0ADAD'>SimpleGenericGroundBehavior(triggers)</span><span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          277
+        </td>
+        <td>
+          1537
+          -
+          1574
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl.GenericGroundBehaviorExt.SimpleGenericGroundBehavior.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GenericGroundBehaviorExt.this.SimpleGenericGroundBehavior.apply(triggers)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

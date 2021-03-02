@@ -29,68 +29,123 @@
 </span>5 <span style=''>import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 </span>6 <span style=''>
 </span>7 <span style=''>/**
-</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Door Item.
+</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Door BehaviorBasedItem&lt;/b&gt;.
 </span>9 <span style=''> */
 </span>10 <span style=''>trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
 </span>11 <span style=''>
 </span>12 <span style=''>  /**
-</span>13 <span style=''>   * A [[BehaviorBasedItem]] that should work as a link between two different [[Room]] s.
+</span>13 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that should work as a link between two different rooms.
 </span>14 <span style=''>   */
 </span>15 <span style=''>  trait Door extends BehaviorBasedItem {
-</span>16 <span style=''>    def isOpen: Boolean
-</span>17 <span style=''>    def roomLink: RoomLink
-</span>18 <span style=''>  }
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * Standard implementation of the common [[Door]].
-</span>22 <span style=''>   */
-</span>23 <span style=''>  case class SimpleDoor(
-</span>24 <span style=''>    description: ItemDescription,
-</span>25 <span style=''>    ref: ItemRef,
-</span>26 <span style=''>    roomLinkBuilder: I =&gt; RoomLink,
-</span>27 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>28 <span style=''>  ) extends Door {
-</span>29 <span style=''>    override val roomLink: RoomLink           = </span><span style='background: #AEF1AE'>roomLinkBuilder(this)</span><span style=''>
-</span>30 <span style=''>    override val behaviors: Seq[ItemBehavior] = roomLink </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
-</span>31 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>roomLink.isOpen</span><span style=''>
-</span>32 <span style=''>  }
-</span>33 <span style=''>
-</span>34 <span style=''>  /**
-</span>35 <span style=''>   * Companion object for [[Door]]. Makes the initialization more succinct.
-</span>36 <span style=''>   */
-</span>37 <span style=''>  object Door {
-</span>38 <span style=''>
-</span>39 <span style=''>    def apply(
-</span>40 <span style=''>      description: ItemDescription,
-</span>41 <span style=''>      roomLinkBuilder: I =&gt; RoomLink,
-</span>42 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>43 <span style=''>    ): Door = </span><span style='background: #AEF1AE'>SimpleDoor(description, ItemRef(description), roomLinkBuilder, extraBehavBuilder)</span><span style=''>
-</span>44 <span style=''>
-</span>45 <span style=''>    def createLockedWithKey(
-</span>46 <span style=''>      key: Key,
-</span>47 <span style=''>      doorDesc: ItemDescription,
-</span>48 <span style=''>      endRoom: RM,
-</span>49 <span style=''>      endRoomDirection: Direction,
-</span>50 <span style=''>      onOpenExtra: Reaction = Reaction.empty,
-</span>51 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
-</span>52 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>53 <span style=''>    ): (Door, Key) = {
-</span>54 <span style=''>      val door = </span><span style='background: #AEF1AE'>apply(
-</span>55 <span style=''></span><span style='background: #AEF1AE'>        description = doorDesc,
-</span>56 <span style=''></span><span style='background: #AEF1AE'>        RoomLink.closedLockedBuilder(
-</span>57 <span style=''></span><span style='background: #AEF1AE'>          endRoom = endRoom,
-</span>58 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection = endRoomDirection,
-</span>59 <span style=''></span><span style='background: #AEF1AE'>          key = key,
-</span>60 <span style=''></span><span style='background: #AEF1AE'>          onOpenExtra = onOpenExtra,
-</span>61 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra = onEnterExtra
-</span>62 <span style=''></span><span style='background: #AEF1AE'>        ),
-</span>63 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder = extraBehavBuilders
-</span>64 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>65 <span style=''>
-</span>66 <span style=''>      </span><span style='background: #AEF1AE'>(door, key)</span><span style=''>
-</span>67 <span style=''>    }
-</span>68 <span style=''>  }
-</span>69 <span style=''>}
+</span>16 <span style=''>
+</span>17 <span style=''>    /**
+</span>18 <span style=''>     * The &quot;openness&quot; state of the item, as a boolean value. Initially closed.
+</span>19 <span style=''>     * @return
+</span>20 <span style=''>     *   True if item is already opened, False otherwise.
+</span>21 <span style=''>     */
+</span>22 <span style=''>    def isOpen: Boolean
+</span>23 <span style=''>
+</span>24 <span style=''>    /**
+</span>25 <span style=''>     * A &lt;b&gt;Door&lt;/b&gt; has always an associated &lt;b&gt;RoomLink&lt;/b&gt; behavior, that can be referenced from
+</span>26 <span style=''>     * here.
+</span>27 <span style=''>     * @return
+</span>28 <span style=''>     *   The &lt;b&gt;RoomLink&lt;/b&gt; behavior of the item.
+</span>29 <span style=''>     */
+</span>30 <span style=''>    def roomLink: RoomLink
+</span>31 <span style=''>  }
+</span>32 <span style=''>
+</span>33 <span style=''>  /**
+</span>34 <span style=''>   * Standard implementation of &lt;b&gt;Door&lt;/b&gt;.
+</span>35 <span style=''>   *
+</span>36 <span style=''>   * @param description
+</span>37 <span style=''>   *   An [[ItemDescription]] for the item.
+</span>38 <span style=''>   * @param ref
+</span>39 <span style=''>   *   A unique reference to the item.
+</span>40 <span style=''>   * @param roomLinkBuilder
+</span>41 <span style=''>   *   A builder for the &lt;b&gt;RoomLink&lt;/b&gt; behavior associated to the item.
+</span>42 <span style=''>   * @param extraBehavBuilders
+</span>43 <span style=''>   *   Additional behaviors associated to the item.
+</span>44 <span style=''>   */
+</span>45 <span style=''>  case class SimpleDoor(
+</span>46 <span style=''>    description: ItemDescription,
+</span>47 <span style=''>    ref: ItemRef,
+</span>48 <span style=''>    roomLinkBuilder: I =&gt; RoomLink,
+</span>49 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>50 <span style=''>  ) extends Door {
+</span>51 <span style=''>    override val roomLink: RoomLink           = </span><span style='background: #AEF1AE'>roomLinkBuilder(this)</span><span style=''>
+</span>52 <span style=''>    override val behaviors: Seq[ItemBehavior] = roomLink </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
+</span>53 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>roomLink.isOpen</span><span style=''>
+</span>54 <span style=''>  }
+</span>55 <span style=''>
+</span>56 <span style=''>  /**
+</span>57 <span style=''>   * Companion object for &lt;b&gt;Door&lt;/b&gt;.
+</span>58 <span style=''>   */
+</span>59 <span style=''>  object Door {
+</span>60 <span style=''>
+</span>61 <span style=''>    /**
+</span>62 <span style=''>     * Creates a standard &lt;b&gt;Door&lt;/b&gt;.
+</span>63 <span style=''>     * @param description
+</span>64 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>65 <span style=''>     * @param roomLinkBuilder
+</span>66 <span style=''>     *   A builder for the &lt;b&gt;RoomLink&lt;/b&gt; behavior associated to the item.
+</span>67 <span style=''>     * @param extraBehavBuilders
+</span>68 <span style=''>     *   Additional behaviors associated to the item.
+</span>69 <span style=''>     * @return
+</span>70 <span style=''>     *   An instance of a standard &lt;b&gt;Door&lt;/b&gt;.
+</span>71 <span style=''>     */
+</span>72 <span style=''>    def apply(
+</span>73 <span style=''>      description: ItemDescription,
+</span>74 <span style=''>      roomLinkBuilder: I =&gt; RoomLink,
+</span>75 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>76 <span style=''>    ): Door = </span><span style='background: #AEF1AE'>SimpleDoor(description, ItemRef(description), roomLinkBuilder, extraBehavBuilders)</span><span style=''>
+</span>77 <span style=''>
+</span>78 <span style=''>    /**
+</span>79 <span style=''>     * Creates a Door-Key pair, in which the given &lt;b&gt;Key&lt;/b&gt; can be used to open the associated
+</span>80 <span style=''>     * &lt;b&gt;Door&lt;/b&gt;.
+</span>81 <span style=''>     *
+</span>82 <span style=''>     * @param key
+</span>83 <span style=''>     *   The &lt;b&gt;Key&lt;/b&gt; to use to open the &lt;b&gt;Door&lt;/b&gt;.
+</span>84 <span style=''>     * @param doorDesc
+</span>85 <span style=''>     *   An [[ItemDescription]] for the &lt;b&gt;Door&lt;/b&gt;.
+</span>86 <span style=''>     * @param endRoom
+</span>87 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>88 <span style=''>     *   &lt;b&gt;Door&lt;/b&gt;.
+</span>89 <span style=''>     * @param endRoomDirection
+</span>90 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>91 <span style=''>     * @param onOpenExtra
+</span>92 <span style=''>     *   extra reaction generated when door is opened.
+</span>93 <span style=''>     * @param onEnterExtra
+</span>94 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>95 <span style=''>     * @param extraBehavBuilders
+</span>96 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>97 <span style=''>     * @return
+</span>98 <span style=''>     *   A tuple containing the generated &lt;b&gt;Door&lt;/b&gt;, and the &lt;b&gt;Key&lt;/b&gt; required to open it.
+</span>99 <span style=''>     */
+</span>100 <span style=''>    def createLockedWithKey(
+</span>101 <span style=''>      key: Key,
+</span>102 <span style=''>      doorDesc: ItemDescription,
+</span>103 <span style=''>      endRoom: RM,
+</span>104 <span style=''>      endRoomDirection: Direction,
+</span>105 <span style=''>      onOpenExtra: Reaction = Reaction.empty,
+</span>106 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>107 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>108 <span style=''>    ): (Door, Key) = {
+</span>109 <span style=''>      val door = </span><span style='background: #AEF1AE'>apply(
+</span>110 <span style=''></span><span style='background: #AEF1AE'>        description = doorDesc,
+</span>111 <span style=''></span><span style='background: #AEF1AE'>        RoomLink.closedLockedBuilder(
+</span>112 <span style=''></span><span style='background: #AEF1AE'>          endRoom = endRoom,
+</span>113 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection = endRoomDirection,
+</span>114 <span style=''></span><span style='background: #AEF1AE'>          key = key,
+</span>115 <span style=''></span><span style='background: #AEF1AE'>          onOpenExtra = onOpenExtra,
+</span>116 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra = onEnterExtra
+</span>117 <span style=''></span><span style='background: #AEF1AE'>        ),
+</span>118 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilders = extraBehavBuilders
+</span>119 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>120 <span style=''>
+</span>121 <span style=''>      </span><span style='background: #AEF1AE'>(door, key)</span><span style=''>
+</span>122 <span style=''>    }
+</span>123 <span style=''>  }
+</span>124 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -105,15 +160,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          29
+          51
         </td>
         <td>
-          417
+          500
         </td>
         <td>
-          968
+          1656
           -
-          989
+          1677
         </td>
         <td>
           Apply
@@ -129,15 +184,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          52
         </td>
         <td>
-          418
+          501
         </td>
         <td>
-          1047
+          1735
           -
-          1081
+          1769
         </td>
         <td>
           Apply
@@ -153,15 +208,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          53
         </td>
         <td>
-          419
+          502
         </td>
         <td>
-          1130
+          1818
           -
-          1145
+          1833
         </td>
         <td>
           Select
@@ -177,15 +232,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          76
         </td>
         <td>
-          420
+          503
         </td>
         <td>
-          1443
+          2478
           -
-          1463
+          2498
         </td>
         <td>
           Apply
@@ -201,15 +256,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          76
         </td>
         <td>
-          421
+          504
         </td>
         <td>
-          1419
+          2454
           -
-          1500
+          2536
         </td>
         <td>
           Apply
@@ -221,19 +276,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          DoorExt.this.SimpleDoor.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), roomLinkBuilder, extraBehavBuilder)
+          DoorExt.this.SimpleDoor.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), roomLinkBuilder, extraBehavBuilders)
         </td>
       </tr><tr>
         <td>
-          54
+          109
         </td>
         <td>
-          423
+          506
         </td>
         <td>
-          1828
+          3809
           -
-          2142
+          4124
         </td>
         <td>
           Apply
@@ -256,15 +311,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          111
         </td>
         <td>
-          422
+          505
         </td>
         <td>
-          1875
+          3856
           -
-          2086
+          4067
         </td>
         <td>
           Apply
@@ -280,15 +335,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          121
         </td>
         <td>
-          424
+          507
         </td>
         <td>
-          2150
+          4132
           -
-          2161
+          4143
         </td>
         <td>
           Apply

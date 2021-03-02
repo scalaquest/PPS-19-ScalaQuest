@@ -1,0 +1,115 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/core/model/behaviorBased/commons/itemBehaviors/impl/GenericItemBehaviorExt.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
+</span>2 <span style=''>
+</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>6 <span style=''>
+</span>7 <span style=''>/**
+</span>8 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
+</span>9 <span style=''> */
+</span>10 <span style=''>trait GenericItemBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
+</span>11 <span style=''>
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   * An ItemBehavior with some triggers. It is useful in order to wrap &lt;b&gt;ItemBehavior&lt;/b&gt; into a
+</span>14 <span style=''>   * facility builder.
+</span>15 <span style=''>   */
+</span>16 <span style=''>  abstract class GenericItemBehavior extends ItemBehavior {
+</span>17 <span style=''>
+</span>18 <span style=''>    /**
+</span>19 <span style=''>     * &lt;b&gt;ItemTriggers&lt;/b&gt; associated to the behavior.
+</span>20 <span style=''>     * @return
+</span>21 <span style=''>     *   Triggers associated to the behavior.
+</span>22 <span style=''>     */
+</span>23 <span style=''>    def triggers: ItemTriggers
+</span>24 <span style=''>  }
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * Standard implementation of &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
+</span>28 <span style=''>   */
+</span>29 <span style=''>  case class SimpleGenericItemBehavior(
+</span>30 <span style=''>    override val triggers: ItemTriggers
+</span>31 <span style=''>  )(implicit val subject: I)
+</span>32 <span style=''>    extends GenericItemBehavior
+</span>33 <span style=''>
+</span>34 <span style=''>  /**
+</span>35 <span style=''>   * Companion object for &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
+</span>36 <span style=''>   */
+</span>37 <span style=''>  object GenericItemBehavior {
+</span>38 <span style=''>
+</span>39 <span style=''>    /**
+</span>40 <span style=''>     * A function that builds a &lt;b&gt;GenericBehavior&lt;/b&gt; given a subject.
+</span>41 <span style=''>     * @param triggers
+</span>42 <span style=''>     *   The &lt;b&gt;ItemTriggers&lt;/b&gt; associated to the subject.
+</span>43 <span style=''>     * @return
+</span>44 <span style=''>     *   A function that builds a &lt;b&gt;GenericBehavior&lt;/b&gt; given a subject.
+</span>45 <span style=''>     */
+</span>46 <span style=''>    def builder(triggers: ItemTriggers = PartialFunction.empty): I =&gt; GenericItemBehavior =
+</span>47 <span style=''>      </span><span style='background: #F0ADAD'>SimpleGenericItemBehavior(triggers)(_)</span><span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          372
+        </td>
+        <td>
+          1557
+          -
+          1595
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.GenericItemBehaviorExt.SimpleGenericItemBehavior.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GenericItemBehaviorExt.this.SimpleGenericItemBehavior.apply(triggers)(x$1)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

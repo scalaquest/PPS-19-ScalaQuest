@@ -29,44 +29,71 @@
 </span>5 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 </span>6 <span style=''>
 </span>7 <span style=''>/**
-</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Food Item.
+</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Food BehaviorBasedItem&lt;/b&gt;.
 </span>9 <span style=''> */
 </span>10 <span style=''>trait FoodExt extends BehaviorBasedModel with EatableExt {
 </span>11 <span style=''>
 </span>12 <span style=''>  /**
-</span>13 <span style=''>   * A [[BehaviorBasedItem]] that can be eaten by the player.
+</span>13 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be eaten by the player.
 </span>14 <span style=''>   */
 </span>15 <span style=''>  trait Food extends BehaviorBasedItem {
-</span>16 <span style=''>    def eatable: Eatable
-</span>17 <span style=''>  }
-</span>18 <span style=''>
-</span>19 <span style=''>  /**
-</span>20 <span style=''>   * Standard implementation of the [[Food]] Item.
-</span>21 <span style=''>   */
-</span>22 <span style=''>  case class SimpleFood(
-</span>23 <span style=''>    description: ItemDescription,
-</span>24 <span style=''>    ref: ItemRef,
-</span>25 <span style=''>    eatableBuilder: I =&gt; Eatable,
-</span>26 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>27 <span style=''>  ) extends Food {
-</span>28 <span style=''>    final override val eatable: Eatable       = </span><span style='background: #AEF1AE'>eatableBuilder(this)</span><span style=''>
-</span>29 <span style=''>    override val behaviors: Seq[ItemBehavior] = eatable </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
-</span>30 <span style=''>  }
-</span>31 <span style=''>
-</span>32 <span style=''>  /**
-</span>33 <span style=''>   * Companion object for [[Food]]. Makes the initialization more succinct.
-</span>34 <span style=''>   */
-</span>35 <span style=''>  object Food {
-</span>36 <span style=''>
-</span>37 <span style=''>    def apply(
-</span>38 <span style=''>      description: ItemDescription,
-</span>39 <span style=''>      eatableBuilder: I =&gt; Eatable,
-</span>40 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>41 <span style=''>    ): Food = {
-</span>42 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), eatableBuilder, extraBehavBuilders)</span><span style=''>
-</span>43 <span style=''>    }
-</span>44 <span style=''>  }
-</span>45 <span style=''>}
+</span>16 <span style=''>
+</span>17 <span style=''>    /**
+</span>18 <span style=''>     * A &lt;b&gt;Food&lt;/b&gt; has always an associated &lt;b&gt;Eatable&lt;/b&gt; behavior, that can be referenced from
+</span>19 <span style=''>     * here.
+</span>20 <span style=''>     * @return
+</span>21 <span style=''>     *   The &lt;b&gt;Eatable&lt;/b&gt; behavior of the item.
+</span>22 <span style=''>     */
+</span>23 <span style=''>    def eatable: Eatable
+</span>24 <span style=''>  }
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * Standard implementation of &lt;b&gt;Food&lt;/b&gt;.
+</span>28 <span style=''>   *
+</span>29 <span style=''>   * @param description
+</span>30 <span style=''>   *   An [[ItemDescription]] for the item.
+</span>31 <span style=''>   * @param ref
+</span>32 <span style=''>   *   A unique reference to the item.
+</span>33 <span style=''>   * @param eatableBuilder
+</span>34 <span style=''>   *   A builder for the &lt;b&gt;Eatable&lt;/b&gt; behavior associated to the item.
+</span>35 <span style=''>   * @param extraBehavBuilders
+</span>36 <span style=''>   *   Additional behaviors associated to the item.
+</span>37 <span style=''>   */
+</span>38 <span style=''>  case class SimpleFood(
+</span>39 <span style=''>    description: ItemDescription,
+</span>40 <span style=''>    ref: ItemRef,
+</span>41 <span style=''>    eatableBuilder: I =&gt; Eatable,
+</span>42 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>43 <span style=''>  ) extends Food {
+</span>44 <span style=''>    final override val eatable: Eatable       = </span><span style='background: #AEF1AE'>eatableBuilder(this)</span><span style=''>
+</span>45 <span style=''>    override val behaviors: Seq[ItemBehavior] = eatable </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
+</span>46 <span style=''>  }
+</span>47 <span style=''>
+</span>48 <span style=''>  /**
+</span>49 <span style=''>   * Companion object for &lt;b&gt;Food&lt;/b&gt;.
+</span>50 <span style=''>   */
+</span>51 <span style=''>  object Food {
+</span>52 <span style=''>
+</span>53 <span style=''>    /**
+</span>54 <span style=''>     * Creates a standard &lt;b&gt;Food&lt;/b&gt;.
+</span>55 <span style=''>     * @param description
+</span>56 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>57 <span style=''>     * @param eatableBuilder
+</span>58 <span style=''>     *   A builder for the &lt;b&gt;Eatable&lt;/b&gt; behavior associated to the item.
+</span>59 <span style=''>     * @param extraBehavBuilders
+</span>60 <span style=''>     *   Additional behaviors associated to the item.
+</span>61 <span style=''>     * @return
+</span>62 <span style=''>     *   An instance of a standard &lt;b&gt;Door&lt;/b&gt;.
+</span>63 <span style=''>     */
+</span>64 <span style=''>    def apply(
+</span>65 <span style=''>      description: ItemDescription,
+</span>66 <span style=''>      eatableBuilder: I =&gt; Eatable,
+</span>67 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>68 <span style=''>    ): Food = {
+</span>69 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), eatableBuilder, extraBehavBuilders)</span><span style=''>
+</span>70 <span style=''>    }
+</span>71 <span style=''>  }
+</span>72 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -81,15 +108,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          28
+          44
         </td>
         <td>
-          425
+          508
         </td>
         <td>
-          897
+          1419
           -
-          917
+          1439
         </td>
         <td>
           Apply
@@ -105,15 +132,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          45
         </td>
         <td>
-          426
+          509
         </td>
         <td>
-          974
+          1496
           -
-          1008
+          1530
         </td>
         <td>
           Apply
@@ -129,15 +156,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          69
         </td>
         <td>
-          427
+          510
         </td>
         <td>
-          1313
+          2179
           -
-          1333
+          2199
         </td>
         <td>
           Apply
@@ -153,15 +180,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          69
         </td>
         <td>
-          428
+          511
         </td>
         <td>
-          1289
+          2155
           -
-          1370
+          2236
         </td>
         <td>
           Apply

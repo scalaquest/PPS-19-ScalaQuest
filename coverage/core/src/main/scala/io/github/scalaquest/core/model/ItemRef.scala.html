@@ -30,13 +30,27 @@
 </span>6 <span style=''>trait ItemRef
 </span>7 <span style=''>
 </span>8 <span style=''>/**
-</span>9 <span style=''> * Companion object for [[ItemRef]]. Exposes a factory to build the [[ItemRef]] based on an
+</span>9 <span style=''> * Companion object for ItemRef. Exposes a factory to build the ItemRef based on an
 </span>10 <span style=''> * [[ItemDescription]].
 </span>11 <span style=''> */
 </span>12 <span style=''>object ItemRef {
-</span>13 <span style=''>  private case class StringItemRef(id: String) extends ItemRef
-</span>14 <span style=''>  def apply(itemDescription: ItemDescription): ItemRef = </span><span style='background: #AEF1AE'>StringItemRef(itemDescription.mkString)</span><span style=''>
-</span>15 <span style=''>}
+</span>13 <span style=''>
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * An implementation ItemRef with String.
+</span>16 <span style=''>   * @param id
+</span>17 <span style=''>   *   the Unifier Identifier for ItemRef.
+</span>18 <span style=''>   */
+</span>19 <span style=''>  private final case class StringItemRef(id: String) extends ItemRef
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * Factory to build the [[ItemRef]] based on an the mkString of [[ItemDescription]].
+</span>23 <span style=''>   * @param itemDescription
+</span>24 <span style=''>   *   the ItemDescription.
+</span>25 <span style=''>   * @return
+</span>26 <span style=''>   *   the referent to the ItemDescription.
+</span>27 <span style=''>   */
+</span>28 <span style=''>  def apply(itemDescription: ItemDescription): ItemRef = </span><span style='background: #AEF1AE'>StringItemRef(itemDescription.mkString)</span><span style=''>
+</span>29 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -51,15 +65,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          14
+          28
         </td>
         <td>
           166
         </td>
         <td>
-          384
+          710
           -
-          408
+          734
         </td>
         <td>
           Select
@@ -75,15 +89,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          28
         </td>
         <td>
           167
         </td>
         <td>
-          370
+          696
           -
-          409
+          735
         </td>
         <td>
           Apply

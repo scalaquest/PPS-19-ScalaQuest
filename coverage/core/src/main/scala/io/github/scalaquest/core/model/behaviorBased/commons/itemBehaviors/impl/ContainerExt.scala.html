@@ -26,63 +26,128 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.ItemRef
 </span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Open
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-</span>8 <span style=''>
-</span>9 <span style=''>trait ContainerExt
-</span>10 <span style=''>  extends BehaviorBasedModel
-</span>11 <span style=''>  with CommonMessagesExt
-</span>12 <span style=''>  with CommonReactionsExt
-</span>13 <span style=''>  with OpenableExt {
-</span>14 <span style=''>
-</span>15 <span style=''>  abstract class Container extends ItemBehavior {
-</span>16 <span style=''>    def items(implicit state: S): Set[I]
-</span>17 <span style=''>    def revealItems: Reaction
-</span>18 <span style=''>    def openable: Openable
-</span>19 <span style=''>    def isOpen: Boolean
-</span>20 <span style=''>  }
-</span>21 <span style=''>
-</span>22 <span style=''>  case class SimpleContainer(
-</span>23 <span style=''>    itemRefs: Set[ItemRef],
-</span>24 <span style=''>    openable: Openable
-</span>25 <span style=''>  )(implicit subject: I)
-</span>26 <span style=''>    extends Container
-</span>27 <span style=''>    with Delegate {
-</span>28 <span style=''>
-</span>29 <span style=''>    override def delegateTriggers: ItemTriggers = </span><span style='background: #AEF1AE'>openable.triggers</span><span style=''>
-</span>30 <span style=''>
-</span>31 <span style=''>    override def receiverTriggers: ItemTriggers = {
-</span>32 <span style=''>      case (Open, _, maybeKey, s)
-</span>33 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.canBeOpened(maybeKey)(s)
-</span>34 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !openable.isOpen</span><span style=''> =&gt;
-</span>35 <span style=''>        </span><span style='background: #AEF1AE'>revealItems</span><span style=''>
-</span>36 <span style=''>    }
-</span>37 <span style=''>
-</span>38 <span style=''>    override def items(implicit state: S): Set[I] = </span><span style='background: #AEF1AE'>itemRefs.map(state.items(_))</span><span style=''>
-</span>39 <span style=''>
-</span>40 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable.isOpen</span><span style=''>
-</span>41 <span style=''>
-</span>42 <span style=''>    override def revealItems: Reaction =
-</span>43 <span style=''>      s =&gt;
-</span>44 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.combine(
-</span>45 <span style=''></span><span style='background: #AEF1AE'>          openable.open,
-</span>46 <span style=''></span><span style='background: #AEF1AE'>          Reactions.revealItems(items(s))
-</span>47 <span style=''></span><span style='background: #AEF1AE'>        )(s)</span><span style=''>
-</span>48 <span style=''>  }
-</span>49 <span style=''>
-</span>50 <span style=''>  object Container {
-</span>51 <span style=''>
-</span>52 <span style=''>    def unlockedBuilder(
-</span>53 <span style=''>      items: Set[I]
-</span>54 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.unlockedBuilder()(i))(i)</span><span style=''>
-</span>55 <span style=''>
-</span>56 <span style=''>    def lockedBuilder(
-</span>57 <span style=''>      items: Set[I],
-</span>58 <span style=''>      key: Key
-</span>59 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.lockedBuilder(key)(i))(i)</span><span style=''>
-</span>60 <span style=''>  }
-</span>61 <span style=''>}
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>8 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>9 <span style=''>
+</span>10 <span style=''>/**
+</span>11 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Container&lt;/b&gt; behavior.
+</span>12 <span style=''> */
+</span>13 <span style=''>trait ContainerExt
+</span>14 <span style=''>  extends BehaviorBasedModel
+</span>15 <span style=''>  with CMessagesExt
+</span>16 <span style=''>  with CReactionsExt
+</span>17 <span style=''>  with StateUtilsExt
+</span>18 <span style=''>  with OpenableExt {
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; that enables the possibility to open a &lt;b&gt;BehaviorBasedItem&lt;/b&gt;, and to
+</span>22 <span style=''>   * reveal a set of items into the location when opened.
+</span>23 <span style=''>   */
+</span>24 <span style=''>  abstract class Container extends ItemBehavior {
+</span>25 <span style=''>
+</span>26 <span style=''>    /**
+</span>27 <span style=''>     * &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s that will be added to the location after opening the subject.
+</span>28 <span style=''>     * @param state
+</span>29 <span style=''>     *   The actual game state. Used to extract the actual &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s from their
+</span>30 <span style=''>     *   refs.
+</span>31 <span style=''>     * @return
+</span>32 <span style=''>     *   &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s that will be added to the location after opening the subject.
+</span>33 <span style=''>     */
+</span>34 <span style=''>    def items(implicit state: S): Set[I]
+</span>35 <span style=''>
+</span>36 <span style=''>    /**
+</span>37 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; triggered when the subject is opened: it reveals a set of
+</span>38 <span style=''>     * &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s into the current Room when opened.
+</span>39 <span style=''>     * @return
+</span>40 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; triggered when the subject is opened.
+</span>41 <span style=''>     */
+</span>42 <span style=''>    def revealItems: Reaction
+</span>43 <span style=''>
+</span>44 <span style=''>    /**
+</span>45 <span style=''>     * The &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject.
+</span>46 <span style=''>     * @return
+</span>47 <span style=''>     *   The &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject.
+</span>48 <span style=''>     */
+</span>49 <span style=''>    def openable: Openable
+</span>50 <span style=''>
+</span>51 <span style=''>    /**
+</span>52 <span style=''>     * The &quot;openness&quot; state of the Item, initially closed.
+</span>53 <span style=''>     * @return
+</span>54 <span style=''>     *   True if the container is open, False otherwise.
+</span>55 <span style=''>     */
+</span>56 <span style=''>    def isOpen: Boolean
+</span>57 <span style=''>  }
+</span>58 <span style=''>
+</span>59 <span style=''>  /**
+</span>60 <span style=''>   * The standard implementation for &lt;b&gt;Container&lt;/b&gt;.
+</span>61 <span style=''>   * @param itemRefs
+</span>62 <span style=''>   *   Refs to the Items that will be added to the location after opening the subject.
+</span>63 <span style=''>   * @param openable
+</span>64 <span style=''>   *   The Openable behavior associated to the subject Item.
+</span>65 <span style=''>   * @param subject
+</span>66 <span style=''>   *   The item that owes the Container behavior.
+</span>67 <span style=''>   */
+</span>68 <span style=''>  case class SimpleContainer(
+</span>69 <span style=''>    itemRefs: Set[ItemRef],
+</span>70 <span style=''>    openable: Openable
+</span>71 <span style=''>  )(implicit val subject: I)
+</span>72 <span style=''>    extends Container
+</span>73 <span style=''>    with Delegate {
+</span>74 <span style=''>
+</span>75 <span style=''>    override def delegateTriggers: ItemTriggers = </span><span style='background: #AEF1AE'>openable.triggers</span><span style=''>
+</span>76 <span style=''>
+</span>77 <span style=''>    override def receiverTriggers: ItemTriggers = {
+</span>78 <span style=''>      case (Open, maybeKey, s)
+</span>79 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.canBeOpened(maybeKey)(s)
+</span>80 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !openable.isOpen</span><span style=''> =&gt;
+</span>81 <span style=''>        </span><span style='background: #AEF1AE'>revealItems</span><span style=''>
+</span>82 <span style=''>    }
+</span>83 <span style=''>
+</span>84 <span style=''>    override def items(implicit state: S): Set[I] = </span><span style='background: #AEF1AE'>itemRefs.map(state.items(_))</span><span style=''>
+</span>85 <span style=''>
+</span>86 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable.isOpen</span><span style=''>
+</span>87 <span style=''>
+</span>88 <span style=''>    override def revealItems: Reaction =
+</span>89 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>90 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- openable.open
+</span>91 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
+</span>92 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- CReactions.addMessage(CMessages.ReversedIntoLocation(items(s1)))
+</span>93 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>94 <span style=''>  }
+</span>95 <span style=''>
+</span>96 <span style=''>  /**
+</span>97 <span style=''>   * A companion object used to create &lt;b&gt;Container&lt;/b&gt; builders.
+</span>98 <span style=''>   */
+</span>99 <span style=''>  object Container {
+</span>100 <span style=''>
+</span>101 <span style=''>    /**
+</span>102 <span style=''>     * A builder for a container that does not require a &lt;b&gt;Key&lt;/b&gt; to be opened.
+</span>103 <span style=''>     * @param items
+</span>104 <span style=''>     *   Items that will be added to the location after opening the subject.
+</span>105 <span style=''>     * @return
+</span>106 <span style=''>     *   A builder for a container that does not require a Key to be opened.
+</span>107 <span style=''>     */
+</span>108 <span style=''>    def unlockedBuilder(
+</span>109 <span style=''>      items: Set[I]
+</span>110 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.unlockedBuilder()(i))(i)</span><span style=''>
+</span>111 <span style=''>
+</span>112 <span style=''>    /**
+</span>113 <span style=''>     * A builder for a container that requires a &lt;b&gt;Key&lt;/b&gt; to be opened.
+</span>114 <span style=''>     * @param items
+</span>115 <span style=''>     *   Items that will be added to the location after opening the subject.
+</span>116 <span style=''>     * @param key
+</span>117 <span style=''>     *   The Key required to open the containerized item.
+</span>118 <span style=''>     * @return
+</span>119 <span style=''>     *   A builder for a container that requires a Key to be opened.
+</span>120 <span style=''>     */
+</span>121 <span style=''>    def lockedBuilder(
+</span>122 <span style=''>      items: Set[I],
+</span>123 <span style=''>      key: Key
+</span>124 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.lockedBuilder(key)(i))(i)</span><span style=''>
+</span>125 <span style=''>  }
+</span>126 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -97,15 +162,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          29
+          75
         </td>
         <td>
-          308
+          330
         </td>
         <td>
-          966
+          2555
           -
-          983
+          2572
         </td>
         <td>
           Select
@@ -121,15 +186,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          77
         </td>
         <td>
-          314
+          336
         </td>
         <td>
-          1035
+          2624
           -
-          1035
+          2624
         </td>
         <td>
           Apply
@@ -145,15 +210,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          79
         </td>
         <td>
-          309
+          331
         </td>
         <td>
-          1099
+          2685
           -
-          1106
+          2692
         </td>
         <td>
           Select
@@ -169,15 +234,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          79
         </td>
         <td>
-          310
+          332
         </td>
         <td>
-          1111
+          2697
           -
-          1144
+          2730
         </td>
         <td>
           Apply
@@ -193,15 +258,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          80
         </td>
         <td>
-          311
+          333
         </td>
         <td>
-          1160
+          2746
           -
-          1176
+          2762
         </td>
         <td>
           Select
@@ -217,15 +282,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          80
         </td>
         <td>
-          312
+          334
         </td>
         <td>
-          1084
+          2670
           -
-          1176
+          2762
         </td>
         <td>
           Apply
@@ -241,15 +306,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          81
         </td>
         <td>
-          313
+          335
         </td>
         <td>
-          1188
+          2774
           -
-          1199
+          2785
         </td>
         <td>
           Select
@@ -265,15 +330,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          84
         </td>
         <td>
-          315
+          337
         </td>
         <td>
-          1272
+          2858
           -
-          1286
+          2872
         </td>
         <td>
           Apply
@@ -289,15 +354,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          84
         </td>
         <td>
-          316
+          338
         </td>
         <td>
-          1259
+          2845
           -
-          1287
+          2873
         </td>
         <td>
           Apply
@@ -313,15 +378,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          86
         </td>
         <td>
-          317
+          339
         </td>
         <td>
-          1324
+          2910
           -
-          1339
+          2925
         </td>
         <td>
           Select
@@ -337,39 +402,283 @@
         </td>
       </tr><tr>
         <td>
-          47
+          90
         </td>
         <td>
-          318
+          340
         </td>
         <td>
-          1401
+          2994
           -
-          1498
+          3007
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Function1.apply
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.OpenableExt.Openable.open
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          ContainerExt.this.Reaction.combine(SimpleContainer.this.openable.open, ContainerExt.this.Reactions.revealItems(SimpleContainer.this.items(s))).apply(s)
+          SimpleContainer.this.openable.open
         </td>
       </tr><tr>
         <td>
-          54
+          90
         </td>
         <td>
-          319
+          350
         </td>
         <td>
-          1600
+          2974
           -
-          1667
+          3175
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.EnhancedReaction(SimpleContainer.this.openable.open).flatMap(((s1: ContainerExt.this.S) =&gt; ContainerExt.this.EnhancedReaction(ContainerExt.this.CReactions.modifyLocationItems(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.++(SimpleContainer.this.items(s1).map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref)))))).flatMap(((x$4: ContainerExt.this.S) =&gt; (x$4: ContainerExt.this.S @unchecked) match {
+  case _ =&gt; ContainerExt.this.EnhancedReaction(ContainerExt.this.CReactions.addMessage(ContainerExt.this.CMessages.ReversedIntoLocation.apply(SimpleContainer.this.items(s1)))).map(((s2: ContainerExt.this.S) =&gt; s2))
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          341
+        </td>
+        <td>
+          3072
+          -
+          3077
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$3.ref
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          342
+        </td>
+        <td>
+          3058
+          -
+          3078
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableOps.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.items(s1).map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref))
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          343
+        </td>
+        <td>
+          3053
+          -
+          3078
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetOps.++
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.++(SimpleContainer.this.items(s1).map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          344
+        </td>
+        <td>
+          3022
+          -
+          3079
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.modifyLocationItems
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.CReactions.modifyLocationItems(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.++(SimpleContainer.this.items(s1).map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref)))))
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          349
+        </td>
+        <td>
+          3016
+          -
+          3175
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.EnhancedReaction(ContainerExt.this.CReactions.modifyLocationItems(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.++(SimpleContainer.this.items(s1).map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref)))))).flatMap(((x$4: ContainerExt.this.S) =&gt; (x$4: ContainerExt.this.S @unchecked) match {
+  case _ =&gt; ContainerExt.this.EnhancedReaction(ContainerExt.this.CReactions.addMessage(ContainerExt.this.CMessages.ReversedIntoLocation.apply(SimpleContainer.this.items(s1)))).map(((s2: ContainerExt.this.S) =&gt; s2))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          345
+        </td>
+        <td>
+          3147
+          -
+          3156
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt.SimpleContainer.items
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleContainer.this.items(s1)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          346
+        </td>
+        <td>
+          3116
+          -
+          3157
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.ReversedIntoLocation.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.CMessages.ReversedIntoLocation.apply(SimpleContainer.this.items(s1))
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          347
+        </td>
+        <td>
+          3094
+          -
+          3158
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.addMessage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.CReactions.addMessage(ContainerExt.this.CMessages.ReversedIntoLocation.apply(SimpleContainer.this.items(s1)))
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          348
+        </td>
+        <td>
+          3088
+          -
+          3175
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ContainerExt.this.EnhancedReaction(ContainerExt.this.CReactions.addMessage(ContainerExt.this.CMessages.ReversedIntoLocation.apply(SimpleContainer.this.items(s1)))).map(((s2: ContainerExt.this.S) =&gt; s2))
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          351
+        </td>
+        <td>
+          3642
+          -
+          3709
         </td>
         <td>
           Apply
@@ -381,19 +690,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          ContainerExt.this.SimpleContainer.apply(items.map[io.github.scalaquest.core.model.ItemRef](((x$2: ContainerExt.this.I) =&gt; x$2.ref)), ContainerExt.this.Openable.unlockedBuilder(ContainerExt.this.Openable.unlockedBuilder$default$1).apply(i))(i)
+          ContainerExt.this.SimpleContainer.apply(items.map[io.github.scalaquest.core.model.ItemRef](((x$5: ContainerExt.this.I) =&gt; x$5.ref)), ContainerExt.this.Openable.unlockedBuilder(ContainerExt.this.Openable.unlockedBuilder$default$1).apply(i))(i)
         </td>
       </tr><tr>
         <td>
-          59
+          124
         </td>
         <td>
-          320
+          352
         </td>
         <td>
-          1757
+          4146
           -
-          1825
+          4214
         </td>
         <td>
           Apply
@@ -405,7 +714,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          ContainerExt.this.SimpleContainer.apply(items.map[io.github.scalaquest.core.model.ItemRef](((x$3: ContainerExt.this.I) =&gt; x$3.ref)), ContainerExt.this.Openable.lockedBuilder(key, ContainerExt.this.Openable.lockedBuilder$default$2).apply(i))(i)
+          ContainerExt.this.SimpleContainer.apply(items.map[io.github.scalaquest.core.model.ItemRef](((x$6: ContainerExt.this.I) =&gt; x$6.ref)), ContainerExt.this.Openable.lockedBuilder(key, ContainerExt.this.Openable.lockedBuilder$default$2).apply(i))(i)
         </td>
       </tr>
     </table>

@@ -37,13 +37,13 @@
 </span>13 <span style=''>  /**
 </span>14 <span style=''>   * A base implementation for [[Room]].
 </span>15 <span style=''>   * @param name
-</span>16 <span style=''>   *   the [[Room]] name.
+</span>16 <span style=''>   *   The [[Room]] name.
 </span>17 <span style=''>   * @param _items
-</span>18 <span style=''>   *   the [[ItemRef]] that refers to the [[Model.Item]] contained by this [[SimpleRoom]].
+</span>18 <span style=''>   *   the [[ItemRef]] that refers to the &lt;b&gt;Item&lt;/b&gt; contained by this &lt;b&gt;SimpleRoom&lt;/b&gt;.
 </span>19 <span style=''>   * @param _neighbors
-</span>20 <span style=''>   *   a [[Map]] with neighbors of this [[SimpleRoom]].
+</span>20 <span style=''>   *   [[Map]] with neighbors of this &lt;b&gt;SimpleRoom&lt;/b&gt;.
 </span>21 <span style=''>   * @param ref
-</span>22 <span style=''>   *   the [[RoomRef]] for this [[SimpleRoom]].
+</span>22 <span style=''>   *   The [[RoomRef]] for this &lt;b&gt;SimpleRoom&lt;/b&gt;.
 </span>23 <span style=''>   */
 </span>24 <span style=''>  case class SimpleRoom(
 </span>25 <span style=''>    name: String,
@@ -64,25 +64,37 @@
 </span>40 <span style=''>      </span><span style='background: #AEF1AE'>_neighbors().map(x =&gt; x._1 -&gt; state.rooms(x._2))</span><span style=''>
 </span>41 <span style=''>  }
 </span>42 <span style=''>
-</span>43 <span style=''>  object Room {
-</span>44 <span style=''>
-</span>45 <span style=''>    def apply(
-</span>46 <span style=''>      name: String,
-</span>47 <span style=''>      neighbors: =&gt; Map[Direction, RoomRef] = Map.empty,
-</span>48 <span style=''>      items: =&gt; Set[ItemRef] = Set.empty
-</span>49 <span style=''>    ): RM = </span><span style='background: #AEF1AE'>SimpleRoom(name, () =&gt; items, () =&gt; neighbors, RoomRef(name))</span><span style=''>
-</span>50 <span style=''>  }
-</span>51 <span style=''>
-</span>52 <span style=''>  override def roomItemsLens: Lens[RM, Set[ItemRef]] =
-</span>53 <span style=''>    </span><span style='background: #AEF1AE'>Lens[RM, Set[ItemRef]](get = _._items())(set =
-</span>54 <span style=''></span><span style='background: #AEF1AE'>      newItemsSet =&gt; oldRoom =&gt; oldRoom.copy(_items = () =&gt; newItemsSet)
-</span>55 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
-</span>56 <span style=''>
-</span>57 <span style=''>  override def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]] =
-</span>58 <span style=''>    </span><span style='background: #AEF1AE'>Lens[RM, Map[Direction, RoomRef]](get = _._neighbors())(set =
-</span>59 <span style=''></span><span style='background: #AEF1AE'>      newNeighborsSet =&gt; oldRoom =&gt; oldRoom.copy(_neighbors = () =&gt; newNeighborsSet)
-</span>60 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
-</span>61 <span style=''>}
+</span>43 <span style=''>  /**
+</span>44 <span style=''>   * Companion object with apply for &lt;b&gt;SimpleRoom&lt;/b&gt;.
+</span>45 <span style=''>   */
+</span>46 <span style=''>  object Room {
+</span>47 <span style=''>
+</span>48 <span style=''>    /**
+</span>49 <span style=''>     * A base implementation for &lt;b&gt;Room&lt;/b&gt;.
+</span>50 <span style=''>     * @param name
+</span>51 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; name.
+</span>52 <span style=''>     * @param neighbors
+</span>53 <span style=''>     *   Map that define all &lt;b&gt;neighbors&lt;/b&gt; of this room.
+</span>54 <span style=''>     * @param items
+</span>55 <span style=''>     *   All the &lt;b&gt;items&lt;/b&gt; in this match.
+</span>56 <span style=''>     */
+</span>57 <span style=''>    def apply(
+</span>58 <span style=''>      name: String,
+</span>59 <span style=''>      neighbors: =&gt; Map[Direction, RoomRef] = Map.empty,
+</span>60 <span style=''>      items: =&gt; Set[ItemRef] = Set.empty
+</span>61 <span style=''>    ): RM = </span><span style='background: #AEF1AE'>SimpleRoom(name, () =&gt; items, () =&gt; neighbors, RoomRef(name))</span><span style=''>
+</span>62 <span style=''>  }
+</span>63 <span style=''>
+</span>64 <span style=''>  override def roomItemsLens: Lens[RM, Set[ItemRef]] =
+</span>65 <span style=''>    </span><span style='background: #AEF1AE'>Lens[RM, Set[ItemRef]](get = _._items())(set =
+</span>66 <span style=''></span><span style='background: #AEF1AE'>      newItemsSet =&gt; oldRoom =&gt; oldRoom.copy(_items = () =&gt; newItemsSet)
+</span>67 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>68 <span style=''>
+</span>69 <span style=''>  override def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]] =
+</span>70 <span style=''>    </span><span style='background: #AEF1AE'>Lens[RM, Map[Direction, RoomRef]](get = _._neighbors())(set =
+</span>71 <span style=''></span><span style='background: #AEF1AE'>      newNeighborsSet =&gt; oldRoom =&gt; oldRoom.copy(_neighbors = () =&gt; newNeighborsSet)
+</span>72 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>73 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -100,12 +112,12 @@
           33
         </td>
         <td>
-          584
+          630
         </td>
         <td>
-          915
+          919
           -
-          1051
+          1055
         </td>
         <td>
           Apply
@@ -124,12 +136,12 @@
           34
         </td>
         <td>
-          583
+          629
         </td>
         <td>
-          983
+          987
           -
-          1051
+          1055
         </td>
         <td>
           Apply
@@ -148,12 +160,12 @@
           37
         </td>
         <td>
-          585
+          631
         </td>
         <td>
-          1122
+          1126
           -
-          1137
+          1141
         </td>
         <td>
           Apply
@@ -172,12 +184,12 @@
           37
         </td>
         <td>
-          586
+          632
         </td>
         <td>
-          1105
+          1109
           -
-          1138
+          1142
         </td>
         <td>
           Apply
@@ -199,12 +211,12 @@
           40
         </td>
         <td>
-          587
+          633
         </td>
         <td>
-          1236
-          -
           1240
+          -
+          1244
         </td>
         <td>
           Select
@@ -223,12 +235,12 @@
           40
         </td>
         <td>
-          588
+          634
         </td>
         <td>
-          1256
-          -
           1260
+          -
+          1264
         </td>
         <td>
           Select
@@ -247,12 +259,12 @@
           40
         </td>
         <td>
-          589
+          635
         </td>
         <td>
-          1244
+          1248
           -
-          1261
+          1265
         </td>
         <td>
           Apply
@@ -271,12 +283,12 @@
           40
         </td>
         <td>
-          590
+          636
         </td>
         <td>
-          1236
+          1240
           -
-          1261
+          1265
         </td>
         <td>
           Apply
@@ -295,12 +307,12 @@
           40
         </td>
         <td>
-          591
+          637
         </td>
         <td>
-          1214
+          1218
           -
-          1262
+          1266
         </td>
         <td>
           Apply
@@ -316,15 +328,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          61
         </td>
         <td>
-          592
+          638
         </td>
         <td>
-          1477
+          1810
           -
-          1490
+          1823
         </td>
         <td>
           Apply
@@ -340,15 +352,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          61
         </td>
         <td>
-          593
+          639
         </td>
         <td>
-          1430
+          1763
           -
-          1491
+          1824
         </td>
         <td>
           Apply
@@ -364,15 +376,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          65
         </td>
         <td>
-          594
+          640
         </td>
         <td>
-          1585
+          1918
           -
-          1595
+          1928
         </td>
         <td>
           Apply
@@ -388,15 +400,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          65
         </td>
         <td>
-          599
+          645
         </td>
         <td>
-          1556
+          1889
           -
-          1681
+          2014
         </td>
         <td>
           Apply
@@ -418,15 +430,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          66
         </td>
         <td>
-          595
+          641
         </td>
         <td>
-          1643
+          1976
           -
-          1643
+          1976
         </td>
         <td>
           Select
@@ -442,15 +454,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          66
         </td>
         <td>
-          596
+          642
         </td>
         <td>
-          1643
+          1976
           -
-          1643
+          1976
         </td>
         <td>
           Select
@@ -466,15 +478,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          66
         </td>
         <td>
-          597
+          643
         </td>
         <td>
-          1643
+          1976
           -
-          1643
+          1976
         </td>
         <td>
           Select
@@ -490,15 +502,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          66
         </td>
         <td>
-          598
+          644
         </td>
         <td>
-          1635
+          1968
           -
-          1675
+          2008
         </td>
         <td>
           Apply
@@ -514,15 +526,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          70
         </td>
         <td>
-          600
+          646
         </td>
         <td>
-          1798
+          2131
           -
-          1812
+          2145
         </td>
         <td>
           Apply
@@ -538,15 +550,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          70
         </td>
         <td>
-          605
+          651
         </td>
         <td>
-          1758
+          2091
           -
-          1910
+          2243
         </td>
         <td>
           Apply
@@ -568,15 +580,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          71
         </td>
         <td>
-          601
+          647
         </td>
         <td>
-          1864
+          2197
           -
-          1864
+          2197
         </td>
         <td>
           Select
@@ -592,15 +604,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          71
         </td>
         <td>
-          602
+          648
         </td>
         <td>
-          1864
+          2197
           -
-          1864
+          2197
         </td>
         <td>
           Select
@@ -616,15 +628,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          71
         </td>
         <td>
-          603
+          649
         </td>
         <td>
-          1864
+          2197
           -
-          1864
+          2197
         </td>
         <td>
           Select
@@ -640,15 +652,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          71
         </td>
         <td>
-          604
+          650
         </td>
         <td>
-          1856
+          2189
           -
-          1904
+          2237
         </td>
         <td>
           Apply

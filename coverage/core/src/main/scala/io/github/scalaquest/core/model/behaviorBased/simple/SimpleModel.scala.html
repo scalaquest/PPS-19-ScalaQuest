@@ -30,21 +30,22 @@
 </span>6 <span style=''>import monocle.Lens
 </span>7 <span style=''>
 </span>8 <span style=''>/**
-</span>9 <span style=''> * This represents the Model with a standard implementation: items share an internal implementation
-</span>10 <span style=''> * based on behaviors, with some commonly used items and behaviors. The state uses a simple
-</span>11 <span style=''> * implementation, that keeps track of the rooms' composition, and a bag for the player.
-</span>12 <span style=''> */
-</span>13 <span style=''>object SimpleModel
-</span>14 <span style=''>  extends BehaviorBasedModel
-</span>15 <span style=''>  with SimpleStateExt
-</span>16 <span style=''>  with SimpleRoomExt
-</span>17 <span style=''>  with CommonsExt {
-</span>18 <span style=''>
-</span>19 <span style=''>  override def locationRoomLens: Lens[SimpleModel.SimpleState, SimpleModel.SimpleRoom] =
-</span>20 <span style=''>    </span><span style='background: #AEF1AE'>Lens[S, RM] { s =&gt; s.location } { r =&gt; s =&gt;
-</span>21 <span style=''></span><span style='background: #AEF1AE'>      s.copy(rooms = s.rooms.updated(s.location.ref, r), _location = r.ref)
-</span>22 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
-</span>23 <span style=''>}
+</span>9 <span style=''> * This represents the &lt;b&gt;Model&lt;/b&gt; with a standard implementation: &lt;b&gt;items&lt;/b&gt; share an internal
+</span>10 <span style=''> * implementation based on &lt;b&gt;behaviors&lt;/b&gt;, with some commonly used items and behaviors. The state
+</span>11 <span style=''> * uses a simple implementation, that keeps track of the &lt;b&gt;rooms&lt;/b&gt;' composition, and a &lt;b&gt;bag&lt;/b&gt;
+</span>12 <span style=''> * for the player.
+</span>13 <span style=''> */
+</span>14 <span style=''>object SimpleModel
+</span>15 <span style=''>  extends BehaviorBasedModel
+</span>16 <span style=''>  with SimpleStateExt
+</span>17 <span style=''>  with SimpleRoomExt
+</span>18 <span style=''>  with CommonsExt {
+</span>19 <span style=''>
+</span>20 <span style=''>  override def locationRoomLens: Lens[SimpleModel.SimpleState, SimpleModel.SimpleRoom] =
+</span>21 <span style=''>    </span><span style='background: #AEF1AE'>Lens[S, RM] { s =&gt; s.location } { r =&gt; s =&gt;
+</span>22 <span style=''></span><span style='background: #AEF1AE'>      s.copy(rooms = s.rooms.updated(s.location.ref, r), _location = r.ref)
+</span>23 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
+</span>24 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -59,15 +60,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
-          538
+          584
         </td>
         <td>
-          837
+          875
           -
-          847
+          885
         </td>
         <td>
           Select
@@ -83,15 +84,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
-          548
+          594
         </td>
         <td>
-          818
+          856
           -
-          943
+          981
         </td>
         <td>
           Apply
@@ -116,15 +117,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          539
+          585
         </td>
         <td>
-          899
+          937
           -
-          913
+          951
         </td>
         <td>
           Select
@@ -140,15 +141,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          540
+          586
         </td>
         <td>
-          883
+          921
           -
-          917
+          955
         </td>
         <td>
           Apply
@@ -164,15 +165,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          541
+          587
         </td>
         <td>
-          931
+          969
           -
-          936
+          974
         </td>
         <td>
           Select
@@ -188,15 +189,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          542
+          588
         </td>
         <td>
-          870
+          908
           -
-          870
+          908
         </td>
         <td>
           Select
@@ -212,15 +213,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          543
+          589
         </td>
         <td>
-          870
+          908
           -
-          870
+          908
         </td>
         <td>
           Select
@@ -236,15 +237,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          544
+          590
         </td>
         <td>
-          870
+          908
           -
-          870
+          908
         </td>
         <td>
           Select
@@ -260,15 +261,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          545
+          591
         </td>
         <td>
-          870
+          908
           -
-          870
+          908
         </td>
         <td>
           Select
@@ -284,15 +285,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          546
+          592
         </td>
         <td>
-          870
+          908
           -
-          870
+          908
         </td>
         <td>
           Select
@@ -308,15 +309,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          547
+          593
         </td>
         <td>
-          868
+          906
           -
-          937
+          975
         </td>
         <td>
           Apply

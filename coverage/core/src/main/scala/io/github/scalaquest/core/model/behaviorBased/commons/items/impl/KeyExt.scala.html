@@ -28,41 +28,64 @@
 </span>4 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
 </span>5 <span style=''>
 </span>6 <span style=''>/**
-</span>7 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the Key Item.
+</span>7 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Key BehaviorBasedItem&lt;/b&gt;.
 </span>8 <span style=''> */
 </span>9 <span style=''>trait KeyExt extends BehaviorBasedModel {
 </span>10 <span style=''>
 </span>11 <span style=''>  /**
-</span>12 <span style=''>   * A [[BehaviorBasedItem]] that should be used to open/close items with a Openable behavior.
-</span>13 <span style=''>   */
-</span>14 <span style=''>  trait Key extends BehaviorBasedItem {
-</span>15 <span style=''>    def disposable: Boolean
-</span>16 <span style=''>  }
-</span>17 <span style=''>
-</span>18 <span style=''>  /**
-</span>19 <span style=''>   * Standard implementation of the common [[Key]].
-</span>20 <span style=''>   */
-</span>21 <span style=''>  case class SimpleKey(
-</span>22 <span style=''>    description: ItemDescription,
-</span>23 <span style=''>    ref: ItemRef,
-</span>24 <span style=''>    disposable: Boolean = true,
-</span>25 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>26 <span style=''>  ) extends Key {
-</span>27 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>extraBehavBuilders.map(_(this))</span><span style=''>
-</span>28 <span style=''>  }
-</span>29 <span style=''>
-</span>30 <span style=''>  /**
-</span>31 <span style=''>   * Companion object for [[Key]]. Makes the initialization more succinct.
-</span>32 <span style=''>   */
-</span>33 <span style=''>  object Key {
-</span>34 <span style=''>
-</span>35 <span style=''>    def apply(
-</span>36 <span style=''>      description: ItemDescription,
-</span>37 <span style=''>      disposable: Boolean = true,
-</span>38 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>39 <span style=''>    ): Key = </span><span style='background: #AEF1AE'>SimpleKey(description, ItemRef(description), disposable, extraBehavBuilders)</span><span style=''>
-</span>40 <span style=''>  }
-</span>41 <span style=''>}
+</span>12 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that should be used to open/close items with an &lt;b&gt;Openable&lt;/b&gt;
+</span>13 <span style=''>   * behavior.
+</span>14 <span style=''>   */
+</span>15 <span style=''>  trait Key extends BehaviorBasedItem {
+</span>16 <span style=''>
+</span>17 <span style=''>    /**
+</span>18 <span style=''>     * A disposable key is cancelled from the game after being used to open something.
+</span>19 <span style=''>     * @return
+</span>20 <span style=''>     *   True if key is cancelled after his use, False otherwise.
+</span>21 <span style=''>     */
+</span>22 <span style=''>    def disposable: Boolean
+</span>23 <span style=''>  }
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * Standard implementation of &lt;b&gt;Key&lt;/b&gt;.
+</span>27 <span style=''>   *
+</span>28 <span style=''>   * @param description
+</span>29 <span style=''>   *   An [[ItemDescription]] for the item.
+</span>30 <span style=''>   * @param ref
+</span>31 <span style=''>   *   A unique reference to the item.
+</span>32 <span style=''>   * @param extraBehavBuilders
+</span>33 <span style=''>   *   Additional behaviors associated to the item.
+</span>34 <span style=''>   */
+</span>35 <span style=''>  case class SimpleKey(
+</span>36 <span style=''>    description: ItemDescription,
+</span>37 <span style=''>    ref: ItemRef,
+</span>38 <span style=''>    disposable: Boolean = true,
+</span>39 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>40 <span style=''>  ) extends Key {
+</span>41 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>extraBehavBuilders.map(_(this))</span><span style=''>
+</span>42 <span style=''>  }
+</span>43 <span style=''>
+</span>44 <span style=''>  /**
+</span>45 <span style=''>   * Companion object for &lt;b&gt;Key&lt;/b&gt;.
+</span>46 <span style=''>   */
+</span>47 <span style=''>  object Key {
+</span>48 <span style=''>
+</span>49 <span style=''>    /**
+</span>50 <span style=''>     * Creates a standard &lt;b&gt;Key&lt;/b&gt;.
+</span>51 <span style=''>     * @param description
+</span>52 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>53 <span style=''>     * @param extraBehavBuilders
+</span>54 <span style=''>     *   Additional behaviors associated to the item.
+</span>55 <span style=''>     * @return
+</span>56 <span style=''>     *   An instance of a standard &lt;b&gt;Key&lt;/b&gt;.
+</span>57 <span style=''>     */
+</span>58 <span style=''>    def apply(
+</span>59 <span style=''>      description: ItemDescription,
+</span>60 <span style=''>      disposable: Boolean = true,
+</span>61 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>62 <span style=''>    ): Key = </span><span style='background: #AEF1AE'>SimpleKey(description, ItemRef(description), disposable, extraBehavBuilders)</span><span style=''>
+</span>63 <span style=''>  }
+</span>64 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -77,15 +100,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
+          41
         </td>
         <td>
-          440
+          526
         </td>
         <td>
-          843
+          1267
           -
-          850
+          1274
         </td>
         <td>
           Apply
@@ -101,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          41
         </td>
         <td>
-          441
+          527
         </td>
         <td>
-          820
+          1244
           -
-          851
+          1275
         </td>
         <td>
           Apply
@@ -125,15 +148,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          62
         </td>
         <td>
-          442
+          528
         </td>
         <td>
-          1142
+          1804
           -
-          1162
+          1824
         </td>
         <td>
           Apply
@@ -149,15 +172,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          62
         </td>
         <td>
-          443
+          529
         </td>
         <td>
-          1119
+          1781
           -
-          1195
+          1857
         </td>
         <td>
           Apply

@@ -25,50 +25,66 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.InspectBag
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.InspectBag
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
 </span>7 <span style=''>
 </span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the InspectableBag behavior for the
-</span>10 <span style=''> * Ground.
+</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;InspectableBag
+</span>10 <span style=''> * GroundBehavior&lt;/b&gt;.
 </span>11 <span style=''> */
-</span>12 <span style=''>trait InspectableBagExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
+</span>12 <span style=''>trait InspectableBagExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
 </span>13 <span style=''>
 </span>14 <span style=''>  /**
-</span>15 <span style=''>   * A [[GroundBehavior]] that enables the possibility to know the items present into the Bag.
-</span>16 <span style=''>   */
-</span>17 <span style=''>  abstract class InspectableBag extends GroundBehavior {
-</span>18 <span style=''>    def inspectBag: Reaction
-</span>19 <span style=''>  }
-</span>20 <span style=''>
-</span>21 <span style=''>  /**
-</span>22 <span style=''>   * A standard implementation for [[InspectableBag]].
-</span>23 <span style=''>   *
-</span>24 <span style=''>   * @param onInspectExtra
-</span>25 <span style=''>   *   [[Reaction]] to be executed when the player successfully inspected the bag. It can be
-</span>26 <span style=''>   *   omitted.
-</span>27 <span style=''>   */
-</span>28 <span style=''>  case class SimpleInspectableBag(onInspectExtra: Reaction) extends InspectableBag {
-</span>29 <span style=''>
-</span>30 <span style=''>    override def triggers: GroundTriggers = { case (InspectBag, _) =&gt; </span><span style='background: #AEF1AE'>inspectBag</span><span style=''> }
-</span>31 <span style=''>
-</span>32 <span style=''>    override def inspectBag: Reaction =
-</span>33 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
-</span>34 <span style=''></span><span style='background: #AEF1AE'>        Reactions.inspectBag,
-</span>35 <span style=''></span><span style='background: #AEF1AE'>        onInspectExtra
-</span>36 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>37 <span style=''>  }
-</span>38 <span style=''>
-</span>39 <span style=''>  /**
-</span>40 <span style=''>   * Companion object for [[InspectableBag]]. Shortcut for the standard implementation.
-</span>41 <span style=''>   */
-</span>42 <span style=''>  object InspectableBag {
-</span>43 <span style=''>
-</span>44 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
-</span>45 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableBag(onInspectExtra)</span><span style=''>
+</span>15 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to know what items are contained into the
+</span>16 <span style=''>   * bag.
+</span>17 <span style=''>   */
+</span>18 <span style=''>  abstract class InspectableBag extends GroundBehavior {
+</span>19 <span style=''>
+</span>20 <span style=''>    /**
+</span>21 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user the items contained into the bag.
+</span>22 <span style=''>     * @return
+</span>23 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user the items contained into the bag.
+</span>24 <span style=''>     */
+</span>25 <span style=''>    def inspectBag: Reaction
+</span>26 <span style=''>  }
+</span>27 <span style=''>
+</span>28 <span style=''>  /**
+</span>29 <span style=''>   * A standard implementation for &lt;b&gt;InspectableBag&lt;/b&gt;.
+</span>30 <span style=''>   *
+</span>31 <span style=''>   * @param onInspectExtra
+</span>32 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspects the bag. It can be
+</span>33 <span style=''>   *   omitted.
+</span>34 <span style=''>   */
+</span>35 <span style=''>  case class SimpleInspectableBag(onInspectExtra: Reaction = Reaction.empty)
+</span>36 <span style=''>    extends InspectableBag {
+</span>37 <span style=''>
+</span>38 <span style=''>    override def triggers: GroundTriggers = { case (InspectBag, _) =&gt; </span><span style='background: #AEF1AE'>inspectBag</span><span style=''> }
+</span>39 <span style=''>
+</span>40 <span style=''>    override def inspectBag: Reaction =
+</span>41 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>42 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
+</span>43 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.addMessage(CMessages.InspectedBag(s1.bag))
+</span>44 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onInspectExtra
+</span>45 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
 </span>46 <span style=''>  }
-</span>47 <span style=''>}
+</span>47 <span style=''>
+</span>48 <span style=''>  /**
+</span>49 <span style=''>   * Companion object for &lt;b&gt;InspectableBag&lt;/b&gt;.
+</span>50 <span style=''>   */
+</span>51 <span style=''>  object InspectableBag {
+</span>52 <span style=''>
+</span>53 <span style=''>    /**
+</span>54 <span style=''>     * Shortcut for the standard implementation.
+</span>55 <span style=''>     * @param onInspectExtra
+</span>56 <span style=''>     *   An additional &lt;b&gt;Reaction&lt;/b&gt; generated when user inspects the bag.
+</span>57 <span style=''>     * @return
+</span>58 <span style=''>     *   An instance of &lt;b&gt;SimpleInspectableBag&lt;/b&gt;.
+</span>59 <span style=''>     */
+</span>60 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
+</span>61 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableBag(onInspectExtra)</span><span style=''>
+</span>62 <span style=''>  }
+</span>63 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -83,15 +99,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          30
+          38
         </td>
         <td>
-          277
+          278
         </td>
         <td>
-          1213
+          1439
           -
-          1223
+          1449
         </td>
         <td>
           Select
@@ -107,15 +123,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          38
         </td>
         <td>
-          278
+          279
         </td>
         <td>
-          1187
+          1413
           -
-          1187
+          1413
         </td>
         <td>
           Apply
@@ -131,63 +147,163 @@
         </td>
       </tr><tr>
         <td>
-          33
-        </td>
-        <td>
-          281
-        </td>
-        <td>
-          1273
-          -
-          1351
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          InspectableBagExt.this.Reaction.combine(InspectableBagExt.this.Reactions.inspectBag, SimpleInspectableBag.this.onInspectExtra)
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          279
-        </td>
-        <td>
-          1299
-          -
-          1319
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.inspectBag
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          InspectableBagExt.this.Reactions.inspectBag
-        </td>
-      </tr><tr>
-        <td>
-          35
+          42
         </td>
         <td>
           280
         </td>
         <td>
-          1329
+          1519
           -
-          1343
+          1533
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.Reaction.empty
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          287
+        </td>
+        <td>
+          1499
+          -
+          1647
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.EnhancedReaction(InspectableBagExt.this.Reaction.empty).flatMap(((s1: InspectableBagExt.this.S) =&gt; InspectableBagExt.this.EnhancedReaction(InspectableBagExt.this.CReactions.addMessage(InspectableBagExt.this.CMessages.InspectedBag.apply(s1.bag))).flatMap(((x$1: InspectableBagExt.this.S) =&gt; (x$1: InspectableBagExt.this.S @unchecked) match {
+  case _ =&gt; InspectableBagExt.this.EnhancedReaction(SimpleInspectableBag.this.onInspectExtra).map(((s2: InspectableBagExt.this.S) =&gt; s2))
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          281
+        </td>
+        <td>
+          1593
+          -
+          1599
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.State.bag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s1.bag
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          282
+        </td>
+        <td>
+          1570
+          -
+          1600
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.InspectedBag.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.CMessages.InspectedBag.apply(s1.bag)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          283
+        </td>
+        <td>
+          1548
+          -
+          1601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.addMessage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.CReactions.addMessage(InspectableBagExt.this.CMessages.InspectedBag.apply(s1.bag))
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          286
+        </td>
+        <td>
+          1542
+          -
+          1647
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.EnhancedReaction(InspectableBagExt.this.CReactions.addMessage(InspectableBagExt.this.CMessages.InspectedBag.apply(s1.bag))).flatMap(((x$1: InspectableBagExt.this.S) =&gt; (x$1: InspectableBagExt.this.S @unchecked) match {
+  case _ =&gt; InspectableBagExt.this.EnhancedReaction(SimpleInspectableBag.this.onInspectExtra).map(((s2: InspectableBagExt.this.S) =&gt; s2))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          284
+        </td>
+        <td>
+          1616
+          -
+          1630
         </td>
         <td>
           Select
@@ -203,15 +319,39 @@
         </td>
       </tr><tr>
         <td>
-          45
+          44
         </td>
         <td>
-          282
+          285
         </td>
         <td>
-          1565
+          1610
           -
-          1601
+          1647
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          InspectableBagExt.this.EnhancedReaction(SimpleInspectableBag.this.onInspectExtra).map(((s2: InspectableBagExt.this.S) =&gt; s2))
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          288
+        </td>
+        <td>
+          2061
+          -
+          2097
         </td>
         <td>
           Apply

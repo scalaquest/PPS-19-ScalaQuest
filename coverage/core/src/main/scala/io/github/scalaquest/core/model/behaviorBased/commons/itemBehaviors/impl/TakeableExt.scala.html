@@ -25,61 +25,75 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Take
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-</span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to mix into the [[BehaviorBasedModel]] the Takeable behavior.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait TakeableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
-</span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be taken and put away into the bag of the
-</span>15 <span style=''>   * player.
-</span>16 <span style=''>   */
-</span>17 <span style=''>  abstract class Takeable extends ItemBehavior {
-</span>18 <span style=''>    def take: Reaction
-</span>19 <span style=''>  }
-</span>20 <span style=''>
-</span>21 <span style=''>  /**
-</span>22 <span style=''>   * Standard implementation of the Takeable.
-</span>23 <span style=''>   *
-</span>24 <span style=''>   * The behavior of an Item that could be put into the Bag of the player from the current room.
-</span>25 <span style=''>   * @param onTakeExtra
-</span>26 <span style=''>   *   Reaction to be executed into the State when taken, after the standard Reaction. It can be
-</span>27 <span style=''>   *   omitted.
-</span>28 <span style=''>   */
-</span>29 <span style=''>  case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit subject: I)
-</span>30 <span style=''>    extends Takeable {
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Take
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>8 <span style=''>
+</span>9 <span style=''>/**
+</span>10 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Takeable&lt;/b&gt; behavior.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait TakeableExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with CMessagesExt
+</span>15 <span style=''>  with CReactionsExt
+</span>16 <span style=''>  with StateUtilsExt {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; aassociated to a &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be taken and put away
+</span>20 <span style=''>   * into the bag of the player.
+</span>21 <span style=''>   */
+</span>22 <span style=''>  abstract class Takeable extends ItemBehavior {
+</span>23 <span style=''>
+</span>24 <span style=''>    /**
+</span>25 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that moves the subject from the location to the bag.
+</span>26 <span style=''>     * @return
+</span>27 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that moves the subject from the location to the bag.
+</span>28 <span style=''>     */
+</span>29 <span style=''>    def take: Reaction
+</span>30 <span style=''>  }
 </span>31 <span style=''>
-</span>32 <span style=''>    override def triggers: ItemTriggers = {
-</span>33 <span style=''>      case (Take, item, None, state) if </span><span style='background: #AEF1AE'>state.isInLocation(item)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>take</span><span style=''>
-</span>34 <span style=''>    }
-</span>35 <span style=''>
-</span>36 <span style=''>    /**
-</span>37 <span style=''>     * Returns a Reaction that removes the item from the current room, put it into the bag, executes
-</span>38 <span style=''>     * the eventual extra reaction.
-</span>39 <span style=''>     * @return
-</span>40 <span style=''>     *   A Reaction that removes the item from the current room, put it into the bag, executes the
-</span>41 <span style=''>     *   eventual extra reaction.
-</span>42 <span style=''>     */
-</span>43 <span style=''>    override def take: Reaction =
-</span>44 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
-</span>45 <span style=''></span><span style='background: #AEF1AE'>        Reactions.take(subject),
-</span>46 <span style=''></span><span style='background: #AEF1AE'>        onTakeExtra
-</span>47 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>48 <span style=''>  }
-</span>49 <span style=''>
-</span>50 <span style=''>  /**
-</span>51 <span style=''>   * Companion object for [[Takeable]]. Shortcut for the standard implementation.
-</span>52 <span style=''>   */
-</span>53 <span style=''>  object Takeable {
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * Standard implementation of &lt;b&gt;Takeable&lt;/b&gt;.
+</span>34 <span style=''>   *
+</span>35 <span style=''>   * @param onTakeExtra
+</span>36 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed after after the standard take &lt;b&gt;Reaction&lt;/b&gt;. It can be
+</span>37 <span style=''>   *   omitted.
+</span>38 <span style=''>   */
+</span>39 <span style=''>  case class SimpleTakeable(onTakeExtra: Reaction = Reaction.empty)(implicit val subject: I)
+</span>40 <span style=''>    extends Takeable {
+</span>41 <span style=''>
+</span>42 <span style=''>    override def triggers: ItemTriggers = {
+</span>43 <span style=''>      case (Take, None, state) if </span><span style='background: #AEF1AE'>state.isInLocation(subject)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>take</span><span style=''>
+</span>44 <span style=''>    }
+</span>45 <span style=''>
+</span>46 <span style=''>    override def take: Reaction =
+</span>47 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>48 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.modifyLocationItems(_ - subject.ref)
+</span>49 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.modifyBag(_ + subject.ref)
+</span>50 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(CMessages.Taken(subject))
+</span>51 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- onTakeExtra
+</span>52 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>53 <span style=''>  }
 </span>54 <span style=''>
-</span>55 <span style=''>    def builder(onTakeExtra: Reaction = Reaction.empty): I =&gt; Takeable =
-</span>56 <span style=''>      </span><span style='background: #AEF1AE'>SimpleTakeable(onTakeExtra)(_)</span><span style=''>
-</span>57 <span style=''>  }
-</span>58 <span style=''>}
+</span>55 <span style=''>  /**
+</span>56 <span style=''>   * Companion object for &lt;b&gt;Takeable&lt;/b&gt;.
+</span>57 <span style=''>   */
+</span>58 <span style=''>  object Takeable {
+</span>59 <span style=''>
+</span>60 <span style=''>    /**
+</span>61 <span style=''>     * Builder that returns a standard &lt;b&gt;Takeable&lt;/b&gt; behavior given a subject.
+</span>62 <span style=''>     *
+</span>63 <span style=''>     * @param onTakeExtra
+</span>64 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; to be executed after after the standard take &lt;b&gt;Reaction&lt;/b&gt;. It can be
+</span>65 <span style=''>     *   omitted.
+</span>66 <span style=''>     * @return
+</span>67 <span style=''>     *   Builder that returns a standard &lt;b&gt;Takeable&lt;/b&gt; behavior given a subject.
+</span>68 <span style=''>     */
+</span>69 <span style=''>    def builder(onTakeExtra: Reaction = Reaction.empty): I =&gt; Takeable =
+</span>70 <span style=''>      </span><span style='background: #AEF1AE'>SimpleTakeable(onTakeExtra)(_)</span><span style=''>
+</span>71 <span style=''>  }
+</span>72 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -94,15 +108,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          32
+          42
         </td>
         <td>
-          402
+          475
         </td>
         <td>
-          1270
+          1476
           -
-          1270
+          1476
         </td>
         <td>
           Apply
@@ -118,87 +132,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          43
         </td>
         <td>
-          400
+          472
         </td>
         <td>
-          1312
+          1531
           -
-          1336
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInLocation
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          TakeableExt.this.StateUtils(state).isInLocation(item)
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          401
-        </td>
-        <td>
-          1340
-          -
-          1344
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.take
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          SimpleTakeable.this.take
-        </td>
-      </tr><tr>
-        <td>
-          44
-        </td>
-        <td>
-          406
-        </td>
-        <td>
-          1693
-          -
-          1771
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          TakeableExt.this.Reaction.combine(TakeableExt.this.Reactions.take(SimpleTakeable.this.subject), SimpleTakeable.this.onTakeExtra)
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          403
-        </td>
-        <td>
-          1734
-          -
-          1741
+          1538
         </td>
         <td>
           Select
@@ -214,39 +156,363 @@
         </td>
       </tr><tr>
         <td>
-          45
+          43
         </td>
         <td>
-          404
+          473
         </td>
         <td>
-          1719
+          1512
           -
-          1742
+          1539
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.take
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInLocation
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          TakeableExt.this.Reactions.take(SimpleTakeable.this.subject)
+          TakeableExt.this.StateUtils(state).isInLocation(SimpleTakeable.this.subject)
         </td>
       </tr><tr>
         <td>
-          46
+          43
         </td>
         <td>
-          405
+          474
         </td>
         <td>
-          1752
+          1543
           -
-          1763
+          1547
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.take
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          476
+        </td>
+        <td>
+          1649
+          -
+          1660
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.subject.ref
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          477
+        </td>
+        <td>
+          1645
+          -
+          1660
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.-
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.-(SimpleTakeable.this.subject.ref)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          478
+        </td>
+        <td>
+          1614
+          -
+          1661
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.modifyLocationItems
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.CReactions.modifyLocationItems(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(SimpleTakeable.this.subject.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          489
+        </td>
+        <td>
+          1595
+          -
+          1814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.EnhancedReaction(TakeableExt.this.CReactions.modifyLocationItems(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(SimpleTakeable.this.subject.ref)))).flatMap(((x$5: TakeableExt.this.S) =&gt; (x$5: TakeableExt.this.S @unchecked) match {
+  case _ =&gt; TakeableExt.this.EnhancedReaction(TakeableExt.this.CReactions.modifyBag(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(SimpleTakeable.this.subject.ref)))).flatMap(((x$4: TakeableExt.this.S) =&gt; (x$4: TakeableExt.this.S @unchecked) match {
+    case _ =&gt; TakeableExt.this.EnhancedReaction(TakeableExt.this.CReactions.addMessage(TakeableExt.this.CMessages.Taken.apply(SimpleTakeable.this.subject))).flatMap(((x$3: TakeableExt.this.S) =&gt; (x$3: TakeableExt.this.S @unchecked) match {
+      case _ =&gt; TakeableExt.this.EnhancedReaction(SimpleTakeable.this.onTakeExtra).map(((s: TakeableExt.this.S) =&gt; s))
+    }))
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          479
+        </td>
+        <td>
+          1700
+          -
+          1711
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.subject.ref
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          480
+        </td>
+        <td>
+          1696
+          -
+          1711
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.+(SimpleTakeable.this.subject.ref)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          481
+        </td>
+        <td>
+          1675
+          -
+          1712
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.modifyBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.CReactions.modifyBag(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(SimpleTakeable.this.subject.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          488
+        </td>
+        <td>
+          1670
+          -
+          1814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.EnhancedReaction(TakeableExt.this.CReactions.modifyBag(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(SimpleTakeable.this.subject.ref)))).flatMap(((x$4: TakeableExt.this.S) =&gt; (x$4: TakeableExt.this.S @unchecked) match {
+  case _ =&gt; TakeableExt.this.EnhancedReaction(TakeableExt.this.CReactions.addMessage(TakeableExt.this.CMessages.Taken.apply(SimpleTakeable.this.subject))).flatMap(((x$3: TakeableExt.this.S) =&gt; (x$3: TakeableExt.this.S @unchecked) match {
+    case _ =&gt; TakeableExt.this.EnhancedReaction(SimpleTakeable.this.onTakeExtra).map(((s: TakeableExt.this.S) =&gt; s))
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          1764
+          -
+          1771
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.TakeableExt.SimpleTakeable.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleTakeable.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          483
+        </td>
+        <td>
+          1748
+          -
+          1772
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Taken.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.CMessages.Taken.apply(SimpleTakeable.this.subject)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          484
+        </td>
+        <td>
+          1726
+          -
+          1773
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.addMessage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.CReactions.addMessage(TakeableExt.this.CMessages.Taken.apply(SimpleTakeable.this.subject))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          487
+        </td>
+        <td>
+          1721
+          -
+          1814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.EnhancedReaction(TakeableExt.this.CReactions.addMessage(TakeableExt.this.CMessages.Taken.apply(SimpleTakeable.this.subject))).flatMap(((x$3: TakeableExt.this.S) =&gt; (x$3: TakeableExt.this.S @unchecked) match {
+  case _ =&gt; TakeableExt.this.EnhancedReaction(SimpleTakeable.this.onTakeExtra).map(((s: TakeableExt.this.S) =&gt; s))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          485
+        </td>
+        <td>
+          1787
+          -
+          1798
         </td>
         <td>
           Select
@@ -262,15 +528,39 @@
         </td>
       </tr><tr>
         <td>
-          56
+          51
         </td>
         <td>
-          407
+          486
         </td>
         <td>
-          1971
+          1782
           -
-          2001
+          1814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TakeableExt.this.EnhancedReaction(SimpleTakeable.this.onTakeExtra).map(((s: TakeableExt.this.S) =&gt; s))
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          490
+        </td>
+        <td>
+          2318
+          -
+          2348
         </td>
         <td>
           Apply
@@ -282,7 +572,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          TakeableExt.this.SimpleTakeable.apply(onTakeExtra)(x$1)
+          TakeableExt.this.SimpleTakeable.apply(onTakeExtra)(x$6)
         </td>
       </tr>
     </table>

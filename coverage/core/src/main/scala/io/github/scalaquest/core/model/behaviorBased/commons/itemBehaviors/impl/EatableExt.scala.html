@@ -25,53 +25,76 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CommonMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt
-</span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to mix into [[BehaviorBasedModel]] the Eatable behavior.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait EatableExt extends BehaviorBasedModel with CommonMessagesExt with CommonReactionsExt {
-</span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * A [[ItemBehavior]] associated to an [[Item]] that can be eaten. After an item is eaten, it
-</span>15 <span style=''>   * should be removed from the player bag (or from the current room, if it was there).
-</span>16 <span style=''>   */
-</span>17 <span style=''>  abstract class Eatable extends ItemBehavior {
-</span>18 <span style=''>    def eat: Reaction
-</span>19 <span style=''>  }
-</span>20 <span style=''>
-</span>21 <span style=''>  /**
-</span>22 <span style=''>   * Standard implementation of the Eatable behavior.
-</span>23 <span style=''>   *
-</span>24 <span style=''>   * This is a behavior associated to an Item that can be eaten, if present in the bag or in the
-</span>25 <span style=''>   * room.
-</span>26 <span style=''>   * @param onEatExtra
-</span>27 <span style=''>   *   Reaction to be executed when the item has been successfully eaten, after the standard
-</span>28 <span style=''>   *   [[Reaction]]. It can be omitted.
-</span>29 <span style=''>   */
-</span>30 <span style=''>  case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit subject: I)
-</span>31 <span style=''>    extends Eatable {
+</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Eat
+</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>8 <span style=''>
+</span>9 <span style=''>/**
+</span>10 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Eatable&lt;/b&gt; Behavior.
+</span>11 <span style=''> */
+</span>12 <span style=''>trait EatableExt
+</span>13 <span style=''>  extends BehaviorBasedModel
+</span>14 <span style=''>  with CMessagesExt
+</span>15 <span style=''>  with CReactionsExt
+</span>16 <span style=''>  with StateUtilsExt {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; associated to an &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be eaten. After an
+</span>20 <span style=''>   * item is eaten, it should be removed from the player bag (or from the current room, if it was
+</span>21 <span style=''>   * there).
+</span>22 <span style=''>   */
+</span>23 <span style=''>  abstract class Eatable extends ItemBehavior {
+</span>24 <span style=''>
+</span>25 <span style=''>    /**
+</span>26 <span style=''>     * A Reaction that should remove the Item from the player bag (or from the location).
+</span>27 <span style=''>     * @return
+</span>28 <span style=''>     *   A Reaction that should remove the Item from the player bag (or from the location).
+</span>29 <span style=''>     */
+</span>30 <span style=''>    def eat: Reaction
+</span>31 <span style=''>  }
 </span>32 <span style=''>
-</span>33 <span style=''>    override def triggers: ItemTriggers = {
-</span>34 <span style=''>      case (Eat, item, None, state) if </span><span style='background: #AEF1AE'>state.isInScope(item)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>eat</span><span style=''>
-</span>35 <span style=''>    }
-</span>36 <span style=''>
-</span>37 <span style=''>    def eat: Reaction =
-</span>38 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.combine(
-</span>39 <span style=''></span><span style='background: #AEF1AE'>        Reactions.eat(subject),
-</span>40 <span style=''></span><span style='background: #AEF1AE'>        onEatExtra
-</span>41 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>42 <span style=''>  }
-</span>43 <span style=''>
-</span>44 <span style=''>  /**
-</span>45 <span style=''>   * Companion object for [[Eatable]]. Shortcut for the standard implementation.
-</span>46 <span style=''>   */
-</span>47 <span style=''>  object Eatable {
-</span>48 <span style=''>    def builder(onEatExtra: Reaction = Reaction.empty): I =&gt; Eatable = </span><span style='background: #AEF1AE'>SimpleEatable(onEatExtra)(_)</span><span style=''>
-</span>49 <span style=''>  }
-</span>50 <span style=''>}
+</span>33 <span style=''>  /**
+</span>34 <span style=''>   * Standard implementation of the Eatable behavior.
+</span>35 <span style=''>   *
+</span>36 <span style=''>   * This is a behavior associated to an Item that can be eaten, if present in the bag or in the
+</span>37 <span style=''>   * room.
+</span>38 <span style=''>   * @param onEatExtra
+</span>39 <span style=''>   *   Reaction to be executed when the item has been successfully eaten, after the standard
+</span>40 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt;. It can be omitted.
+</span>41 <span style=''>   */
+</span>42 <span style=''>  case class SimpleEatable(onEatExtra: Reaction = Reaction.empty)(implicit val subject: I)
+</span>43 <span style=''>    extends Eatable {
+</span>44 <span style=''>
+</span>45 <span style=''>    override def triggers: ItemTriggers = {
+</span>46 <span style=''>      case (Eat, None, state) if </span><span style='background: #AEF1AE'>state.isInScope(subject)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>eat</span><span style=''>
+</span>47 <span style=''>    }
+</span>48 <span style=''>
+</span>49 <span style=''>    override def eat: Reaction =
+</span>50 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>51 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.modifyLocationItems(_ - subject.ref)
+</span>52 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.modifyBag(_ - subject.ref)
+</span>53 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(CMessages.Eaten(subject))
+</span>54 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- onEatExtra
+</span>55 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>56 <span style=''>  }
+</span>57 <span style=''>
+</span>58 <span style=''>  /**
+</span>59 <span style=''>   * Companion object for [[Eatable]].
+</span>60 <span style=''>   */
+</span>61 <span style=''>  object Eatable {
+</span>62 <span style=''>
+</span>63 <span style=''>    /**
+</span>64 <span style=''>     * A function that builds an Eatable behavior given a subject Item.
+</span>65 <span style=''>     * @param onEatExtra
+</span>66 <span style=''>     *   Reaction to be executed when the item has been successfully eaten, after the standard
+</span>67 <span style=''>     *   Reaction. It can be omitted.
+</span>68 <span style=''>     * @return
+</span>69 <span style=''>     *   A function that builds an Eatable behavior given a subject Item.
+</span>70 <span style=''>     */
+</span>71 <span style=''>    def builder(onEatExtra: Reaction = Reaction.empty): I =&gt; Eatable = </span><span style='background: #AEF1AE'>SimpleEatable(onEatExtra)(_)</span><span style=''>
+</span>72 <span style=''>  }
+</span>73 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -86,15 +109,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          33
+          45
         </td>
         <td>
-          323
+          356
         </td>
         <td>
-          1366
+          1704
           -
-          1366
+          1704
         </td>
         <td>
           Apply
@@ -110,87 +133,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          46
         </td>
         <td>
-          321
+          353
         </td>
         <td>
-          1407
+          1755
           -
-          1428
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInScope
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          EatableExt.this.StateUtils(state).isInScope(item)
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          322
-        </td>
-        <td>
-          1432
-          -
-          1435
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.eat
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          SimpleEatable.this.eat
-        </td>
-      </tr><tr>
-        <td>
-          38
-        </td>
-        <td>
-          327
-        </td>
-        <td>
-          1473
-          -
-          1549
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.Reaction.combine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          EatableExt.this.Reaction.combine(EatableExt.this.Reactions.eat(SimpleEatable.this.subject), SimpleEatable.this.onEatExtra)
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          324
-        </td>
-        <td>
-          1513
-          -
-          1520
+          1762
         </td>
         <td>
           Select
@@ -206,39 +157,363 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
-          325
+          354
         </td>
         <td>
-          1499
+          1739
           -
-          1521
+          1763
         </td>
         <td>
           Apply
         </td>
         <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CommonReactionsExt.Reactions.eat
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.isInScope
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          EatableExt.this.Reactions.eat(SimpleEatable.this.subject)
+          EatableExt.this.StateUtils(state).isInScope(SimpleEatable.this.subject)
         </td>
       </tr><tr>
         <td>
-          40
+          46
         </td>
         <td>
-          326
+          355
         </td>
         <td>
-          1531
+          1767
           -
-          1541
+          1770
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.eat
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.eat
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          357
+        </td>
+        <td>
+          1871
+          -
+          1882
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.subject.ref
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          358
+        </td>
+        <td>
+          1867
+          -
+          1882
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.-
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.-(SimpleEatable.this.subject.ref)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          359
+        </td>
+        <td>
+          1836
+          -
+          1883
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.modifyLocationItems
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.CReactions.modifyLocationItems(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(SimpleEatable.this.subject.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          370
+        </td>
+        <td>
+          1817
+          -
+          2035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.EnhancedReaction(EatableExt.this.CReactions.modifyLocationItems(((x$1: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$1.-(SimpleEatable.this.subject.ref)))).flatMap(((x$5: EatableExt.this.S) =&gt; (x$5: EatableExt.this.S @unchecked) match {
+  case _ =&gt; EatableExt.this.EnhancedReaction(EatableExt.this.CReactions.modifyBag(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(SimpleEatable.this.subject.ref)))).flatMap(((x$4: EatableExt.this.S) =&gt; (x$4: EatableExt.this.S @unchecked) match {
+    case _ =&gt; EatableExt.this.EnhancedReaction(EatableExt.this.CReactions.addMessage(EatableExt.this.CMessages.Eaten.apply(SimpleEatable.this.subject))).flatMap(((x$3: EatableExt.this.S) =&gt; (x$3: EatableExt.this.S @unchecked) match {
+      case _ =&gt; EatableExt.this.EnhancedReaction(SimpleEatable.this.onEatExtra).map(((s: EatableExt.this.S) =&gt; s))
+    }))
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          360
+        </td>
+        <td>
+          1922
+          -
+          1933
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Item.ref
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.subject.ref
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          361
+        </td>
+        <td>
+          1918
+          -
+          1933
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.SetOps.-
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.-(SimpleEatable.this.subject.ref)
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          362
+        </td>
+        <td>
+          1897
+          -
+          1934
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.modifyBag
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.CReactions.modifyBag(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(SimpleEatable.this.subject.ref)))
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          369
+        </td>
+        <td>
+          1892
+          -
+          2035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.EnhancedReaction(EatableExt.this.CReactions.modifyBag(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.-(SimpleEatable.this.subject.ref)))).flatMap(((x$4: EatableExt.this.S) =&gt; (x$4: EatableExt.this.S @unchecked) match {
+  case _ =&gt; EatableExt.this.EnhancedReaction(EatableExt.this.CReactions.addMessage(EatableExt.this.CMessages.Eaten.apply(SimpleEatable.this.subject))).flatMap(((x$3: EatableExt.this.S) =&gt; (x$3: EatableExt.this.S @unchecked) match {
+    case _ =&gt; EatableExt.this.EnhancedReaction(SimpleEatable.this.onEatExtra).map(((s: EatableExt.this.S) =&gt; s))
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          363
+        </td>
+        <td>
+          1986
+          -
+          1993
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.SimpleEatable.subject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SimpleEatable.this.subject
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          364
+        </td>
+        <td>
+          1970
+          -
+          1994
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt.CMessages.Eaten.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.CMessages.Eaten.apply(SimpleEatable.this.subject)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          365
+        </td>
+        <td>
+          1948
+          -
+          1995
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt.CReactions.addMessage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.CReactions.addMessage(EatableExt.this.CMessages.Eaten.apply(SimpleEatable.this.subject))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          368
+        </td>
+        <td>
+          1943
+          -
+          2035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.EnhancedReaction(EatableExt.this.CReactions.addMessage(EatableExt.this.CMessages.Eaten.apply(SimpleEatable.this.subject))).flatMap(((x$3: EatableExt.this.S) =&gt; (x$3: EatableExt.this.S @unchecked) match {
+  case _ =&gt; EatableExt.this.EnhancedReaction(SimpleEatable.this.onEatExtra).map(((s: EatableExt.this.S) =&gt; s))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          366
+        </td>
+        <td>
+          2009
+          -
+          2019
         </td>
         <td>
           Select
@@ -254,15 +529,39 @@
         </td>
       </tr><tr>
         <td>
-          48
+          54
         </td>
         <td>
-          328
+          367
         </td>
         <td>
-          1738
+          2004
           -
-          1766
+          2035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt.EnhancedReaction.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          EatableExt.this.EnhancedReaction(SimpleEatable.this.onEatExtra).map(((s: EatableExt.this.S) =&gt; s))
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          371
+        </td>
+        <td>
+          2518
+          -
+          2546
         </td>
         <td>
           Apply
@@ -274,7 +573,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          EatableExt.this.SimpleEatable.apply(onEatExtra)(x$1)
+          EatableExt.this.SimpleEatable.apply(onEatExtra)(x$6)
         </td>
       </tr>
     </table>

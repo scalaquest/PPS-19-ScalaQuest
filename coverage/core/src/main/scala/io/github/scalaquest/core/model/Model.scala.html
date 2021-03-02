@@ -38,208 +38,277 @@
 </span>14 <span style=''> * }}}
 </span>15 <span style=''> */
 </span>16 <span style=''>trait Model { model: Model =&gt;
-</span>17 <span style=''>  type S &lt;: State
-</span>18 <span style=''>  type I &lt;: Item
-</span>19 <span style=''>  type G &lt;: Ground
-</span>20 <span style=''>  type RM &lt;: Room
-</span>21 <span style=''>  type Reaction = S =&gt; (S, Seq[Message])
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * The specific implementation adopted for [[State]] in the specific model implementation.
+</span>20 <span style=''>   */
+</span>21 <span style=''>  type S &lt;: State
 </span>22 <span style=''>
 </span>23 <span style=''>  /**
-</span>24 <span style=''>   * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
-</span>25 <span style=''>   * key fact is that this level of abstraction can handle also [[Message]] s, that is a
-</span>26 <span style=''>   * representation of the output to render to the user at the end of the pipeline round, and all
-</span>27 <span style=''>   * the possible [[Action]] s.
-</span>28 <span style=''>   */
-</span>29 <span style=''>  abstract class State { self: S =&gt;
-</span>30 <span style=''>    implicit val s: S = self
-</span>31 <span style=''>
-</span>32 <span style=''>    /**
-</span>33 <span style=''>     * All the possible [[Action]] s that can be used into the match, associated with the Verb that
-</span>34 <span style=''>     * triggers it.
-</span>35 <span style=''>     * @return
-</span>36 <span style=''>     *   All the possible [[Action]] s, as a [[Map]].
-</span>37 <span style=''>     */
-</span>38 <span style=''>    def actions: Map[VerbPrep, Action]
-</span>39 <span style=''>
-</span>40 <span style=''>    /**
-</span>41 <span style=''>     * Represents the configuration of the match, in terms of [[Model.Room]] s and [[Model.Item]].
-</span>42 <span style=''>     * @return
-</span>43 <span style=''>     *   a [[Set]] representing all [[Model.Room]] s of the match, and the [[Model.Item]] s in them.
-</span>44 <span style=''>     */
-</span>45 <span style=''>    def rooms: Map[RoomRef, RM]
-</span>46 <span style=''>
-</span>47 <span style=''>    /**
-</span>48 <span style=''>     * The model's reference to the [[Ground]].
-</span>49 <span style=''>     * @return
-</span>50 <span style=''>     *   the model's instance of [[Ground]].
-</span>51 <span style=''>     */
-</span>52 <span style=''>    def ground: G
+</span>24 <span style=''>   * The specific implementation adopted for [[Item]] in the specific model implementation.
+</span>25 <span style=''>   */
+</span>26 <span style=''>  type I &lt;: Item
+</span>27 <span style=''>
+</span>28 <span style=''>  /**
+</span>29 <span style=''>   * The specific implementation adopted for [[Ground]] in the specific model implementation.
+</span>30 <span style=''>   */
+</span>31 <span style=''>  type G &lt;: Ground
+</span>32 <span style=''>
+</span>33 <span style=''>  /**
+</span>34 <span style=''>   * The specific implementation adopted for [[Room]] in the specific model implementation.
+</span>35 <span style=''>   */
+</span>36 <span style=''>  type RM &lt;: Room
+</span>37 <span style=''>
+</span>38 <span style=''>  /**
+</span>39 <span style=''>   * The specific implementation adopted for [[Reaction]] in the specific model implementation. A
+</span>40 <span style=''>   * [[Reaction]] is a function that given a [[S]] produce a new [[S]] and a sequence of
+</span>41 <span style=''>   * [[Message]].
+</span>42 <span style=''>   */
+</span>43 <span style=''>  type Reaction = S =&gt; (S, Seq[Message])
+</span>44 <span style=''>
+</span>45 <span style=''>  /**
+</span>46 <span style=''>   * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
+</span>47 <span style=''>   * key fact is that this level of abstraction can handle also [[Message]] s, that is a
+</span>48 <span style=''>   * representation of the output to render to the user at the end of the pipeline round, and all
+</span>49 <span style=''>   * the possible [[Action]] s.
+</span>50 <span style=''>   */
+</span>51 <span style=''>  abstract class State { self: S =&gt;
+</span>52 <span style=''>    implicit val s: S = self
 </span>53 <span style=''>
 </span>54 <span style=''>    /**
-</span>55 <span style=''>     * A [[Map]] with all the [[Model.Item]] s present in the match. For each [[ItemRef]] is found
-</span>56 <span style=''>     * the specific [[Model.Item]] in the match.
+</span>55 <span style=''>     * All the possible [[Action]] s that can be used into the match, associated with the Verb that
+</span>56 <span style=''>     * triggers it.
 </span>57 <span style=''>     * @return
-</span>58 <span style=''>     */
-</span>59 <span style=''>    def items: Map[ItemRef, I]
-</span>60 <span style=''>
-</span>61 <span style=''>    /**
-</span>62 <span style=''>     * All the [[Model.Item]] that a Player could see.
-</span>63 <span style=''>     * @return
-</span>64 <span style=''>     */
-</span>65 <span style=''>    def scope: Set[I] = </span><span style='background: #AEF1AE'>bag ++ location.items</span><span style=''>
-</span>66 <span style=''>
-</span>67 <span style=''>    /**
-</span>68 <span style=''>     * References to the [[Model.Item]] s that the player brings with him. In a concrete story, this
-</span>69 <span style=''>     * is not necessarily a real bag: it is simply an intuitive term to refer to this set of items.
-</span>70 <span style=''>     * @return
-</span>71 <span style=''>     */
-</span>72 <span style=''>    def bag: Set[I]
-</span>73 <span style=''>
-</span>74 <span style=''>    /**
-</span>75 <span style=''>     * Reference for the [[Model.Room]] where the player is currently positioned.
-</span>76 <span style=''>     * @return
-</span>77 <span style=''>     *   The current location of the player, as a [[RoomRef]].
-</span>78 <span style=''>     */
-</span>79 <span style=''>    def location: RM
-</span>80 <span style=''>
-</span>81 <span style=''>    /**
-</span>82 <span style=''>     * Indicates whether the match has reached the end. When true, the entire match ende after the
-</span>83 <span style=''>     * current pipeline round.
-</span>84 <span style=''>     * @return
-</span>85 <span style=''>     *   True if the match has to end after the current round, false otherwise.
+</span>58 <span style=''>     *   All the possible [[Action]] s, as a [[Map]].
+</span>59 <span style=''>     */
+</span>60 <span style=''>    def actions: Map[VerbPrep, Action]
+</span>61 <span style=''>
+</span>62 <span style=''>    /**
+</span>63 <span style=''>     * Represents the configuration of the match, in terms of [[Model.Room]] s and [[Model.Item]].
+</span>64 <span style=''>     * @return
+</span>65 <span style=''>     *   a [[Set]] representing all [[Model.Room]] s of the match, and the [[Model.Item]] s in them.
+</span>66 <span style=''>     */
+</span>67 <span style=''>    def rooms: Map[RoomRef, RM]
+</span>68 <span style=''>
+</span>69 <span style=''>    /**
+</span>70 <span style=''>     * The model's reference to the [[Ground]].
+</span>71 <span style=''>     * @return
+</span>72 <span style=''>     *   the model's instance of [[Ground]].
+</span>73 <span style=''>     */
+</span>74 <span style=''>    def ground: G
+</span>75 <span style=''>
+</span>76 <span style=''>    /**
+</span>77 <span style=''>     * A [[Map]] with all the [[Model.Item]] s present in the match. For each [[ItemRef]] is found
+</span>78 <span style=''>     * the specific [[Model.Item]] in the match.
+</span>79 <span style=''>     * @return
+</span>80 <span style=''>     */
+</span>81 <span style=''>    def items: Map[ItemRef, I]
+</span>82 <span style=''>
+</span>83 <span style=''>    /**
+</span>84 <span style=''>     * All the [[Model.Item]] that a Player could see.
+</span>85 <span style=''>     * @return
 </span>86 <span style=''>     */
-</span>87 <span style=''>    def ended: Boolean
-</span>88 <span style=''>  }
-</span>89 <span style=''>
-</span>90 <span style=''>  /**
-</span>91 <span style=''>   * Represents a single object against which the Player can interact.
-</span>92 <span style=''>   */
-</span>93 <span style=''>  abstract class Item { item: I =&gt;
-</span>94 <span style=''>
-</span>95 <span style=''>    /**
-</span>96 <span style=''>     * Semantic description of the object.
-</span>97 <span style=''>     * @return
-</span>98 <span style=''>     *   An [[ItemDescription]] describing the semantic of the object.
-</span>99 <span style=''>     */
-</span>100 <span style=''>    def description: ItemDescription
-</span>101 <span style=''>
-</span>102 <span style=''>    /**
-</span>103 <span style=''>     * A textual representation of the [[Item]].
-</span>104 <span style=''>     * @return
-</span>105 <span style=''>     */
-</span>106 <span style=''>    def name: String              = </span><span style='background: #AEF1AE'>description.mkString</span><span style=''>
-</span>107 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
-</span>108 <span style=''>
-</span>109 <span style=''>    /**
-</span>110 <span style=''>     * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
-</span>111 <span style=''>     * the reference to an object changes, the [[State]] works in an immutable fashion.
-</span>112 <span style=''>     */
-</span>113 <span style=''>    def ref: ItemRef
-</span>114 <span style=''>
-</span>115 <span style=''>    /**
-</span>116 <span style=''>     * Define a way make the item interact with the [[State]]. The interaction is founded into the
-</span>117 <span style=''>     * [[Action]] (ex. 'open the door'), but it can include also an additional [[Item]] ('open the
-</span>118 <span style=''>     * door with the key'). The item should react to each combination with an appropriate
-</span>119 <span style=''>     * [[Reaction]].
-</span>120 <span style=''>     * @param action
-</span>121 <span style=''>     *   An action from a statement (ex. &lt;b&gt;open&lt;/b&gt; the door with a key).
-</span>122 <span style=''>     * @param state
-</span>123 <span style=''>     *   the starting state, useful to give a context to the decision to take.
-</span>124 <span style=''>     * @param sideItem
-</span>125 <span style=''>     *   A side [[Item]] from a statement (ex. open the door with &lt;b&gt;a key&lt;/b&gt;).
+</span>87 <span style=''>    def scope: Set[I] = </span><span style='background: #AEF1AE'>bag ++ location.items</span><span style=''>
+</span>88 <span style=''>
+</span>89 <span style=''>    /**
+</span>90 <span style=''>     * References to the [[Model.Item]] s that the player brings with him. In a concrete story, this
+</span>91 <span style=''>     * is not necessarily a real bag: it is simply an intuitive term to refer to this set of items.
+</span>92 <span style=''>     * @return
+</span>93 <span style=''>     */
+</span>94 <span style=''>    def bag: Set[I]
+</span>95 <span style=''>
+</span>96 <span style=''>    /**
+</span>97 <span style=''>     * Reference for the [[Model.Room]] where the player is currently positioned.
+</span>98 <span style=''>     * @return
+</span>99 <span style=''>     *   The current location of the player, as a [[RoomRef]].
+</span>100 <span style=''>     */
+</span>101 <span style=''>    def location: RM
+</span>102 <span style=''>
+</span>103 <span style=''>    /**
+</span>104 <span style=''>     * Indicates whether the match has reached the end. When true, the entire match ende after the
+</span>105 <span style=''>     * current pipeline round.
+</span>106 <span style=''>     * @return
+</span>107 <span style=''>     *   True if the match has to end after the current round, false otherwise.
+</span>108 <span style=''>     */
+</span>109 <span style=''>    def ended: Boolean
+</span>110 <span style=''>  }
+</span>111 <span style=''>
+</span>112 <span style=''>  /**
+</span>113 <span style=''>   * Represents a single object against which the Player can interact.
+</span>114 <span style=''>   */
+</span>115 <span style=''>  abstract class Item { item: I =&gt;
+</span>116 <span style=''>
+</span>117 <span style=''>    /**
+</span>118 <span style=''>     * Semantic description of the object.
+</span>119 <span style=''>     * @return
+</span>120 <span style=''>     *   An [[ItemDescription]] describing the semantic of the object.
+</span>121 <span style=''>     */
+</span>122 <span style=''>    def description: ItemDescription
+</span>123 <span style=''>
+</span>124 <span style=''>    /**
+</span>125 <span style=''>     * A textual representation of the [[Item]].
 </span>126 <span style=''>     * @return
-</span>127 <span style=''>     *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
-</span>128 <span style=''>     */
-</span>129 <span style=''>    def use(action: Action, sideItem: Option[I] = None)(implicit state: S): Option[Reaction]
+</span>127 <span style=''>     */
+</span>128 <span style=''>    def name: String              = </span><span style='background: #AEF1AE'>description.mkString</span><span style=''>
+</span>129 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
 </span>130 <span style=''>
 </span>131 <span style=''>    /**
-</span>132 <span style=''>     * Makes items comparable based on their refs only.
-</span>133 <span style=''>     */
-</span>134 <span style=''>    override def equals(obj: Any): Boolean = </span><span style='background: #AEF1AE'>this.hashCode() == obj.hashCode()</span><span style=''>
-</span>135 <span style=''>
-</span>136 <span style=''>    /**
-</span>137 <span style=''>     * Makes items comparable based on their refs only.
-</span>138 <span style=''>     */
-</span>139 <span style=''>    override def hashCode(): Int = </span><span style='background: #AEF1AE'>ref.hashCode()</span><span style=''>
-</span>140 <span style=''>  }
-</span>141 <span style=''>
-</span>142 <span style=''>  /**
-</span>143 <span style=''>   * The ground is a sort of &quot;virtual&quot; item, that handles the intransitive [[Action]] s linked to
-</span>144 <span style=''>   * the match.
-</span>145 <span style=''>   */
-</span>146 <span style=''>  abstract class Ground { ground: G =&gt;
-</span>147 <span style=''>
-</span>148 <span style=''>    /**
-</span>149 <span style=''>     * Define a way make the given [[Action]] interacts with the [[State]]. The interaction is
-</span>150 <span style=''>     * founded into a single [[Action]] value (ex. 'inspect'). The ground should react to each
-</span>151 <span style=''>     * combination with an appropriate [[Reaction]].
-</span>152 <span style=''>     * @param action
-</span>153 <span style=''>     *   An action from a statement (ex. &lt;b&gt;inspect&lt;/b&gt; ).
-</span>154 <span style=''>     * @param state
-</span>155 <span style=''>     *   the starting state, useful to give a context to the decision to take.
-</span>156 <span style=''>     * @return
-</span>157 <span style=''>     *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
-</span>158 <span style=''>     */
-</span>159 <span style=''>    def use(action: Action)(implicit state: S): Option[Reaction]
-</span>160 <span style=''>  }
-</span>161 <span style=''>
-</span>162 <span style=''>  /**
-</span>163 <span style=''>   * A geographical portion of the match map.
-</span>164 <span style=''>   *
-</span>165 <span style=''>   * This is one of the basic block for the story build by the storyteller, as it is used to
-</span>166 <span style=''>   * identify Player 's and [[Model.Item]] s' location, in a given moment of the story, and navigate
-</span>167 <span style=''>   * across the match geography.
-</span>168 <span style=''>   */
-</span>169 <span style=''>  abstract class Room { room: RM =&gt;
-</span>170 <span style=''>
-</span>171 <span style=''>    /**
-</span>172 <span style=''>     * A textual description for the room.
-</span>173 <span style=''>     * @return
-</span>174 <span style=''>     *   A textual description for the room.
-</span>175 <span style=''>     */
-</span>176 <span style=''>    def name: String
-</span>177 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
-</span>178 <span style=''>
-</span>179 <span style=''>    /**
-</span>180 <span style=''>     * The unique identifier of the [[Room]]. This is necessary, as passing from a state to another,
-</span>181 <span style=''>     * the reference to an object changes, the [[State]] works in an immutable fashion.
-</span>182 <span style=''>     */
-</span>183 <span style=''>    def ref: RoomRef
-</span>184 <span style=''>
-</span>185 <span style=''>    /**
-</span>186 <span style=''>     * Identifies [[Room]] s near to the current one, at the cardinal points.
-</span>187 <span style=''>     */
-</span>188 <span style=''>    def neighbor(direction: Direction)(implicit state: S): Option[RM]
-</span>189 <span style=''>
-</span>190 <span style=''>    def neighbors(implicit state: S): Map[Direction, RM]
-</span>191 <span style=''>
-</span>192 <span style=''>    /**
-</span>193 <span style=''>     * Identifies the [[Item]] s positioned into the current [[Room]].
-</span>194 <span style=''>     * @return
-</span>195 <span style=''>     *   [[Item]] s positioned into the [[Room]] as a [[Set]]
-</span>196 <span style=''>     */
-</span>197 <span style=''>    def items(implicit state: S): Set[I]
-</span>198 <span style=''>
-</span>199 <span style=''>    /**
-</span>200 <span style=''>     * Makes rooms comparable based on their refs only.
-</span>201 <span style=''>     */
-</span>202 <span style=''>    override def equals(obj: Any): Boolean = </span><span style='background: #AEF1AE'>this.hashCode() == obj.hashCode()</span><span style=''>
-</span>203 <span style=''>
-</span>204 <span style=''>    /**
-</span>205 <span style=''>     * Makes rooms comparable based on their refs only.
-</span>206 <span style=''>     */
-</span>207 <span style=''>    override def hashCode(): Int = </span><span style='background: #AEF1AE'>ref.hashCode()</span><span style=''>
-</span>208 <span style=''>  }
-</span>209 <span style=''>
-</span>210 <span style=''>  def locationRoomLens: Lens[S, RM]
-</span>211 <span style=''>  def roomsLens: Lens[S, Map[RoomRef, RM]]
-</span>212 <span style=''>  def itemsLens: Lens[S, Map[ItemRef, I]]
-</span>213 <span style=''>  def matchEndedLens: Lens[S, Boolean]
-</span>214 <span style=''>  def bagLens: Lens[S, Set[ItemRef]]
-</span>215 <span style=''>  def locationLens: Lens[S, RoomRef]
-</span>216 <span style=''>  def roomItemsLens: Lens[RM, Set[ItemRef]]
-</span>217 <span style=''>  def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]]
-</span>218 <span style=''>}
+</span>132 <span style=''>     * The unique identifier of the [[Item]]. This is necessary, as passing from a state to another,
+</span>133 <span style=''>     * the reference to an object changes, the [[State]] works in an immutable fashion.
+</span>134 <span style=''>     */
+</span>135 <span style=''>    def ref: ItemRef
+</span>136 <span style=''>
+</span>137 <span style=''>    /**
+</span>138 <span style=''>     * Define a way make the item interact with the [[State]]. The interaction is founded into the
+</span>139 <span style=''>     * [[Action]] (ex. 'open the door'), but it can include also an additional [[Item]] ('open the
+</span>140 <span style=''>     * door with the key'). The item should react to each combination with an appropriate
+</span>141 <span style=''>     * [[Reaction]].
+</span>142 <span style=''>     * @param action
+</span>143 <span style=''>     *   An action from a statement (ex. &lt;b&gt;open&lt;/b&gt; the door with a key).
+</span>144 <span style=''>     * @param state
+</span>145 <span style=''>     *   the starting state, useful to give a context to the decision to take.
+</span>146 <span style=''>     * @param sideItem
+</span>147 <span style=''>     *   A side [[Item]] from a statement (ex. open the door with &lt;b&gt;a key&lt;/b&gt;).
+</span>148 <span style=''>     * @return
+</span>149 <span style=''>     *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
+</span>150 <span style=''>     */
+</span>151 <span style=''>    def use(action: Action, sideItem: Option[I] = None)(implicit state: S): Option[Reaction]
+</span>152 <span style=''>
+</span>153 <span style=''>    /**
+</span>154 <span style=''>     * Makes items comparable based on their refs only.
+</span>155 <span style=''>     */
+</span>156 <span style=''>    override def equals(obj: Any): Boolean = </span><span style='background: #AEF1AE'>this.hashCode() == obj.hashCode()</span><span style=''>
+</span>157 <span style=''>
+</span>158 <span style=''>    /**
+</span>159 <span style=''>     * Makes items comparable based on their refs only.
+</span>160 <span style=''>     */
+</span>161 <span style=''>    override def hashCode(): Int = </span><span style='background: #AEF1AE'>ref.hashCode()</span><span style=''>
+</span>162 <span style=''>  }
+</span>163 <span style=''>
+</span>164 <span style=''>  /**
+</span>165 <span style=''>   * The ground is a sort of &quot;virtual&quot; item, that handles the intransitive [[Action]] s linked to
+</span>166 <span style=''>   * the match.
+</span>167 <span style=''>   */
+</span>168 <span style=''>  abstract class Ground { ground: G =&gt;
+</span>169 <span style=''>
+</span>170 <span style=''>    /**
+</span>171 <span style=''>     * Define a way make the given [[Action]] interacts with the [[State]]. The interaction is
+</span>172 <span style=''>     * founded into a single [[Action]] value (ex. 'inspect'). The ground should react to each
+</span>173 <span style=''>     * combination with an appropriate [[Reaction]].
+</span>174 <span style=''>     * @param action
+</span>175 <span style=''>     *   An action from a statement (ex. &lt;b&gt;inspect&lt;/b&gt; ).
+</span>176 <span style=''>     * @param state
+</span>177 <span style=''>     *   the starting state, useful to give a context to the decision to take.
+</span>178 <span style=''>     * @return
+</span>179 <span style=''>     *   The resulting [[Reaction]] from the combination, or a [[None]] if the match fails.
+</span>180 <span style=''>     */
+</span>181 <span style=''>    def use(action: Action)(implicit state: S): Option[Reaction]
+</span>182 <span style=''>  }
+</span>183 <span style=''>
+</span>184 <span style=''>  /**
+</span>185 <span style=''>   * A geographical portion of the match map.
+</span>186 <span style=''>   *
+</span>187 <span style=''>   * This is one of the basic block for the story build by the storyteller, as it is used to
+</span>188 <span style=''>   * identify Player 's and [[Model.Item]] s' location, in a given moment of the story, and navigate
+</span>189 <span style=''>   * across the match geography.
+</span>190 <span style=''>   */
+</span>191 <span style=''>  abstract class Room { room: RM =&gt;
+</span>192 <span style=''>
+</span>193 <span style=''>    /**
+</span>194 <span style=''>     * A textual description for the room.
+</span>195 <span style=''>     * @return
+</span>196 <span style=''>     *   A textual description for the room.
+</span>197 <span style=''>     */
+</span>198 <span style=''>    def name: String
+</span>199 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
+</span>200 <span style=''>
+</span>201 <span style=''>    /**
+</span>202 <span style=''>     * The unique identifier of the [[Room]]. This is necessary, as passing from a state to another,
+</span>203 <span style=''>     * the reference to an object changes, the [[State]] works in an immutable fashion.
+</span>204 <span style=''>     */
+</span>205 <span style=''>    def ref: RoomRef
+</span>206 <span style=''>
+</span>207 <span style=''>    /**
+</span>208 <span style=''>     * Identifies [[Room]] s near to the current one, at the cardinal points.
+</span>209 <span style=''>     */
+</span>210 <span style=''>    def neighbor(direction: Direction)(implicit state: S): Option[RM]
+</span>211 <span style=''>
+</span>212 <span style=''>    def neighbors(implicit state: S): Map[Direction, RM]
+</span>213 <span style=''>
+</span>214 <span style=''>    /**
+</span>215 <span style=''>     * Identifies the [[Item]] s positioned into the current [[Room]].
+</span>216 <span style=''>     * @return
+</span>217 <span style=''>     *   [[Item]] s positioned into the [[Room]] as a [[Set]]
+</span>218 <span style=''>     */
+</span>219 <span style=''>    def items(implicit state: S): Set[I]
+</span>220 <span style=''>
+</span>221 <span style=''>    /**
+</span>222 <span style=''>     * Makes rooms comparable based on their refs only.
+</span>223 <span style=''>     */
+</span>224 <span style=''>    override def equals(obj: Any): Boolean = </span><span style='background: #AEF1AE'>this.hashCode() == obj.hashCode()</span><span style=''>
+</span>225 <span style=''>
+</span>226 <span style=''>    /**
+</span>227 <span style=''>     * Makes rooms comparable based on their refs only.
+</span>228 <span style=''>     */
+</span>229 <span style=''>    override def hashCode(): Int = </span><span style='background: #AEF1AE'>ref.hashCode()</span><span style=''>
+</span>230 <span style=''>  }
+</span>231 <span style=''>
+</span>232 <span style=''>  /**
+</span>233 <span style=''>   * A [[Lens]] used to retrieve the player location [[RM]] given a [[S]].
+</span>234 <span style=''>   * @return
+</span>235 <span style=''>   *   the cited above Lens.
+</span>236 <span style=''>   */
+</span>237 <span style=''>  def locationRoomLens: Lens[S, RM]
+</span>238 <span style=''>
+</span>239 <span style=''>  /**
+</span>240 <span style=''>   * A [[Lens]] used to retrieve a Map with all the [[RoomRef]] to the [[RM]].
+</span>241 <span style=''>   * @return
+</span>242 <span style=''>   *   the cited above Lens.
+</span>243 <span style=''>   */
+</span>244 <span style=''>  def roomsLens: Lens[S, Map[RoomRef, RM]]
+</span>245 <span style=''>
+</span>246 <span style=''>  /**
+</span>247 <span style=''>   * A [[Lens]] used to retrieve a Map with all the [[ItemRef]] to the [[I]].
+</span>248 <span style=''>   * @return
+</span>249 <span style=''>   *   the cited above Lens.
+</span>250 <span style=''>   */
+</span>251 <span style=''>  def itemsLens: Lens[S, Map[ItemRef, I]]
+</span>252 <span style=''>
+</span>253 <span style=''>  /**
+</span>254 <span style=''>   * A [[Lens]] used to retrieve if the match is already ended.
+</span>255 <span style=''>   * @return
+</span>256 <span style=''>   *   the cited above Lens.
+</span>257 <span style=''>   */
+</span>258 <span style=''>  def matchEndedLens: Lens[S, Boolean]
+</span>259 <span style=''>
+</span>260 <span style=''>  /**
+</span>261 <span style=''>   * A [[Lens]] used to retrieve a ItemRef.
+</span>262 <span style=''>   * @return
+</span>263 <span style=''>   *   the cited above Lens.
+</span>264 <span style=''>   */
+</span>265 <span style=''>  def bagLens: Lens[S, Set[ItemRef]]
+</span>266 <span style=''>
+</span>267 <span style=''>  /**
+</span>268 <span style=''>   * A [[Lens]] used to retrieve the RoomRef referent to player location Room given a [[S]].
+</span>269 <span style=''>   * @return
+</span>270 <span style=''>   *   the cited above Lens.
+</span>271 <span style=''>   */
+</span>272 <span style=''>  def locationLens: Lens[S, RoomRef]
+</span>273 <span style=''>
+</span>274 <span style=''>  /**
+</span>275 <span style=''>   * A [[Lens]] used to retrieve all the Items (indicated with ItemRef) presents in the [[RM]].
+</span>276 <span style=''>   * @return
+</span>277 <span style=''>   *   the cited above Lens.
+</span>278 <span style=''>   */
+</span>279 <span style=''>  def roomItemsLens: Lens[RM, Set[ItemRef]]
+</span>280 <span style=''>
+</span>281 <span style=''>  /**
+</span>282 <span style=''>   * A [[Lens]] used to retrieve all the possible direction given a [[RM]].
+</span>283 <span style=''>   * @return
+</span>284 <span style=''>   *   the cited above Lens.
+</span>285 <span style=''>   */
+</span>286 <span style=''>  def roomDirectionsLens: Lens[RM, Map[Direction, RoomRef]]
+</span>287 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -254,15 +323,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          65
+          87
         </td>
         <td>
           168
         </td>
         <td>
-          1935
+          2576
           -
-          1935
+          2576
         </td>
         <td>
           Select
@@ -278,15 +347,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          87
         </td>
         <td>
           169
         </td>
         <td>
-          1926
+          2567
           -
-          1940
+          2581
         </td>
         <td>
           ApplyToImplicitArgs
@@ -302,15 +371,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          87
         </td>
         <td>
           170
         </td>
         <td>
-          1919
+          2560
           -
-          1940
+          2581
         </td>
         <td>
           Apply
@@ -326,15 +395,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          128
         </td>
         <td>
           171
         </td>
         <td>
-          3080
+          3721
           -
-          3091
+          3732
         </td>
         <td>
           Select
@@ -350,15 +419,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          128
         </td>
         <td>
           172
         </td>
         <td>
-          3080
+          3721
           -
-          3100
+          3741
         </td>
         <td>
           Select
@@ -374,15 +443,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          129
         </td>
         <td>
           173
         </td>
         <td>
-          3137
+          3778
           -
-          3141
+          3782
         </td>
         <td>
           Select
@@ -398,15 +467,15 @@
         </td>
       </tr><tr>
         <td>
-          134
+          156
         </td>
         <td>
           174
         </td>
         <td>
-          4331
+          4972
           -
-          4345
+          4986
         </td>
         <td>
           Apply
@@ -422,15 +491,15 @@
         </td>
       </tr><tr>
         <td>
-          134
+          156
         </td>
         <td>
           175
         </td>
         <td>
-          4312
+          4953
           -
-          4345
+          4986
         </td>
         <td>
           Apply
@@ -446,15 +515,15 @@
         </td>
       </tr><tr>
         <td>
-          139
+          161
         </td>
         <td>
           176
         </td>
         <td>
-          4454
+          5095
           -
-          4468
+          5109
         </td>
         <td>
           Apply
@@ -470,15 +539,15 @@
         </td>
       </tr><tr>
         <td>
-          177
+          199
         </td>
         <td>
           177
         </td>
         <td>
-          5758
+          6399
           -
-          5762
+          6403
         </td>
         <td>
           Select
@@ -494,15 +563,15 @@
         </td>
       </tr><tr>
         <td>
-          202
+          224
         </td>
         <td>
           178
         </td>
         <td>
-          6556
+          7197
           -
-          6570
+          7211
         </td>
         <td>
           Apply
@@ -518,15 +587,15 @@
         </td>
       </tr><tr>
         <td>
-          202
+          224
         </td>
         <td>
           179
         </td>
         <td>
-          6537
+          7178
           -
-          6570
+          7211
         </td>
         <td>
           Apply
@@ -542,15 +611,15 @@
         </td>
       </tr><tr>
         <td>
-          207
+          229
         </td>
         <td>
           180
         </td>
         <td>
-          6679
+          7320
           -
-          6693
+          7334
         </td>
         <td>
           Apply

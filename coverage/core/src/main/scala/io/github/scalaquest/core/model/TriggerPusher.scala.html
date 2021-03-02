@@ -26,108 +26,134 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.TriggerPusher.MessageTriggers
 </span>4 <span style=''>
-</span>5 <span style=''>trait MessagePusher[A] {
-</span>6 <span style=''>
-</span>7 <span style=''>  def push(input: Seq[Message]): A
-</span>8 <span style=''>}
-</span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * A class that aims to interpret [[Message]] s and transform them in an output for the user.
-</span>12 <span style=''> *
-</span>13 <span style=''> * The output could be of any type in the base implementation. If [[Message]] is defined in
-</span>14 <span style=''> * &lt;b&gt;MessageTriggers&lt;/b&gt; it will trigger the specific answer, otherwise return &lt;b&gt;not found&lt;/b&gt;
-</span>15 <span style=''> * @tparam A
-</span>16 <span style=''> *   the concrete type that will shown to the user.
-</span>17 <span style=''> */
-</span>18 <span style=''>abstract class TriggerPusher[A] extends MessagePusher[A] {
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * A [[PartialFunction]] used to find a match for the given input.
-</span>22 <span style=''>   * @return
-</span>23 <span style=''>   *   A [[PartialFunction]] used to find a match for the given input.
-</span>24 <span style=''>   */
-</span>25 <span style=''>  def triggers: MessageTriggers[A] = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  /**
-</span>28 <span style=''>   * An output returned if the message is not recognized.
-</span>29 <span style=''>   * @return
-</span>30 <span style=''>   *   An output returned if the message is not recognized.
-</span>31 <span style=''>   */
-</span>32 <span style=''>  def notFound: A
-</span>33 <span style=''>
-</span>34 <span style=''>  /**
-</span>35 <span style=''>   * Finds a match for the given [[Message]] analyzing the [[TriggerPusher::triggers]].
-</span>36 <span style=''>   *
-</span>37 <span style=''>   * @param input
-</span>38 <span style=''>   *   the [[Message]] to control.
-</span>39 <span style=''>   * @return
-</span>40 <span style=''>   *   An output matching with the given message; [[TriggerPusher::notFound]] otherwise.
-</span>41 <span style=''>   */
-</span>42 <span style=''>  private final def eval(input: Message): Option[A] = {
-</span>43 <span style=''>    </span><span style='background: #AEF1AE'>triggers.lift(input)</span><span style=''>
-</span>44 <span style=''>  }
+</span>5 <span style=''>/**
+</span>6 <span style=''> * Pusher that push in output [[Message]] s of the Game.
+</span>7 <span style=''> * @tparam A
+</span>8 <span style=''> *   generic for any output Type.
+</span>9 <span style=''> */
+</span>10 <span style=''>trait MessagePusher[A] {
+</span>11 <span style=''>
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   * Push the [[Message]] s in output.
+</span>14 <span style=''>   * @param input
+</span>15 <span style=''>   *   the messages that have to be pushed.
+</span>16 <span style=''>   * @return
+</span>17 <span style=''>   *   the pushed messages in the selected output type.
+</span>18 <span style=''>   */
+</span>19 <span style=''>  def push(input: Seq[Message]): A
+</span>20 <span style=''>}
+</span>21 <span style=''>
+</span>22 <span style=''>/**
+</span>23 <span style=''> * A class that aims to interpret [[Message]] s and transform them in an output for the user.
+</span>24 <span style=''> *
+</span>25 <span style=''> * The output could be of any type in the base implementation. If [[Message]] is defined in
+</span>26 <span style=''> * &lt;b&gt;MessageTriggers&lt;/b&gt; it will trigger the specific answer, otherwise return &lt;b&gt;not found&lt;/b&gt;
+</span>27 <span style=''> * @tparam A
+</span>28 <span style=''> *   the concrete type that will shown to the user.
+</span>29 <span style=''> */
+</span>30 <span style=''>abstract class TriggerPusher[A] extends MessagePusher[A] {
+</span>31 <span style=''>
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * A [[PartialFunction]] used to find a match for the given input.
+</span>34 <span style=''>   * @return
+</span>35 <span style=''>   *   A [[PartialFunction]] used to find a match for the given input.
+</span>36 <span style=''>   */
+</span>37 <span style=''>  def triggers: MessageTriggers[A] = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>38 <span style=''>
+</span>39 <span style=''>  /**
+</span>40 <span style=''>   * An output returned if the message is not recognized.
+</span>41 <span style=''>   * @return
+</span>42 <span style=''>   *   An output returned if the message is not recognized.
+</span>43 <span style=''>   */
+</span>44 <span style=''>  def notFound: A
 </span>45 <span style=''>
-</span>46 <span style=''>  def combine(x: A, y: A): A
-</span>47 <span style=''>
-</span>48 <span style=''>  final def push(input: Seq[Message]): A =
-</span>49 <span style=''>    </span><span style='background: #AEF1AE'>input.flatMap(eval).reduceOption(combine).getOrElse(notFound)</span><span style=''>
-</span>50 <span style=''>}
-</span>51 <span style=''>
-</span>52 <span style=''>/**
-</span>53 <span style=''> * A [[TriggerPusher]] implementation with [[String]] as concrete type for the user's output.
-</span>54 <span style=''> */
-</span>55 <span style=''>abstract class StringPusher extends TriggerPusher[String] {
-</span>56 <span style=''>  override def notFound: String = </span><span style='background: #AEF1AE'>&quot;Nothing happened!&quot;</span><span style=''>
+</span>46 <span style=''>  /**
+</span>47 <span style=''>   * Finds a match for the given [[Message]] analyzing the [[TriggerPusher::triggers]].
+</span>48 <span style=''>   *
+</span>49 <span style=''>   * @param input
+</span>50 <span style=''>   *   the [[Message]] to control.
+</span>51 <span style=''>   * @return
+</span>52 <span style=''>   *   An output matching with the given message; [[TriggerPusher::notFound]] otherwise.
+</span>53 <span style=''>   */
+</span>54 <span style=''>  private final def eval(input: Message): Option[A] = {
+</span>55 <span style=''>    </span><span style='background: #AEF1AE'>triggers.lift(input)</span><span style=''>
+</span>56 <span style=''>  }
 </span>57 <span style=''>
-</span>58 <span style=''>  override def combine(x: String, y: String): String = </span><span style='background: #AEF1AE'>x + &quot;\n&quot; + y</span><span style=''>
-</span>59 <span style=''>
-</span>60 <span style=''>}
-</span>61 <span style=''>
-</span>62 <span style=''>/**
-</span>63 <span style=''> * A [[StringPusher]] that exposes a [[Composable]] behavior, letting the user define base and
-</span>64 <span style=''> * additional [[MessageTriggers]].
-</span>65 <span style=''> */
-</span>66 <span style=''>abstract class ComposableStringPusher extends StringPusher with Composable[String]
-</span>67 <span style=''>
-</span>68 <span style=''>/**
-</span>69 <span style=''> * A mixin for [[TriggerPusher]] s, that enables the possibility to define two levels of
-</span>70 <span style=''> * [[MessageTriggers]].
-</span>71 <span style=''> *
-</span>72 <span style=''> * This is commonly used when it is needed to define some base extensible triggers, that should be
-</span>73 <span style=''> * easily extended letting the user defining the extras. When the triggers are effectively used,
-</span>74 <span style=''> * extras will be privileged, as the extra should always overwrite the base.
-</span>75 <span style=''> */
-</span>76 <span style=''>trait Composable[A] extends TriggerPusher[A] {
-</span>77 <span style=''>
-</span>78 <span style=''>  /**
-</span>79 <span style=''>   * The extra [[MessageTriggers]] of the pusher.
-</span>80 <span style=''>   * @return
-</span>81 <span style=''>   *   The extra [[MessageTriggers]].
-</span>82 <span style=''>   */
-</span>83 <span style=''>  def extra: MessageTriggers[A] = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
-</span>84 <span style=''>
-</span>85 <span style=''>  /**
-</span>86 <span style=''>   * The base [[MessageTriggers]] of the pusher.
-</span>87 <span style=''>   * @return
-</span>88 <span style=''>   */
-</span>89 <span style=''>  def base: MessageTriggers[A]
-</span>90 <span style=''>
-</span>91 <span style=''>  /**
-</span>92 <span style=''>   * All the triggers with the right order.
-</span>93 <span style=''>   * @return
-</span>94 <span style=''>   *   the chosen answer.
-</span>95 <span style=''>   */
-</span>96 <span style=''>  override def triggers: MessageTriggers[A] = </span><span style='background: #AEF1AE'>Seq(extra, base).reduce(_ orElse _)</span><span style=''>
-</span>97 <span style=''>}
-</span>98 <span style=''>
-</span>99 <span style=''>/**
-</span>100 <span style=''> * Companion object fot the [[TriggerPusher]]. It contains utility wrappers for the matchers used in
-</span>101 <span style=''> * the various [[TriggerPusher]], that are actually [[PartialFunction]] s.
-</span>102 <span style=''> */
-</span>103 <span style=''>object TriggerPusher {
-</span>104 <span style=''>  type MessageTriggers[A]    = PartialFunction[Message, A]
-</span>105 <span style=''>  type StringMessageTriggers = MessageTriggers[String]
-</span>106 <span style=''>}
+</span>58 <span style=''>  /**
+</span>59 <span style=''>   * Define how two [[A]] have to be combined.
+</span>60 <span style=''>   */
+</span>61 <span style=''>  def combine(x: A, y: A): A
+</span>62 <span style=''>
+</span>63 <span style=''>  override final def push(input: Seq[Message]): A =
+</span>64 <span style=''>    </span><span style='background: #AEF1AE'>input.flatMap(eval).reduceOption(combine).getOrElse(notFound)</span><span style=''>
+</span>65 <span style=''>}
+</span>66 <span style=''>
+</span>67 <span style=''>/**
+</span>68 <span style=''> * A [[TriggerPusher]] implementation with [[String]] as concrete type for the user's output.
+</span>69 <span style=''> */
+</span>70 <span style=''>abstract class StringPusher extends TriggerPusher[String] {
+</span>71 <span style=''>  override def notFound: String = </span><span style='background: #AEF1AE'>&quot;Nothing happened!&quot;</span><span style=''>
+</span>72 <span style=''>
+</span>73 <span style=''>  override def combine(x: String, y: String): String = </span><span style='background: #AEF1AE'>x + &quot;\n&quot; + y</span><span style=''>
+</span>74 <span style=''>
+</span>75 <span style=''>}
+</span>76 <span style=''>
+</span>77 <span style=''>/**
+</span>78 <span style=''> * A [[StringPusher]] that exposes a [[Composable]] behavior, letting the user define base and
+</span>79 <span style=''> * additional [[MessageTriggers]].
+</span>80 <span style=''> */
+</span>81 <span style=''>abstract class ComposableStringPusher extends StringPusher with Composable[String]
+</span>82 <span style=''>
+</span>83 <span style=''>/**
+</span>84 <span style=''> * A mixin for [[TriggerPusher]] s, that enables the possibility to define two levels of
+</span>85 <span style=''> * [[MessageTriggers]].
+</span>86 <span style=''> *
+</span>87 <span style=''> * This is commonly used when it is needed to define some base extensible triggers, that should be
+</span>88 <span style=''> * easily extended letting the user defining the extras. When the triggers are effectively used,
+</span>89 <span style=''> * extras will be privileged, as the extra should always overwrite the base.
+</span>90 <span style=''> */
+</span>91 <span style=''>trait Composable[A] extends TriggerPusher[A] {
+</span>92 <span style=''>
+</span>93 <span style=''>  /**
+</span>94 <span style=''>   * The extra [[MessageTriggers]] of the pusher.
+</span>95 <span style=''>   * @return
+</span>96 <span style=''>   *   The extra [[MessageTriggers]].
+</span>97 <span style=''>   */
+</span>98 <span style=''>  def extra: MessageTriggers[A] = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>99 <span style=''>
+</span>100 <span style=''>  /**
+</span>101 <span style=''>   * The base [[MessageTriggers]] of the pusher.
+</span>102 <span style=''>   * @return
+</span>103 <span style=''>   */
+</span>104 <span style=''>  def base: MessageTriggers[A]
+</span>105 <span style=''>
+</span>106 <span style=''>  /**
+</span>107 <span style=''>   * All the triggers with the right order.
+</span>108 <span style=''>   * @return
+</span>109 <span style=''>   *   the chosen answer.
+</span>110 <span style=''>   */
+</span>111 <span style=''>  override def triggers: MessageTriggers[A] = </span><span style='background: #AEF1AE'>Seq(extra, base).reduce(_ orElse _)</span><span style=''>
+</span>112 <span style=''>}
+</span>113 <span style=''>
+</span>114 <span style=''>/**
+</span>115 <span style=''> * Companion object fot the [[TriggerPusher]]. It contains utility wrappers for the matchers used in
+</span>116 <span style=''> * the various [[TriggerPusher]], that are actually [[PartialFunction]] s.
+</span>117 <span style=''> */
+</span>118 <span style=''>object TriggerPusher {
+</span>119 <span style=''>
+</span>120 <span style=''>  /**
+</span>121 <span style=''>   * The implementations of MessageTriggers is a PartialFunction with [[Message]] and a generic type
+</span>122 <span style=''>   * [[A]].
+</span>123 <span style=''>   * @tparam A
+</span>124 <span style=''>   *   the generic type to expose in output.
+</span>125 <span style=''>   */
+</span>126 <span style=''>  type MessageTriggers[A] = PartialFunction[Message, A]
+</span>127 <span style=''>
+</span>128 <span style=''>  /**
+</span>129 <span style=''>   * A trigger Pusher that works with String.
+</span>130 <span style=''>   */
+</span>131 <span style=''>  type StringMessageTriggers = MessageTriggers[String]
+</span>132 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -142,15 +168,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          25
+          37
         </td>
         <td>
           182
         </td>
         <td>
-          796
+          1090
           -
-          817
+          1111
         </td>
         <td>
           TypeApply
@@ -166,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          55
         </td>
         <td>
           183
         </td>
         <td>
-          1301
+          1595
           -
-          1321
+          1615
         </td>
         <td>
           Apply
@@ -190,15 +216,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          64
         </td>
         <td>
           184
         </td>
         <td>
-          1418
+          1780
           -
-          1422
+          1784
         </td>
         <td>
           Apply
@@ -214,15 +240,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          64
         </td>
         <td>
           185
         </td>
         <td>
-          1437
+          1799
           -
-          1444
+          1806
         </td>
         <td>
           Apply
@@ -238,15 +264,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          64
         </td>
         <td>
           186
         </td>
         <td>
-          1456
+          1818
           -
-          1464
+          1826
         </td>
         <td>
           Select
@@ -262,15 +288,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          64
         </td>
         <td>
           187
         </td>
         <td>
-          1404
+          1766
           -
-          1465
+          1827
         </td>
         <td>
           Apply
@@ -286,15 +312,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          71
         </td>
         <td>
           188
         </td>
         <td>
-          1665
+          2027
           -
-          1684
+          2046
         </td>
         <td>
           Literal
@@ -310,15 +336,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          73
         </td>
         <td>
           189
         </td>
         <td>
-          1741
+          2103
           -
-          1753
+          2115
         </td>
         <td>
           Apply
@@ -334,15 +360,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          98
         </td>
         <td>
           190
         </td>
         <td>
-          2572
+          2934
           -
-          2593
+          2955
         </td>
         <td>
           TypeApply
@@ -358,15 +384,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          111
         </td>
         <td>
           191
         </td>
         <td>
-          2846
+          3208
           -
-          2851
+          3213
         </td>
         <td>
           Select
@@ -382,15 +408,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          111
         </td>
         <td>
           192
         </td>
         <td>
-          2853
+          3215
           -
-          2857
+          3219
         </td>
         <td>
           Select
@@ -406,15 +432,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          111
         </td>
         <td>
           193
         </td>
         <td>
-          2866
+          3228
           -
-          2876
+          3238
         </td>
         <td>
           Apply
@@ -430,15 +456,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          111
         </td>
         <td>
           194
         </td>
         <td>
-          2842
+          3204
           -
-          2877
+          3239
         </td>
         <td>
           Apply
