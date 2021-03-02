@@ -3,11 +3,7 @@ package io.github.scalaquest.core.pipeline.resolver
 import io.github.scalaquest.core.TestsUtils.model._
 import io.github.scalaquest.core.TestsUtils.{appleItemRef, doorItemRef, keyItemRef, simpleState}
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{
-  Go,
-  Open,
-  Take
-}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Go, Open, Take}
 import io.github.scalaquest.core.model.behaviorBased.simple.SimpleModel
 import io.github.scalaquest.core.model.{BaseItem, Direction, ItemDescription}
 import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, SimpleParserResult}

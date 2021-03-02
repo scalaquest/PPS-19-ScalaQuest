@@ -14,31 +14,31 @@ class ItemsTest extends AnyWordSpec with Matchers {
   "The Snorlax" should {
     "be woke with the pokeflute" in {
       val react: React = Items.snorlax
-        .use(Actions.Wake, Some(Items.pokeflute))(PokeQuest.state)
+        .use(Actions.Wake, Some(Items.pokeflute))(App.state)
         .getOrElse(model.Reaction.empty)
-      val msgs = react(PokeQuest.state)._2
-      msgs should contain(Pusher.SnorlaxWoke)
+      val msgs = react(App.state)._2
+      msgs should contain(Messages.SnorlaxWoke)
     }
   }
 
   "The pokeflute" should {
     "wake the snorlax when played" in {
       val react: React =
-        Items.pokeflute.use(Actions.Play)(PokeQuest.state).getOrElse(model.Reaction.empty)
-      val msgs = react(PokeQuest.state)._2
-      msgs should contain(Pusher.SnorlaxWoke)
+        Items.pokeflute.use(Actions.Play)(App.state).getOrElse(model.Reaction.empty)
+      val msgs = react(App.state)._2
+      msgs should contain(Messages.SnorlaxWoke)
     }
   }
 
   "The Pikachu" should {
     "be into the bag initially" in {
-      PokeQuest.state.bag should contain(Items.pikachu)
+      App.state.bag should contain(Items.pikachu)
     }
   }
 
   "The pokeball" should {
     "be into the bag initially" in {
-      PokeQuest.state.bag should contain(Items.pokeball)
+      App.state.bag should contain(Items.pokeball)
     }
   }
 

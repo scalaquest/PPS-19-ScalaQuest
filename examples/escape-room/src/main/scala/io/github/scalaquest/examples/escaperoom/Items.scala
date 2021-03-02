@@ -2,27 +2,41 @@ package io.github.scalaquest.examples.escaperoom
 
 import io.github.scalaquest.core.model.Direction
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.examples.escaperoom.Pusher.DeliciousMessage
+import io.github.scalaquest.examples.escaperoom.Messages.DeliciousMessage
+import model.{
+  Food,
+  Eatable,
+  RoomLink,
+  Key,
+  Door,
+  Chest,
+  Takeable,
+  CReactions,
+  GenericItem,
+  Openable,
+  BehaviorBasedItem
+}
 
+/**
+ * The items required by the example.
+ */
 object Items {
-
-  import model._
 
   val redApple: Food =
     Food(
       i(d("red"), "apple"),
-      Eatable.builder(onEatExtra = Reaction.messages(DeliciousMessage))
+      Eatable.builder(onEatExtra = CReactions.addMessage(DeliciousMessage))
     )
 
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      Eatable.builder(onEatExtra = Reactions.finishGame(false))
+      Eatable.builder(onEatExtra = CReactions.finishGame(false))
     )
 
   val basementHatch: Door = Door(
     i(d("basement"), "hatch"),
-    RoomLink.builder(House.basement, Direction.Down)
+    RoomLink.builder(Geography.basement, Direction.Down)
   )
 
   val (hatch, hatchKey): (Door, Key) = Door.createLockedWithKey(
@@ -31,7 +45,7 @@ object Items {
       extraBehavBuilders = Seq(Takeable.builder())
     ),
     doorDesc = i(d("iron"), "hatch"),
-    endRoom = House.livingRoom,
+    endRoom = Geography.livingRoom,
     endRoomDirection = Direction.Up
   )
 
@@ -48,7 +62,7 @@ object Items {
 
   val doorway: GenericItem = GenericItem.withSingleBehavior(
     i(d("big"), "doorway"),
-    Openable.lockedBuilder(crowbar, onOpenExtra = Reactions.finishGame(win = true))
+    Openable.lockedBuilder(crowbar, onOpenExtra = CReactions.finishGame(win = true))
   )
 
   def allTheItems: Set[BehaviorBasedItem] =

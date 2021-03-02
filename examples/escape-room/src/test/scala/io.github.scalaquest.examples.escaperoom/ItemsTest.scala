@@ -1,25 +1,25 @@
 package io.github.scalaquest.examples.escaperoom
 
-import model.Messages._
+import model.CMessages._
 import model._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ItemsTest extends AnyWordSpec with Matchers {
-  implicit val s: S = EscapeRoom.state
+  implicit val s: S = App.state
 
   "The Items object" should {
     "contains a red non-dangerous apple" in {
-      Items.redApple.eatable.eat(EscapeRoom.state)._2 should not contain Lost
+      Items.redApple.eatable.eat(App.state)._2 should not contain Lost
     }
 
     "contains a green dangerous apple" in {
-      Items.greenApple.eatable.eat(EscapeRoom.state)._2 should contain(Lost)
+      Items.greenApple.eatable.eat(App.state)._2 should contain(Lost)
     }
 
     "contains a pair of complementary hatches, between living room and basement" in {
-      Items.hatch.roomLink.endRoom shouldBe House.livingRoom
-      Items.basementHatch.roomLink.endRoom shouldBe House.basement
+      Items.hatch.roomLink.endRoom shouldBe Geography.livingRoom
+      Items.basementHatch.roomLink.endRoom shouldBe Geography.basement
     }
 
     "contains a hatch key, that opens the hatch from the basement" in {
