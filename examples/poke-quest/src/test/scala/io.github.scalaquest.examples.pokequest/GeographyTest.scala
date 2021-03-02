@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class GeographyTest extends AnyWordSpec with Matchers {
-  implicit val state: S = PokeQuest.state
+  implicit val state: S = App.state
 
   "Vermilion City" should {
     "contain a sleeping Snorlax" in {
@@ -13,7 +13,7 @@ class GeographyTest extends AnyWordSpec with Matchers {
     }
 
     "be the start room" in {
-      PokeQuest.state.location should be(Geography.vermillionCity)
+      App.state.location should be(Geography.vermillionCity)
     }
   }
 

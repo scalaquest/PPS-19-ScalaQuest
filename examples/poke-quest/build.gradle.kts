@@ -10,5 +10,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("io.github.scalaquest.examples.pokequest.PokeQuest")
+    mainClass.set("io.github.scalaquest.examples.pokequest.App")
 }

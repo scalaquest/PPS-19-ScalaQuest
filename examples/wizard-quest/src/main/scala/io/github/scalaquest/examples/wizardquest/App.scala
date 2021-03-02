@@ -12,14 +12,9 @@ import model.{CMessages, State}
  */
 object App extends GameCLIApp(SimpleModel) {
 
-  override def state: S =
-    State(
-      actions = verbToAction,
-      rooms = Geography.refToRoom,
-      items = refToItem,
-      location = Geography.chamberOfSecrets.ref,
-      ground = Ground.ground
-    )
+  override def items: Set[I] = Items.allTheItems
+
+  override def verbs: Set[Verb] = CVerbs() ++ Actions.verbs
 
   override def initialMessages: Seq[Message] =
     Seq(
@@ -31,9 +26,14 @@ object App extends GameCLIApp(SimpleModel) {
         |""".stripMargin)
     )
 
+  override def state: S =
+    State(
+      actions = verbToAction,
+      rooms = Geography.refToRoom,
+      items = refToItem,
+      location = Geography.chamberOfSecrets.ref,
+      ground = Ground.ground
+    )
+
   override def messagePusher: MessagePusher[String] = Messages.pusher
-
-  override def verbs: Set[Verb] = CVerbs() ++ Actions.verbs
-
-  override def items: Set[I] = Items.allTheItems
 }

@@ -1,28 +1,30 @@
 package io.github.scalaquest.examples.pokequest
 
 import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
-import io.github.scalaquest.examples.pokequest.Actions.{Play, Throw, Wake}
-import model.{GenericItem, Reaction, CReactions}
+import model.{GenericItem, CReactions}
 
+/**
+ * The items required by the example.
+ */
 object Items {
 
   def snorlax: GenericItem =
     GenericItem.withGenBehavior(
       i(d("sleeping"), "snorlax"),
       {
-        case (Wake, Some(i), _) if i == pokeflute => Reactions.wakeSnorlax
-        case _                                    => CReactions.finishGame(false)
+        case (Actions.Wake, Some(i), _) if i == pokeflute => Reactions.wakeSnorlax
+        case _                                            => CReactions.finishGame(false)
       }
     )
 
   def pokeflute: GenericItem =
     GenericItem.withGenBehavior(
       i("pokeflute"),
-      { case (Play, None, s) =>
+      { case (Actions.Play, None, s) =>
         if (s.location.items(s).contains(snorlax))
           Reactions.wakeSnorlax
         else
-          Reaction.messages(Pusher.FreePlayFlute)
+          CReactions.addMessage(Messages.FreePlayFlute)
       }
     )
 
@@ -47,9 +49,10 @@ object Items {
     GenericItem.withGenBehavior(
       i("pokeball"),
       {
-        case (Throw, None, s) if s.location.items(s).contains(charizard) =>
+        case (Actions.Throw, None, s) if s.location.items(s).contains(charizard) =>
           Reactions.catchCharizard
-        case (Throw, Some(i), s) if s.location.items(s).contains(charizard) && i == charizard =>
+        case (Actions.Throw, Some(i), s)
+            if s.location.items(s).contains(charizard) && i == charizard =>
           Reactions.catchCharizard
       }
     )
