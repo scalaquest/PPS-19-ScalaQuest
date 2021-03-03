@@ -12,13 +12,18 @@ on:
       - dev
 
 jobs:
-  Deploy:
+  GithubDeploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -47,7 +52,7 @@ jobs:
           prerelease: true
 
       - name: Generate assets
-        run: ./gradlew build
+        run: ./gradlew distZip distTar
 
       - name: Upload release assets
         uses: dwenegar/upload-release-assets@v1
@@ -61,6 +66,32 @@ jobs:
             ./examples/wizard-quest/build/distributions
             ./cli/build/libs
             ./core/build/libs
+
+  MavenDeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Generate jars
+        run: ./gradlew jar sourcesJar javadocJar
 
       - name: Publish to Maven Central
         run: |
