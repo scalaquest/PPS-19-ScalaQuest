@@ -12,8 +12,6 @@ import zio.test.junit.JUnitRunnableSpec
 
 import scala.annotation.nowarn
 
-// Suppress weird warning
-@nowarn("msg=pure expression")
 class CLITest extends JUnitRunnableSpec {
 
   case class TestCLI(start: ZIO[Console, Exception, Unit]) extends CLI
@@ -22,6 +20,7 @@ class CLITest extends JUnitRunnableSpec {
     suite("CLI tests")(
       suite("CLIApp")(
         testM("it returns code 0 if CLI ends with no errors") {
+          @nowarn("msg=pure expression") // this generates a warning for some unknown reason
           val app = new CLIApp {
             override def cli: CLI = TestCLI(ZIO.succeed("ok"))
           }
@@ -44,20 +43,26 @@ class CLITest extends JUnitRunnableSpec {
             _ <- TestConsole.feedLines("not empty")
             _ <- readLine
             o <- TestConsole.output
-          } yield assert(o)(equalTo(Vector("> ")))
+          } yield assert(o)(contains("> "))
         },
         testM("it doesn't accept empty lines") {
           for {
             _ <- TestConsole.feedLines("", "", "not empty")
             _ <- readLine
             o <- TestConsole.output
-          } yield assert(o)(equalTo(Vector("> ", "> ", "> ")))
+          } yield assert(o)(hasIntersection(Vector("> ", "> ", "> "))(hasSize(equalTo(3))))
         },
         testM("it returns the read line") {
           for {
             _ <- TestConsole.feedLines("something")
             i <- readLine
-          } yield assert(i)(equalTo("something"))
+          } yield assert(i)(equalTo(GameCommand("something")))
+        },
+        testM("it returns a meta command") {
+          for {
+            _ <- TestConsole.feedLines(":something")
+            i <- readLine
+          } yield assert(i)(equalTo(MetaCommand("something")))
         }
       ),
       suite("CLI start")(

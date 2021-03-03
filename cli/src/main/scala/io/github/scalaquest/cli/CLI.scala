@@ -6,6 +6,7 @@ import zio.console._
 import zio.{IO, UIO, ZIO}
 
 import java.io.IOException
+import scala.io.AnsiColor
 
 trait CLI {
   def start: ZIO[Console, Throwable, Unit]
@@ -18,55 +19,43 @@ object CLI {
   def readLine: ZIO[Console, IOException, Command] =
     for {
       _  <- putStr("> ")
+      _  <- putStr("\u001B[2m")
       i  <- getStrLn.map(Command.make)
+      _  <- putStr(AnsiColor.RESET)
       i2 <- ZIO.succeed(i).flatMap(x => x.map(ZIO.succeed(_)).getOrElse(readLine))
     } yield i2;
 
   class CLIBuilder[M <: Model](val model: M) {
 
-    def saveState(path: String, state: model.S): IO[IOException, Unit] = {
-      IO.fromFuture { implicit ec =>
-        model.serializer.write(path, state)
-      }.refineToOrDie[IOException]
+    def saveState(
+      path: String,
+      state: model.S
+    ): IO[Either[UnsupportedOperationException, IOException], Unit] = {
+      IO.fromFuture { _ =>
+        model.serializer.get.write(path, state)
+      }.mapError {
+        case _: NoSuchElementException => Left(new UnsupportedOperationException)
+        case e: IOException            => Right(e)
+        case t: Throwable              => throw t
+      }
     }
 
-    def loadState(path: String): IO[IOException, model.S] = {
-      IO.fromFuture { implicit ec =>
-        model.serializer.read(path)
-      }.refineToOrDie[IOException]
+    def loadState(path: String): IO[Either[UnsupportedOperationException, IOException], model.S] = {
+      IO
+        .fromFuture { _ =>
+          model.serializer.get.read(path)
+        }
+        .mapError[Either[UnsupportedOperationException, IOException]] {
+          case _: NoSuchElementException => Left(new UnsupportedOperationException)
+          case e: IOException            => Right(e)
+          case t: Throwable              => throw t
+        }
     }
 
     private def gameLoop(
       game: Game[model.type],
       pusher: MessagePusher[String]
     )(state: model.S): ZIO[Console, IOException, Unit] = {
-
-//       def saveState(path: String): IO[IOException, Unit] = {
-//         import upickle.default.{write => serialize, readwriter, ReadWriter}
-//         implicit val stateReadWrite: ReadWriter[model.S] =
-//           readwriter[String].bimap[model.S](_.location.name, _ => state)
-//         IO.effect {
-//           val writer = new OutputStreamWriter(new FileOutputStream(path))
-//           writer.write(serialize(state))
-//           writer.close()
-//         }.refineToOrDie[IOException]
-//       }
-//
-//       def loadState(path: String): IO[IOException, model.S] = {
-//         import upickle.default.{readwriter, ReadWriter, read => deserialize}
-//         implicit val stateReadWrite: ReadWriter[model.S] =
-//           readwriter[String].bimap[model.S](_.location.name, _ => state)
-//
-//         IO.effect {
-//           val reader = new BufferedInputStream(new FileInputStream(path))
-//           val state = LazyList
-//             .continually(reader.read())
-//             .takeWhile(_ != -1)
-//             .map(_.toChar)
-//             .mkString
-//           deserialize(state)
-//         }.refineToOrDie[IOException]
-//       }
 
       def onCommand(input: String): ZIO[Console, IOException, Unit] = {
         val loop = for {
@@ -91,7 +80,9 @@ object CLI {
               for {
                 saveResult <- saveState(path, state).either
                 _ <- saveResult match {
-                  case Left(e) =>
+                  case Left(Left(_)) =>
+                    putStrLn("Operation not supported.")
+                  case Left(Right(e)) =>
                     putStrLn(s"Couldn't save game: ${e.getMessage}")
                   case Right(_) =>
                     putStrLn("Saved game successfully!")
@@ -103,7 +94,9 @@ object CLI {
               for {
                 loadResult <- loadState(path).either
                 s <- loadResult match {
-                  case Left(e) =>
+                  case Left(Left(_)) =>
+                    putStrLn("Operation not supported.") *> ZIO.none
+                  case Left(Right(e)) =>
                     putStrLn(s"Couldn't load game: ${e.getMessage}") *> ZIO.none
                   case Right(updatedState) =>
                     putStrLn("Loaded game save successfully!").as(updatedState).asSome

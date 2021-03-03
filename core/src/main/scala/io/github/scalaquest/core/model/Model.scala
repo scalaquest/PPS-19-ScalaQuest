@@ -22,7 +22,7 @@ trait Model { model: Model =>
   type RM <: Room
   type Reaction = S => (S, Seq[Message])
 
-  def serializer: Serializer
+  def serializer: Option[Serializer] = None
 
   /**
    * A component that enables to serialize a `State` instance to the file system.
