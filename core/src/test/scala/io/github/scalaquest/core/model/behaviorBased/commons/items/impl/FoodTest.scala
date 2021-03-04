@@ -9,7 +9,7 @@ import org.scalatest.matchers.should.Matchers
 class FoodTest extends AnyWordSpec with Matchers {
 
   "A Food" should {
-    val food = Food(ItemDescription("food"), Eatable.builder(), Seq(Takeable.builder()))
+    val food = Food(ItemDescription("food"))
 
     "have an eatable behavior" in {
       food.eatable shouldBe a[Eatable]

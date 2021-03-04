@@ -120,5 +120,63 @@ trait DoorExt extends BehaviorBasedModel with RoomLinkExt {
 
       (door, key)
     }
+
+    /**
+     * Creates an opened door. It means that you can directly enter it without open.
+     * @param description
+     *   An [[ItemDescription]] for the <b>Door</b>.
+     * @param endRoom
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   <b>Door</b>.
+     * @param endRoomDirection
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
+     * @param onEnterExtra
+     *   An extra behavior generated when player enter the target room.
+     * @param extraBehavBuilders
+     *   An extra behavior generated when player opens the subject.
+     * @return
+     *   Creates an opened door. It means that you can directly enter it without open.
+     */
+    def createOpened(
+      description: ItemDescription,
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty,
+      extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): Door =
+      apply(
+        description,
+        RoomLink.openedBuilder(endRoom, endRoomDirection, onEnterExtra),
+        extraBehavBuilders
+      )
+
+    /**
+     * Creates a closed unlocked door. It means that ite can be opened without key, then entered.
+     * @param description
+     *   An [[ItemDescription]] for the <b>Door</b>.
+     * @param endRoom
+     *   The <b>Room</b> that will be set as the new location of the player, after entering the
+     *   <b>Door</b>.
+     * @param endRoomDirection
+     *   The [[Direction]] that will be associated to the end room, when available to enter.
+     * @param onEnterExtra
+     *   An extra behavior generated when player enter the target room.
+     * @param extraBehavBuilders
+     *   An extra behavior generated when player opens the subject.
+     * @return
+     *   Creates a closed unlocked door. It means that ite can be opened without key, then entered.
+     */
+    def createClosedUnlocked(
+      description: ItemDescription,
+      endRoom: RM,
+      endRoomDirection: Direction,
+      onEnterExtra: Reaction = Reaction.empty,
+      extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
+    ): Door =
+      apply(
+        description,
+        RoomLink.closedUnlockedBuilder(endRoom, endRoomDirection, onEnterExtra),
+        extraBehavBuilders
+      )
   }
 }

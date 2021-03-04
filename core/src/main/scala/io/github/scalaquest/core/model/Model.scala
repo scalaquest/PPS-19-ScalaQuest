@@ -209,6 +209,13 @@ trait Model { model: Model =>
      */
     def neighbor(direction: Direction)(implicit state: S): Option[RM]
 
+    /**
+     * A [[Map]] with all the neighbor [[Room]] of the location.
+     * @param state
+     *   the current state.
+     * @return
+     *   A [[Map]] with all the neighbor [[Room]] of the location.
+     */
     def neighbors(implicit state: S): Map[Direction, RM]
 
     /**

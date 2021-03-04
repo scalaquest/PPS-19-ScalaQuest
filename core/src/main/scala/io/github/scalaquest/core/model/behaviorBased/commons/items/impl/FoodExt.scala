@@ -54,8 +54,8 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
      * Creates a standard <b>Food</b>.
      * @param description
      *   An [[ItemDescription]] for the item.
-     * @param eatableBuilder
-     *   A builder for the <b>Eatable</b> behavior associated to the item.
+     * @param onEatExtra
+     *   An extra <b>Reaction</b> to be triggered after eating.
      * @param extraBehavBuilders
      *   Additional behaviors associated to the item.
      * @return
@@ -63,10 +63,10 @@ trait FoodExt extends BehaviorBasedModel with EatableExt {
      */
     def apply(
       description: ItemDescription,
-      eatableBuilder: I => Eatable,
+      onEatExtra: Reaction = Reaction.empty,
       extraBehavBuilders: Seq[I => ItemBehavior] = Seq.empty
-    ): Food = {
-      SimpleFood(description, ItemRef(description), eatableBuilder, extraBehavBuilders)
-    }
+    ): Food =
+      SimpleFood(description, ItemRef(description), Eatable.builder(onEatExtra), extraBehavBuilders)
+
   }
 }

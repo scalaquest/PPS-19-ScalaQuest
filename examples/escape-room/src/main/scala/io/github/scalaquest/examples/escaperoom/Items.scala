@@ -5,8 +5,6 @@ import io.github.scalaquest.core.model.ItemDescription.dsl.{d, i}
 import io.github.scalaquest.examples.escaperoom.Messages.DeliciousMessage
 import model.{
   Food,
-  Eatable,
-  RoomLink,
   Key,
   Door,
   Chest,
@@ -25,18 +23,19 @@ object Items {
   val redApple: Food =
     Food(
       i(d("red"), "apple"),
-      Eatable.builder(onEatExtra = CReactions.addMessage(DeliciousMessage))
+      onEatExtra = CReactions.addMessage(DeliciousMessage)
     )
 
   val greenApple: Food =
     Food(
       i(d("green"), "apple"),
-      Eatable.builder(onEatExtra = CReactions.finishGame(false))
+      onEatExtra = CReactions.finishGame(false)
     )
 
-  val basementHatch: Door = Door(
+  val basementHatch: Door = Door.createOpened(
     i(d("basement"), "hatch"),
-    RoomLink.builder(Geography.basement, Direction.Down)
+    Geography.basement,
+    Direction.Down
   )
 
   val (hatch, hatchKey): (Door, Key) = Door.createLockedWithKey(

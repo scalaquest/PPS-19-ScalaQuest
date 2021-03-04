@@ -55,14 +55,6 @@ trait StateUtilsExt extends Model {
     def locationNeighbor(direction: Direction): Option[RM] = state.location.neighbor(direction)
 
     /**
-     * Responds with all neighbor [[Room]] for the current location.
-     * @return
-     *   all the neighbor Rooms ([[RM]]).
-     */
-    def locationNeighbors: Set[RM] =
-      Direction.all.map(state.locationNeighbor(_)).collect({ case Some(room) => room })
-
-    /**
      * Responds with all the [[Item]] s present in the player location [[Room]].
      * @return
      *   All the [[Item]] s present in the player location [[Room]].

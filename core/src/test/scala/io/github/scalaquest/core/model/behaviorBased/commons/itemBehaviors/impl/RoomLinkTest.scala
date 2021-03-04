@@ -12,7 +12,7 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
 
   "A RoomLinkBehavior" when {
 
-    "the item has not an openable behavior" when {
+    "the item has an openable behavior" when {
       val targetItem =
         Door(ItemDescription("door"), RoomLink.openedBuilder(targetRoom, Direction.North))
       val stateWithTarget = simpleState.copyWithItemInLocation(targetItem)
@@ -71,6 +71,18 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             modState.location shouldBe targetRoom
           }
         }
+      }
+    }
+
+    "the item hasn't an openable behavior" should {
+      val targetItem =
+        Door(ItemDescription("door"), RoomLink.openedBuilder(targetRoom, Direction.North))
+      val stateWithTarget = simpleState.copyWithItemInLocation(targetItem)
+
+      "not be possible to open it" in {
+        for {
+          openReact <- targetItem.use(Open)(stateWithTarget)
+        } yield openReact shouldBe Reaction.empty
       }
     }
   }
