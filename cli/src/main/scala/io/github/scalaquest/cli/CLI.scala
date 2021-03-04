@@ -18,12 +18,11 @@ object CLI {
 
   def readLine: ZIO[Console, IOException, Command] =
     for {
-      _  <- putStr("> ")
-      _  <- putStr("\u001B[2m")
-      i  <- getStrLn.map(Command.make)
-      _  <- putStr(AnsiColor.RESET)
-      i2 <- ZIO.succeed(i).flatMap(x => x.map(ZIO.succeed(_)).getOrElse(readLine))
-    } yield i2;
+      _   <- putStr("> ") *> putStr("\u001B[3m") *> putStr(AnsiColor.GREEN)
+      in  <- getStrLn.map(Command.make)
+      _   <- putStr(AnsiColor.RESET)
+      cmd <- ZIO.succeed(in).someOrElseM(readLine)
+    } yield cmd;
 
   class CLIBuilder[M <: Model](val model: M) {
 
@@ -45,7 +44,7 @@ object CLI {
         .fromFuture { _ =>
           model.serializer.get.read(path)
         }
-        .mapError[Either[UnsupportedOperationException, IOException]] {
+        .mapError {
           case _: NoSuchElementException => Left(new UnsupportedOperationException)
           case e: IOException            => Right(e)
           case t: Throwable              => throw t
@@ -73,7 +72,7 @@ object CLI {
         loop.refineToOrDie[IOException]
       }
 
-      def onMetaCommand(input: String): ZIO[Console, IOException, Unit] = {
+      def onMetaCommand(input: String): ZIO[Console, IOException, Unit] =
         for {
           nextState <- input match {
             case Command.Parser("save", path) =>
@@ -88,8 +87,6 @@ object CLI {
                     putStrLn("Saved game successfully!")
                 }
               } yield None
-            case Command.Parser("save", _*) =>
-              putStrLn("Usage: :save <file>") *> ZIO.none
             case Command.Parser("load", path) =>
               for {
                 loadResult <- loadState(path).either
@@ -102,6 +99,8 @@ object CLI {
                     putStrLn("Loaded game save successfully!").as(updatedState).asSome
                 }
               } yield s
+            case Command.Parser("save", _*) =>
+              putStrLn("Usage: :save <file>") *> ZIO.none
             case Command.Parser("load", _*) =>
               putStrLn("Usage: :load <file>") *> ZIO.none
             case _ =>
@@ -109,7 +108,6 @@ object CLI {
           }
           _ <- gameLoop(game, pusher)(nextState getOrElse state)
         } yield ()
-      }
 
       for {
         command <- readLine

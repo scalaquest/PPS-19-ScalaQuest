@@ -26,8 +26,9 @@ package io.github.scalaquest.core
  *
  *       res match {
  *         case Left(error) => println(error)
- *         case Right(updatedState) =>
+ *         case Right((updatedState, messages)) =>
  *           state = updatedState
+ *           println(messages)
  *       }
  *     }
  *   }
