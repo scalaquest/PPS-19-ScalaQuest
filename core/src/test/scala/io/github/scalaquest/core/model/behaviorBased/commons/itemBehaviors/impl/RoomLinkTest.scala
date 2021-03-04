@@ -1,7 +1,7 @@
 package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.{Enter, Open}
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Enter, Open}
 import io.github.scalaquest.core.model.{Direction, ItemDescription, ItemRef}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -12,8 +12,9 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
 
   "A RoomLinkBehavior" when {
 
-    "the item has not an openable behavior" when {
-      val targetItem      = Door(ItemDescription("door"), RoomLink.builder(targetRoom, Direction.North))
+    "the item has an openable behavior" when {
+      val targetItem =
+        Door(ItemDescription("door"), RoomLink.openedBuilder(targetRoom, Direction.North))
       val stateWithTarget = simpleState.copyWithItemInLocation(targetItem)
 
       "the user says 'enter the item'" should {
@@ -26,7 +27,7 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             msgs     <- Right(enteredReact(stateWithTarget)._2)
           } yield {
             modState.location shouldBe targetRoom
-            msgs should contain(Messages.Navigated(targetRoom))
+            msgs should contain(CMessages.Navigated(targetRoom))
           }
         }
       }
@@ -47,7 +48,7 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             msgs     <- Right(enteredReact(stateWithClosedTarget)._2)
           } yield {
             modState.location should not be targetRoom
-            msgs should contain(Messages.FailedToEnter(targetItem))
+            msgs should contain(CMessages.FailedToEnter(targetItem))
           }
         }
       }
@@ -66,10 +67,22 @@ class RoomLinkTest extends AnyWordSpec with Matchers {
             modState <- Right(enteredReact(openReact(stateWithClosedTarget)._1)._1)
             msgs     <- Right(enteredReact(openReact(stateWithClosedTarget)._1)._2)
           } yield {
-            msgs should contain(Messages.Navigated(targetRoom))
+            msgs should contain(CMessages.Navigated(targetRoom))
             modState.location shouldBe targetRoom
           }
         }
+      }
+    }
+
+    "the item hasn't an openable behavior" should {
+      val targetItem =
+        Door(ItemDescription("door"), RoomLink.openedBuilder(targetRoom, Direction.North))
+      val stateWithTarget = simpleState.copyWithItemInLocation(targetItem)
+
+      "not be possible to open it" in {
+        for {
+          openReact <- targetItem.use(Open)(stateWithTarget)
+        } yield openReact shouldBe Reaction.empty
       }
     }
   }

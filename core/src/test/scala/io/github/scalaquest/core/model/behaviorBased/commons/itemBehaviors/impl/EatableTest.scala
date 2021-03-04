@@ -2,7 +2,7 @@ package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 
 import io.github.scalaquest.core.TestsUtils
 import io.github.scalaquest.core.model.ItemDescription
-import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CommonActions.Eat
+import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Eat
 import org.scalatest.wordspec.AnyWordSpec
 import TestsUtils._
 import TestsUtils.model._
@@ -28,7 +28,7 @@ class EatableTest extends AnyWordSpec with Matchers {
             msgs     <- Right(react(stateItemInRoom)._2)
           } yield {
             modState.location.items(modState) should not contain targetItem
-            msgs should contain(Messages.Eaten(targetItem))
+            msgs should contain(CMessages.Eaten(targetItem))
           }
         }
 
@@ -41,7 +41,7 @@ class EatableTest extends AnyWordSpec with Matchers {
             msgs     <- Right(react(stateItemInBag)._2)
           } yield {
             modState.bag should not contain targetItem
-            msgs should contain(Messages.Eaten(targetItem))
+            msgs should contain(CMessages.Eaten(targetItem))
           }
         }
 

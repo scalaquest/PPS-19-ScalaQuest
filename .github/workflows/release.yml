@@ -70,8 +70,8 @@ jobs:
           body: |
             This PR merges the main branch back into dev. This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates, are also present on the dev branch.
 
-      - name: Generate distributions
-        run: ./gradlew distZip
+      - name: Generate assets
+        run: ./gradlew build
 
       - name: Upload release assets
         uses: dwenegar/upload-release-assets@v1
@@ -81,9 +81,20 @@ jobs:
           release_id: ${{ steps.create-release.outputs.id }}
           assets_path: |
             ./examples/escape-room/build/distributions
-            ./examples/haunted-house/build/distributions
+            ./examples/poke-quest/build/distributions
+            ./examples/wizard-quest/build/distributions
             ./cli/build/libs
             ./core/build/libs
+
+      - name: Publish to Maven Central
+        run: |
+          ./gradlew publishAllPublicationsToMavenCentralRepository
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
 
       - name: Generate Scaladoc
         run: |

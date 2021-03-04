@@ -19,4 +19,5 @@ rootProject.name = "ScalaQuest"
 include(":core")
 include(":cli")
 include(":examples:escape-room")
-include(":examples:haunted-house")
+include(":examples:poke-quest")
+include(":examples:wizard-quest")

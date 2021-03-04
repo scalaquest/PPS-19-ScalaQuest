@@ -32,6 +32,9 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
       "not produce changes in a state" in {
         Update.empty(state) shouldBe state
       }
+      "be created without passing anything" in {
+        Update()(state) shouldBe state
+      }
     }
     "created with many functions" should {
       "apply them in order" in {
@@ -48,6 +51,11 @@ class ReactionUtilsExtTest extends AnyWordSpec with Matchers {
     "empty" should {
       "not produce changes both in state and messages" in {
         Reaction.empty(state) shouldBe (state -> Seq.empty)
+      }
+    }
+    "pure" should {
+      "not produce changes in messages and change state to the given State" in {
+        Reaction.pure(state)(state) shouldBe (state -> Seq.empty)
       }
     }
     "has messages" should {

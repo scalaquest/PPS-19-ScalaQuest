@@ -34,10 +34,10 @@ class PipelineProviderTest extends AnyWordSpec with Matchers {
     override def resolver: Resolver.Builder[S] =
       _ => _ => Right(ResolverResult(Statement.Intransitive(testAction)))
 
-    override def interpreter: Interpreter.Builder[M, S, Reaction] =
+    override def interpreter: Interpreter.Builder[M, S, React] =
       _ => _ => Right(InterpreterResult(model)(s => s.copy(ended = true) -> Seq()))
 
-    override def reducer: Reducer.Builder[M, S, Reaction] =
+    override def reducer: Reducer.Builder[M, S, React] =
       s =>
         interpreterResult => {
           val (state, messages) = interpreterResult.reaction(s)

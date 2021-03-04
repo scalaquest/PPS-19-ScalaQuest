@@ -36,7 +36,7 @@ abstract class BehaviorBasedModel extends Model {
         .map(_.triggers)
         .reduceOption(_ orElse _)
         .getOrElse(PartialFunction.empty)
-        .lift((action, this, maybeSideItem, state))
+        .lift((action, maybeSideItem, state))
   }
 
   /**
@@ -44,14 +44,27 @@ abstract class BehaviorBasedModel extends Model {
    * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
    * [[ItemBehavior]] is based into this construct.
    */
-  type ItemTriggers = PartialFunction[(Action, I, Option[I], S), Reaction]
+  type ItemTriggers = PartialFunction[(Action, Option[I], S), Reaction]
 
   /**
    * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
    * [[BehaviorBasedModel]] is based into this construct.
    */
   abstract class ItemBehavior {
+
+    /**
+     * All the [[ItemTriggers]] of this [[ItemBehavior]].
+     * @return
+     *   the [[ItemTriggers]].
+     */
     def triggers: ItemTriggers = PartialFunction.empty
+
+    /**
+     * The <b>BehaviorBasedItem</b> that owe the behavior.
+     * @return
+     *   The <b>BehaviorBasedItem</b> that owe the behavior.
+     */
+    def subject: I
   }
 
   /**
@@ -77,7 +90,7 @@ abstract class BehaviorBasedModel extends Model {
      * @return
      *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
      */
-    def receiverTriggers: ItemTriggers = PartialFunction.empty
+    def receiverTriggers: ItemTriggers
 
     /**
      * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
@@ -102,6 +115,13 @@ abstract class BehaviorBasedModel extends Model {
    * triggers) is implemented here.
    */
   abstract class BehaviorBasedGround extends Ground {
+
+    /**
+     * [[GroundBehavior]] s associated to the Ground.
+     *
+     * @return
+     *   [[GroundBehavior]] s associated to the Ground.
+     */
     def behaviors: Seq[GroundBehavior] = Seq.empty
 
     override def use(action: Action)(implicit state: S): Option[Reaction] =
@@ -123,6 +143,13 @@ abstract class BehaviorBasedModel extends Model {
    * [[BehaviorBasedModel]] is based into this construct.
    */
   abstract class GroundBehavior {
+
+    /**
+     * [[GroundTriggers]] s associated to the Ground.
+     *
+     * @return
+     *   [[GroundTriggers]] s associated to the Ground.
+     */
     def triggers: GroundTriggers = PartialFunction.empty
   }
 }

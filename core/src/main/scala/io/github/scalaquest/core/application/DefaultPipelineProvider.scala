@@ -21,7 +21,7 @@ trait DefaultPipelineProvider[M0 <: Model] extends PipelineProvider[M0] {
 
   override def resolver: Resolver.Builder[S] = Resolver.builder(model)
 
-  override def interpreter: Builder[M, S, Reaction] = Interpreter.builder(model)
+  override def interpreter: Builder[M, S, React] = Interpreter.builder(model)
 
-  override def reducer: Reducer.Builder[M, S, Reaction] = Reducer.builder(model)
+  override def reducer: Reducer.Builder[M, S, React] = Reducer.builder(model)
 }
