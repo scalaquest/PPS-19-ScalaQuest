@@ -44,6 +44,7 @@ trait Model { model: Model =>
    */
   type Reaction = S => (S, Seq[Message])
 
+  /** Optional serializer for this model. */
   def serializer: Option[Serializer] = None
 
   /**
