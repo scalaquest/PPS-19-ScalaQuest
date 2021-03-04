@@ -4,12 +4,17 @@ import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
 import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Inspect
 import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
 import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
 
 /**
  * The trait makes possible to mix into a [[BehaviorBasedModel]] the <b>InspectableLocation
  * GroundBehavior</b>.
  */
-trait InspectableLocationExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
+trait InspectableLocationExt
+  extends BehaviorBasedModel
+  with CMessagesExt
+  with CReactionsExt
+  with StateUtilsExt {
 
   /**
    * A <b>GroundBehavior</b> that enables the possibility to describe the location.
@@ -39,7 +44,7 @@ trait InspectableLocationExt extends BehaviorBasedModel with CMessagesExt with C
       for {
         s1 <- Reaction.empty
         _ <- CReactions.addMessage(
-          CMessages.Inspected(s1.location, s1.location.items(s1), s1.location.neighbors(s1))
+          CMessages.Inspected(s1.location, s1.locationItems, s1.location.neighbors(s1))
         )
         s2 <- onInspectExtra
       } yield s2
