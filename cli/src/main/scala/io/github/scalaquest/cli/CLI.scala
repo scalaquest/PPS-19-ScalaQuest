@@ -8,14 +8,19 @@ import zio.{IO, UIO, ZIO}
 import java.io.IOException
 import scala.io.AnsiColor
 
+/**
+ * An generic command line application that takes no arguments.
+ */
 trait CLI {
-  def start: ZIO[Console, Throwable, Unit]
+  def start: ZIO[Console, IOException, Unit]
 }
 
 object CLI {
 
+  /** A builder function to create a `CLI` using dependent types on the `Model` instance. */
   def builderFrom[M <: Model](implicit model: M) = new CLIBuilder[M](model)
 
+  /** An effect that prints a prompt and asks for a command that cannot be empty. */
   def readLine: ZIO[Console, IOException, Command] =
     for {
       _   <- putStr("> ") *> putStr("\u001B[3m") *> putStr(AnsiColor.GREEN)
@@ -26,7 +31,37 @@ object CLI {
 
   class CLIBuilder[M <: Model](val model: M) {
 
-    def saveState(
+    /**
+     * Creates a `CLI` with the given parameters.
+     * @param state
+     *   the initial state
+     * @param game
+     *   the game to send the commands to
+     * @param pusher
+     *   the interpreter of the messages
+     * @param initialMessages
+     *   optional initial messages
+     * @return
+     *   the command line application
+     */
+    def build(
+      state: model.S,
+      game: Game[model.type],
+      pusher: MessagePusher[String],
+      initialMessages: Seq[Message] = Seq()
+    ): CLI =
+      new CLI() {
+
+        override def start: ZIO[Console, IOException, Unit] =
+          for {
+            _ <-
+              if (initialMessages.nonEmpty) putStrLn(pusher push initialMessages)
+              else ZIO.unit
+            _ <- gameLoop(game, pusher)(state)
+          } yield ()
+      }
+
+    private def saveState(
       path: String,
       state: model.S
     ): IO[Either[UnsupportedOperationException, IOException], Unit] = {
@@ -39,7 +74,9 @@ object CLI {
       }
     }
 
-    def loadState(path: String): IO[Either[UnsupportedOperationException, IOException], model.S] = {
+    private def loadState(
+      path: String
+    ): IO[Either[UnsupportedOperationException, IOException], model.S] = {
       IO
         .fromFuture { _ =>
           model.serializer.get.read(path)
@@ -117,23 +154,6 @@ object CLI {
         }
       } yield ()
     }
-
-    def build(
-      state: model.S,
-      game: Game[model.type],
-      pusher: MessagePusher[String],
-      initialMessages: Seq[Message] = Seq()
-    ): CLI =
-      new CLI() {
-
-        override def start: ZIO[Console, IOException, Unit] =
-          for {
-            _ <-
-              if (initialMessages.nonEmpty) putStrLn(pusher push initialMessages)
-              else ZIO.unit
-            _ <- gameLoop(game, pusher)(state)
-          } yield ()
-      }
   }
 
 }

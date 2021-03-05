@@ -10,11 +10,12 @@ import zio.test._
 import zio.test.environment._
 import zio.test.junit.JUnitRunnableSpec
 
+import java.io.IOException
 import scala.annotation.nowarn
 
 class CLITest extends JUnitRunnableSpec {
 
-  case class TestCLI(start: ZIO[Console, Exception, Unit]) extends CLI
+  case class TestCLI(start: ZIO[Console, IOException, Unit]) extends CLI
 
   def spec =
     suite("CLI tests")(
@@ -30,7 +31,7 @@ class CLITest extends JUnitRunnableSpec {
         },
         testM("it returns code != 0 if CLI ends with errors") {
           val app = new CLIApp {
-            override def cli: CLI = TestCLI(ZIO.fail(new Exception))
+            override def cli: CLI = TestCLI(ZIO.fail(new IOException))
           }
           for {
             ret <- app.run(List())
