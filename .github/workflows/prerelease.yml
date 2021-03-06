@@ -54,6 +54,17 @@ jobs:
       - name: Generate assets
         run: ./gradlew distZip distTar
 
+      - name: Upload Readme asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./README.md
+          asset_name: README.md
+          asset_content_type: text/x-markdown
+
       - name: Upload release assets
         uses: dwenegar/upload-release-assets@v1
         env:
