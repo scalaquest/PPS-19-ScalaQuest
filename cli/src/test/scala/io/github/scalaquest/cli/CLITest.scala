@@ -10,18 +10,18 @@ import zio.test._
 import zio.test.environment._
 import zio.test.junit.JUnitRunnableSpec
 
+import java.io.IOException
 import scala.annotation.nowarn
 
-// Suppress weird warning
-@nowarn("msg=pure expression")
 class CLITest extends JUnitRunnableSpec {
 
-  case class TestCLI(start: ZIO[Console, Exception, Unit]) extends CLI
+  case class TestCLI(start: ZIO[Console, IOException, Unit]) extends CLI
 
   def spec =
     suite("CLI tests")(
       suite("CLIApp")(
         testM("it returns code 0 if CLI ends with no errors") {
+          @nowarn("msg=pure expression") // this generates a warning for some unknown reason
           val app = new CLIApp {
             override def cli: CLI = TestCLI(ZIO.succeed("ok"))
           }
@@ -31,7 +31,7 @@ class CLITest extends JUnitRunnableSpec {
         },
         testM("it returns code != 0 if CLI ends with errors") {
           val app = new CLIApp {
-            override def cli: CLI = TestCLI(ZIO.fail(new Exception))
+            override def cli: CLI = TestCLI(ZIO.fail(new IOException))
           }
           for {
             ret <- app.run(List())
@@ -44,20 +44,70 @@ class CLITest extends JUnitRunnableSpec {
             _ <- TestConsole.feedLines("not empty")
             _ <- readLine
             o <- TestConsole.output
-          } yield assert(o)(equalTo(Vector("> ")))
+          } yield assert(o)(contains("> "))
         },
         testM("it doesn't accept empty lines") {
           for {
             _ <- TestConsole.feedLines("", "", "not empty")
             _ <- readLine
             o <- TestConsole.output
-          } yield assert(o)(equalTo(Vector("> ", "> ", "> ")))
+          } yield assert(o)(hasIntersection(Vector("> ", "> ", "> "))(hasSize(equalTo(3))))
         },
         testM("it returns the read line") {
           for {
             _ <- TestConsole.feedLines("something")
             i <- readLine
-          } yield assert(i)(equalTo("something"))
+          } yield assert(i)(equalTo(GameCommand("something")))
+        },
+        testM("it returns a meta command") {
+          for {
+            _ <- TestConsole.feedLines(":something")
+            i <- readLine
+          } yield assert(i)(equalTo(MetaCommand("something")))
+        }
+      ),
+      suite("Metacommands")(
+        testM("it correctly handles save with the wrong arguments number") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          for {
+            _ <- TestConsole.feedLines(":save", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("Usage")))
+        },
+        testM("it correctly handles load with the wrong arguments number") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          for {
+            _ <- TestConsole.feedLines(":load", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("Usage")))
+        },
+        testM("it correctly handles wrong commands") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          for {
+            _ <- TestConsole.feedLines(":wrong-command", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("Unrecognized")))
+        },
+        testM("it correctly handles operation not supported") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          val t1: ZIO[TestConsole with Console, IOException, TestResult] = for {
+            _ <- TestConsole.feedLines(":save somepath", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("not supported")))
+          val t2: ZIO[TestConsole with Console, IOException, TestResult] = for {
+            _ <- TestConsole.feedLines(":load somepath", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("not supported")))
+          t1 *> t2
         }
       ),
       suite("CLI start")(

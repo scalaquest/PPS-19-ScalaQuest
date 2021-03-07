@@ -9,6 +9,7 @@ import io.github.scalaquest.core.application.{
 import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
 import io.github.scalaquest.core.pipeline.Pipeline
 
+/** An application that uses a `Pipeline` instance to build a `CLI`. */
 abstract class GameCLIApp[M0 <: Model](val model: M0)
   extends CLIApp
   with PipelineProvider[M0]

@@ -22,9 +22,9 @@ import cats.{Foldable, Monoid}
  * Should result in the following being printed:
  * {{{
  *   Map(
- *   1 -> 1,
- *   2 -> 4,
- *   3 -> 9
+ *     1 -> 1,
+ *     2 -> 4,
+ *     3 -> 9
  *   )
  * }}}
  */

@@ -3,6 +3,8 @@ package io.github.scalaquest.core.model
 import io.github.scalaquest.core.dictionary.verbs.VerbPrep
 import monocle.Lens
 
+import scala.concurrent.Future
+
 /**
  * A way to represent the basic linked concepts of the story, in an extendible way. Usage example:
  * {{{
@@ -41,6 +43,19 @@ trait Model { model: Model =>
    * [[Message]].
    */
   type Reaction = S => (S, Seq[Message])
+
+  /** Optional serializer for this model. */
+  def serializer: Option[Serializer] = None
+
+  /**
+   * A component that enables to serialize a `State` instance to the file system.
+   */
+  trait Serializer {
+
+    def write(path: String, state: S): Future[Unit]
+
+    def read(path: String): Future[S]
+  }
 
   /**
    * Represents a snapshot of the current game, at an higher level in comparison to MatchState. The
@@ -209,6 +224,13 @@ trait Model { model: Model =>
      */
     def neighbor(direction: Direction)(implicit state: S): Option[RM]
 
+    /**
+     * A [[Map]] with all the neighbor [[Room]] of the location.
+     * @param state
+     *   the current state.
+     * @return
+     *   A [[Map]] with all the neighbor [[Room]] of the location.
+     */
     def neighbors(implicit state: S): Map[Direction, RM]
 
     /**

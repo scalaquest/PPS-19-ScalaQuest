@@ -6,7 +6,7 @@ package io.github.scalaquest.core.parsing.scalog
  * If you include implicit conversions and [[dsl.CompoundBuilder]] you can create terms as in this
  * example:
  * {{{
- *   val hello = CompoundBuilder("hello")
+ *   val hello = CompoundBuilder("hello").constructor
  *   val X = Variable("X")
  *   (hello(X) --> ListP("hello", X)).generate
  * }}}

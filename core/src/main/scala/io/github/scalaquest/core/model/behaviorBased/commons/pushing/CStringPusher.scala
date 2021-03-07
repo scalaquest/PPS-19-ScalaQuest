@@ -68,18 +68,9 @@ abstract class CStringPusher(model: BehaviorBasedModel with CMessagesExt)
 }
 
 /**
- * Object with some useful construct for create a [[CStringPusher]].
+ * Object with a useful construct for create a [[CStringPusher]].
  */
 object CStringPusher {
-
-  /**
-   * Create the pusher giving him only the game's model.
-   * @param model
-   *   the actual model game.
-   * @return
-   *   an instance of CommonStringPusher.
-   */
-  def apply(model: CMessagesExt): CStringPusher = new CStringPusher(model) {}
 
   /**
    * Create the pusher giving him only the game's model.
@@ -92,7 +83,7 @@ object CStringPusher {
    */
   def apply(
     model: CMessagesExt,
-    _additionalTriggers: MessageTriggers[String]
+    _additionalTriggers: MessageTriggers[String] = PartialFunction.empty
   ): CStringPusher = {
     new CStringPusher(model) {
       override def extra: MessageTriggers[String] = _additionalTriggers
