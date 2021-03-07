@@ -66,6 +66,50 @@ class CLITest extends JUnitRunnableSpec {
           } yield assert(i)(equalTo(MetaCommand("something")))
         }
       ),
+      suite("Metacommands")(
+        testM("it correctly handles save with the wrong arguments number") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          for {
+            _ <- TestConsole.feedLines(":save", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("Usage")))
+        },
+        testM("it correctly handles load with the wrong arguments number") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          for {
+            _ <- TestConsole.feedLines(":load", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("Usage")))
+        },
+        testM("it correctly handles wrong commands") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          for {
+            _ <- TestConsole.feedLines(":wrong-command", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("Unrecognized")))
+        },
+        testM("it correctly handles operation not supported") {
+          val p   = messagePusher
+          val cli = CLI.builderFrom(model).build(state, gameRight, p, Seq())
+          val t1: ZIO[TestConsole with Console, IOException, TestResult] = for {
+            _ <- TestConsole.feedLines(":save somepath", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("not supported")))
+          val t2: ZIO[TestConsole with Console, IOException, TestResult] = for {
+            _ <- TestConsole.feedLines(":load somepath", "end")
+            _ <- cli.start
+            o <- TestConsole.output
+          } yield assert(o)(hasAt(4)(containsString("not supported")))
+          t1 *> t2
+        }
+      ),
       suite("CLI start")(
         testM("it correctly prints the startup message") {
           val p = messagePusher
