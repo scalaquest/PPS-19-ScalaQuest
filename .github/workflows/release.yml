@@ -65,6 +65,15 @@ jobs:
           ./gradlew :core:generateVersionFile
           echo "RELEASE_VERSION=$(cat ./core/build/version)" >> $GITHUB_ENV
 
+        # It is necessary to manually setting the tag, as simply creating a release generates a
+        # lightweight tag, making the gitSemVer plugin not working properly.
+      - name: Add tag
+        run: |
+          git config user.name releaserbot
+          git config user.email github-actions@github.com
+          git tag ${{ env.RELEASE_VERSION }} -a -m "Release ${{ env.RELEASE_VERSION }}"
+          git push --follow-tags
+
       - name: Create release
         id: create-release
         uses: actions/create-release@v1
