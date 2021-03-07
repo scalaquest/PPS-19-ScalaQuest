@@ -79,46 +79,38 @@
 </span>55 <span style=''>    def locationNeighbor(direction: Direction): Option[RM] = </span><span style='background: #AEF1AE'>state.location.neighbor(direction)</span><span style=''>
 </span>56 <span style=''>
 </span>57 <span style=''>    /**
-</span>58 <span style=''>     * Responds with all neighbor [[Room]] for the current location.
+</span>58 <span style=''>     * Responds with all the [[Item]] s present in the player location [[Room]].
 </span>59 <span style=''>     * @return
-</span>60 <span style=''>     *   all the neighbor Rooms ([[RM]]).
+</span>60 <span style=''>     *   All the [[Item]] s present in the player location [[Room]].
 </span>61 <span style=''>     */
-</span>62 <span style=''>    def locationNeighbors: Set[RM] =
-</span>63 <span style=''>      </span><span style='background: #F0ADAD'>Direction.all.map(state.locationNeighbor(_)).collect({ case Some(room) =&gt; room })</span><span style=''>
-</span>64 <span style=''>
-</span>65 <span style=''>    /**
-</span>66 <span style=''>     * Responds with all the [[Item]] s present in the player location [[Room]].
-</span>67 <span style=''>     * @return
-</span>68 <span style=''>     *   All the [[Item]] s present in the player location [[Room]].
-</span>69 <span style=''>     */
-</span>70 <span style=''>    def locationItems: Set[I] = </span><span style='background: #F0ADAD'>state.location.items</span><span style=''>
-</span>71 <span style=''>
-</span>72 <span style=''>    /**
-</span>73 <span style=''>     * Copy the State [[S]] and add an item to the player location Room.
-</span>74 <span style=''>     * @param item
-</span>75 <span style=''>     *   The &lt;b&gt;item&lt;/b&gt; [[I]] to add.
-</span>76 <span style=''>     * @return
-</span>77 <span style=''>     *   A new &lt;b&gt;State&lt;/b&gt; with the &lt;b&gt;item&lt;/b&gt; added into the player's location.
-</span>78 <span style=''>     */
-</span>79 <span style=''>    def copyWithItemInLocation(item: I): S = {
-</span>80 <span style=''>      val stateWithTarget    = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
-</span>81 <span style=''>      val currRoomWithTarget = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ + item.ref)(state.location)</span><span style=''>
-</span>82 <span style=''>      </span><span style='background: #AEF1AE'>roomsLens.modify(_ + (currRoomWithTarget.ref -&gt; currRoomWithTarget))(stateWithTarget)</span><span style=''>
-</span>83 <span style=''>    }
-</span>84 <span style=''>
-</span>85 <span style=''>    /**
-</span>86 <span style=''>     * Copy the State [[S]] and add an item to the player's bag.
-</span>87 <span style=''>     * @param item
-</span>88 <span style=''>     *   The &lt;b&gt;item&lt;/b&gt; [[I]] to add to the State.
-</span>89 <span style=''>     * @return
-</span>90 <span style=''>     *   The new &lt;b&gt;State&lt;/b&gt; with the &lt;b&gt;item&lt;/b&gt; in the player's &lt;b&gt;bag&lt;/b&gt;.
-</span>91 <span style=''>     */
-</span>92 <span style=''>    def copyWithItemInBag(item: I): S = {
-</span>93 <span style=''>      val stateWithTarget = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
-</span>94 <span style=''>      </span><span style='background: #AEF1AE'>bagLens.modify(_ + item.ref)(stateWithTarget)</span><span style=''>
-</span>95 <span style=''>    }
-</span>96 <span style=''>  }
-</span>97 <span style=''>}
+</span>62 <span style=''>    def locationItems: Set[I] = </span><span style='background: #AEF1AE'>state.location.items</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>    /**
+</span>65 <span style=''>     * Copy the State [[S]] and add an item to the player location Room.
+</span>66 <span style=''>     * @param item
+</span>67 <span style=''>     *   The &lt;b&gt;item&lt;/b&gt; [[I]] to add.
+</span>68 <span style=''>     * @return
+</span>69 <span style=''>     *   A new &lt;b&gt;State&lt;/b&gt; with the &lt;b&gt;item&lt;/b&gt; added into the player's location.
+</span>70 <span style=''>     */
+</span>71 <span style=''>    def copyWithItemInLocation(item: I): S = {
+</span>72 <span style=''>      val stateWithTarget    = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>73 <span style=''>      val currRoomWithTarget = </span><span style='background: #AEF1AE'>roomItemsLens.modify(_ + item.ref)(state.location)</span><span style=''>
+</span>74 <span style=''>      </span><span style='background: #AEF1AE'>roomsLens.modify(_ + (currRoomWithTarget.ref -&gt; currRoomWithTarget))(stateWithTarget)</span><span style=''>
+</span>75 <span style=''>    }
+</span>76 <span style=''>
+</span>77 <span style=''>    /**
+</span>78 <span style=''>     * Copy the State [[S]] and add an item to the player's bag.
+</span>79 <span style=''>     * @param item
+</span>80 <span style=''>     *   The &lt;b&gt;item&lt;/b&gt; [[I]] to add to the State.
+</span>81 <span style=''>     * @return
+</span>82 <span style=''>     *   The new &lt;b&gt;State&lt;/b&gt; with the &lt;b&gt;item&lt;/b&gt; in the player's &lt;b&gt;bag&lt;/b&gt;.
+</span>83 <span style=''>     */
+</span>84 <span style=''>    def copyWithItemInBag(item: I): S = {
+</span>85 <span style=''>      val stateWithTarget = </span><span style='background: #AEF1AE'>itemsLens.modify(_ + (item.ref -&gt; item))(state)</span><span style=''>
+</span>86 <span style=''>      </span><span style='background: #AEF1AE'>bagLens.modify(_ + item.ref)(stateWithTarget)</span><span style=''>
+</span>87 <span style=''>    }
+</span>88 <span style=''>  }
+</span>89 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -136,7 +128,7 @@
           17
         </td>
         <td>
-          657
+          663
         </td>
         <td>
           469
@@ -160,7 +152,7 @@
           26
         </td>
         <td>
-          658
+          664
         </td>
         <td>
           687
@@ -184,7 +176,7 @@
           35
         </td>
         <td>
-          659
+          665
         </td>
         <td>
           966
@@ -208,7 +200,7 @@
           46
         </td>
         <td>
-          660
+          666
         </td>
         <td>
           1343
@@ -232,7 +224,7 @@
           46
         </td>
         <td>
-          661
+          667
         </td>
         <td>
           1371
@@ -256,7 +248,7 @@
           46
         </td>
         <td>
-          662
+          668
         </td>
         <td>
           1343
@@ -280,7 +272,7 @@
           55
         </td>
         <td>
-          663
+          669
         </td>
         <td>
           1728
@@ -304,7 +296,7 @@
           55
         </td>
         <td>
-          664
+          670
         </td>
         <td>
           1705
@@ -325,103 +317,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          62
         </td>
         <td>
-          665
+          671
         </td>
         <td>
-          1944
+          1969
           -
           1969
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.locationNeighbor
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          StateUtilsExt.this.StateUtils(StateUtils.this.state).locationNeighbor(x$1)
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          666
-        </td>
-        <td>
-          1979
-          -
-          1979
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt.StateUtils.$anonfun.&lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          new $anonfun()
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          667
-        </td>
-        <td>
-          1926
-          -
-          2007
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.IterableOps.collect
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          io.github.scalaquest.core.model.Direction.all.map[Option[StateUtilsExt.this.RM]](((x$1: io.github.scalaquest.core.model.Direction) =&gt; StateUtilsExt.this.StateUtils(StateUtils.this.state).locationNeighbor(x$1))).collect[StateUtilsExt.this.RM](({
-  @SerialVersionUID(value = 0) final &lt;synthetic&gt; class $anonfun extends scala.runtime.AbstractPartialFunction[Option[StateUtilsExt.this.RM],StateUtilsExt.this.RM] with java.io.Serializable {
-    def &lt;init&gt;(): &lt;$anon: Option[StateUtilsExt.this.RM] =&gt; StateUtilsExt.this.RM&gt; = {
-      $anonfun.super.&lt;init&gt;();
-      ()
-    };
-    final override def applyOrElse[A1 &lt;: Option[StateUtilsExt.this.RM], B1 &gt;: StateUtilsExt.this.RM](x1: A1, default: A1 =&gt; B1): B1 = ((x1.asInstanceOf[Option[StateUtilsExt.this.RM]]: Option[StateUtilsExt.this.RM]): Option[StateUtilsExt.this.RM] @unchecked) match {
-      case (value: StateUtilsExt.this.RM): Some[StateUtilsExt.this.RM]((room @ _)) =&gt; room
-      case (defaultCase$ @ _) =&gt; default.apply(x1)
-    };
-    final def isDefinedAt(x1: Option[StateUtilsExt.this.RM]): Boolean = ((x1.asInstanceOf[Option[StateUtilsExt.this.RM]]: Option[StateUtilsExt.this.RM]): Option[StateUtilsExt.this.RM] @unchecked) match {
-      case (value: StateUtilsExt.this.RM): Some[StateUtilsExt.this.RM]((room @ _)) =&gt; true
-      case (defaultCase$ @ _) =&gt; false
-    }
-  };
-  new $anonfun()
-}: PartialFunction[Option[StateUtilsExt.this.RM],StateUtilsExt.this.RM]))
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          668
-        </td>
-        <td>
-          2237
-          -
-          2237
         </td>
         <td>
           Select
@@ -432,20 +336,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           StateUtils.this.s
         </td>
       </tr><tr>
         <td>
-          70
+          62
         </td>
         <td>
-          669
+          672
         </td>
         <td>
-          2222
+          1954
           -
-          2242
+          1974
         </td>
         <td>
           ApplyToImplicitArgs
@@ -456,20 +360,20 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           StateUtils.this.state.location.items(StateUtils.this.s)
         </td>
       </tr><tr>
         <td>
-          80
+          72
         </td>
         <td>
-          670
+          673
         </td>
         <td>
-          2589
+          2321
           -
-          2605
+          2337
         </td>
         <td>
           Apply
@@ -485,15 +389,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          72
         </td>
         <td>
-          671
+          674
         </td>
         <td>
-          2584
+          2316
           -
-          2606
+          2338
         </td>
         <td>
           Apply
@@ -505,19 +409,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$2.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item))
+          x$1.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item))
         </td>
       </tr><tr>
         <td>
-          80
+          72
         </td>
         <td>
-          672
+          675
         </td>
         <td>
-          2608
+          2340
           -
-          2613
+          2345
         </td>
         <td>
           Select
@@ -533,15 +437,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          72
         </td>
         <td>
-          673
+          676
         </td>
         <td>
-          2567
+          2299
           -
-          2614
+          2346
         </td>
         <td>
           Apply
@@ -553,19 +457,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          StateUtilsExt.this.itemsLens.modify(((x$2: Map[io.github.scalaquest.core.model.ItemRef,StateUtilsExt.this.I]) =&gt; x$2.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)))).apply(StateUtils.this.state)
+          StateUtilsExt.this.itemsLens.modify(((x$1: Map[io.github.scalaquest.core.model.ItemRef,StateUtilsExt.this.I]) =&gt; x$1.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)))).apply(StateUtils.this.state)
         </td>
       </tr><tr>
         <td>
-          81
+          73
         </td>
         <td>
-          674
+          677
         </td>
         <td>
-          2671
+          2403
           -
-          2679
+          2411
         </td>
         <td>
           Select
@@ -581,15 +485,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          73
         </td>
         <td>
-          675
+          678
         </td>
         <td>
-          2667
+          2399
           -
-          2679
+          2411
         </td>
         <td>
           Apply
@@ -601,19 +505,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$3.+(item.ref)
+          x$2.+(item.ref)
         </td>
       </tr><tr>
         <td>
-          81
+          73
         </td>
         <td>
-          676
+          679
         </td>
         <td>
-          2681
+          2413
           -
-          2695
+          2427
         </td>
         <td>
           Select
@@ -629,15 +533,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          73
         </td>
         <td>
-          677
+          680
         </td>
         <td>
-          2646
+          2378
           -
-          2696
+          2428
         </td>
         <td>
           Apply
@@ -649,19 +553,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          StateUtilsExt.this.roomItemsLens.modify(((x$3: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$3.+(item.ref))).apply(StateUtils.this.state.location)
+          StateUtilsExt.this.roomItemsLens.modify(((x$2: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$2.+(item.ref))).apply(StateUtils.this.state.location)
         </td>
       </tr><tr>
         <td>
-          82
+          74
         </td>
         <td>
-          678
+          681
         </td>
         <td>
-          2703
+          2435
           -
-          2788
+          2520
         </td>
         <td>
           Apply
@@ -673,19 +577,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          StateUtilsExt.this.roomsLens.modify(((x$4: Map[io.github.scalaquest.core.model.RoomRef,StateUtilsExt.this.RM]) =&gt; x$4.+[StateUtilsExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](currRoomWithTarget.ref).-&gt;[StateUtilsExt.this.RM](currRoomWithTarget)))).apply(stateWithTarget)
+          StateUtilsExt.this.roomsLens.modify(((x$3: Map[io.github.scalaquest.core.model.RoomRef,StateUtilsExt.this.RM]) =&gt; x$3.+[StateUtilsExt.this.RM](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.RoomRef](currRoomWithTarget.ref).-&gt;[StateUtilsExt.this.RM](currRoomWithTarget)))).apply(stateWithTarget)
         </td>
       </tr><tr>
         <td>
-          93
+          85
         </td>
         <td>
-          679
+          682
         </td>
         <td>
-          3134
+          2866
           -
-          3150
+          2882
         </td>
         <td>
           Apply
@@ -701,15 +605,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          85
         </td>
         <td>
-          680
+          683
         </td>
         <td>
-          3129
+          2861
           -
-          3151
+          2883
         </td>
         <td>
           Apply
@@ -721,19 +625,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          x$5.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item))
+          x$4.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item))
         </td>
       </tr><tr>
         <td>
-          93
+          85
         </td>
         <td>
-          681
+          684
         </td>
         <td>
-          3153
+          2885
           -
-          3158
+          2890
         </td>
         <td>
           Select
@@ -749,15 +653,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          85
         </td>
         <td>
-          682
+          685
         </td>
         <td>
-          3112
+          2844
           -
-          3159
+          2891
         </td>
         <td>
           Apply
@@ -769,19 +673,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          StateUtilsExt.this.itemsLens.modify(((x$5: Map[io.github.scalaquest.core.model.ItemRef,StateUtilsExt.this.I]) =&gt; x$5.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)))).apply(StateUtils.this.state)
+          StateUtilsExt.this.itemsLens.modify(((x$4: Map[io.github.scalaquest.core.model.ItemRef,StateUtilsExt.this.I]) =&gt; x$4.+[StateUtilsExt.this.I](scala.Predef.ArrowAssoc[io.github.scalaquest.core.model.ItemRef](item.ref).-&gt;[StateUtilsExt.this.I](item)))).apply(StateUtils.this.state)
         </td>
       </tr><tr>
         <td>
-          94
+          86
         </td>
         <td>
-          683
+          686
         </td>
         <td>
-          3166
+          2898
           -
-          3211
+          2943
         </td>
         <td>
           Apply
@@ -793,7 +697,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          StateUtilsExt.this.bagLens.modify(((x$6: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$6.+(item.ref))).apply(stateWithTarget)
+          StateUtilsExt.this.bagLens.modify(((x$5: Set[io.github.scalaquest.core.model.ItemRef]) =&gt; x$5.+(item.ref))).apply(stateWithTarget)
         </td>
       </tr>
     </table>

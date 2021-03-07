@@ -144,8 +144,66 @@
 </span>120 <span style=''>
 </span>121 <span style=''>      </span><span style='background: #AEF1AE'>(door, key)</span><span style=''>
 </span>122 <span style=''>    }
-</span>123 <span style=''>  }
-</span>124 <span style=''>}
+</span>123 <span style=''>
+</span>124 <span style=''>    /**
+</span>125 <span style=''>     * Creates an opened door. It means that you can directly enter it without open.
+</span>126 <span style=''>     * @param description
+</span>127 <span style=''>     *   An [[ItemDescription]] for the &lt;b&gt;Door&lt;/b&gt;.
+</span>128 <span style=''>     * @param endRoom
+</span>129 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>130 <span style=''>     *   &lt;b&gt;Door&lt;/b&gt;.
+</span>131 <span style=''>     * @param endRoomDirection
+</span>132 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>133 <span style=''>     * @param onEnterExtra
+</span>134 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>135 <span style=''>     * @param extraBehavBuilders
+</span>136 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>137 <span style=''>     * @return
+</span>138 <span style=''>     *   Creates an opened door. It means that you can directly enter it without open.
+</span>139 <span style=''>     */
+</span>140 <span style=''>    def createOpened(
+</span>141 <span style=''>      description: ItemDescription,
+</span>142 <span style=''>      endRoom: RM,
+</span>143 <span style=''>      endRoomDirection: Direction,
+</span>144 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>145 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>146 <span style=''>    ): Door =
+</span>147 <span style=''>      </span><span style='background: #AEF1AE'>apply(
+</span>148 <span style=''></span><span style='background: #AEF1AE'>        description,
+</span>149 <span style=''></span><span style='background: #AEF1AE'>        RoomLink.openedBuilder(endRoom, endRoomDirection, onEnterExtra),
+</span>150 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilders
+</span>151 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>152 <span style=''>
+</span>153 <span style=''>    /**
+</span>154 <span style=''>     * Creates a closed unlocked door. It means that ite can be opened without key, then entered.
+</span>155 <span style=''>     * @param description
+</span>156 <span style=''>     *   An [[ItemDescription]] for the &lt;b&gt;Door&lt;/b&gt;.
+</span>157 <span style=''>     * @param endRoom
+</span>158 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>159 <span style=''>     *   &lt;b&gt;Door&lt;/b&gt;.
+</span>160 <span style=''>     * @param endRoomDirection
+</span>161 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>162 <span style=''>     * @param onEnterExtra
+</span>163 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>164 <span style=''>     * @param extraBehavBuilders
+</span>165 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>166 <span style=''>     * @return
+</span>167 <span style=''>     *   Creates a closed unlocked door. It means that ite can be opened without key, then entered.
+</span>168 <span style=''>     */
+</span>169 <span style=''>    def createClosedUnlocked(
+</span>170 <span style=''>      description: ItemDescription,
+</span>171 <span style=''>      endRoom: RM,
+</span>172 <span style=''>      endRoomDirection: Direction,
+</span>173 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>174 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>175 <span style=''>    ): Door =
+</span>176 <span style=''>      </span><span style='background: #AEF1AE'>apply(
+</span>177 <span style=''></span><span style='background: #AEF1AE'>        description,
+</span>178 <span style=''></span><span style='background: #AEF1AE'>        RoomLink.closedUnlockedBuilder(endRoom, endRoomDirection, onEnterExtra),
+</span>179 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilders
+</span>180 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>181 <span style=''>  }
+</span>182 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -163,7 +221,7 @@
           51
         </td>
         <td>
-          500
+          501
         </td>
         <td>
           1656
@@ -187,7 +245,7 @@
           52
         </td>
         <td>
-          501
+          502
         </td>
         <td>
           1735
@@ -211,7 +269,7 @@
           53
         </td>
         <td>
-          502
+          503
         </td>
         <td>
           1818
@@ -235,7 +293,7 @@
           76
         </td>
         <td>
-          503
+          504
         </td>
         <td>
           2478
@@ -259,7 +317,7 @@
           76
         </td>
         <td>
-          504
+          505
         </td>
         <td>
           2454
@@ -283,7 +341,7 @@
           109
         </td>
         <td>
-          506
+          507
         </td>
         <td>
           3809
@@ -314,7 +372,7 @@
           111
         </td>
         <td>
-          505
+          506
         </td>
         <td>
           3856
@@ -338,7 +396,7 @@
           121
         </td>
         <td>
-          507
+          508
         </td>
         <td>
           4132
@@ -356,6 +414,126 @@
         </td>
         <td style="background: #AEF1AE">
           scala.Tuple2.apply[DoorExt.this.Door, DoorExt.this.Key](door, key)
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          510
+        </td>
+        <td>
+          5137
+          -
+          5272
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.DoorExt.Door.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Door.this.apply(description, DoorExt.this.RoomLink.openedBuilder(endRoom, endRoomDirection, onEnterExtra), extraBehavBuilders)
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          509
+        </td>
+        <td>
+          5173
+          -
+          5236
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.openedBuilder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          DoorExt.this.RoomLink.openedBuilder(endRoom, endRoomDirection, onEnterExtra)
+        </td>
+      </tr><tr>
+        <td>
+          176
+        </td>
+        <td>
+          513
+        </td>
+        <td>
+          6294
+          -
+          6437
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.items.impl.DoorExt.Door.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Door.this.apply(description, DoorExt.this.RoomLink.closedUnlockedBuilder(endRoom, endRoomDirection, onEnterExtra, DoorExt.this.RoomLink.closedUnlockedBuilder$default$4), extraBehavBuilders)
+        </td>
+      </tr><tr>
+        <td>
+          178
+        </td>
+        <td>
+          511
+        </td>
+        <td>
+          6339
+          -
+          6339
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.closedUnlockedBuilder$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          DoorExt.this.RoomLink.closedUnlockedBuilder$default$4
+        </td>
+      </tr><tr>
+        <td>
+          178
+        </td>
+        <td>
+          512
+        </td>
+        <td>
+          6330
+          -
+          6401
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.RoomLinkExt.RoomLink.closedUnlockedBuilder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          DoorExt.this.RoomLink.closedUnlockedBuilder(endRoom, endRoomDirection, onEnterExtra, DoorExt.this.RoomLink.closedUnlockedBuilder$default$4)
         </td>
       </tr>
     </table>

@@ -27,70 +27,160 @@
 </span>3 <span style=''>import io.github.scalaquest.core.Game
 </span>4 <span style=''>import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
 </span>5 <span style=''>import zio.console._
-</span>6 <span style=''>import zio.{ExitCode, UIO, URIO, ZIO}
+</span>6 <span style=''>import zio.{IO, UIO, ZIO}
 </span>7 <span style=''>
 </span>8 <span style=''>import java.io.IOException
-</span>9 <span style=''>
-</span>10 <span style=''>trait CLIApp extends zio.App {
-</span>11 <span style=''>  def cli: CLI
-</span>12 <span style=''>
-</span>13 <span style=''>  final override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = </span><span style='background: #AEF1AE'>cli.start.exitCode</span><span style=''>
-</span>14 <span style=''>}
-</span>15 <span style=''>
-</span>16 <span style=''>trait CLI {
-</span>17 <span style=''>  def start: ZIO[Console, Exception, Unit]
-</span>18 <span style=''>}
+</span>9 <span style=''>import scala.io.AnsiColor
+</span>10 <span style=''>
+</span>11 <span style=''>/**
+</span>12 <span style=''> * An generic command line application that takes no arguments.
+</span>13 <span style=''> */
+</span>14 <span style=''>trait CLI {
+</span>15 <span style=''>  def start: ZIO[Console, IOException, Unit]
+</span>16 <span style=''>}
+</span>17 <span style=''>
+</span>18 <span style=''>object CLI {
 </span>19 <span style=''>
-</span>20 <span style=''>object CLI {
-</span>21 <span style=''>
-</span>22 <span style=''>  def builderFrom[M &lt;: Model](implicit model: M) = </span><span style='background: #AEF1AE'>new CLIBuilder[M](model)</span><span style=''>
-</span>23 <span style=''>
-</span>24 <span style=''>  def readLine: ZIO[Console, IOException, String] =
+</span>20 <span style=''>  /** A builder function to create a `CLI` using dependent types on the `Model` instance. */
+</span>21 <span style=''>  def builderFrom[M &lt;: Model](implicit model: M) = </span><span style='background: #AEF1AE'>new CLIBuilder[M](model)</span><span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>  /** An effect that prints a prompt and asks for a command that cannot be empty. */
+</span>24 <span style=''>  def readLine: ZIO[Console, IOException, Command] =
 </span>25 <span style=''>    </span><span style='background: #AEF1AE'>for {
-</span>26 <span style=''></span><span style='background: #AEF1AE'>      _  &lt;- putStr(&quot;&gt; &quot;)
-</span>27 <span style=''></span><span style='background: #AEF1AE'>      i  &lt;- getStrLn
-</span>28 <span style=''></span><span style='background: #AEF1AE'>      i2 &lt;- if (i == &quot;&quot;) readLine else ZIO.succeed(i)
-</span>29 <span style=''></span><span style='background: #AEF1AE'>    } yield i2</span><span style=''>;
-</span>30 <span style=''>
-</span>31 <span style=''>  class CLIBuilder[M &lt;: Model](val model: M) {
-</span>32 <span style=''>
-</span>33 <span style=''>    private def gameLoop(
-</span>34 <span style=''>      game: Game[model.type],
-</span>35 <span style=''>      pusher: MessagePusher[String]
-</span>36 <span style=''>    )(startState: model.S): ZIO[Console, Exception, Unit] =
-</span>37 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>38 <span style=''></span><span style='background: #AEF1AE'>        input       &lt;- readLine
-</span>39 <span style=''></span><span style='background: #AEF1AE'>        pipelineRes &lt;- UIO.succeed((game send input)(startState))
-</span>40 <span style=''></span><span style='background: #AEF1AE'>        (output, updState) &lt;- UIO.succeed(pipelineRes match {
-</span>41 <span style=''></span><span style='background: #AEF1AE'>          case Left(err)                   =&gt; (err, startState)
-</span>42 <span style=''></span><span style='background: #AEF1AE'>          case Right((updState, messages)) =&gt; (pusher push messages, updState)
-</span>43 <span style=''></span><span style='background: #AEF1AE'>        })
-</span>44 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- putStrLn(output)
-</span>45 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
-</span>46 <span style=''></span><span style='background: #AEF1AE'>          if (updState.ended) ZIO.unit
-</span>47 <span style=''></span><span style='background: #AEF1AE'>          else UIO.succeed(updState) flatMap gameLoop(game, pusher)
-</span>48 <span style=''></span><span style='background: #AEF1AE'>
-</span>49 <span style=''></span><span style='background: #AEF1AE'>      } yield ()</span><span style=''>
-</span>50 <span style=''>
-</span>51 <span style=''>    def build(
-</span>52 <span style=''>      state: model.S,
-</span>53 <span style=''>      game: Game[model.type],
-</span>54 <span style=''>      pusher: MessagePusher[String],
-</span>55 <span style=''>      initialMessages: Seq[Message] = Seq()
-</span>56 <span style=''>    ): CLI =
-</span>57 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> CLI() {
-</span>58 <span style=''>
-</span>59 <span style=''>        override def start: ZIO[Console, Exception, Unit] =
-</span>60 <span style=''>          </span><span style='background: #AEF1AE'>for {
-</span>61 <span style=''></span><span style='background: #AEF1AE'>            _ &lt;-
-</span>62 <span style=''></span><span style='background: #AEF1AE'>              if (initialMessages.nonEmpty) putStrLn(pusher push initialMessages)
-</span>63 <span style=''></span><span style='background: #AEF1AE'>              else ZIO.unit
-</span>64 <span style=''></span><span style='background: #AEF1AE'>            _ &lt;- gameLoop(game, pusher)(state)
-</span>65 <span style=''></span><span style='background: #AEF1AE'>          } yield ()</span><span style=''>
-</span>66 <span style=''>      }
-</span>67 <span style=''>  }
-</span>68 <span style=''>
-</span>69 <span style=''>}
+</span>26 <span style=''></span><span style='background: #AEF1AE'>      _   &lt;- putStr(&quot;&gt; &quot;) *&gt; putStr(&quot;\u001B[3m&quot;) *&gt; putStr(AnsiColor.GREEN)
+</span>27 <span style=''></span><span style='background: #AEF1AE'>      in  &lt;- getStrLn.map(Command.make)
+</span>28 <span style=''></span><span style='background: #AEF1AE'>      _   &lt;- putStr(AnsiColor.RESET)
+</span>29 <span style=''></span><span style='background: #AEF1AE'>      cmd &lt;- ZIO.succeed(in).someOrElseM(readLine)
+</span>30 <span style=''></span><span style='background: #AEF1AE'>    } yield cmd</span><span style=''>;
+</span>31 <span style=''>
+</span>32 <span style=''>  class CLIBuilder[M &lt;: Model](val model: M) {
+</span>33 <span style=''>
+</span>34 <span style=''>    /**
+</span>35 <span style=''>     * Creates a `CLI` with the given parameters.
+</span>36 <span style=''>     * @param state
+</span>37 <span style=''>     *   the initial state
+</span>38 <span style=''>     * @param game
+</span>39 <span style=''>     *   the game to send the commands to
+</span>40 <span style=''>     * @param pusher
+</span>41 <span style=''>     *   the interpreter of the messages
+</span>42 <span style=''>     * @param initialMessages
+</span>43 <span style=''>     *   optional initial messages
+</span>44 <span style=''>     * @return
+</span>45 <span style=''>     *   the command line application
+</span>46 <span style=''>     */
+</span>47 <span style=''>    def build(
+</span>48 <span style=''>      state: model.S,
+</span>49 <span style=''>      game: Game[model.type],
+</span>50 <span style=''>      pusher: MessagePusher[String],
+</span>51 <span style=''>      initialMessages: Seq[Message] = Seq()
+</span>52 <span style=''>    ): CLI =
+</span>53 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> CLI() {
+</span>54 <span style=''>
+</span>55 <span style=''>        override def start: ZIO[Console, IOException, Unit] =
+</span>56 <span style=''>          </span><span style='background: #AEF1AE'>for {
+</span>57 <span style=''></span><span style='background: #AEF1AE'>            _ &lt;-
+</span>58 <span style=''></span><span style='background: #AEF1AE'>              if (initialMessages.nonEmpty) putStrLn(pusher push initialMessages)
+</span>59 <span style=''></span><span style='background: #AEF1AE'>              else ZIO.unit
+</span>60 <span style=''></span><span style='background: #AEF1AE'>            _ &lt;- gameLoop(game, pusher)(state)
+</span>61 <span style=''></span><span style='background: #AEF1AE'>          } yield ()</span><span style=''>
+</span>62 <span style=''>      }
+</span>63 <span style=''>
+</span>64 <span style=''>    private def saveState(
+</span>65 <span style=''>      path: String,
+</span>66 <span style=''>      state: model.S
+</span>67 <span style=''>    ): IO[Either[UnsupportedOperationException, IOException], Unit] = {
+</span>68 <span style=''>      </span><span style='background: #AEF1AE'>IO.fromFuture { _ =&gt;
+</span>69 <span style=''></span><span style='background: #AEF1AE'>        model.serializer.get.write(path, state)
+</span>70 <span style=''></span><span style='background: #AEF1AE'>      }.mapError {
+</span>71 <span style=''></span><span style='background: #AEF1AE'>        case _: NoSuchElementException =&gt; Left(new UnsupportedOperationException)
+</span>72 <span style=''></span><span style='background: #AEF1AE'>        case e: IOException            =&gt; </span><span style='background: #F0ADAD'>Right(e)</span><span style='background: #AEF1AE'>
+</span>73 <span style=''></span><span style='background: #AEF1AE'>        case t: Throwable              =&gt; </span><span style='background: #F0ADAD'>throw t</span><span style='background: #AEF1AE'>
+</span>74 <span style=''></span><span style='background: #AEF1AE'>      }</span><span style=''>
+</span>75 <span style=''>    }
+</span>76 <span style=''>
+</span>77 <span style=''>    private def loadState(
+</span>78 <span style=''>      path: String
+</span>79 <span style=''>    ): IO[Either[UnsupportedOperationException, IOException], model.S] = {
+</span>80 <span style=''>      </span><span style='background: #AEF1AE'>IO
+</span>81 <span style=''></span><span style='background: #AEF1AE'>        .fromFuture { _ =&gt;
+</span>82 <span style=''></span><span style='background: #AEF1AE'>          model.serializer.get.read(path)
+</span>83 <span style=''></span><span style='background: #AEF1AE'>        }
+</span>84 <span style=''></span><span style='background: #AEF1AE'>        .mapError {
+</span>85 <span style=''></span><span style='background: #AEF1AE'>          case _: NoSuchElementException =&gt; Left(new UnsupportedOperationException)
+</span>86 <span style=''></span><span style='background: #AEF1AE'>          case e: IOException            =&gt; </span><span style='background: #F0ADAD'>Right(e)</span><span style='background: #AEF1AE'>
+</span>87 <span style=''></span><span style='background: #AEF1AE'>          case t: Throwable              =&gt; </span><span style='background: #F0ADAD'>throw t</span><span style='background: #AEF1AE'>
+</span>88 <span style=''></span><span style='background: #AEF1AE'>        }</span><span style=''>
+</span>89 <span style=''>    }
+</span>90 <span style=''>
+</span>91 <span style=''>    private def gameLoop(
+</span>92 <span style=''>      game: Game[model.type],
+</span>93 <span style=''>      pusher: MessagePusher[String]
+</span>94 <span style=''>    )(state: model.S): ZIO[Console, IOException, Unit] = {
+</span>95 <span style=''>
+</span>96 <span style=''>      def onCommand(input: String): ZIO[Console, IOException, Unit] = {
+</span>97 <span style=''>        val loop = </span><span style='background: #AEF1AE'>for {
+</span>98 <span style=''></span><span style='background: #AEF1AE'>          pipelineRes &lt;- UIO.succeed((game send input)(state))
+</span>99 <span style=''></span><span style='background: #AEF1AE'>          (output, updState) &lt;- IO
+</span>100 <span style=''></span><span style='background: #AEF1AE'>            .succeed(pipelineRes match {
+</span>101 <span style=''></span><span style='background: #AEF1AE'>              case Left(err)                   =&gt; (err, state)
+</span>102 <span style=''></span><span style='background: #AEF1AE'>              case Right((updState, messages)) =&gt; (pusher push messages, updState)
+</span>103 <span style=''></span><span style='background: #AEF1AE'>            })
+</span>104 <span style=''></span><span style='background: #AEF1AE'>          _ &lt;- putStrLn(output)
+</span>105 <span style=''></span><span style='background: #AEF1AE'>          _ &lt;-
+</span>106 <span style=''></span><span style='background: #AEF1AE'>            if (updState.ended) ZIO.unit
+</span>107 <span style=''></span><span style='background: #AEF1AE'>            else gameLoop(game, pusher)(updState)
+</span>108 <span style=''></span><span style='background: #AEF1AE'>        } yield ()</span><span style=''>
+</span>109 <span style=''>        </span><span style='background: #AEF1AE'>loop.refineToOrDie[IOException]</span><span style=''>
+</span>110 <span style=''>      }
+</span>111 <span style=''>
+</span>112 <span style=''>      def onMetaCommand(input: String): ZIO[Console, IOException, Unit] =
+</span>113 <span style=''>        </span><span style='background: #AEF1AE'>for {
+</span>114 <span style=''></span><span style='background: #AEF1AE'>          nextState &lt;- input match {
+</span>115 <span style=''></span><span style='background: #AEF1AE'>            case Command.Parser(&quot;save&quot;, path) =&gt;
+</span>116 <span style=''></span><span style='background: #AEF1AE'>              for {
+</span>117 <span style=''></span><span style='background: #AEF1AE'>                saveResult &lt;- saveState(path, state).either
+</span>118 <span style=''></span><span style='background: #AEF1AE'>                _ &lt;- saveResult match {
+</span>119 <span style=''></span><span style='background: #AEF1AE'>                  case Left(Left(_)) =&gt;
+</span>120 <span style=''></span><span style='background: #AEF1AE'>                    putStrLn(&quot;Operation not supported.&quot;)
+</span>121 <span style=''></span><span style='background: #AEF1AE'>                  case Left(Right(e)) =&gt;
+</span>122 <span style=''></span><span style='background: #AEF1AE'>                    </span><span style='background: #F0ADAD'>putStrLn(s&quot;Couldn't save game: ${e.getMessage}&quot;)</span><span style='background: #AEF1AE'>
+</span>123 <span style=''></span><span style='background: #AEF1AE'>                  case Right(_) =&gt;
+</span>124 <span style=''></span><span style='background: #AEF1AE'>                    </span><span style='background: #F0ADAD'>putStrLn(&quot;Saved game successfully!&quot;)</span><span style='background: #AEF1AE'>
+</span>125 <span style=''></span><span style='background: #AEF1AE'>                }
+</span>126 <span style=''></span><span style='background: #AEF1AE'>              } yield None
+</span>127 <span style=''></span><span style='background: #AEF1AE'>            case Command.Parser(&quot;load&quot;, path) =&gt;
+</span>128 <span style=''></span><span style='background: #AEF1AE'>              for {
+</span>129 <span style=''></span><span style='background: #AEF1AE'>                loadResult &lt;- loadState(path).either
+</span>130 <span style=''></span><span style='background: #AEF1AE'>                s &lt;- loadResult match {
+</span>131 <span style=''></span><span style='background: #AEF1AE'>                  case Left(Left(_)) =&gt;
+</span>132 <span style=''></span><span style='background: #AEF1AE'>                    putStrLn(&quot;Operation not supported.&quot;) *&gt; ZIO.none
+</span>133 <span style=''></span><span style='background: #AEF1AE'>                  case Left(Right(e)) =&gt;
+</span>134 <span style=''></span><span style='background: #AEF1AE'>                    </span><span style='background: #F0ADAD'>putStrLn(s&quot;Couldn't load game: ${e.getMessage}&quot;) *&gt; ZIO.none</span><span style='background: #AEF1AE'>
+</span>135 <span style=''></span><span style='background: #AEF1AE'>                  case Right(updatedState) =&gt;
+</span>136 <span style=''></span><span style='background: #AEF1AE'>                    </span><span style='background: #F0ADAD'>putStrLn(&quot;Loaded game save successfully!&quot;).as(updatedState).asSome</span><span style='background: #AEF1AE'>
+</span>137 <span style=''></span><span style='background: #AEF1AE'>                }
+</span>138 <span style=''></span><span style='background: #AEF1AE'>              } yield s
+</span>139 <span style=''></span><span style='background: #AEF1AE'>            case Command.Parser(&quot;save&quot;, _*) =&gt;
+</span>140 <span style=''></span><span style='background: #AEF1AE'>              putStrLn(&quot;Usage: :save &lt;file&gt;&quot;) *&gt; ZIO.none
+</span>141 <span style=''></span><span style='background: #AEF1AE'>            case Command.Parser(&quot;load&quot;, _*) =&gt;
+</span>142 <span style=''></span><span style='background: #AEF1AE'>              putStrLn(&quot;Usage: :load &lt;file&gt;&quot;) *&gt; ZIO.none
+</span>143 <span style=''></span><span style='background: #AEF1AE'>            case _ =&gt;
+</span>144 <span style=''></span><span style='background: #AEF1AE'>              putStrLn(&quot;Error: Unrecognized command \&quot;&quot; + input + &quot;\&quot;&quot;) *&gt; ZIO.none
+</span>145 <span style=''></span><span style='background: #AEF1AE'>          }
+</span>146 <span style=''></span><span style='background: #AEF1AE'>          _ &lt;- gameLoop(game, pusher)(nextState getOrElse state)
+</span>147 <span style=''></span><span style='background: #AEF1AE'>        } yield ()</span><span style=''>
+</span>148 <span style=''>
+</span>149 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>150 <span style=''></span><span style='background: #AEF1AE'>        command &lt;- readLine
+</span>151 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- command match {
+</span>152 <span style=''></span><span style='background: #AEF1AE'>          case GameCommand(body) =&gt; onCommand(body)
+</span>153 <span style=''></span><span style='background: #AEF1AE'>          case MetaCommand(body) =&gt; onMetaCommand(body)
+</span>154 <span style=''></span><span style='background: #AEF1AE'>        }
+</span>155 <span style=''></span><span style='background: #AEF1AE'>      } yield ()</span><span style=''>
+</span>156 <span style=''>    }
+</span>157 <span style=''>  }
+</span>158 <span style=''>
+</span>159 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -105,39 +195,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          21
         </td>
         <td>
           1
         </td>
         <td>
-          351
+          535
           -
-          369
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          zio.ZIO.exitCode
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CLIApp.this.cli.start.exitCode
-        </td>
-      </tr><tr>
-        <td>
-          22
-        </td>
-        <td>
-          2
-        </td>
-        <td>
-          496
-          -
-          520
+          559
         </td>
         <td>
           Apply
@@ -156,12 +222,12 @@
           26
         </td>
         <td>
-          3
+          2
         </td>
         <td>
-          603
+          729
           -
-          607
+          733
         </td>
         <td>
           Literal
@@ -180,12 +246,60 @@
           26
         </td>
         <td>
-          11
+          3
         </td>
         <td>
-          578
+          738
           -
-          698
+          757
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.console.putStr
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStr(&quot;\u001B[3m&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          4
+        </td>
+        <td>
+          761
+          -
+          784
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.console.putStr
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStr(&quot;\u001B[32m&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          12
+        </td>
+        <td>
+          703
+          -
+          928
         </td>
         <td>
           Apply
@@ -197,11 +311,10 @@
           
         </td>
         <td style="background: #AEF1AE">
-          zio.console.`package`.putStr(&quot;&gt; &quot;).flatMap[zio.console.Console, java.io.IOException, String](((x$1: Unit) =&gt; (x$1: Unit @unchecked) match {
-  case _ =&gt; zio.console.`package`.getStrLn.flatMap[zio.console.Console, java.io.IOException, String](((i: String) =&gt; if (i.==(&quot;&quot;))
-  CLI.this.readLine
-else
-  zio.ZIO.succeed[String](i).map[String](((i2: String) =&gt; i2))))
+          zio.console.`package`.putStr(&quot;&gt; &quot;).*&gt;[zio.console.Console, Nothing, Unit](zio.console.`package`.putStr(&quot;\u001B[3m&quot;)).*&gt;[zio.console.Console, Nothing, Unit](zio.console.`package`.putStr(&quot;\u001B[32m&quot;)).flatMap[zio.console.Console, java.io.IOException, io.github.scalaquest.cli.Command](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
+  case _ =&gt; zio.console.`package`.getStrLn.map[Option[io.github.scalaquest.cli.Command]](((body: String) =&gt; Command.make(body))).flatMap[zio.console.Console, java.io.IOException, io.github.scalaquest.cli.Command](((in: Option[io.github.scalaquest.cli.Command]) =&gt; zio.console.`package`.putStr(&quot;\u001B[0m&quot;).flatMap[zio.console.Console, java.io.IOException, io.github.scalaquest.cli.Command](((x$1: Unit) =&gt; (x$1: Unit @unchecked) match {
+    case _ =&gt; zio.ZIO.succeed[Option[io.github.scalaquest.cli.Command]](in).someOrElseM[io.github.scalaquest.cli.Command, zio.console.Console, java.io.IOException](CLI.this.readLine)(scala.this.&lt;:&lt;.refl[Option[io.github.scalaquest.cli.Command]]).map[io.github.scalaquest.cli.Command](((cmd: io.github.scalaquest.cli.Command) =&gt; cmd))
+  }))))
 }))
         </td>
       </tr><tr>
@@ -209,12 +322,36 @@ else
           27
         </td>
         <td>
-          10
+          5
         </td>
         <td>
-          615
+          811
           -
-          698
+          823
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.cli.Command.make
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Command.make(body)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          11
+        </td>
+        <td>
+          791
+          -
+          928
         </td>
         <td>
           Apply
@@ -226,58 +363,9 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          zio.console.`package`.getStrLn.flatMap[zio.console.Console, java.io.IOException, String](((i: String) =&gt; if (i.==(&quot;&quot;))
-  CLI.this.readLine
-else
-  zio.ZIO.succeed[String](i).map[String](((i2: String) =&gt; i2))))
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          4
-        </td>
-        <td>
-          646
-          -
-          653
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.Object.==
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          i.==(&quot;&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          5
-        </td>
-        <td>
-          655
-          -
-          663
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.cli.CLI.readLine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CLI.this.readLine
+          zio.console.`package`.getStrLn.map[Option[io.github.scalaquest.cli.Command]](((body: String) =&gt; Command.make(body))).flatMap[zio.console.Console, java.io.IOException, io.github.scalaquest.cli.Command](((in: Option[io.github.scalaquest.cli.Command]) =&gt; zio.console.`package`.putStr(&quot;\u001B[0m&quot;).flatMap[zio.console.Console, java.io.IOException, io.github.scalaquest.cli.Command](((x$1: Unit) =&gt; (x$1: Unit @unchecked) match {
+  case _ =&gt; zio.ZIO.succeed[Option[io.github.scalaquest.cli.Command]](in).someOrElseM[io.github.scalaquest.cli.Command, zio.console.Console, java.io.IOException](CLI.this.readLine)(scala.this.&lt;:&lt;.refl[Option[io.github.scalaquest.cli.Command]]).map[io.github.scalaquest.cli.Command](((cmd: io.github.scalaquest.cli.Command) =&gt; cmd))
+}))))
         </td>
       </tr><tr>
         <td>
@@ -287,477 +375,9 @@ else
           6
         </td>
         <td>
-          655
+          845
           -
-          663
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          io.github.scalaquest.cli.CLI.readLine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CLI.this.readLine
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          7
-        </td>
-        <td>
-          669
-          -
-          683
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.succeed
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.ZIO.succeed[String](i)
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          8
-        </td>
-        <td>
-          669
-          -
-          683
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          zio.ZIO.succeed
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.ZIO.succeed[String](i)
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          9
-        </td>
-        <td>
-          636
-          -
-          698
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          if (i.==(&quot;&quot;))
-  CLI.this.readLine
-else
-  zio.ZIO.succeed[String](i).map[String](((i2: String) =&gt; i2))
-        </td>
-      </tr><tr>
-        <td>
-          38
-        </td>
-        <td>
-          25
-        </td>
-        <td>
-          907
-          -
-          1394
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CLI.this.readLine.flatMap[zio.console.Console, Exception, Unit](((input: String) =&gt; zio.UIO.succeed[Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]](game.send(input)(startState)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
-  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
-  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
-})).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
-  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
-  case _ =&gt; false
-}))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$4: (String, CLIBuilder.this.model.S)) =&gt; (x$4: (String, CLIBuilder.this.model.S) @unchecked) match {
-  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-    case _ =&gt; if (updState.ended)
-  zio.ZIO.unit
-else
-  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
-      case _ =&gt; ()
-    }))
-  }))
-}))))))
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          12
-        </td>
-        <td>
-          980
-          -
-          1009
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.Game.send
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          game.send(input)(startState)
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          24
-        </td>
-        <td>
-          953
-          -
-          1394
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.UIO.succeed[Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]](game.send(input)(startState)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
-  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
-  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
-})).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
-  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
-  case _ =&gt; false
-}))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$4: (String, CLIBuilder.this.model.S)) =&gt; (x$4: (String, CLIBuilder.this.model.S) @unchecked) match {
-  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-    case _ =&gt; if (updState.ended)
-  zio.ZIO.unit
-else
-  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
-      case _ =&gt; ()
-    }))
-  }))
-}))))
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          13
-        </td>
-        <td>
-          1052
-          -
-          1052
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          zio.ZIO.CanFilter.canFilter
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          ZIO.this.CanFilter.canFilter[NoSuchElementException]
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          23
-        </td>
-        <td>
-          1019
-          -
-          1394
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.UIO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
-  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, startState)
-  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
-})).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
-  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
-  case _ =&gt; false
-}))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$4: (String, CLIBuilder.this.model.S)) =&gt; (x$4: (String, CLIBuilder.this.model.S) @unchecked) match {
-  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-    case _ =&gt; if (updState.ended)
-  zio.ZIO.unit
-else
-  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
-      case _ =&gt; ()
-    }))
-  }))
-}))
-        </td>
-      </tr><tr>
-        <td>
-          44
-        </td>
-        <td>
-          22
-        </td>
-        <td>
-          1235
-          -
-          1394
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, Exception, Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
-  case _ =&gt; if (updState.ended)
-  zio.ZIO.unit
-else
-  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
-    case _ =&gt; ()
-  }))
-}))
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          21
-        </td>
-        <td>
-          1265
-          -
-          1394
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          if (updState.ended)
-  zio.ZIO.unit
-else
-  zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState))).map[Unit](((x$2: Unit) =&gt; (x$2: Unit @unchecked) match {
-  case _ =&gt; ()
-}))
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          14
-        </td>
-        <td>
-          1284
-          -
-          1298
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          io.github.scalaquest.core.model.Model.State.ended
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          updState.ended
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          15
-        </td>
-        <td>
-          1300
-          -
-          1308
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          zio.ZIO.unit
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.ZIO.unit
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          16
-        </td>
-        <td>
-          1300
-          -
-          1308
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          zio.ZIO.unit
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.ZIO.unit
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          17
-        </td>
-        <td>
-          1354
-          -
-          1376
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.cli.CLI.CLIBuilder.gameLoop
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CLIBuilder.this.gameLoop(game, pusher)(startState)
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          18
-        </td>
-        <td>
-          1324
-          -
-          1376
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState)))
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          19
-        </td>
-        <td>
-          1324
-          -
-          1376
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          zio.ZIO.flatMap
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          zio.UIO.succeed[CLIBuilder.this.model.S](updState).flatMap[zio.console.Console, Exception, Unit](((startState: CLIBuilder.this.model.S) =&gt; CLIBuilder.this.gameLoop(game, pusher)(startState)))
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          20
-        </td>
-        <td>
-          1392
-          -
-          1394
+          860
         </td>
         <td>
           Literal
@@ -769,19 +389,117 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          ()
+          &quot;\u001B[0m&quot;
         </td>
       </tr><tr>
         <td>
-          57
+          28
         </td>
         <td>
-          35
+          10
         </td>
         <td>
-          1563
+          831
           -
-          1566
+          928
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStr(&quot;\u001B[0m&quot;).flatMap[zio.console.Console, java.io.IOException, io.github.scalaquest.cli.Command](((x$1: Unit) =&gt; (x$1: Unit @unchecked) match {
+  case _ =&gt; zio.ZIO.succeed[Option[io.github.scalaquest.cli.Command]](in).someOrElseM[io.github.scalaquest.cli.Command, zio.console.Console, java.io.IOException](CLI.this.readLine)(scala.this.&lt;:&lt;.refl[Option[io.github.scalaquest.cli.Command]]).map[io.github.scalaquest.cli.Command](((cmd: io.github.scalaquest.cli.Command) =&gt; cmd))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          7
+        </td>
+        <td>
+          903
+          -
+          911
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.cli.CLI.readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLI.this.readLine
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          8
+        </td>
+        <td>
+          902
+          -
+          902
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.&lt;:&lt;.refl
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.&lt;:&lt;.refl[Option[io.github.scalaquest.cli.Command]]
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          9
+        </td>
+        <td>
+          868
+          -
+          928
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.succeed[Option[io.github.scalaquest.cli.Command]](in).someOrElseM[io.github.scalaquest.cli.Command, zio.console.Console, java.io.IOException](CLI.this.readLine)(scala.this.&lt;:&lt;.refl[Option[io.github.scalaquest.cli.Command]]).map[io.github.scalaquest.cli.Command](((cmd: io.github.scalaquest.cli.Command) =&gt; cmd))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          22
+        </td>
+        <td>
+          1500
+          -
+          1503
         </td>
         <td>
           Apply
@@ -797,15 +515,15 @@ else
         </td>
       </tr><tr>
         <td>
-          61
+          57
         </td>
         <td>
-          34
+          21
         </td>
         <td>
-          1646
+          1585
           -
-          1846
+          1785
         </td>
         <td>
           Apply
@@ -820,23 +538,23 @@ else
           if (initialMessages.nonEmpty)
   zio.console.`package`.putStrLn(pusher.push(initialMessages))
 else
-  zio.ZIO.unit.flatMap[zio.console.Console, Exception, Unit](((x$6: Unit) =&gt; (x$6: Unit @unchecked) match {
-  case _ =&gt; CLIBuilder.this.gameLoop(game, pusher)(state).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
+  zio.ZIO.unit.flatMap[zio.console.Console, java.io.IOException, Unit](((x$4: Unit) =&gt; (x$4: Unit @unchecked) match {
+  case _ =&gt; CLIBuilder.this.gameLoop(game, pusher)(state).map[Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
     case _ =&gt; ()
   }))
 }))
         </td>
       </tr><tr>
         <td>
-          62
+          58
         </td>
         <td>
-          26
+          13
         </td>
         <td>
-          1687
+          1626
           -
-          1711
+          1650
         </td>
         <td>
           Select
@@ -852,15 +570,15 @@ else
         </td>
       </tr><tr>
         <td>
-          62
+          58
         </td>
         <td>
-          27
+          14
         </td>
         <td>
-          1722
+          1661
           -
-          1749
+          1688
         </td>
         <td>
           Apply
@@ -876,15 +594,15 @@ else
         </td>
       </tr><tr>
         <td>
-          62
+          58
         </td>
         <td>
-          28
+          15
         </td>
         <td>
-          1713
+          1652
           -
-          1750
+          1689
         </td>
         <td>
           Apply
@@ -900,15 +618,15 @@ else
         </td>
       </tr><tr>
         <td>
-          62
+          58
         </td>
         <td>
-          29
+          16
         </td>
         <td>
-          1713
+          1652
           -
-          1750
+          1689
         </td>
         <td>
           Block
@@ -924,15 +642,15 @@ else
         </td>
       </tr><tr>
         <td>
-          63
+          59
         </td>
         <td>
-          30
+          17
         </td>
         <td>
-          1770
+          1709
           -
-          1778
+          1717
         </td>
         <td>
           Select
@@ -948,15 +666,15 @@ else
         </td>
       </tr><tr>
         <td>
-          63
+          59
         </td>
         <td>
-          31
+          18
         </td>
         <td>
-          1770
+          1709
           -
-          1778
+          1717
         </td>
         <td>
           Block
@@ -972,15 +690,15 @@ else
         </td>
       </tr><tr>
         <td>
-          64
+          60
         </td>
         <td>
-          33
+          20
         </td>
         <td>
-          1791
+          1730
           -
-          1846
+          1785
         </td>
         <td>
           Apply
@@ -992,21 +710,1633 @@ else
           
         </td>
         <td style="background: #AEF1AE">
-          CLIBuilder.this.gameLoop(game, pusher)(state).map[Unit](((x$5: Unit) =&gt; (x$5: Unit @unchecked) match {
+          CLIBuilder.this.gameLoop(game, pusher)(state).map[Unit](((x$3: Unit) =&gt; (x$3: Unit @unchecked) match {
   case _ =&gt; ()
 }))
         </td>
       </tr><tr>
         <td>
-          65
+          61
+        </td>
+        <td>
+          19
+        </td>
+        <td>
+          1783
+          -
+          1785
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          23
+        </td>
+        <td>
+          1970
+          -
+          2009
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Serializer.write
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.model.serializer.get.write(path, state)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          28
+        </td>
+        <td>
+          2027
+          -
+          2027
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          zio.CanFail.canFail
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.CanFail.canFail[Any]
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          29
+        </td>
+        <td>
+          1941
+          -
+          2219
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          zio.ZIO.mapError
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.IO.fromFuture[Unit](((x$5: scala.concurrent.ExecutionContext) =&gt; CLIBuilder.this.model.serializer.get.write(path, state))).mapError[Either[UnsupportedOperationException,java.io.IOException]](((x0$1: Throwable) =&gt; x0$1 match {
+  case (_: NoSuchElementException) =&gt; scala.`package`.Left.apply[UnsupportedOperationException, Nothing](new scala.`package`.UnsupportedOperationException())
+  case (e @ (_: java.io.IOException)) =&gt; scala.`package`.Right.apply[Nothing, java.io.IOException](e)
+  case (t @ (_: Throwable)) =&gt; throw t
+}))(zio.this.CanFail.canFail[Any])
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          24
+        </td>
+        <td>
+          2076
+          -
+          2109
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.UnsupportedOperationException.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new scala.`package`.UnsupportedOperationException()
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          25
+        </td>
+        <td>
+          2071
+          -
+          2110
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Left.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.Left.apply[UnsupportedOperationException, Nothing](new scala.`package`.UnsupportedOperationException())
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          26
+        </td>
+        <td>
+          2153
+          -
+          2161
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Right.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Right.apply[Nothing, java.io.IOException](e)
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          27
+        </td>
+        <td>
+          2204
+          -
+          2211
+        </td>
+        <td>
+          Throw
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          throw t
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          30
+        </td>
+        <td>
+          2394
+          -
+          2425
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.Serializer.read
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.model.serializer.get.read(path)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          35
+        </td>
+        <td>
+          2454
+          -
+          2454
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          zio.CanFail.canFail
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.CanFail.canFail[Any]
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          36
+        </td>
+        <td>
+          2354
+          -
+          2654
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          zio.ZIO.mapError
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.IO.fromFuture[CLIBuilder.this.model.S](((x$6: scala.concurrent.ExecutionContext) =&gt; CLIBuilder.this.model.serializer.get.read(path))).mapError[Either[UnsupportedOperationException,java.io.IOException]](((x0$1: Throwable) =&gt; x0$1 match {
+  case (_: NoSuchElementException) =&gt; scala.`package`.Left.apply[UnsupportedOperationException, Nothing](new scala.`package`.UnsupportedOperationException())
+  case (e @ (_: java.io.IOException)) =&gt; scala.`package`.Right.apply[Nothing, java.io.IOException](e)
+  case (t @ (_: Throwable)) =&gt; throw t
+}))(zio.this.CanFail.canFail[Any])
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          31
+        </td>
+        <td>
+          2505
+          -
+          2538
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.UnsupportedOperationException.&lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new scala.`package`.UnsupportedOperationException()
+        </td>
+      </tr><tr>
+        <td>
+          85
         </td>
         <td>
           32
         </td>
         <td>
-          1844
+          2500
           -
-          1846
+          2539
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Left.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.`package`.Left.apply[UnsupportedOperationException, Nothing](new scala.`package`.UnsupportedOperationException())
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          33
+        </td>
+        <td>
+          2584
+          -
+          2592
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.Right.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.`package`.Right.apply[Nothing, java.io.IOException](e)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          34
+        </td>
+        <td>
+          2637
+          -
+          2644
+        </td>
+        <td>
+          Throw
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          throw t
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          37
+        </td>
+        <td>
+          2948
+          -
+          2972
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.Game.send
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          game.send(input)(state)
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          48
+        </td>
+        <td>
+          2905
+          -
+          3367
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.UIO.succeed[Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]](game.send(input)(state)).flatMap[zio.console.Console, Exception, Unit](((pipelineRes: Either[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]) =&gt; zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.IO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
+  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, state)
+  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
+})).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
+  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
+  case _ =&gt; false
+}))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$9: (String, CLIBuilder.this.model.S)) =&gt; (x$9: (String, CLIBuilder.this.model.S) @unchecked) match {
+  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, java.io.IOException, Unit](((x$8: Unit) =&gt; (x$8: Unit @unchecked) match {
+    case _ =&gt; if (updState.ended)
+  zio.ZIO.unit
+else
+  CLIBuilder.this.gameLoop(game, pusher)(updState).map[Unit](((x$7: Unit) =&gt; (x$7: Unit @unchecked) match {
+      case _ =&gt; ()
+    }))
+  }))
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          47
+        </td>
+        <td>
+          2984
+          -
+          3367
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.ZIO.ZIOWithFilterOps[Any, NoSuchElementException, (String, CLIBuilder.this.model.S)](zio.IO.succeed[(String, CLIBuilder.this.model.S)](pipelineRes match {
+  case (value: String): scala.util.Left[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((err @ _)) =&gt; scala.Tuple2.apply[String, CLIBuilder.this.model.S](err, state)
+  case (value: (game.model.S, Seq[io.github.scalaquest.core.model.Message])): scala.util.Right[String,(game.model.S, Seq[io.github.scalaquest.core.model.Message])]((_1: game.model.S, _2: Seq[io.github.scalaquest.core.model.Message]): (game.model.S, Seq[io.github.scalaquest.core.model.Message])((updState @ _), (messages @ _))) =&gt; scala.Tuple2.apply[String, game.model.S](pusher.push(messages), updState)
+})).withFilter(((check$ifrefutable$1: (String, CLIBuilder.this.model.S)) =&gt; (check$ifrefutable$1: (String, CLIBuilder.this.model.S) @unchecked) match {
+  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; true
+  case _ =&gt; false
+}))(ZIO.this.CanFilter.canFilter[NoSuchElementException]).flatMap[zio.console.Console, Exception, Unit](((x$9: (String, CLIBuilder.this.model.S)) =&gt; (x$9: (String, CLIBuilder.this.model.S) @unchecked) match {
+  case (_1: String, _2: CLIBuilder.this.model.S): (String, CLIBuilder.this.model.S)((output @ _), (updState @ _)) =&gt; zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, java.io.IOException, Unit](((x$8: Unit) =&gt; (x$8: Unit @unchecked) match {
+    case _ =&gt; if (updState.ended)
+  zio.ZIO.unit
+else
+  CLIBuilder.this.gameLoop(game, pusher)(updState).map[Unit](((x$7: Unit) =&gt; (x$7: Unit @unchecked) match {
+      case _ =&gt; ()
+    }))
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          38
+        </td>
+        <td>
+          3029
+          -
+          3029
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          zio.ZIO.CanFilter.canFilter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ZIO.this.CanFilter.canFilter[NoSuchElementException]
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          46
+        </td>
+        <td>
+          3221
+          -
+          3367
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(output).flatMap[zio.console.Console, java.io.IOException, Unit](((x$8: Unit) =&gt; (x$8: Unit @unchecked) match {
+  case _ =&gt; if (updState.ended)
+  zio.ZIO.unit
+else
+  CLIBuilder.this.gameLoop(game, pusher)(updState).map[Unit](((x$7: Unit) =&gt; (x$7: Unit @unchecked) match {
+    case _ =&gt; ()
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          45
+        </td>
+        <td>
+          3253
+          -
+          3367
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          if (updState.ended)
+  zio.ZIO.unit
+else
+  CLIBuilder.this.gameLoop(game, pusher)(updState).map[Unit](((x$7: Unit) =&gt; (x$7: Unit @unchecked) match {
+  case _ =&gt; ()
+}))
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          39
+        </td>
+        <td>
+          3274
+          -
+          3288
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          io.github.scalaquest.core.model.Model.State.ended
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          updState.ended
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          40
+        </td>
+        <td>
+          3290
+          -
+          3298
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.unit
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.unit
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          41
+        </td>
+        <td>
+          3290
+          -
+          3298
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          zio.ZIO.unit
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.unit
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          42
+        </td>
+        <td>
+          3316
+          -
+          3348
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.cli.CLI.CLIBuilder.gameLoop
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.gameLoop(game, pusher)(updState)
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          43
+        </td>
+        <td>
+          3316
+          -
+          3348
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          io.github.scalaquest.cli.CLI.CLIBuilder.gameLoop
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.gameLoop(game, pusher)(updState)
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          44
+        </td>
+        <td>
+          3365
+          -
+          3367
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          49
+        </td>
+        <td>
+          3394
+          -
+          3394
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          zio.CanFail.canFail
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.CanFail.canFail[Any]
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          50
+        </td>
+        <td>
+          3376
+          -
+          3407
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          zio.ZIO.ZioRefineToOrDieOps.refineToOrDie
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.ZIO.ZioRefineToOrDieOps[zio.console.Console, Exception, Unit](loop).refineToOrDie[java.io.IOException]((ClassTag.apply[java.io.IOException](classOf[java.io.IOException]): scala.reflect.ClassTag[java.io.IOException]), zio.this.CanFail.canFail[Any])
+        </td>
+      </tr><tr>
+        <td>
+          114
+        </td>
+        <td>
+          80
+        </td>
+        <td>
+          3499
+          -
+          5034
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          input match {
+  case Command.Parser.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (&quot;save&quot;, (path @ _)) =&gt; CLIBuilder.this.saveState(path, state).either(zio.this.CanFail.canFail[Any]).flatMap[zio.console.Console, Nothing, None.type](((saveResult: Either[Either[UnsupportedOperationException,java.io.IOException],Unit]) =&gt; saveResult match {
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],Unit]((value: UnsupportedOperationException): scala.util.Left[UnsupportedOperationException,java.io.IOException](_)) =&gt; zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;)
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],Unit]((value: java.io.IOException): scala.util.Right[UnsupportedOperationException,java.io.IOException]((e @ _))) =&gt; zio.console.`package`.putStrLn((&quot;Couldn\'t save game: &quot;.+(e.getMessage()): String))
+  case (value: Unit): scala.util.Right[Either[UnsupportedOperationException,java.io.IOException],Unit](_) =&gt; zio.console.`package`.putStrLn(&quot;Saved game successfully!&quot;)
+}.map[None.type](((x$10: Unit) =&gt; (x$10: Unit @unchecked) match {
+    case _ =&gt; scala.None
+  }))))
+  case Command.Parser.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (&quot;load&quot;, (path @ _)) =&gt; CLIBuilder.this.loadState(path).either(zio.this.CanFail.canFail[Any]).flatMap[zio.console.Console, Nothing, Option[CLIBuilder.this.model.S]](((loadResult: Either[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]) =&gt; loadResult match {
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((value: UnsupportedOperationException): scala.util.Left[UnsupportedOperationException,java.io.IOException](_)) =&gt; zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((value: java.io.IOException): scala.util.Right[UnsupportedOperationException,java.io.IOException]((e @ _))) =&gt; zio.console.`package`.putStrLn((&quot;Couldn\'t load game: &quot;.+(e.getMessage()): String)).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case (value: CLIBuilder.this.model.S): scala.util.Right[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((updatedState @ _)) =&gt; zio.console.`package`.putStrLn(&quot;Loaded game save successfully!&quot;).as[CLIBuilder.this.model.S](updatedState).asSome
+}.map[Option[CLIBuilder.this.model.S]](((s: Option[CLIBuilder.this.model.S]) =&gt; s))))
+  case Command.Parser.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (&quot;save&quot;, (_)*) =&gt; zio.console.`package`.putStrLn(&quot;Usage: :save &lt;file&gt;&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case Command.Parser.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; (&quot;load&quot;, (_)*) =&gt; zio.console.`package`.putStrLn(&quot;Usage: :load &lt;file&gt;&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case _ =&gt; zio.console.`package`.putStrLn(&quot;Error: Unrecognized command \&quot;&quot;.+(input).+(&quot;\&quot;&quot;)).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+}.flatMap[zio.console.Console, java.io.IOException, Unit](((nextState: Option[CLIBuilder.this.model.S]) =&gt; CLIBuilder.this.gameLoop(game, pusher)(nextState.getOrElse[CLIBuilder.this.model.S](state)).map[Unit](((x$11: Unit) =&gt; (x$11: Unit @unchecked) match {
+  case _ =&gt; ()
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          51
+        </td>
+        <td>
+          3664
+          -
+          3664
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          zio.CanFail.canFail
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.CanFail.canFail[Any]
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          57
+        </td>
+        <td>
+          3605
+          -
+          4054
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.saveState(path, state).either(zio.this.CanFail.canFail[Any]).flatMap[zio.console.Console, Nothing, None.type](((saveResult: Either[Either[UnsupportedOperationException,java.io.IOException],Unit]) =&gt; saveResult match {
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],Unit]((value: UnsupportedOperationException): scala.util.Left[UnsupportedOperationException,java.io.IOException](_)) =&gt; zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;)
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],Unit]((value: java.io.IOException): scala.util.Right[UnsupportedOperationException,java.io.IOException]((e @ _))) =&gt; zio.console.`package`.putStrLn((&quot;Couldn\'t save game: &quot;.+(e.getMessage()): String))
+  case (value: Unit): scala.util.Right[Either[UnsupportedOperationException,java.io.IOException],Unit](_) =&gt; zio.console.`package`.putStrLn(&quot;Saved game successfully!&quot;)
+}.map[None.type](((x$10: Unit) =&gt; (x$10: Unit @unchecked) match {
+  case _ =&gt; scala.None
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          56
+        </td>
+        <td>
+          3687
+          -
+          4054
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          saveResult match {
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],Unit]((value: UnsupportedOperationException): scala.util.Left[UnsupportedOperationException,java.io.IOException](_)) =&gt; zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;)
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],Unit]((value: java.io.IOException): scala.util.Right[UnsupportedOperationException,java.io.IOException]((e @ _))) =&gt; zio.console.`package`.putStrLn((&quot;Couldn\'t save game: &quot;.+(e.getMessage()): String))
+  case (value: Unit): scala.util.Right[Either[UnsupportedOperationException,java.io.IOException],Unit](_) =&gt; zio.console.`package`.putStrLn(&quot;Saved game successfully!&quot;)
+}.map[None.type](((x$10: Unit) =&gt; (x$10: Unit @unchecked) match {
+  case _ =&gt; scala.None
+}))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          52
+        </td>
+        <td>
+          3771
+          -
+          3807
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.console.putStrLn
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          53
+        </td>
+        <td>
+          3869
+          -
+          3917
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.console.putStrLn
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          zio.console.`package`.putStrLn((&quot;Couldn\'t save game: &quot;.+(e.getMessage()): String))
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          54
+        </td>
+        <td>
+          3973
+          -
+          4009
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.console.putStrLn
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          zio.console.`package`.putStrLn(&quot;Saved game successfully!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          55
+        </td>
+        <td>
+          4050
+          -
+          4054
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          4170
+          -
+          4170
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          zio.CanFail.canFail
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.this.CanFail.canFail[Any]
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          67
+        </td>
+        <td>
+          4118
+          -
+          4622
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.loadState(path).either(zio.this.CanFail.canFail[Any]).flatMap[zio.console.Console, Nothing, Option[CLIBuilder.this.model.S]](((loadResult: Either[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]) =&gt; loadResult match {
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((value: UnsupportedOperationException): scala.util.Left[UnsupportedOperationException,java.io.IOException](_)) =&gt; zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((value: java.io.IOException): scala.util.Right[UnsupportedOperationException,java.io.IOException]((e @ _))) =&gt; zio.console.`package`.putStrLn((&quot;Couldn\'t load game: &quot;.+(e.getMessage()): String)).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case (value: CLIBuilder.this.model.S): scala.util.Right[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((updatedState @ _)) =&gt; zio.console.`package`.putStrLn(&quot;Loaded game save successfully!&quot;).as[CLIBuilder.this.model.S](updatedState).asSome
+}.map[Option[CLIBuilder.this.model.S]](((s: Option[CLIBuilder.this.model.S]) =&gt; s))))
+        </td>
+      </tr><tr>
+        <td>
+          130
+        </td>
+        <td>
+          66
+        </td>
+        <td>
+          4193
+          -
+          4622
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          loadResult match {
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((value: UnsupportedOperationException): scala.util.Left[UnsupportedOperationException,java.io.IOException](_)) =&gt; zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case (value: Either[UnsupportedOperationException,java.io.IOException]): scala.util.Left[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((value: java.io.IOException): scala.util.Right[UnsupportedOperationException,java.io.IOException]((e @ _))) =&gt; zio.console.`package`.putStrLn((&quot;Couldn\'t load game: &quot;.+(e.getMessage()): String)).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+  case (value: CLIBuilder.this.model.S): scala.util.Right[Either[UnsupportedOperationException,java.io.IOException],CLIBuilder.this.model.S]((updatedState @ _)) =&gt; zio.console.`package`.putStrLn(&quot;Loaded game save successfully!&quot;).as[CLIBuilder.this.model.S](updatedState).asSome
+}.map[Option[CLIBuilder.this.model.S]](((s: Option[CLIBuilder.this.model.S]) =&gt; s))
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          59
+        </td>
+        <td>
+          4286
+          -
+          4312
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;Operation not supported.&quot;
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          60
+        </td>
+        <td>
+          4317
+          -
+          4325
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.none
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.none
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          61
+        </td>
+        <td>
+          4277
+          -
+          4325
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.*&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(&quot;Operation not supported.&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          62
+        </td>
+        <td>
+          4439
+          -
+          4447
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.none
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          zio.ZIO.none
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          63
+        </td>
+        <td>
+          4387
+          -
+          4447
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.*&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          zio.console.`package`.putStrLn((&quot;Couldn\'t load game: &quot;.+(e.getMessage()): String)).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          64
+        </td>
+        <td>
+          4523
+          -
+          4555
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Loaded game save successfully!&quot;
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          65
+        </td>
+        <td>
+          4514
+          -
+          4580
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.asSome
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          zio.console.`package`.putStrLn(&quot;Loaded game save successfully!&quot;).as[CLIBuilder.this.model.S](updatedState).asSome
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          4693
+          -
+          4714
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;Usage: :save &lt;file&gt;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          69
+        </td>
+        <td>
+          4719
+          -
+          4727
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.none
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.none
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          70
+        </td>
+        <td>
+          4684
+          -
+          4727
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.*&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(&quot;Usage: :save &lt;file&gt;&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          71
+        </td>
+        <td>
+          4798
+          -
+          4819
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;Usage: :load &lt;file&gt;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          72
+        </td>
+        <td>
+          4824
+          -
+          4832
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.none
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.none
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          73
+        </td>
+        <td>
+          4789
+          -
+          4832
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.*&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(&quot;Usage: :load &lt;file&gt;&quot;).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          74
+        </td>
+        <td>
+          4878
+          -
+          4925
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;Error: Unrecognized command \&quot;&quot;.+(input).+(&quot;\&quot;&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          75
+        </td>
+        <td>
+          4930
+          -
+          4938
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zio.ZIO.none
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.ZIO.none
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          76
+        </td>
+        <td>
+          4869
+          -
+          4938
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.*&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          zio.console.`package`.putStrLn(&quot;Error: Unrecognized command \&quot;&quot;.+(input).+(&quot;\&quot;&quot;)).*&gt;[zio.console.Console, Nothing, Option[Nothing]](zio.ZIO.none)
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          77
+        </td>
+        <td>
+          4989
+          -
+          5014
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          nextState.getOrElse[CLIBuilder.this.model.S](state)
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          79
+        </td>
+        <td>
+          4961
+          -
+          5034
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLIBuilder.this.gameLoop(game, pusher)(nextState.getOrElse[CLIBuilder.this.model.S](state)).map[Unit](((x$11: Unit) =&gt; (x$11: Unit @unchecked) match {
+  case _ =&gt; ()
+}))
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          78
+        </td>
+        <td>
+          5032
+          -
+          5034
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          85
+        </td>
+        <td>
+          5042
+          -
+          5239
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CLI.this.readLine.flatMap[zio.console.Console, java.io.IOException, Unit](((command: io.github.scalaquest.cli.Command) =&gt; command match {
+  case (body: String): io.github.scalaquest.cli.GameCommand((body @ _)) =&gt; onCommand(body)
+  case (body: String): io.github.scalaquest.cli.MetaCommand((body @ _)) =&gt; onMetaCommand(body)
+}.map[Unit](((x$12: Unit) =&gt; (x$12: Unit @unchecked) match {
+  case _ =&gt; ()
+}))))
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          84
+        </td>
+        <td>
+          5084
+          -
+          5239
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          zio.ZIO.map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          command match {
+  case (body: String): io.github.scalaquest.cli.GameCommand((body @ _)) =&gt; onCommand(body)
+  case (body: String): io.github.scalaquest.cli.MetaCommand((body @ _)) =&gt; onMetaCommand(body)
+}.map[Unit](((x$12: Unit) =&gt; (x$12: Unit @unchecked) match {
+  case _ =&gt; ()
+}))
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          81
+        </td>
+        <td>
+          5141
+          -
+          5156
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.cli.CLI.CLIBuilder.onCommand
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          onCommand(body)
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          82
+        </td>
+        <td>
+          5193
+          -
+          5212
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.cli.CLI.CLIBuilder.onMetaCommand
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          onMetaCommand(body)
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          83
+        </td>
+        <td>
+          5237
+          -
+          5239
         </td>
         <td>
           Literal

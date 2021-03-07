@@ -78,8 +78,8 @@
 </span>54 <span style=''>     * Creates a standard &lt;b&gt;Food&lt;/b&gt;.
 </span>55 <span style=''>     * @param description
 </span>56 <span style=''>     *   An [[ItemDescription]] for the item.
-</span>57 <span style=''>     * @param eatableBuilder
-</span>58 <span style=''>     *   A builder for the &lt;b&gt;Eatable&lt;/b&gt; behavior associated to the item.
+</span>57 <span style=''>     * @param onEatExtra
+</span>58 <span style=''>     *   An extra &lt;b&gt;Reaction&lt;/b&gt; to be triggered after eating.
 </span>59 <span style=''>     * @param extraBehavBuilders
 </span>60 <span style=''>     *   Additional behaviors associated to the item.
 </span>61 <span style=''>     * @return
@@ -87,11 +87,11 @@
 </span>63 <span style=''>     */
 </span>64 <span style=''>    def apply(
 </span>65 <span style=''>      description: ItemDescription,
-</span>66 <span style=''>      eatableBuilder: I =&gt; Eatable,
+</span>66 <span style=''>      onEatExtra: Reaction = Reaction.empty,
 </span>67 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>68 <span style=''>    ): Food = {
-</span>69 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), eatableBuilder, extraBehavBuilders)</span><span style=''>
-</span>70 <span style=''>    }
+</span>68 <span style=''>    ): Food =
+</span>69 <span style=''>      </span><span style='background: #AEF1AE'>SimpleFood(description, ItemRef(description), Eatable.builder(onEatExtra), extraBehavBuilders)</span><span style=''>
+</span>70 <span style=''>
 </span>71 <span style=''>  }
 </span>72 <span style=''>}
 </span></pre>
@@ -111,7 +111,7 @@
           44
         </td>
         <td>
-          508
+          514
         </td>
         <td>
           1419
@@ -135,7 +135,7 @@
           45
         </td>
         <td>
-          509
+          515
         </td>
         <td>
           1496
@@ -159,12 +159,12 @@
           69
         </td>
         <td>
-          510
+          516
         </td>
         <td>
-          2179
+          2171
           -
-          2199
+          2191
         </td>
         <td>
           Apply
@@ -183,12 +183,36 @@
           69
         </td>
         <td>
-          511
+          517
         </td>
         <td>
-          2155
+          2193
           -
-          2236
+          2220
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.EatableExt.Eatable.builder
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          FoodExt.this.Eatable.builder(onEatExtra)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          518
+        </td>
+        <td>
+          2147
+          -
+          2241
         </td>
         <td>
           Apply
@@ -200,7 +224,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          FoodExt.this.SimpleFood.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), eatableBuilder, extraBehavBuilders)
+          FoodExt.this.SimpleFood.apply(description, io.github.scalaquest.core.model.ItemRef.apply(description), FoodExt.this.Eatable.builder(onEatExtra), extraBehavBuilders)
         </td>
       </tr>
     </table>

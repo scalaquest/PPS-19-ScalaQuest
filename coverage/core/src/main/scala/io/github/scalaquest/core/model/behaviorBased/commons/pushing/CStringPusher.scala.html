@@ -92,7 +92,7 @@
 </span>68 <span style=''>}
 </span>69 <span style=''>
 </span>70 <span style=''>/**
-</span>71 <span style=''> * Object with some useful construct for create a [[CStringPusher]].
+</span>71 <span style=''> * Object with a useful construct for create a [[CStringPusher]].
 </span>72 <span style=''> */
 </span>73 <span style=''>object CStringPusher {
 </span>74 <span style=''>
@@ -100,29 +100,20 @@
 </span>76 <span style=''>   * Create the pusher giving him only the game's model.
 </span>77 <span style=''>   * @param model
 </span>78 <span style=''>   *   the actual model game.
-</span>79 <span style=''>   * @return
-</span>80 <span style=''>   *   an instance of CommonStringPusher.
-</span>81 <span style=''>   */
-</span>82 <span style=''>  def apply(model: CMessagesExt): CStringPusher = </span><span style='background: #AEF1AE'>new</span><span style=''> CStringPusher(model) {}
-</span>83 <span style=''>
-</span>84 <span style=''>  /**
-</span>85 <span style=''>   * Create the pusher giving him only the game's model.
-</span>86 <span style=''>   * @param model
-</span>87 <span style=''>   *   the actual model game.
-</span>88 <span style=''>   * @param _additionalTriggers
-</span>89 <span style=''>   *   add some customized triggers with regard to the base ones.
-</span>90 <span style=''>   * @return
-</span>91 <span style=''>   *   an instance of CommonStringPusher.
-</span>92 <span style=''>   */
-</span>93 <span style=''>  def apply(
-</span>94 <span style=''>    model: CMessagesExt,
-</span>95 <span style=''>    _additionalTriggers: MessageTriggers[String]
-</span>96 <span style=''>  ): CStringPusher = {
-</span>97 <span style=''>    </span><span style='background: #F0ADAD'>new</span><span style=''> CStringPusher(model) {
-</span>98 <span style=''>      override def extra: MessageTriggers[String] = _additionalTriggers
-</span>99 <span style=''>    }
-</span>100 <span style=''>  }
-</span>101 <span style=''>}
+</span>79 <span style=''>   * @param _additionalTriggers
+</span>80 <span style=''>   *   add some customized triggers with regard to the base ones.
+</span>81 <span style=''>   * @return
+</span>82 <span style=''>   *   an instance of CommonStringPusher.
+</span>83 <span style=''>   */
+</span>84 <span style=''>  def apply(
+</span>85 <span style=''>    model: CMessagesExt,
+</span>86 <span style=''>    _additionalTriggers: MessageTriggers[String] = PartialFunction.empty
+</span>87 <span style=''>  ): CStringPusher = {
+</span>88 <span style=''>    </span><span style='background: #AEF1AE'>new</span><span style=''> CStringPusher(model) {
+</span>89 <span style=''>      override def extra: MessageTriggers[String] = _additionalTriggers
+</span>90 <span style=''>    }
+</span>91 <span style=''>  }
+</span>92 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -140,7 +131,7 @@
           23
         </td>
         <td>
-          544
+          551
         </td>
         <td>
           777
@@ -164,7 +155,7 @@
           25
         </td>
         <td>
-          530
+          537
         </td>
         <td>
           868
@@ -188,7 +179,7 @@
           25
         </td>
         <td>
-          531
+          538
         </td>
         <td>
           881
@@ -212,7 +203,7 @@
           25
         </td>
         <td>
-          532
+          539
         </td>
         <td>
           868
@@ -236,7 +227,7 @@
           25
         </td>
         <td>
-          533
+          540
         </td>
         <td>
           846
@@ -260,7 +251,7 @@
           29
         </td>
         <td>
-          534
+          541
         </td>
         <td>
           1056
@@ -284,7 +275,7 @@
           29
         </td>
         <td>
-          535
+          542
         </td>
         <td>
           1069
@@ -308,7 +299,7 @@
           29
         </td>
         <td>
-          536
+          543
         </td>
         <td>
           1056
@@ -332,7 +323,7 @@
           29
         </td>
         <td>
-          537
+          544
         </td>
         <td>
           1034
@@ -356,7 +347,7 @@
           33
         </td>
         <td>
-          538
+          545
         </td>
         <td>
           1215
@@ -380,7 +371,7 @@
           33
         </td>
         <td>
-          539
+          546
         </td>
         <td>
           1228
@@ -404,7 +395,7 @@
           33
         </td>
         <td>
-          540
+          547
         </td>
         <td>
           1215
@@ -428,7 +419,7 @@
           33
         </td>
         <td>
-          541
+          548
         </td>
         <td>
           1193
@@ -452,7 +443,7 @@
           47
         </td>
         <td>
-          542
+          549
         </td>
         <td>
           1966
@@ -476,7 +467,7 @@
           48
         </td>
         <td>
-          543
+          550
         </td>
         <td>
           2017
@@ -500,7 +491,7 @@
           55
         </td>
         <td>
-          545
+          552
         </td>
         <td>
           2232
@@ -524,7 +515,7 @@
           56
         </td>
         <td>
-          546
+          553
         </td>
         <td>
           2309
@@ -548,7 +539,7 @@
           62
         </td>
         <td>
-          547
+          554
         </td>
         <td>
           2455
@@ -572,7 +563,7 @@
           62
         </td>
         <td>
-          548
+          555
         </td>
         <td>
           2469
@@ -596,7 +587,7 @@
           65
         </td>
         <td>
-          549
+          556
         </td>
         <td>
           2617
@@ -620,7 +611,7 @@
           65
         </td>
         <td>
-          550
+          557
         </td>
         <td>
           2621
@@ -644,7 +635,7 @@
           65
         </td>
         <td>
-          551
+          558
         </td>
         <td>
           2526
@@ -665,15 +656,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          88
         </td>
         <td>
-          552
+          559
         </td>
         <td>
-          2971
+          3154
           -
-          2974
+          3157
         </td>
         <td>
           Apply
@@ -685,30 +676,6 @@
           
         </td>
         <td style="background: #AEF1AE">
-          new $anon()
-        </td>
-      </tr><tr>
-        <td>
-          97
-        </td>
-        <td>
-          553
-        </td>
-        <td>
-          3384
-          -
-          3387
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          io.github.scalaquest.core.model.behaviorBased.commons.pushing.CStringPusher.$anon.&lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
           new $anon()
         </td>
       </tr>

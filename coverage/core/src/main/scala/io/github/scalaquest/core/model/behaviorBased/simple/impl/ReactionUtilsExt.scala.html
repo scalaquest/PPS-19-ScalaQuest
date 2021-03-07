@@ -183,7 +183,7 @@
 </span>159 <span style=''>     * @return
 </span>160 <span style=''>     *   A new &lt;b&gt;Reaction&lt;/b&gt; as described above.
 </span>161 <span style=''>     */
-</span>162 <span style=''>    def pure(s: S): Reaction = </span><span style='background: #F0ADAD'>create(_ =&gt; s, Seq.empty)</span><span style=''>
+</span>162 <span style=''>    def pure(s: S): Reaction = </span><span style='background: #AEF1AE'>create(_ =&gt; s, Seq.empty)</span><span style=''>
 </span>163 <span style=''>
 </span>164 <span style=''>  }
 </span>165 <span style=''>
@@ -205,7 +205,7 @@
 </span>181 <span style=''>     *   a [[U]] that is the reduction of [[U]] cited above, function identity of [[S]] if [[U]] are
 </span>182 <span style=''>     *   not presents.
 </span>183 <span style=''>     */
-</span>184 <span style=''>    def apply(fs: U*): U = </span><span style='background: #AEF1AE'>fs.reduceOption(_ andThen _) getOrElse </span><span style='background: #F0ADAD'>identity[S]</span><span style=''>
+</span>184 <span style=''>    def apply(fs: U*): U = </span><span style='background: #AEF1AE'>fs.reduceOption(_ andThen _) getOrElse identity[S]</span><span style=''>
 </span>185 <span style=''>
 </span>186 <span style=''>    /**
 </span>187 <span style=''>     * The [[U]] empty value.
@@ -232,7 +232,7 @@
           25
         </td>
         <td>
-          595
+          601
         </td>
         <td>
           815
@@ -256,7 +256,7 @@
           25
         </td>
         <td>
-          596
+          602
         </td>
         <td>
           799
@@ -280,7 +280,7 @@
           34
         </td>
         <td>
-          597
+          603
         </td>
         <td>
           1141
@@ -304,7 +304,7 @@
           34
         </td>
         <td>
-          598
+          604
         </td>
         <td>
           1121
@@ -328,7 +328,7 @@
           51
         </td>
         <td>
-          599
+          605
         </td>
         <td>
           1600
@@ -352,7 +352,7 @@
           64
         </td>
         <td>
-          600
+          606
         </td>
         <td>
           2031
@@ -376,7 +376,7 @@
           64
         </td>
         <td>
-          601
+          607
         </td>
         <td>
           2035
@@ -400,7 +400,7 @@
           65
         </td>
         <td>
-          602
+          608
         </td>
         <td>
           2059
@@ -424,7 +424,7 @@
           65
         </td>
         <td>
-          603
+          609
         </td>
         <td>
           2054
@@ -448,7 +448,7 @@
           77
         </td>
         <td>
-          604
+          610
         </td>
         <td>
           2531
@@ -472,7 +472,7 @@
           88
         </td>
         <td>
-          605
+          611
         </td>
         <td>
           2878
@@ -496,7 +496,7 @@
           99
         </td>
         <td>
-          606
+          612
         </td>
         <td>
           3356
@@ -520,7 +520,7 @@
           99
         </td>
         <td>
-          607
+          613
         </td>
         <td>
           3355
@@ -544,7 +544,7 @@
           108
         </td>
         <td>
-          608
+          614
         </td>
         <td>
           3580
@@ -568,7 +568,7 @@
           108
         </td>
         <td>
-          609
+          615
         </td>
         <td>
           3593
@@ -592,7 +592,7 @@
           108
         </td>
         <td>
-          610
+          616
         </td>
         <td>
           3573
@@ -616,7 +616,7 @@
           122
         </td>
         <td>
-          611
+          617
         </td>
         <td>
           4113
@@ -640,7 +640,7 @@
           122
         </td>
         <td>
-          612
+          618
         </td>
         <td>
           4117
@@ -664,7 +664,7 @@
           123
         </td>
         <td>
-          613
+          619
         </td>
         <td>
           4139
@@ -688,7 +688,7 @@
           123
         </td>
         <td>
-          614
+          620
         </td>
         <td>
           4143
@@ -712,7 +712,7 @@
           124
         </td>
         <td>
-          615
+          621
         </td>
         <td>
           4170
@@ -736,7 +736,7 @@
           124
         </td>
         <td>
-          616
+          622
         </td>
         <td>
           4165
@@ -760,7 +760,7 @@
           140
         </td>
         <td>
-          617
+          623
         </td>
         <td>
           4724
@@ -784,7 +784,7 @@
           140
         </td>
         <td>
-          618
+          624
         </td>
         <td>
           4728
@@ -808,7 +808,7 @@
           141
         </td>
         <td>
-          619
+          625
         </td>
         <td>
           4748
@@ -832,7 +832,7 @@
           141
         </td>
         <td>
-          620
+          626
         </td>
         <td>
           4747
@@ -856,7 +856,7 @@
           151
         </td>
         <td>
-          621
+          627
         </td>
         <td>
           5056
@@ -880,7 +880,7 @@
           151
         </td>
         <td>
-          622
+          628
         </td>
         <td>
           5035
@@ -904,7 +904,7 @@
           162
         </td>
         <td>
-          623
+          629
         </td>
         <td>
           5383
@@ -920,7 +920,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.`package`.Seq.empty[Nothing]
         </td>
       </tr><tr>
@@ -928,7 +928,7 @@
           162
         </td>
         <td>
-          624
+          630
         </td>
         <td>
           5368
@@ -944,7 +944,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           Reaction.this.create(((x$6: ReactionUtilsExt.this.S) =&gt; s), scala.`package`.Seq.empty[Nothing])
         </td>
       </tr><tr>
@@ -952,7 +952,7 @@
           184
         </td>
         <td>
-          625
+          631
         </td>
         <td>
           5912
@@ -976,7 +976,7 @@
           184
         </td>
         <td>
-          626
+          632
         </td>
         <td>
           5935
@@ -992,7 +992,7 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           scala.Predef.identity[ReactionUtilsExt.this.S](x)
         </td>
       </tr><tr>
@@ -1000,7 +1000,7 @@
           184
         </td>
         <td>
-          627
+          633
         </td>
         <td>
           5896
@@ -1024,7 +1024,7 @@
           191
         </td>
         <td>
-          628
+          634
         </td>
         <td>
           6060

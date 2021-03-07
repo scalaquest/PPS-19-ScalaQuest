@@ -33,26 +33,27 @@
 </span>9 <span style=''>import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
 </span>10 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline
 </span>11 <span style=''>
-</span>12 <span style=''>abstract class GameCLIApp[M0 &lt;: Model](val model: M0)
-</span>13 <span style=''>  extends CLIApp
-</span>14 <span style=''>  with PipelineProvider[M0]
-</span>15 <span style=''>  with DefaultPipelineProvider[M0]
-</span>16 <span style=''>  with DictionaryProvider[M0] {
-</span>17 <span style=''>
-</span>18 <span style=''>  def pipelineBuilder: Pipeline.PartialBuilder[S, M] = </span><span style='background: #F0ADAD'>makePipeline</span><span style=''>
-</span>19 <span style=''>
-</span>20 <span style=''>  def state: S
-</span>21 <span style=''>
-</span>22 <span style=''>  def messagePusher: MessagePusher[String]
-</span>23 <span style=''>
-</span>24 <span style=''>  def initialMessages: Seq[Message] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
-</span>25 <span style=''>
-</span>26 <span style=''>  def game: Game[M] = </span><span style='background: #AEF1AE'>Game.builderFrom[M](model).build(pipelineBuilder)</span><span style=''>
-</span>27 <span style=''>
-</span>28 <span style=''>  override def cli: CLI =
-</span>29 <span style=''>    </span><span style='background: #F0ADAD'>CLI.builderFrom[M](model).build(state, game, messagePusher, initialMessages)</span><span style=''>
-</span>30 <span style=''>
-</span>31 <span style=''>}
+</span>12 <span style=''>/** An application that uses a `Pipeline` instance to build a `CLI`. */
+</span>13 <span style=''>abstract class GameCLIApp[M0 &lt;: Model](val model: M0)
+</span>14 <span style=''>  extends CLIApp
+</span>15 <span style=''>  with PipelineProvider[M0]
+</span>16 <span style=''>  with DefaultPipelineProvider[M0]
+</span>17 <span style=''>  with DictionaryProvider[M0] {
+</span>18 <span style=''>
+</span>19 <span style=''>  def pipelineBuilder: Pipeline.PartialBuilder[S, M] = </span><span style='background: #F0ADAD'>makePipeline</span><span style=''>
+</span>20 <span style=''>
+</span>21 <span style=''>  def state: S
+</span>22 <span style=''>
+</span>23 <span style=''>  def messagePusher: MessagePusher[String]
+</span>24 <span style=''>
+</span>25 <span style=''>  def initialMessages: Seq[Message] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  def game: Game[M] = </span><span style='background: #AEF1AE'>Game.builderFrom[M](model).build(pipelineBuilder)</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>  override def cli: CLI =
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>CLI.builderFrom[M](model).build(state, game, messagePusher, initialMessages)</span><span style=''>
+</span>31 <span style=''>
+</span>32 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -67,15 +68,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          18
+          19
         </td>
         <td>
-          36
+          100
         </td>
         <td>
-          534
+          606
           -
-          546
+          618
         </td>
         <td>
           Select
@@ -91,15 +92,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          25
         </td>
         <td>
-          37
+          101
         </td>
         <td>
-          646
+          718
           -
-          655
+          727
         </td>
         <td>
           TypeApply
@@ -115,15 +116,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          27
         </td>
         <td>
-          38
+          102
         </td>
         <td>
-          712
+          784
           -
-          727
+          799
         </td>
         <td>
           Select
@@ -139,15 +140,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          27
         </td>
         <td>
-          39
+          103
         </td>
         <td>
-          679
+          751
           -
-          728
+          800
         </td>
         <td>
           Apply
@@ -163,15 +164,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          40
+          104
         </td>
         <td>
-          792
+          864
           -
-          797
+          869
         </td>
         <td>
           Select
@@ -187,15 +188,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          41
+          105
         </td>
         <td>
-          799
+          871
           -
-          803
+          875
         </td>
         <td>
           Select
@@ -211,15 +212,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          42
+          106
         </td>
         <td>
-          805
+          877
           -
-          818
+          890
         </td>
         <td>
           Select
@@ -235,15 +236,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          43
+          107
         </td>
         <td>
-          820
+          892
           -
-          835
+          907
         </td>
         <td>
           Select
@@ -259,15 +260,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          44
+          108
         </td>
         <td>
-          760
+          832
           -
-          836
+          908
         </td>
         <td>
           Apply

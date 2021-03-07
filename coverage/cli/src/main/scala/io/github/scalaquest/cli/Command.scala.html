@@ -1,0 +1,389 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          src/main/scala/io/github/scalaquest/cli/Command.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.cli
+</span>2 <span style=''>
+</span>3 <span style=''>/** A wrapper for the user input. */
+</span>4 <span style=''>sealed trait Command
+</span>5 <span style=''>
+</span>6 <span style=''>/** A command intended to the game. */
+</span>7 <span style=''>case class GameCommand(body: String) extends Command
+</span>8 <span style=''>
+</span>9 <span style=''>/** A command intended not to be passed to the game. */
+</span>10 <span style=''>case class MetaCommand(body: String) extends Command
+</span>11 <span style=''>
+</span>12 <span style=''>object Command {
+</span>13 <span style=''>
+</span>14 <span style=''>  /** It creates a `Command` given its `String` representation. */
+</span>15 <span style=''>  def make(body: String): Option[Command] = {
+</span>16 <span style=''>    </span><span style='background: #AEF1AE'>body.splitAt(1)</span><span style=''> match {
+</span>17 <span style=''>      case (fst, rest) if (</span><span style='background: #AEF1AE'>fst + rest).isBlank</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>18 <span style=''>      case (&quot;:&quot;, meta)                         =&gt; </span><span style='background: #AEF1AE'>Some(MetaCommand(meta))</span><span style=''>
+</span>19 <span style=''>      case (fst, rest)                         =&gt; </span><span style='background: #AEF1AE'>Some(GameCommand(fst + rest))</span><span style=''>
+</span>20 <span style=''>    }
+</span>21 <span style=''>  }
+</span>22 <span style=''>
+</span>23 <span style=''>  /**
+</span>24 <span style=''>   * An elementary parser for cli meta commands. It gives an helper function to pattern match
+</span>25 <span style=''>   * against `String` representation of commands.
+</span>26 <span style=''>   */
+</span>27 <span style=''>  object Parser {
+</span>28 <span style=''>
+</span>29 <span style=''>    def unapplySeq(body: String): Option[Seq[String]] = {
+</span>30 <span style=''>      val matcher = </span><span style='background: #AEF1AE'>raw&quot;(\S+)&quot;.r</span><span style=''>
+</span>31 <span style=''>      </span><span style='background: #AEF1AE'>Option(matcher.findAllMatchIn(body).map(_.matched).toList)
+</span>32 <span style=''></span><span style='background: #AEF1AE'>        .filter(_.nonEmpty)</span><span style=''>
+</span>33 <span style=''>    }
+</span>34 <span style=''>  }
+</span>35 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          87
+        </td>
+        <td>
+          431
+          -
+          446
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.StringOps.splitAt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.augmentString(body).splitAt(1)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          88
+        </td>
+        <td>
+          482
+          -
+          501
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.isBlank
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          fst.+(rest).isBlank()
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          89
+        </td>
+        <td>
+          505
+          -
+          509
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          90
+        </td>
+        <td>
+          565
+          -
+          582
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.cli.MetaCommand.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          MetaCommand.apply(meta)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          91
+        </td>
+        <td>
+          560
+          -
+          583
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[io.github.scalaquest.cli.MetaCommand](MetaCommand.apply(meta))
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          92
+        </td>
+        <td>
+          651
+          -
+          661
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          fst.+(rest)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          93
+        </td>
+        <td>
+          639
+          -
+          662
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          io.github.scalaquest.cli.GameCommand.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          GameCommand.apply(fst.+(rest))
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          94
+        </td>
+        <td>
+          634
+          -
+          663
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[io.github.scalaquest.cli.GameCommand](GameCommand.apply(fst.+(rest)))
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          95
+        </td>
+        <td>
+          928
+          -
+          940
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.StringOps.r
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Predef.augmentString((&quot;(\\S+)&quot;: String)).r
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          96
+        </td>
+        <td>
+          987
+          -
+          996
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.util.matching.Regex.MatchData.matched
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.matched
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          97
+        </td>
+        <td>
+          954
+          -
+          1004
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          matcher.findAllMatchIn(body).map[String](((x$1: scala.util.matching.Regex.Match) =&gt; x$1.matched)).toList
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          98
+        </td>
+        <td>
+          1022
+          -
+          1032
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableOnceOps.nonEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          99
+        </td>
+        <td>
+          947
+          -
+          1033
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.filter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Option.apply[List[String]](matcher.findAllMatchIn(body).map[String](((x$1: scala.util.matching.Regex.Match) =&gt; x$1.matched)).toList).filter(((x$2: List[String]) =&gt; x$2.nonEmpty))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

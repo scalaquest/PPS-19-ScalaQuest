@@ -26,15 +26,11 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import io.github.scalaquest.core.model.Action
 </span>4 <span style=''>
-</span>5 <span style=''>trait Meaning {
+</span>5 <span style=''>trait Meaning extends BaseVerb {
 </span>6 <span style=''>  def action: Action
 </span>7 <span style=''>
-</span>8 <span style=''>  def binding: (VerbPrep, Action)
+</span>8 <span style=''>  def binding: (VerbPrep, Action) = </span><span style='background: #AEF1AE'>(name, prep) -&gt; action</span><span style=''>
 </span>9 <span style=''>}
-</span>10 <span style=''>
-</span>11 <span style=''>trait PairUtils extends Meaning { self: BaseVerb =&gt;
-</span>12 <span style=''>  override def binding: (VerbPrep, Action) = </span><span style='background: #AEF1AE'>(name, prep) -&gt; action</span><span style=''>
-</span>13 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -49,15 +45,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          12
+          8
         </td>
         <td>
           109
         </td>
         <td>
-          272
+          191
           -
-          276
+          195
         </td>
         <td>
           Select
@@ -69,19 +65,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          PairUtils.this.name
+          Meaning.this.name
         </td>
       </tr><tr>
         <td>
-          12
+          8
         </td>
         <td>
           110
         </td>
         <td>
-          278
+          197
           -
-          282
+          201
         </td>
         <td>
           Select
@@ -93,19 +89,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          PairUtils.this.prep
+          Meaning.this.prep
         </td>
       </tr><tr>
         <td>
-          12
+          8
         </td>
         <td>
           111
         </td>
         <td>
-          271
+          190
           -
-          283
+          202
         </td>
         <td>
           Apply
@@ -117,19 +113,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          scala.Tuple2.apply[String, Option[String]](PairUtils.this.name, PairUtils.this.prep)
+          scala.Tuple2.apply[String, Option[String]](Meaning.this.name, Meaning.this.prep)
         </td>
       </tr><tr>
         <td>
-          12
+          8
         </td>
         <td>
           112
         </td>
         <td>
-          287
+          206
           -
-          293
+          212
         </td>
         <td>
           Select
@@ -141,19 +137,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          PairUtils.this.action
+          Meaning.this.action
         </td>
       </tr><tr>
         <td>
-          12
+          8
         </td>
         <td>
           113
         </td>
         <td>
-          271
+          190
           -
-          293
+          212
         </td>
         <td>
           Apply
@@ -165,7 +161,7 @@
           
         </td>
         <td style="background: #AEF1AE">
-          scala.Predef.ArrowAssoc[(String, Option[String])](scala.Tuple2.apply[String, Option[String]](PairUtils.this.name, PairUtils.this.prep)).-&gt;[io.github.scalaquest.core.model.Action](PairUtils.this.action)
+          scala.Predef.ArrowAssoc[(String, Option[String])](scala.Tuple2.apply[String, Option[String]](Meaning.this.name, Meaning.this.prep)).-&gt;[io.github.scalaquest.core.model.Action](Meaning.this.action)
         </td>
       </tr>
     </table>
