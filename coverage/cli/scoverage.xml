@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="108" statements-invoked="91" statement-rate="84.26" branch-rate="100.00" version="1.0" timestamp="1615130930797">
+statement-count="108" statements-invoked="91" statement-rate="84.26" branch-rate="100.00" version="1.0" timestamp="1615134372752">
     <packages>
         <package name="io.github.scalaquest.cli" statement-count="108" statements-invoked="91" statement-rate="84.26">
             <classes>
