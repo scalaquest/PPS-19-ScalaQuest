@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    // the example is based on the Scalaquest Shell version.
-    implementation(project(":cli"))
+    // the example is based on the Scalaquest Shell version, imported from Maven Central.
+    implementation("io.github.scalaquest:cli:0.3.1")
 }
 
 application {
