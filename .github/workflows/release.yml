@@ -232,7 +232,7 @@ jobs:
       - name: Push Scaladoc to gh-pages
         run: |
           rm -rf gh-pages/{scaladoc,coverage}
-          mkdir gh-pages/{scaladoc,coverage} -p
+          mkdir gh-pages/{scaladoc,coverage}
 
           mv core/build/docs/scaladoc gh-pages/scaladoc/core
           mv cli/build/docs/scaladoc gh-pages/scaladoc/cli
