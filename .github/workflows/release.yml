@@ -65,6 +65,15 @@ jobs:
           ./gradlew :core:generateVersionFile
           echo "RELEASE_VERSION=$(cat ./core/build/version)" >> $GITHUB_ENV
 
+        # It is necessary to manually setting the tag, as simply creating a release generates a
+        # lightweight tag, making the gitSemVer plugin not working properly.
+      - name: Add tag
+        run: |
+          git config user.name releaserbot
+          git config user.email github-actions@github.com
+          git tag ${{ env.RELEASE_VERSION }} -a -m "Release ${{ env.RELEASE_VERSION }}"
+          git push --follow-tags
+
       - name: Create release
         id: create-release
         uses: actions/create-release@v1
@@ -87,6 +96,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -130,6 +141,17 @@ jobs:
             ./cli/build/libs
             ./core/build/libs
 
+      - name: Create "merge into dev" pull request
+        uses: thomaseizinger/create-pull-request@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          head: main
+          base: dev
+          title: Merge main into dev branch
+          body: |
+            This PR merges the main branch back into dev. This happens to ensure that the updates that happened on the release branch, i.e. CHANGELOG and manifest updates, are also present on the dev branch.
+
   MavenDeploy:
     needs: Tag
     runs-on: ubuntu-18.04
@@ -137,6 +159,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -174,6 +198,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -206,7 +232,7 @@ jobs:
       - name: Push Scaladoc to gh-pages
         run: |
           rm -rf gh-pages/{scaladoc,coverage}
-          mkdir gh-pages/{scaladoc,coverage} -p
+          mkdir gh-pages/{scaladoc,coverage}
 
           mv core/build/docs/scaladoc gh-pages/scaladoc/core
           mv cli/build/docs/scaladoc gh-pages/scaladoc/cli
