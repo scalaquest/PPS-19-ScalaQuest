@@ -71,10 +71,10 @@ dependencies {
 
   // Add the cli as dependency. This is sufficient to start 
   // building your game. Change the version to the latest available.
-  implementation("io.github.scalaquest:cli:0.3.1")
+  implementation("io.github.scalaquest:cli:0.4.2")
   
   // Add the core as dependency. Change the version to the latest available.
-  implementation("io.github.scalaquest:core:0.3.1")
+  implementation("io.github.scalaquest:core:0.4.2")
 }
 ```
 
