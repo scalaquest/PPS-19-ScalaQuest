@@ -1,8 +1,8 @@
 plugins {
-    // Root-level plugin is necessary to run aggregateScoverage
+    // Root-level plugin is necessary to run aggregateScoverage.
     id("org.scoverage")
 
-    // SonarCloud analysis configuration
+    // SonarCloud analysis configuration.
     id("org.sonarqube")
 }
 
@@ -21,10 +21,8 @@ sonarqube {
     }
 }
 
-// configure sonarqube to be executed after test and coverage reports generation
+// Configures sonarqube to be executed after test and coverage reports generation.
 project.tasks["sonarqube"]?.dependsOn("test", "reportScoverage")
-
-subprojects { }
 
 buildscript { repositories { mavenCentral() }}
 
@@ -33,6 +31,6 @@ repositories {
 }
 
 dependencies {
-    // Used by Scoverage to detect Scala Standard Library version, being root-level
+    // Used by Scoverage to detect Scala Standard Library version, being root-level.
     implementation("org.scala-lang:scala-library:_")
 }
