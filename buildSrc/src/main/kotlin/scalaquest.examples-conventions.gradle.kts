@@ -1,5 +1,5 @@
 /*
- * This plugin comprehends configuration in common between the 'examples' projects, that are Scala
+ * This plugin adds configuration in common between the 'examples' projects, that are Scala
  * applications, such as escape-room.
  */
 
@@ -16,6 +16,7 @@ scoverage {
     minimumRate.set(0.toBigDecimal())
 }
 
+// Enables the possibility for the application to be interactive.
 tasks.withType<JavaExec> {
     standardInput = System.`in`
 }

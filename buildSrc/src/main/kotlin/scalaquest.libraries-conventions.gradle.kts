@@ -1,5 +1,5 @@
 /*
- * This plugin comprehends configuration in common between the 'library' projects, such as cli and core.
+ * This plugin adds configurations in common between the 'library' projects, such as CLI and Core.
  * It will be applied only into the cited projects.
  */
 
@@ -10,7 +10,7 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
 
-    // Apply maven-publish and signing to publish releasees to Maven Central.
+    // Apply maven-publish and signing, to publish releases to Maven Central.
     `maven-publish`
     signing
 }
