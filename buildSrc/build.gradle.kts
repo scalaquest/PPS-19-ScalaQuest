@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021 ScalaQuest Team.
+ *
+ * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+ * described in the file LICENSE in the ScalaQuest distribution's top directory.
+ */
+
 plugins {
     // Support convention plugins written in Kotlin. Convention plugins are
     // build scripts in 'src/main' that automatically become available as plugins in the main build.
