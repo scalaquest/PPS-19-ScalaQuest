@@ -22,19 +22,26 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine.exceptions
-</span>2 <span style=''>
-</span>3 <span style=''>/**
-</span>4 <span style=''> * An exception that is thrown if an [[io.github.scalaquest.core.parsing.engine.Engine]] was
-</span>5 <span style=''> * provided an invalid theory.
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
 </span>6 <span style=''> */
-</span>7 <span style=''>case class InvalidTheoryException(line: Int, pos: Int) extends Throwable
-</span>8 <span style=''>
-</span>9 <span style=''>object InvalidTheoryException {
-</span>10 <span style=''>
-</span>11 <span style=''>  def apply(e: alice.tuprolog.InvalidTheoryException): InvalidTheoryException =
-</span>12 <span style=''>    </span><span style='background: #AEF1AE'>InvalidTheoryException(e.line, e.pos)</span><span style=''>
-</span>13 <span style=''>}
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.engine.exceptions
+</span>9 <span style=''>
+</span>10 <span style=''>/**
+</span>11 <span style=''> * An exception that is thrown if an [[io.github.scalaquest.core.parsing.engine.Engine]] was
+</span>12 <span style=''> * provided an invalid theory.
+</span>13 <span style=''> */
+</span>14 <span style=''>case class InvalidTheoryException(line: Int, pos: Int) extends Throwable
+</span>15 <span style=''>
+</span>16 <span style=''>object InvalidTheoryException {
+</span>17 <span style=''>
+</span>18 <span style=''>  def apply(e: alice.tuprolog.InvalidTheoryException): InvalidTheoryException =
+</span>19 <span style=''>    </span><span style='background: #AEF1AE'>InvalidTheoryException(e.line, e.pos)</span><span style=''>
+</span>20 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -49,15 +56,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           692
         </td>
         <td>
-          407
+          631
           -
-          413
+          637
         </td>
         <td>
           Select
@@ -73,15 +80,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           693
         </td>
         <td>
-          415
+          639
           -
-          420
+          644
         </td>
         <td>
           Select
@@ -97,15 +104,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           694
         </td>
         <td>
-          384
+          608
           -
-          421
+          645
         </td>
         <td>
           Apply

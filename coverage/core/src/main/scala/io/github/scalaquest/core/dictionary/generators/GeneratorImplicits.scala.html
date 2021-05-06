@@ -22,39 +22,46 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.generators
-</span>2 <span style=''>
-</span>3 <span style=''>import cats.implicits.{catsKernelStdMonoidForMap, catsStdInstancesForList}
-</span>4 <span style=''>import cats.kernel.{Monoid, Semigroup}
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * Mix-in to inherit implicit generators for collections.
-</span>8 <span style=''> */
-</span>9 <span style=''>trait GeneratorImplicits {
-</span>10 <span style=''>
-</span>11 <span style=''>  object implicits {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary.generators
+</span>9 <span style=''>
+</span>10 <span style=''>import cats.implicits.{catsKernelStdMonoidForMap, catsStdInstancesForList}
+</span>11 <span style=''>import cats.kernel.{Monoid, Semigroup}
 </span>12 <span style=''>
-</span>13 <span style=''>    /** Allows for the implicit creation of `Generator`s from `List[A]` to `B`. */
-</span>14 <span style=''>    implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
-</span>15 <span style=''>      </span><span style='background: #AEF1AE'>new GeneratorK[List, A, B]</span><span style=''>
-</span>16 <span style=''>
-</span>17 <span style=''>    /**
-</span>18 <span style=''>     * Allows for the implicit creation of `Generator`s from `List[T]` to `Map[K, V].`
-</span>19 <span style=''>     *
-</span>20 <span style=''>     * @note:
-</span>21 <span style=''>     *   In the case there are many occurrences for the same key in the result, the second one is
-</span>22 <span style=''>     *   kept.
-</span>23 <span style=''>     */
-</span>24 <span style=''>    implicit def listToMapGenerator[T, K, V](implicit
-</span>25 <span style=''>      G: Generator[T, Map[K, V]]
-</span>26 <span style=''>    ): GeneratorK[List, T, Map[K, V]] = {
-</span>27 <span style=''>      implicit def keepRightSemigroup: Semigroup[V] = </span><span style='background: #AEF1AE'>Semigroup.instance((_, b) =&gt; b)</span><span style=''>
-</span>28 <span style=''>
-</span>29 <span style=''>      </span><span style='background: #AEF1AE'>new GeneratorK[List, T, Map[K, V]]</span><span style=''>
-</span>30 <span style=''>    }
-</span>31 <span style=''>
-</span>32 <span style=''>  }
-</span>33 <span style=''>}
+</span>13 <span style=''>/**
+</span>14 <span style=''> * Mix-in to inherit implicit generators for collections.
+</span>15 <span style=''> */
+</span>16 <span style=''>trait GeneratorImplicits {
+</span>17 <span style=''>
+</span>18 <span style=''>  object implicits {
+</span>19 <span style=''>
+</span>20 <span style=''>    /** Allows for the implicit creation of `Generator`s from `List[A]` to `B`. */
+</span>21 <span style=''>    implicit def listGenerator[A, B: Monoid](implicit G: Generator[A, B]): GeneratorK[List, A, B] =
+</span>22 <span style=''>      </span><span style='background: #AEF1AE'>new GeneratorK[List, A, B]</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>    /**
+</span>25 <span style=''>     * Allows for the implicit creation of `Generator`s from `List[T]` to `Map[K, V].`
+</span>26 <span style=''>     *
+</span>27 <span style=''>     * @note:
+</span>28 <span style=''>     *   In the case there are many occurrences for the same key in the result, the second one is
+</span>29 <span style=''>     *   kept.
+</span>30 <span style=''>     */
+</span>31 <span style=''>    implicit def listToMapGenerator[T, K, V](implicit
+</span>32 <span style=''>      G: Generator[T, Map[K, V]]
+</span>33 <span style=''>    ): GeneratorK[List, T, Map[K, V]] = {
+</span>34 <span style=''>      implicit def keepRightSemigroup: Semigroup[V] = </span><span style='background: #AEF1AE'>Semigroup.instance((_, b) =&gt; b)</span><span style=''>
+</span>35 <span style=''>
+</span>36 <span style=''>      </span><span style='background: #AEF1AE'>new GeneratorK[List, T, Map[K, V]]</span><span style=''>
+</span>37 <span style=''>    }
+</span>38 <span style=''>
+</span>39 <span style=''>  }
+</span>40 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -69,15 +76,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           76
         </td>
         <td>
-          477
+          701
           -
-          477
+          701
         </td>
         <td>
           Select
@@ -93,15 +100,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           77
         </td>
         <td>
-          477
+          701
           -
-          477
+          701
         </td>
         <td>
           Select
@@ -117,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           78
         </td>
         <td>
-          477
+          701
           -
-          503
+          727
         </td>
         <td>
           ApplyToImplicitArgs
@@ -141,15 +148,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           79
         </td>
         <td>
-          925
+          1149
           -
-          956
+          1180
         </td>
         <td>
           Apply
@@ -165,15 +172,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           80
         </td>
         <td>
-          964
+          1188
           -
-          964
+          1188
         </td>
         <td>
           Select
@@ -189,15 +196,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           81
         </td>
         <td>
-          964
+          1188
           -
-          964
+          1188
         </td>
         <td>
           Select
@@ -213,15 +220,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           82
         </td>
         <td>
-          964
+          1188
           -
-          964
+          1188
         </td>
         <td>
           ApplyToImplicitArgs
@@ -237,15 +244,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           83
         </td>
         <td>
-          964
+          1188
           -
-          998
+          1222
         </td>
         <td>
           ApplyToImplicitArgs

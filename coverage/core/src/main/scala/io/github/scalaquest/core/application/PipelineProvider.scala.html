@@ -22,49 +22,56 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.application
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Model
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline
-</span>5 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
-</span>6 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
-</span>7 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
-</span>8 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
-</span>9 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
-</span>10 <span style=''>
-</span>11 <span style=''>/**
-</span>12 <span style=''> * Provides a `Pipeline`, given the required parameters.
-</span>13 <span style=''> */
-</span>14 <span style=''>trait PipelineProvider[M0 &lt;: Model] extends ApplicationStructure[M0] {
-</span>15 <span style=''>
-</span>16 <span style=''>  /** The lexer used in the pipeline. */
-</span>17 <span style=''>  def lexer: Lexer
-</span>18 <span style=''>
-</span>19 <span style=''>  /** The parser used in the pipeline. */
-</span>20 <span style=''>  def parser: Parser
-</span>21 <span style=''>
-</span>22 <span style=''>  /** The resolver used in the pipeline. */
-</span>23 <span style=''>  def resolver: Resolver.Builder[S]
-</span>24 <span style=''>
-</span>25 <span style=''>  /** The interpreter used in the pipeline. */
-</span>26 <span style=''>  def interpreter: Interpreter.Builder[M, S, React]
-</span>27 <span style=''>
-</span>28 <span style=''>  /** The reducer used in the pipeline. */
-</span>29 <span style=''>  def reducer: Reducer.Builder[M, S, React]
-</span>30 <span style=''>
-</span>31 <span style=''>  /** The pipeline built using the given components. */
-</span>32 <span style=''>  def makePipeline: Pipeline.PartialBuilder[S, M] =
-</span>33 <span style=''>    </span><span style='background: #AEF1AE'>Pipeline
-</span>34 <span style=''></span><span style='background: #AEF1AE'>      .builderFrom[M](model)
-</span>35 <span style=''></span><span style='background: #AEF1AE'>      .build(
-</span>36 <span style=''></span><span style='background: #AEF1AE'>        lexer,
-</span>37 <span style=''></span><span style='background: #AEF1AE'>        parser,
-</span>38 <span style=''></span><span style='background: #AEF1AE'>        resolver,
-</span>39 <span style=''></span><span style='background: #AEF1AE'>        interpreter,
-</span>40 <span style=''></span><span style='background: #AEF1AE'>        reducer
-</span>41 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>42 <span style=''>
-</span>43 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.application
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Model
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline
+</span>12 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>13 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
+</span>14 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>15 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>16 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>17 <span style=''>
+</span>18 <span style=''>/**
+</span>19 <span style=''> * Provides a `Pipeline`, given the required parameters.
+</span>20 <span style=''> */
+</span>21 <span style=''>trait PipelineProvider[M0 &lt;: Model] extends ApplicationStructure[M0] {
+</span>22 <span style=''>
+</span>23 <span style=''>  /** The lexer used in the pipeline. */
+</span>24 <span style=''>  def lexer: Lexer
+</span>25 <span style=''>
+</span>26 <span style=''>  /** The parser used in the pipeline. */
+</span>27 <span style=''>  def parser: Parser
+</span>28 <span style=''>
+</span>29 <span style=''>  /** The resolver used in the pipeline. */
+</span>30 <span style=''>  def resolver: Resolver.Builder[S]
+</span>31 <span style=''>
+</span>32 <span style=''>  /** The interpreter used in the pipeline. */
+</span>33 <span style=''>  def interpreter: Interpreter.Builder[M, S, React]
+</span>34 <span style=''>
+</span>35 <span style=''>  /** The reducer used in the pipeline. */
+</span>36 <span style=''>  def reducer: Reducer.Builder[M, S, React]
+</span>37 <span style=''>
+</span>38 <span style=''>  /** The pipeline built using the given components. */
+</span>39 <span style=''>  def makePipeline: Pipeline.PartialBuilder[S, M] =
+</span>40 <span style=''>    </span><span style='background: #AEF1AE'>Pipeline
+</span>41 <span style=''></span><span style='background: #AEF1AE'>      .builderFrom[M](model)
+</span>42 <span style=''></span><span style='background: #AEF1AE'>      .build(
+</span>43 <span style=''></span><span style='background: #AEF1AE'>        lexer,
+</span>44 <span style=''></span><span style='background: #AEF1AE'>        parser,
+</span>45 <span style=''></span><span style='background: #AEF1AE'>        resolver,
+</span>46 <span style=''></span><span style='background: #AEF1AE'>        interpreter,
+</span>47 <span style=''></span><span style='background: #AEF1AE'>        reducer
+</span>48 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -79,15 +86,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           39
         </td>
         <td>
-          1081
+          1305
           -
-          1226
+          1450
         </td>
         <td>
           Apply

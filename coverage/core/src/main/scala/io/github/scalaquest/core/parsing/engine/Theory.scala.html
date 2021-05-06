@@ -22,27 +22,34 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine
-</span>2 <span style=''>
-</span>3 <span style=''>import alice.tuprolog.{Theory =&gt; TuPrologTheory}
-</span>4 <span style=''>
-</span>5 <span style=''>/** Representation of a Prolog theory. */
-</span>6 <span style=''>abstract class BaseTheory {
-</span>7 <span style=''>  def source: String
-</span>8 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.engine
 </span>9 <span style=''>
-</span>10 <span style=''>/** A tuProlog enabled theory. */
-</span>11 <span style=''>trait TuPrologConverter { self: BaseTheory =&gt;
-</span>12 <span style=''>  def toTuProlog: TuPrologTheory = </span><span style='background: #AEF1AE'>new TuPrologTheory(source)</span><span style=''>
-</span>13 <span style=''>}
-</span>14 <span style=''>
-</span>15 <span style=''>object Theory {
+</span>10 <span style=''>import alice.tuprolog.{Theory =&gt; TuPrologTheory}
+</span>11 <span style=''>
+</span>12 <span style=''>/** Representation of a Prolog theory. */
+</span>13 <span style=''>abstract class BaseTheory {
+</span>14 <span style=''>  def source: String
+</span>15 <span style=''>}
 </span>16 <span style=''>
-</span>17 <span style=''>  /** Creates a theory with the provided source code. */
-</span>18 <span style=''>  def apply(source: String): Theory = </span><span style='background: #AEF1AE'>new</span><span style=''> SimpleTheory(source) with TuPrologConverter
-</span>19 <span style=''>
-</span>20 <span style=''>  private class SimpleTheory(val source: String) extends BaseTheory
-</span>21 <span style=''>}
+</span>17 <span style=''>/** A tuProlog enabled theory. */
+</span>18 <span style=''>trait TuPrologConverter { self: BaseTheory =&gt;
+</span>19 <span style=''>  def toTuProlog: TuPrologTheory = </span><span style='background: #AEF1AE'>new TuPrologTheory(source)</span><span style=''>
+</span>20 <span style=''>}
+</span>21 <span style=''>
+</span>22 <span style=''>object Theory {
+</span>23 <span style=''>
+</span>24 <span style=''>  /** Creates a theory with the provided source code. */
+</span>25 <span style=''>  def apply(source: String): Theory = </span><span style='background: #AEF1AE'>new</span><span style=''> SimpleTheory(source) with TuPrologConverter
+</span>26 <span style=''>
+</span>27 <span style=''>  private class SimpleTheory(val source: String) extends BaseTheory
+</span>28 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -57,15 +64,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           689
         </td>
         <td>
-          328
+          552
           -
-          334
+          558
         </td>
         <td>
           Select
@@ -81,15 +88,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           690
         </td>
         <td>
-          309
+          533
           -
-          335
+          559
         </td>
         <td>
           Apply
@@ -105,15 +112,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           691
         </td>
         <td>
-          451
+          675
           -
-          454
+          678
         </td>
         <td>
           Apply

@@ -22,51 +22,58 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary
-</span>2 <span style=''>
-</span>3 <span style=''>import cats.implicits.catsStdInstancesForList
-</span>4 <span style=''>import cats.{Foldable, Monoid}
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * This package provides two type classes `Generator` and `GeneratorK`. They are composable wrappers
-</span>8 <span style=''> * around functions. In addition, there are facility methods that allow the creation of these type
-</span>9 <span style=''> * classes.
-</span>10 <span style=''> *
-</span>11 <span style=''> * For example:
-</span>12 <span style=''> * {{{
-</span>13 <span style=''> *   implicit val generator = Generator.makeEntry((x: Int) =&gt; x -&gt; Math.pow(x, 2))
-</span>14 <span style=''> *   val generatorK = new GeneratorK[List, Int, Map[Int, Double]]
-</span>15 <span style=''> * }}}
-</span>16 <span style=''> *
-</span>17 <span style=''> * A [[GeneratorK]] can create a Map from a List.
-</span>18 <span style=''> * {{{
-</span>19 <span style=''> *   generatorK.generate(List(1, 2, 3))
-</span>20 <span style=''> * }}}
-</span>21 <span style=''> *
-</span>22 <span style=''> * Should result in the following being printed:
-</span>23 <span style=''> * {{{
-</span>24 <span style=''> *   Map(
-</span>25 <span style=''> *     1 -&gt; 1,
-</span>26 <span style=''> *     2 -&gt; 4,
-</span>27 <span style=''> *     3 -&gt; 9
-</span>28 <span style=''> *   )
-</span>29 <span style=''> * }}}
-</span>30 <span style=''> */
-</span>31 <span style=''>package object generators extends GeneratorImplicits {
-</span>32 <span style=''>
-</span>33 <span style=''>  /**
-</span>34 <span style=''>   * Allows to fold a `F[A]`.
-</span>35 <span style=''>   *
-</span>36 <span style=''>   * Inspired by:
-</span>37 <span style=''>   * [[https://typelevel.org/cats/typeclasses/monoid.html#example-usage-collapsing-a-list]].
-</span>38 <span style=''>   */
-</span>39 <span style=''>  def combineAll[F[_]: Foldable, A: Monoid](as: F[A]): A = </span><span style='background: #AEF1AE'>Foldable[F].fold(as)</span><span style=''>
-</span>40 <span style=''>
-</span>41 <span style=''>  /**
-</span>42 <span style=''>   * Variadic argument function that wraps the non-variadic `combineAll` one.
-</span>43 <span style=''>   */
-</span>44 <span style=''>  def combineAll[A: Monoid](a: A, as: A*): A = </span><span style='background: #AEF1AE'>combineAll((a +: as).toList)</span><span style=''>
-</span>45 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary
+</span>9 <span style=''>
+</span>10 <span style=''>import cats.implicits.catsStdInstancesForList
+</span>11 <span style=''>import cats.{Foldable, Monoid}
+</span>12 <span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * This package provides two type classes `Generator` and `GeneratorK`. They are composable wrappers
+</span>15 <span style=''> * around functions. In addition, there are facility methods that allow the creation of these type
+</span>16 <span style=''> * classes.
+</span>17 <span style=''> *
+</span>18 <span style=''> * For example:
+</span>19 <span style=''> * {{{
+</span>20 <span style=''> *   implicit val generator = Generator.makeEntry((x: Int) =&gt; x -&gt; Math.pow(x, 2))
+</span>21 <span style=''> *   val generatorK = new GeneratorK[List, Int, Map[Int, Double]]
+</span>22 <span style=''> * }}}
+</span>23 <span style=''> *
+</span>24 <span style=''> * A [[GeneratorK]] can create a Map from a List.
+</span>25 <span style=''> * {{{
+</span>26 <span style=''> *   generatorK.generate(List(1, 2, 3))
+</span>27 <span style=''> * }}}
+</span>28 <span style=''> *
+</span>29 <span style=''> * Should result in the following being printed:
+</span>30 <span style=''> * {{{
+</span>31 <span style=''> *   Map(
+</span>32 <span style=''> *     1 -&gt; 1,
+</span>33 <span style=''> *     2 -&gt; 4,
+</span>34 <span style=''> *     3 -&gt; 9
+</span>35 <span style=''> *   )
+</span>36 <span style=''> * }}}
+</span>37 <span style=''> */
+</span>38 <span style=''>package object generators extends GeneratorImplicits {
+</span>39 <span style=''>
+</span>40 <span style=''>  /**
+</span>41 <span style=''>   * Allows to fold a `F[A]`.
+</span>42 <span style=''>   *
+</span>43 <span style=''>   * Inspired by:
+</span>44 <span style=''>   * [[https://typelevel.org/cats/typeclasses/monoid.html#example-usage-collapsing-a-list]].
+</span>45 <span style=''>   */
+</span>46 <span style=''>  def combineAll[F[_]: Foldable, A: Monoid](as: F[A]): A = </span><span style='background: #AEF1AE'>Foldable[F].fold(as)</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>  /**
+</span>49 <span style=''>   * Variadic argument function that wraps the non-variadic `combineAll` one.
+</span>50 <span style=''>   */
+</span>51 <span style=''>  def combineAll[A: Monoid](a: A, as: A*): A = </span><span style='background: #AEF1AE'>combineAll((a +: as).toList)</span><span style=''>
+</span>52 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -81,15 +88,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           90
         </td>
         <td>
-          1033
+          1257
           -
-          1053
+          1277
         </td>
         <td>
           ApplyToImplicitArgs
@@ -105,15 +112,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           91
         </td>
         <td>
-          1206
+          1430
           -
-          1211
+          1435
         </td>
         <td>
           Apply
@@ -129,15 +136,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           92
         </td>
         <td>
-          1204
+          1428
           -
-          1219
+          1443
         </td>
         <td>
           Select
@@ -156,15 +163,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           93
         </td>
         <td>
-          1202
+          1426
           -
-          1202
+          1426
         </td>
         <td>
           Select
@@ -180,15 +187,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           94
         </td>
         <td>
-          1192
+          1416
           -
-          1220
+          1444
         </td>
         <td>
           ApplyToImplicitArgs

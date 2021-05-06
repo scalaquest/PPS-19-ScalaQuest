@@ -22,73 +22,80 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.reducer
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Model
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.InterpreterResult
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * A pipeline component that takes a [[Model.Reaction]] (wrapped into an [[InterpreterResult]] ) and
-</span>8 <span style=''> * returns a [[Model.State]] wrapped into an [[ReducerResult]]. The execution cannot fail.
-</span>9 <span style=''> * @tparam M
-</span>10 <span style=''> *   The concrete type of the [[Model]] in use.
-</span>11 <span style=''> * @tparam S
-</span>12 <span style=''> *   The concrete type of the [[Model.State]] in use. It should be derived from [[M]].
-</span>13 <span style=''> * @tparam R
-</span>14 <span style=''> *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
-</span>15 <span style=''> */
-</span>16 <span style=''>trait Reducer[M &lt;: Model, S, R] {
-</span>17 <span style=''>
-</span>18 <span style=''>  /**
-</span>19 <span style=''>   * Triggers the [[Reducer]] execution.
-</span>20 <span style=''>   * @param interpreterResult
-</span>21 <span style=''>   *   A wrapper for the input [[Model.Reaction]].
-</span>22 <span style=''>   * @return
-</span>23 <span style=''>   *   A [[ReducerResult]] (wrapper for the updated [[Model.State]] ).
-</span>24 <span style=''>   */
-</span>25 <span style=''>  def reduce(interpreterResult: InterpreterResult[R]): ReducerResult[S]
-</span>26 <span style=''>}
-</span>27 <span style=''>
-</span>28 <span style=''>/**
-</span>29 <span style=''> * Companion object for the [[Reducer]] trait. It exposes some utilities to instantiate the
-</span>30 <span style=''> * [[Reducer]] with the right constraints between types.
-</span>31 <span style=''> *
-</span>32 <span style=''> * It exposes an [[Reducer::apply()]] to build an [[Reducer]] &lt;b&gt;with the right types&lt;/b&gt;, as some
-</span>33 <span style=''> * constraints between the used types are defined. In addition, it provides a [[Reducer::builder()]]
-</span>34 <span style=''> * utility used into the pipeline to inject the [[Model.State]] in a separate phase, compared to
-</span>35 <span style=''> * passing the state directly to [[Reducer::reduce()]].
-</span>36 <span style=''> */
-</span>37 <span style=''>object Reducer {
-</span>38 <span style=''>
-</span>39 <span style=''>  /**
-</span>40 <span style=''>   * A generator of [[Reducer]] instances, giving the possibility to inject the [[Model.State]]
-</span>41 <span style=''>   * separately from the [[Reducer::reduce()]] call.
-</span>42 <span style=''>   * @tparam M
-</span>43 <span style=''>   *   The concrete type of the [[Model]] in use.
-</span>44 <span style=''>   * @tparam S
-</span>45 <span style=''>   *   The concrete type of the [[Model.State]] in use. It should be derived from [[M]].
-</span>46 <span style=''>   * @tparam R
-</span>47 <span style=''>   *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
-</span>48 <span style=''>   */
-</span>49 <span style=''>  type Builder[M &lt;: Model, S, R] = S =&gt; Reducer[M, S, R]
-</span>50 <span style=''>
-</span>51 <span style=''>  /**
-</span>52 <span style=''>   * It generates a [[Builder]] with the right type constraints.
-</span>53 <span style=''>   * @param model
-</span>54 <span style=''>   *   The concrete instance of the [[Model]] in use.
-</span>55 <span style=''>   * @tparam M
-</span>56 <span style=''>   *   The concrete type of the [[Model]] in use.
-</span>57 <span style=''>   * @return
-</span>58 <span style=''>   *   A [[Builder]] of [[Reducer]] instances, with the right type constraints.
-</span>59 <span style=''>   */
-</span>60 <span style=''>  def builder[M &lt;: Model](implicit model: M): Builder[model.type, model.S, model.Reaction] =
-</span>61 <span style=''>    // shortcut for implementing the Reducer, as it is a single method trait
-</span>62 <span style=''>    state =&gt;
-</span>63 <span style=''>      (interpreterResult: InterpreterResult[model.Reaction]) =&gt; {
-</span>64 <span style=''>        val (updState, messages) = interpreterResult.reaction(state)
-</span>65 <span style=''>        </span><span style='background: #AEF1AE'>ReducerResult(model)(updState, messages)</span><span style=''>
-</span>66 <span style=''>      }
-</span>67 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.reducer
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Model
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.InterpreterResult
+</span>12 <span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * A pipeline component that takes a [[Model.Reaction]] (wrapped into an [[InterpreterResult]] ) and
+</span>15 <span style=''> * returns a [[Model.State]] wrapped into an [[ReducerResult]]. The execution cannot fail.
+</span>16 <span style=''> * @tparam M
+</span>17 <span style=''> *   The concrete type of the [[Model]] in use.
+</span>18 <span style=''> * @tparam S
+</span>19 <span style=''> *   The concrete type of the [[Model.State]] in use. It should be derived from [[M]].
+</span>20 <span style=''> * @tparam R
+</span>21 <span style=''> *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
+</span>22 <span style=''> */
+</span>23 <span style=''>trait Reducer[M &lt;: Model, S, R] {
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * Triggers the [[Reducer]] execution.
+</span>27 <span style=''>   * @param interpreterResult
+</span>28 <span style=''>   *   A wrapper for the input [[Model.Reaction]].
+</span>29 <span style=''>   * @return
+</span>30 <span style=''>   *   A [[ReducerResult]] (wrapper for the updated [[Model.State]] ).
+</span>31 <span style=''>   */
+</span>32 <span style=''>  def reduce(interpreterResult: InterpreterResult[R]): ReducerResult[S]
+</span>33 <span style=''>}
+</span>34 <span style=''>
+</span>35 <span style=''>/**
+</span>36 <span style=''> * Companion object for the [[Reducer]] trait. It exposes some utilities to instantiate the
+</span>37 <span style=''> * [[Reducer]] with the right constraints between types.
+</span>38 <span style=''> *
+</span>39 <span style=''> * It exposes an [[Reducer::apply()]] to build an [[Reducer]] &lt;b&gt;with the right types&lt;/b&gt;, as some
+</span>40 <span style=''> * constraints between the used types are defined. In addition, it provides a [[Reducer::builder()]]
+</span>41 <span style=''> * utility used into the pipeline to inject the [[Model.State]] in a separate phase, compared to
+</span>42 <span style=''> * passing the state directly to [[Reducer::reduce()]].
+</span>43 <span style=''> */
+</span>44 <span style=''>object Reducer {
+</span>45 <span style=''>
+</span>46 <span style=''>  /**
+</span>47 <span style=''>   * A generator of [[Reducer]] instances, giving the possibility to inject the [[Model.State]]
+</span>48 <span style=''>   * separately from the [[Reducer::reduce()]] call.
+</span>49 <span style=''>   * @tparam M
+</span>50 <span style=''>   *   The concrete type of the [[Model]] in use.
+</span>51 <span style=''>   * @tparam S
+</span>52 <span style=''>   *   The concrete type of the [[Model.State]] in use. It should be derived from [[M]].
+</span>53 <span style=''>   * @tparam R
+</span>54 <span style=''>   *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
+</span>55 <span style=''>   */
+</span>56 <span style=''>  type Builder[M &lt;: Model, S, R] = S =&gt; Reducer[M, S, R]
+</span>57 <span style=''>
+</span>58 <span style=''>  /**
+</span>59 <span style=''>   * It generates a [[Builder]] with the right type constraints.
+</span>60 <span style=''>   * @param model
+</span>61 <span style=''>   *   The concrete instance of the [[Model]] in use.
+</span>62 <span style=''>   * @tparam M
+</span>63 <span style=''>   *   The concrete type of the [[Model]] in use.
+</span>64 <span style=''>   * @return
+</span>65 <span style=''>   *   A [[Builder]] of [[Reducer]] instances, with the right type constraints.
+</span>66 <span style=''>   */
+</span>67 <span style=''>  def builder[M &lt;: Model](implicit model: M): Builder[model.type, model.S, model.Reaction] =
+</span>68 <span style=''>    // shortcut for implementing the Reducer, as it is a single method trait
+</span>69 <span style=''>    state =&gt;
+</span>70 <span style=''>      (interpreterResult: InterpreterResult[model.Reaction]) =&gt; {
+</span>71 <span style=''>        val (updState, messages) = interpreterResult.reaction(state)
+</span>72 <span style=''>        </span><span style='background: #AEF1AE'>ReducerResult(model)(updState, messages)</span><span style=''>
+</span>73 <span style=''>      }
+</span>74 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -103,15 +110,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          64
+          71
         </td>
         <td>
           848
         </td>
         <td>
-          2557
+          2781
           -
-          2557
+          2781
         </td>
         <td>
           Select
@@ -127,15 +134,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          71
         </td>
         <td>
           849
         </td>
         <td>
-          2567
+          2791
           -
-          2567
+          2791
         </td>
         <td>
           Select
@@ -151,15 +158,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          72
         </td>
         <td>
           850
         </td>
         <td>
-          2621
+          2845
           -
-          2661
+          2885
         </td>
         <td>
           Apply

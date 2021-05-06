@@ -22,55 +22,62 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
-</span>6 <span style=''>
-</span>7 <span style=''>/**
-</span>8 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
-</span>9 <span style=''> */
-</span>10 <span style=''>trait GenericItemBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
-</span>11 <span style=''>
-</span>12 <span style=''>  /**
-</span>13 <span style=''>   * An ItemBehavior with some triggers. It is useful in order to wrap &lt;b&gt;ItemBehavior&lt;/b&gt; into a
-</span>14 <span style=''>   * facility builder.
-</span>15 <span style=''>   */
-</span>16 <span style=''>  abstract class GenericItemBehavior extends ItemBehavior {
-</span>17 <span style=''>
-</span>18 <span style=''>    /**
-</span>19 <span style=''>     * &lt;b&gt;ItemTriggers&lt;/b&gt; associated to the behavior.
-</span>20 <span style=''>     * @return
-</span>21 <span style=''>     *   Triggers associated to the behavior.
-</span>22 <span style=''>     */
-</span>23 <span style=''>    def triggers: ItemTriggers
-</span>24 <span style=''>  }
-</span>25 <span style=''>
-</span>26 <span style=''>  /**
-</span>27 <span style=''>   * Standard implementation of &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
-</span>28 <span style=''>   */
-</span>29 <span style=''>  case class SimpleGenericItemBehavior(
-</span>30 <span style=''>    override val triggers: ItemTriggers
-</span>31 <span style=''>  )(implicit val subject: I)
-</span>32 <span style=''>    extends GenericItemBehavior
-</span>33 <span style=''>
-</span>34 <span style=''>  /**
-</span>35 <span style=''>   * Companion object for &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
-</span>36 <span style=''>   */
-</span>37 <span style=''>  object GenericItemBehavior {
-</span>38 <span style=''>
-</span>39 <span style=''>    /**
-</span>40 <span style=''>     * A function that builds a &lt;b&gt;GenericBehavior&lt;/b&gt; given a subject.
-</span>41 <span style=''>     * @param triggers
-</span>42 <span style=''>     *   The &lt;b&gt;ItemTriggers&lt;/b&gt; associated to the subject.
-</span>43 <span style=''>     * @return
-</span>44 <span style=''>     *   A function that builds a &lt;b&gt;GenericBehavior&lt;/b&gt; given a subject.
-</span>45 <span style=''>     */
-</span>46 <span style=''>    def builder(triggers: ItemTriggers = PartialFunction.empty): I =&gt; GenericItemBehavior =
-</span>47 <span style=''>      </span><span style='background: #AEF1AE'>SimpleGenericItemBehavior(triggers)(_)</span><span style=''>
-</span>48 <span style=''>  }
-</span>49 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>13 <span style=''>
+</span>14 <span style=''>/**
+</span>15 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
+</span>16 <span style=''> */
+</span>17 <span style=''>trait GenericItemBehaviorExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
+</span>18 <span style=''>
+</span>19 <span style=''>  /**
+</span>20 <span style=''>   * An ItemBehavior with some triggers. It is useful in order to wrap &lt;b&gt;ItemBehavior&lt;/b&gt; into a
+</span>21 <span style=''>   * facility builder.
+</span>22 <span style=''>   */
+</span>23 <span style=''>  abstract class GenericItemBehavior extends ItemBehavior {
+</span>24 <span style=''>
+</span>25 <span style=''>    /**
+</span>26 <span style=''>     * &lt;b&gt;ItemTriggers&lt;/b&gt; associated to the behavior.
+</span>27 <span style=''>     * @return
+</span>28 <span style=''>     *   Triggers associated to the behavior.
+</span>29 <span style=''>     */
+</span>30 <span style=''>    def triggers: ItemTriggers
+</span>31 <span style=''>  }
+</span>32 <span style=''>
+</span>33 <span style=''>  /**
+</span>34 <span style=''>   * Standard implementation of &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
+</span>35 <span style=''>   */
+</span>36 <span style=''>  case class SimpleGenericItemBehavior(
+</span>37 <span style=''>    override val triggers: ItemTriggers
+</span>38 <span style=''>  )(implicit val subject: I)
+</span>39 <span style=''>    extends GenericItemBehavior
+</span>40 <span style=''>
+</span>41 <span style=''>  /**
+</span>42 <span style=''>   * Companion object for &lt;b&gt;GenericItemBehavior&lt;/b&gt;.
+</span>43 <span style=''>   */
+</span>44 <span style=''>  object GenericItemBehavior {
+</span>45 <span style=''>
+</span>46 <span style=''>    /**
+</span>47 <span style=''>     * A function that builds a &lt;b&gt;GenericBehavior&lt;/b&gt; given a subject.
+</span>48 <span style=''>     * @param triggers
+</span>49 <span style=''>     *   The &lt;b&gt;ItemTriggers&lt;/b&gt; associated to the subject.
+</span>50 <span style=''>     * @return
+</span>51 <span style=''>     *   A function that builds a &lt;b&gt;GenericBehavior&lt;/b&gt; given a subject.
+</span>52 <span style=''>     */
+</span>53 <span style=''>    def builder(triggers: ItemTriggers = PartialFunction.empty): I =&gt; GenericItemBehavior =
+</span>54 <span style=''>      </span><span style='background: #AEF1AE'>SimpleGenericItemBehavior(triggers)(_)</span><span style=''>
+</span>55 <span style=''>  }
+</span>56 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -85,15 +92,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           373
         </td>
         <td>
-          1557
+          1781
           -
-          1595
+          1819
         </td>
         <td>
           Apply

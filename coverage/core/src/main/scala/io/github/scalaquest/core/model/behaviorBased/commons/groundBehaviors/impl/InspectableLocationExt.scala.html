@@ -22,75 +22,82 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Inspect
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
-</span>8 <span style=''>
-</span>9 <span style=''>/**
-</span>10 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;InspectableLocation
-</span>11 <span style=''> * GroundBehavior&lt;/b&gt;.
-</span>12 <span style=''> */
-</span>13 <span style=''>trait InspectableLocationExt
-</span>14 <span style=''>  extends BehaviorBasedModel
-</span>15 <span style=''>  with CMessagesExt
-</span>16 <span style=''>  with CReactionsExt
-</span>17 <span style=''>  with StateUtilsExt {
-</span>18 <span style=''>
-</span>19 <span style=''>  /**
-</span>20 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to describe the location.
-</span>21 <span style=''>   */
-</span>22 <span style=''>  abstract class InspectableLocation extends GroundBehavior {
-</span>23 <span style=''>
-</span>24 <span style=''>    /**
-</span>25 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user a description of the current location.
-</span>26 <span style=''>     * @return
-</span>27 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user a description of the current location.
-</span>28 <span style=''>     */
-</span>29 <span style=''>    def inspectLocation: Reaction
-</span>30 <span style=''>  }
-</span>31 <span style=''>
-</span>32 <span style=''>  /**
-</span>33 <span style=''>   * A standard implementation for &lt;b&gt;InspectableLocation&lt;/b&gt;.
-</span>34 <span style=''>   * @param onInspectExtra
-</span>35 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspect the location. It can be
-</span>36 <span style=''>   *   omitted.
-</span>37 <span style=''>   */
-</span>38 <span style=''>  case class SimpleInspectableLocation(onInspectExtra: Reaction = Reaction.empty)
-</span>39 <span style=''>    extends InspectableLocation {
-</span>40 <span style=''>
-</span>41 <span style=''>    override def triggers: GroundTriggers = { case (Inspect, _) =&gt; </span><span style='background: #AEF1AE'>inspectLocation</span><span style=''> }
-</span>42 <span style=''>
-</span>43 <span style=''>    override def inspectLocation: Reaction =
-</span>44 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>45 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
-</span>46 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(
-</span>47 <span style=''></span><span style='background: #AEF1AE'>          CMessages.Inspected(s1.location, s1.locationItems, s1.location.neighbors(s1))
-</span>48 <span style=''></span><span style='background: #AEF1AE'>        )
-</span>49 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onInspectExtra
-</span>50 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
-</span>51 <span style=''>  }
-</span>52 <span style=''>
-</span>53 <span style=''>  /**
-</span>54 <span style=''>   * Companion object for &lt;b&gt;InspectableLocation&lt;/b&gt;.
-</span>55 <span style=''>   */
-</span>56 <span style=''>  object InspectableLocation {
-</span>57 <span style=''>
-</span>58 <span style=''>    /**
-</span>59 <span style=''>     * Shortcut for the standard implementation.
-</span>60 <span style=''>     * @param onInspectExtra
-</span>61 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspect the location. It can be
-</span>62 <span style=''>     *   omitted.
-</span>63 <span style=''>     * @return
-</span>64 <span style=''>     *   the instance of &lt;b&gt;InspectableLocation&lt;/b&gt;.
-</span>65 <span style=''>     */
-</span>66 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableLocation =
-</span>67 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableLocation(onInspectExtra)</span><span style=''>
-</span>68 <span style=''>  }
-</span>69 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Inspect
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>14 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>15 <span style=''>
+</span>16 <span style=''>/**
+</span>17 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;InspectableLocation
+</span>18 <span style=''> * GroundBehavior&lt;/b&gt;.
+</span>19 <span style=''> */
+</span>20 <span style=''>trait InspectableLocationExt
+</span>21 <span style=''>  extends BehaviorBasedModel
+</span>22 <span style=''>  with CMessagesExt
+</span>23 <span style=''>  with CReactionsExt
+</span>24 <span style=''>  with StateUtilsExt {
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to describe the location.
+</span>28 <span style=''>   */
+</span>29 <span style=''>  abstract class InspectableLocation extends GroundBehavior {
+</span>30 <span style=''>
+</span>31 <span style=''>    /**
+</span>32 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user a description of the current location.
+</span>33 <span style=''>     * @return
+</span>34 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user a description of the current location.
+</span>35 <span style=''>     */
+</span>36 <span style=''>    def inspectLocation: Reaction
+</span>37 <span style=''>  }
+</span>38 <span style=''>
+</span>39 <span style=''>  /**
+</span>40 <span style=''>   * A standard implementation for &lt;b&gt;InspectableLocation&lt;/b&gt;.
+</span>41 <span style=''>   * @param onInspectExtra
+</span>42 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspect the location. It can be
+</span>43 <span style=''>   *   omitted.
+</span>44 <span style=''>   */
+</span>45 <span style=''>  case class SimpleInspectableLocation(onInspectExtra: Reaction = Reaction.empty)
+</span>46 <span style=''>    extends InspectableLocation {
+</span>47 <span style=''>
+</span>48 <span style=''>    override def triggers: GroundTriggers = { case (Inspect, _) =&gt; </span><span style='background: #AEF1AE'>inspectLocation</span><span style=''> }
+</span>49 <span style=''>
+</span>50 <span style=''>    override def inspectLocation: Reaction =
+</span>51 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>52 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
+</span>53 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(
+</span>54 <span style=''></span><span style='background: #AEF1AE'>          CMessages.Inspected(s1.location, s1.locationItems, s1.location.neighbors(s1))
+</span>55 <span style=''></span><span style='background: #AEF1AE'>        )
+</span>56 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onInspectExtra
+</span>57 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>58 <span style=''>  }
+</span>59 <span style=''>
+</span>60 <span style=''>  /**
+</span>61 <span style=''>   * Companion object for &lt;b&gt;InspectableLocation&lt;/b&gt;.
+</span>62 <span style=''>   */
+</span>63 <span style=''>  object InspectableLocation {
+</span>64 <span style=''>
+</span>65 <span style=''>    /**
+</span>66 <span style=''>     * Shortcut for the standard implementation.
+</span>67 <span style=''>     * @param onInspectExtra
+</span>68 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspect the location. It can be
+</span>69 <span style=''>     *   omitted.
+</span>70 <span style=''>     * @return
+</span>71 <span style=''>     *   the instance of &lt;b&gt;InspectableLocation&lt;/b&gt;.
+</span>72 <span style=''>     */
+</span>73 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableLocation =
+</span>74 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableLocation(onInspectExtra)</span><span style=''>
+</span>75 <span style=''>  }
+</span>76 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -105,15 +112,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           290
         </td>
         <td>
-          1557
+          1781
           -
-          1572
+          1796
         </td>
         <td>
           Select
@@ -129,15 +136,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           291
         </td>
         <td>
-          1534
+          1758
           -
-          1534
+          1758
         </td>
         <td>
           Apply
@@ -153,15 +160,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          52
         </td>
         <td>
           292
         </td>
         <td>
-          1647
+          1871
           -
-          1661
+          1885
         </td>
         <td>
           Select
@@ -177,15 +184,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          52
         </td>
         <td>
           301
         </td>
         <td>
-          1627
+          1851
           -
-          1841
+          2065
         </td>
         <td>
           Apply
@@ -203,15 +210,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          53
         </td>
         <td>
           297
         </td>
         <td>
-          1675
+          1899
           -
-          1795
+          2019
         </td>
         <td>
           Apply
@@ -227,15 +234,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          53
         </td>
         <td>
           300
         </td>
         <td>
-          1670
+          1894
           -
-          1841
+          2065
         </td>
         <td>
           Apply
@@ -253,15 +260,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           293
         </td>
         <td>
-          1728
+          1952
           -
-          1739
+          1963
         </td>
         <td>
           Select
@@ -277,15 +284,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           294
         </td>
         <td>
-          1741
+          1965
           -
-          1757
+          1981
         </td>
         <td>
           Select
@@ -301,15 +308,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           295
         </td>
         <td>
-          1759
+          1983
           -
-          1784
+          2008
         </td>
         <td>
           Apply
@@ -325,15 +332,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           296
         </td>
         <td>
-          1708
+          1932
           -
-          1785
+          2009
         </td>
         <td>
           Apply
@@ -349,15 +356,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          56
         </td>
         <td>
           298
         </td>
         <td>
-          1810
+          2034
           -
-          1824
+          2048
         </td>
         <td>
           Select
@@ -373,15 +380,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          56
         </td>
         <td>
           299
         </td>
         <td>
-          1804
+          2028
           -
-          1841
+          2065
         </td>
         <td>
           Apply
@@ -397,15 +404,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          74
         </td>
         <td>
           302
         </td>
         <td>
-          2312
+          2536
           -
-          2353
+          2577
         </td>
         <td>
           Apply

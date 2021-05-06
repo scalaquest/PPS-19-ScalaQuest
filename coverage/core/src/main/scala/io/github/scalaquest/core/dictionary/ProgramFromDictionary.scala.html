@@ -22,27 +22,34 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary
-</span>2 <span style=''>
-</span>3 <span style=''>import cats.Functor
-</span>4 <span style=''>import io.github.scalaquest.core.dictionary.implicits.{itemToProgram, programMonoid, verbToProgram}
-</span>5 <span style=''>import io.github.scalaquest.core.dictionary.generators.implicits.listGenerator
-</span>6 <span style=''>import io.github.scalaquest.core.dictionary.generators.{GeneratorK, combineAll}
-</span>7 <span style=''>import io.github.scalaquest.core.dictionary.verbs.Verb
-</span>8 <span style=''>import io.github.scalaquest.core.parsing.scalog.Program
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary
 </span>9 <span style=''>
-</span>10 <span style=''>case class ProgramFromDictionary[I &lt;: Item](verbs: Set[Verb], items: Set[I]) {
-</span>11 <span style=''>
-</span>12 <span style=''>  def generateSource[F[_]: Functor](base: F[String]): F[String] = {
-</span>13 <span style=''>    val src = </span><span style='background: #AEF1AE'>Functor[F].map(base)(
-</span>14 <span style=''></span><span style='background: #AEF1AE'>      _ +: combineAll(
-</span>15 <span style=''></span><span style='background: #AEF1AE'>        GeneratorK[List, Verb, Program].generate(verbs.toList),
-</span>16 <span style=''></span><span style='background: #AEF1AE'>        GeneratorK[List, Item, Program].generate(items.toList)
-</span>17 <span style=''></span><span style='background: #AEF1AE'>      ).map(_.generate).toList
-</span>18 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
-</span>19 <span style=''>    </span><span style='background: #AEF1AE'>Functor[F].map(src)(_.mkString(&quot;\n&quot;))</span><span style=''>
-</span>20 <span style=''>  }
-</span>21 <span style=''>}
+</span>10 <span style=''>import cats.Functor
+</span>11 <span style=''>import io.github.scalaquest.core.dictionary.implicits.{itemToProgram, programMonoid, verbToProgram}
+</span>12 <span style=''>import io.github.scalaquest.core.dictionary.generators.implicits.listGenerator
+</span>13 <span style=''>import io.github.scalaquest.core.dictionary.generators.{GeneratorK, combineAll}
+</span>14 <span style=''>import io.github.scalaquest.core.dictionary.verbs.Verb
+</span>15 <span style=''>import io.github.scalaquest.core.parsing.scalog.Program
+</span>16 <span style=''>
+</span>17 <span style=''>case class ProgramFromDictionary[I &lt;: Item](verbs: Set[Verb], items: Set[I]) {
+</span>18 <span style=''>
+</span>19 <span style=''>  def generateSource[F[_]: Functor](base: F[String]): F[String] = {
+</span>20 <span style=''>    val src = </span><span style='background: #AEF1AE'>Functor[F].map(base)(
+</span>21 <span style=''></span><span style='background: #AEF1AE'>      _ +: combineAll(
+</span>22 <span style=''></span><span style='background: #AEF1AE'>        GeneratorK[List, Verb, Program].generate(verbs.toList),
+</span>23 <span style=''></span><span style='background: #AEF1AE'>        GeneratorK[List, Item, Program].generate(items.toList)
+</span>24 <span style=''></span><span style='background: #AEF1AE'>      ).map(_.generate).toList
+</span>25 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>26 <span style=''>    </span><span style='background: #AEF1AE'>Functor[F].map(src)(_.mkString(&quot;\n&quot;))</span><span style=''>
+</span>27 <span style=''>  }
+</span>28 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -57,15 +64,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           69
         </td>
         <td>
-          599
+          823
           -
-          807
+          1031
         </td>
         <td>
           Apply
@@ -84,15 +91,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          21
         </td>
         <td>
           68
         </td>
         <td>
-          629
+          853
           -
-          801
+          1025
         </td>
         <td>
           Apply
@@ -108,15 +115,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           70
         </td>
         <td>
-          832
+          1056
           -
-          848
+          1072
         </td>
         <td>
           Apply
@@ -132,15 +139,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           71
         </td>
         <td>
-          812
+          1036
           -
-          849
+          1073
         </td>
         <td>
           Apply

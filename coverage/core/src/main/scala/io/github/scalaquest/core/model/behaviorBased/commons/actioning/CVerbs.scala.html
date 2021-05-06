@@ -22,51 +22,58 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.actioning
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
-</span>4 <span style=''>import io.github.scalaquest.core.model.Direction
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions._
-</span>6 <span style=''>
-</span>7 <span style=''>/**
-</span>8 <span style=''> * &lt;b&gt;Verbs&lt;/b&gt; already implemented in the game.
-</span>9 <span style=''> */
-</span>10 <span style=''>object CVerbs {
-</span>11 <span style=''>
-</span>12 <span style=''>  private def movements: Set[Verb] = {
-</span>13 <span style=''>    </span><span style='background: #AEF1AE'>Set(
-</span>14 <span style=''></span><span style='background: #AEF1AE'>      &quot;north&quot; -&gt; Direction.North,
-</span>15 <span style=''></span><span style='background: #AEF1AE'>      &quot;south&quot; -&gt; Direction.South,
-</span>16 <span style=''></span><span style='background: #AEF1AE'>      &quot;east&quot;  -&gt; Direction.East,
-</span>17 <span style=''></span><span style='background: #AEF1AE'>      &quot;west&quot;  -&gt; Direction.West,
-</span>18 <span style=''></span><span style='background: #AEF1AE'>      &quot;up&quot;    -&gt; Direction.Up,
-</span>19 <span style=''></span><span style='background: #AEF1AE'>      &quot;down&quot;  -&gt; Direction.Down
-</span>20 <span style=''></span><span style='background: #AEF1AE'>    ).flatMap { case (name, dir) =&gt;
-</span>21 <span style=''></span><span style='background: #AEF1AE'>      Set(
-</span>22 <span style=''></span><span style='background: #AEF1AE'>        name.charAt(0).toString -&gt; dir,
-</span>23 <span style=''></span><span style='background: #AEF1AE'>        name                    -&gt; dir
-</span>24 <span style=''></span><span style='background: #AEF1AE'>      )
-</span>25 <span style=''></span><span style='background: #AEF1AE'>    }.map { case (name, dir) =&gt; Intransitive(&quot;go&quot;, Go(dir), Some(name)) }</span><span style=''>
-</span>26 <span style=''>  }
-</span>27 <span style=''>
-</span>28 <span style=''>  /**
-</span>29 <span style=''>   * All the common &lt;b&gt;verbs&lt;/b&gt;.
-</span>30 <span style=''>   * @return
-</span>31 <span style=''>   *   all the common verbs.
-</span>32 <span style=''>   */
-</span>33 <span style=''>  def apply(): Set[Verb] =
-</span>34 <span style=''>    </span><span style='background: #AEF1AE'>Set(
-</span>35 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;take&quot;, Take),
-</span>36 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;eat&quot;, Eat),
-</span>37 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;pick&quot;, Take, Some(&quot;up&quot;)),
-</span>38 <span style=''></span><span style='background: #AEF1AE'>      Ditransitive(&quot;open&quot;, Open, Some(&quot;with&quot;)),
-</span>39 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;open&quot;, Open),
-</span>40 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;enter&quot;, Enter),
-</span>41 <span style=''></span><span style='background: #AEF1AE'>      Ditransitive(&quot;enter&quot;, Enter, Some(&quot;with&quot;)),
-</span>42 <span style=''></span><span style='background: #AEF1AE'>      Intransitive(&quot;inspect&quot;, Inspect),
-</span>43 <span style=''></span><span style='background: #AEF1AE'>      Intransitive(&quot;inspect&quot;, InspectBag, Some(&quot;bag&quot;))
-</span>44 <span style=''></span><span style='background: #AEF1AE'>    ) ++ movements</span><span style=''>
-</span>45 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.actioning
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.dictionary.verbs.{Ditransitive, Intransitive, Transitive, Verb}
+</span>11 <span style=''>import io.github.scalaquest.core.model.Direction
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions._
+</span>13 <span style=''>
+</span>14 <span style=''>/**
+</span>15 <span style=''> * &lt;b&gt;Verbs&lt;/b&gt; already implemented in the game.
+</span>16 <span style=''> */
+</span>17 <span style=''>object CVerbs {
+</span>18 <span style=''>
+</span>19 <span style=''>  private def movements: Set[Verb] = {
+</span>20 <span style=''>    </span><span style='background: #AEF1AE'>Set(
+</span>21 <span style=''></span><span style='background: #AEF1AE'>      &quot;north&quot; -&gt; Direction.North,
+</span>22 <span style=''></span><span style='background: #AEF1AE'>      &quot;south&quot; -&gt; Direction.South,
+</span>23 <span style=''></span><span style='background: #AEF1AE'>      &quot;east&quot;  -&gt; Direction.East,
+</span>24 <span style=''></span><span style='background: #AEF1AE'>      &quot;west&quot;  -&gt; Direction.West,
+</span>25 <span style=''></span><span style='background: #AEF1AE'>      &quot;up&quot;    -&gt; Direction.Up,
+</span>26 <span style=''></span><span style='background: #AEF1AE'>      &quot;down&quot;  -&gt; Direction.Down
+</span>27 <span style=''></span><span style='background: #AEF1AE'>    ).flatMap { case (name, dir) =&gt;
+</span>28 <span style=''></span><span style='background: #AEF1AE'>      Set(
+</span>29 <span style=''></span><span style='background: #AEF1AE'>        name.charAt(0).toString -&gt; dir,
+</span>30 <span style=''></span><span style='background: #AEF1AE'>        name                    -&gt; dir
+</span>31 <span style=''></span><span style='background: #AEF1AE'>      )
+</span>32 <span style=''></span><span style='background: #AEF1AE'>    }.map { case (name, dir) =&gt; Intransitive(&quot;go&quot;, Go(dir), Some(name)) }</span><span style=''>
+</span>33 <span style=''>  }
+</span>34 <span style=''>
+</span>35 <span style=''>  /**
+</span>36 <span style=''>   * All the common &lt;b&gt;verbs&lt;/b&gt;.
+</span>37 <span style=''>   * @return
+</span>38 <span style=''>   *   all the common verbs.
+</span>39 <span style=''>   */
+</span>40 <span style=''>  def apply(): Set[Verb] =
+</span>41 <span style=''>    </span><span style='background: #AEF1AE'>Set(
+</span>42 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;take&quot;, Take),
+</span>43 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;eat&quot;, Eat),
+</span>44 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;pick&quot;, Take, Some(&quot;up&quot;)),
+</span>45 <span style=''></span><span style='background: #AEF1AE'>      Ditransitive(&quot;open&quot;, Open, Some(&quot;with&quot;)),
+</span>46 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;open&quot;, Open),
+</span>47 <span style=''></span><span style='background: #AEF1AE'>      Transitive(&quot;enter&quot;, Enter),
+</span>48 <span style=''></span><span style='background: #AEF1AE'>      Ditransitive(&quot;enter&quot;, Enter, Some(&quot;with&quot;)),
+</span>49 <span style=''></span><span style='background: #AEF1AE'>      Intransitive(&quot;inspect&quot;, Inspect),
+</span>50 <span style=''></span><span style='background: #AEF1AE'>      Intransitive(&quot;inspect&quot;, InspectBag, Some(&quot;bag&quot;))
+</span>51 <span style=''></span><span style='background: #AEF1AE'>    ) ++ movements</span><span style=''>
+</span>52 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -81,15 +88,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          14
+          21
         </td>
         <td>
           214
         </td>
         <td>
-          430
+          654
           -
-          437
+          661
         </td>
         <td>
           Literal
@@ -105,15 +112,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          21
         </td>
         <td>
           215
         </td>
         <td>
-          441
+          665
           -
-          456
+          680
         </td>
         <td>
           Select
@@ -129,15 +136,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          21
         </td>
         <td>
           216
         </td>
         <td>
-          430
+          654
           -
-          456
+          680
         </td>
         <td>
           Apply
@@ -153,15 +160,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           217
         </td>
         <td>
-          464
+          688
           -
-          471
+          695
         </td>
         <td>
           Literal
@@ -177,15 +184,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           218
         </td>
         <td>
-          475
+          699
           -
-          490
+          714
         </td>
         <td>
           Select
@@ -201,15 +208,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           219
         </td>
         <td>
-          464
+          688
           -
-          490
+          714
         </td>
         <td>
           Apply
@@ -225,15 +232,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           220
         </td>
         <td>
-          498
+          722
           -
-          504
+          728
         </td>
         <td>
           Literal
@@ -249,15 +256,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           221
         </td>
         <td>
-          509
+          733
           -
-          523
+          747
         </td>
         <td>
           Select
@@ -273,15 +280,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           222
         </td>
         <td>
-          498
+          722
           -
-          523
+          747
         </td>
         <td>
           Apply
@@ -297,15 +304,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           223
         </td>
         <td>
-          531
+          755
           -
-          537
+          761
         </td>
         <td>
           Literal
@@ -321,15 +328,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           224
         </td>
         <td>
-          542
+          766
           -
-          556
+          780
         </td>
         <td>
           Select
@@ -345,15 +352,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           225
         </td>
         <td>
-          531
+          755
           -
-          556
+          780
         </td>
         <td>
           Apply
@@ -369,15 +376,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           226
         </td>
         <td>
-          564
+          788
           -
-          568
+          792
         </td>
         <td>
           Literal
@@ -393,15 +400,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           227
         </td>
         <td>
-          575
+          799
           -
-          587
+          811
         </td>
         <td>
           Select
@@ -417,15 +424,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           228
         </td>
         <td>
-          564
+          788
           -
-          587
+          811
         </td>
         <td>
           Apply
@@ -441,15 +448,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           229
         </td>
         <td>
-          595
+          819
           -
-          601
+          825
         </td>
         <td>
           Literal
@@ -465,15 +472,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           230
         </td>
         <td>
-          606
+          830
           -
-          620
+          844
         </td>
         <td>
           Select
@@ -489,15 +496,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           231
         </td>
         <td>
-          595
+          819
           -
-          620
+          844
         </td>
         <td>
           Apply
@@ -513,15 +520,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          28
         </td>
         <td>
           234
         </td>
         <td>
-          663
+          887
           -
-          754
+          978
         </td>
         <td>
           Apply
@@ -537,15 +544,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           232
         </td>
         <td>
-          676
+          900
           -
-          706
+          930
         </td>
         <td>
           Apply
@@ -561,15 +568,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           233
         </td>
         <td>
-          716
+          940
           -
-          746
+          970
         </td>
         <td>
           Apply
@@ -585,15 +592,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           235
         </td>
         <td>
-          800
+          1024
           -
-          804
+          1028
         </td>
         <td>
           Literal
@@ -609,15 +616,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           236
         </td>
         <td>
-          806
+          1030
           -
-          813
+          1037
         </td>
         <td>
           Apply
@@ -633,15 +640,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           237
         </td>
         <td>
-          815
+          1039
           -
-          825
+          1049
         </td>
         <td>
           Apply
@@ -657,15 +664,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           238
         </td>
         <td>
-          787
+          1011
           -
-          826
+          1050
         </td>
         <td>
           Apply
@@ -681,15 +688,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           239
         </td>
         <td>
-          419
+          643
           -
-          828
+          1052
         </td>
         <td>
           Apply
@@ -709,15 +716,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           240
         </td>
         <td>
-          975
+          1199
           -
-          981
+          1205
         </td>
         <td>
           Literal
@@ -733,15 +740,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           241
         </td>
         <td>
-          983
+          1207
           -
-          987
+          1211
         </td>
         <td>
           Select
@@ -757,15 +764,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           242
         </td>
         <td>
-          964
+          1188
           -
-          964
+          1188
         </td>
         <td>
           Select
@@ -781,15 +788,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           243
         </td>
         <td>
-          964
+          1188
           -
-          988
+          1212
         </td>
         <td>
           Apply
@@ -805,15 +812,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          43
         </td>
         <td>
           244
         </td>
         <td>
-          1007
+          1231
           -
-          1012
+          1236
         </td>
         <td>
           Literal
@@ -829,15 +836,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          43
         </td>
         <td>
           245
         </td>
         <td>
-          1014
+          1238
           -
-          1017
+          1241
         </td>
         <td>
           Select
@@ -853,15 +860,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          43
         </td>
         <td>
           246
         </td>
         <td>
-          996
+          1220
           -
-          996
+          1220
         </td>
         <td>
           Select
@@ -877,15 +884,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          43
         </td>
         <td>
           247
         </td>
         <td>
-          996
+          1220
           -
-          1018
+          1242
         </td>
         <td>
           Apply
@@ -901,15 +908,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           248
         </td>
         <td>
-          1037
+          1261
           -
-          1043
+          1267
         </td>
         <td>
           Literal
@@ -925,15 +932,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           249
         </td>
         <td>
-          1045
+          1269
           -
-          1049
+          1273
         </td>
         <td>
           Select
@@ -949,15 +956,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           250
         </td>
         <td>
-          1051
+          1275
           -
-          1061
+          1285
         </td>
         <td>
           Apply
@@ -973,15 +980,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           251
         </td>
         <td>
-          1026
+          1250
           -
-          1062
+          1286
         </td>
         <td>
           Apply
@@ -997,15 +1004,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           252
         </td>
         <td>
-          1083
+          1307
           -
-          1089
+          1313
         </td>
         <td>
           Literal
@@ -1021,15 +1028,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           253
         </td>
         <td>
-          1091
+          1315
           -
-          1095
+          1319
         </td>
         <td>
           Select
@@ -1045,15 +1052,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           254
         </td>
         <td>
-          1097
+          1321
           -
-          1109
+          1333
         </td>
         <td>
           Apply
@@ -1069,15 +1076,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           255
         </td>
         <td>
-          1070
+          1294
           -
-          1110
+          1334
         </td>
         <td>
           Apply
@@ -1093,15 +1100,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           256
         </td>
         <td>
-          1129
+          1353
           -
-          1135
+          1359
         </td>
         <td>
           Literal
@@ -1117,15 +1124,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           257
         </td>
         <td>
-          1137
+          1361
           -
-          1141
+          1365
         </td>
         <td>
           Select
@@ -1141,15 +1148,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           258
         </td>
         <td>
-          1118
+          1342
           -
-          1118
+          1342
         </td>
         <td>
           Select
@@ -1165,15 +1172,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           259
         </td>
         <td>
-          1118
+          1342
           -
-          1142
+          1366
         </td>
         <td>
           Apply
@@ -1189,15 +1196,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          47
         </td>
         <td>
           260
         </td>
         <td>
-          1161
+          1385
           -
-          1168
+          1392
         </td>
         <td>
           Literal
@@ -1213,15 +1220,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          47
         </td>
         <td>
           261
         </td>
         <td>
-          1170
+          1394
           -
-          1175
+          1399
         </td>
         <td>
           Select
@@ -1237,15 +1244,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          47
         </td>
         <td>
           262
         </td>
         <td>
-          1150
+          1374
           -
-          1150
+          1374
         </td>
         <td>
           Select
@@ -1261,15 +1268,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          47
         </td>
         <td>
           263
         </td>
         <td>
-          1150
+          1374
           -
-          1176
+          1400
         </td>
         <td>
           Apply
@@ -1285,15 +1292,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           264
         </td>
         <td>
-          1197
+          1421
           -
-          1204
+          1428
         </td>
         <td>
           Literal
@@ -1309,15 +1316,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           265
         </td>
         <td>
-          1206
+          1430
           -
-          1211
+          1435
         </td>
         <td>
           Select
@@ -1333,15 +1340,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           266
         </td>
         <td>
-          1213
+          1437
           -
-          1225
+          1449
         </td>
         <td>
           Apply
@@ -1357,15 +1364,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           267
         </td>
         <td>
-          1184
+          1408
           -
-          1226
+          1450
         </td>
         <td>
           Apply
@@ -1381,15 +1388,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           268
         </td>
         <td>
-          1247
+          1471
           -
-          1256
+          1480
         </td>
         <td>
           Literal
@@ -1405,15 +1412,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           269
         </td>
         <td>
-          1258
+          1482
           -
-          1265
+          1489
         </td>
         <td>
           Select
@@ -1429,15 +1436,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           270
         </td>
         <td>
-          1234
+          1458
           -
-          1234
+          1458
         </td>
         <td>
           Select
@@ -1453,15 +1460,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           271
         </td>
         <td>
-          1234
+          1458
           -
-          1266
+          1490
         </td>
         <td>
           Apply
@@ -1477,15 +1484,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           272
         </td>
         <td>
-          1287
+          1511
           -
-          1296
+          1520
         </td>
         <td>
           Literal
@@ -1501,15 +1508,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           273
         </td>
         <td>
-          1298
+          1522
           -
-          1308
+          1532
         </td>
         <td>
           Select
@@ -1525,15 +1532,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           274
         </td>
         <td>
-          1310
+          1534
           -
-          1321
+          1545
         </td>
         <td>
           Apply
@@ -1549,15 +1556,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           275
         </td>
         <td>
-          1274
+          1498
           -
-          1322
+          1546
         </td>
         <td>
           Apply
@@ -1573,15 +1580,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           276
         </td>
         <td>
-          1332
+          1556
           -
-          1341
+          1565
         </td>
         <td>
           Select
@@ -1597,15 +1604,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           277
         </td>
         <td>
-          953
+          1177
           -
-          1341
+          1565
         </td>
         <td>
           Apply

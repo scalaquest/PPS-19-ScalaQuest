@@ -22,132 +22,139 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.ItemRef
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
-</span>8 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 </span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Container&lt;/b&gt; behavior.
-</span>12 <span style=''> */
-</span>13 <span style=''>trait ContainerExt
-</span>14 <span style=''>  extends BehaviorBasedModel
-</span>15 <span style=''>  with CMessagesExt
-</span>16 <span style=''>  with CReactionsExt
-</span>17 <span style=''>  with StateUtilsExt
-</span>18 <span style=''>  with OpenableExt {
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; that enables the possibility to open a &lt;b&gt;BehaviorBasedItem&lt;/b&gt;, and to
-</span>22 <span style=''>   * reveal a set of items into the location when opened.
-</span>23 <span style=''>   */
-</span>24 <span style=''>  abstract class Container extends ItemBehavior {
-</span>25 <span style=''>
-</span>26 <span style=''>    /**
-</span>27 <span style=''>     * &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s that will be added to the location after opening the subject.
-</span>28 <span style=''>     * @param state
-</span>29 <span style=''>     *   The actual game state. Used to extract the actual &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s from their
-</span>30 <span style=''>     *   refs.
-</span>31 <span style=''>     * @return
-</span>32 <span style=''>     *   &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s that will be added to the location after opening the subject.
-</span>33 <span style=''>     */
-</span>34 <span style=''>    def items(implicit state: S): Set[I]
-</span>35 <span style=''>
-</span>36 <span style=''>    /**
-</span>37 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; triggered when the subject is opened: it reveals a set of
-</span>38 <span style=''>     * &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s into the current Room when opened.
-</span>39 <span style=''>     * @return
-</span>40 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; triggered when the subject is opened.
-</span>41 <span style=''>     */
-</span>42 <span style=''>    def revealItems: Reaction
-</span>43 <span style=''>
-</span>44 <span style=''>    /**
-</span>45 <span style=''>     * The &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject.
+</span>10 <span style=''>import io.github.scalaquest.core.model.ItemRef
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>14 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>15 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>16 <span style=''>
+</span>17 <span style=''>/**
+</span>18 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Container&lt;/b&gt; behavior.
+</span>19 <span style=''> */
+</span>20 <span style=''>trait ContainerExt
+</span>21 <span style=''>  extends BehaviorBasedModel
+</span>22 <span style=''>  with CMessagesExt
+</span>23 <span style=''>  with CReactionsExt
+</span>24 <span style=''>  with StateUtilsExt
+</span>25 <span style=''>  with OpenableExt {
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; that enables the possibility to open a &lt;b&gt;BehaviorBasedItem&lt;/b&gt;, and to
+</span>29 <span style=''>   * reveal a set of items into the location when opened.
+</span>30 <span style=''>   */
+</span>31 <span style=''>  abstract class Container extends ItemBehavior {
+</span>32 <span style=''>
+</span>33 <span style=''>    /**
+</span>34 <span style=''>     * &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s that will be added to the location after opening the subject.
+</span>35 <span style=''>     * @param state
+</span>36 <span style=''>     *   The actual game state. Used to extract the actual &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s from their
+</span>37 <span style=''>     *   refs.
+</span>38 <span style=''>     * @return
+</span>39 <span style=''>     *   &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s that will be added to the location after opening the subject.
+</span>40 <span style=''>     */
+</span>41 <span style=''>    def items(implicit state: S): Set[I]
+</span>42 <span style=''>
+</span>43 <span style=''>    /**
+</span>44 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; triggered when the subject is opened: it reveals a set of
+</span>45 <span style=''>     * &lt;b&gt;BehaviorBasedItem&lt;/b&gt;s into the current Room when opened.
 </span>46 <span style=''>     * @return
-</span>47 <span style=''>     *   The &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject.
+</span>47 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; triggered when the subject is opened.
 </span>48 <span style=''>     */
-</span>49 <span style=''>    def openable: Openable
+</span>49 <span style=''>    def revealItems: Reaction
 </span>50 <span style=''>
 </span>51 <span style=''>    /**
-</span>52 <span style=''>     * The &quot;openness&quot; state of the Item, initially closed.
+</span>52 <span style=''>     * The &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject.
 </span>53 <span style=''>     * @return
-</span>54 <span style=''>     *   True if the container is open, False otherwise.
+</span>54 <span style=''>     *   The &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject.
 </span>55 <span style=''>     */
-</span>56 <span style=''>    def isOpen: Boolean
-</span>57 <span style=''>  }
-</span>58 <span style=''>
-</span>59 <span style=''>  /**
-</span>60 <span style=''>   * The standard implementation for &lt;b&gt;Container&lt;/b&gt;.
-</span>61 <span style=''>   * @param itemRefs
-</span>62 <span style=''>   *   Refs to the Items that will be added to the location after opening the subject.
-</span>63 <span style=''>   * @param openable
-</span>64 <span style=''>   *   The Openable behavior associated to the subject Item.
-</span>65 <span style=''>   * @param subject
-</span>66 <span style=''>   *   The item that owes the Container behavior.
-</span>67 <span style=''>   */
-</span>68 <span style=''>  case class SimpleContainer(
-</span>69 <span style=''>    itemRefs: Set[ItemRef],
-</span>70 <span style=''>    openable: Openable
-</span>71 <span style=''>  )(implicit val subject: I)
-</span>72 <span style=''>    extends Container
-</span>73 <span style=''>    with Delegate {
-</span>74 <span style=''>
-</span>75 <span style=''>    override def delegateTriggers: ItemTriggers = </span><span style='background: #AEF1AE'>openable.triggers</span><span style=''>
-</span>76 <span style=''>
-</span>77 <span style=''>    override def receiverTriggers: ItemTriggers = {
-</span>78 <span style=''>      case (Open, maybeKey, s)
-</span>79 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.canBeOpened(maybeKey)(s)
-</span>80 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !openable.isOpen</span><span style=''> =&gt;
-</span>81 <span style=''>        </span><span style='background: #AEF1AE'>revealItems</span><span style=''>
-</span>82 <span style=''>    }
+</span>56 <span style=''>    def openable: Openable
+</span>57 <span style=''>
+</span>58 <span style=''>    /**
+</span>59 <span style=''>     * The &quot;openness&quot; state of the Item, initially closed.
+</span>60 <span style=''>     * @return
+</span>61 <span style=''>     *   True if the container is open, False otherwise.
+</span>62 <span style=''>     */
+</span>63 <span style=''>    def isOpen: Boolean
+</span>64 <span style=''>  }
+</span>65 <span style=''>
+</span>66 <span style=''>  /**
+</span>67 <span style=''>   * The standard implementation for &lt;b&gt;Container&lt;/b&gt;.
+</span>68 <span style=''>   * @param itemRefs
+</span>69 <span style=''>   *   Refs to the Items that will be added to the location after opening the subject.
+</span>70 <span style=''>   * @param openable
+</span>71 <span style=''>   *   The Openable behavior associated to the subject Item.
+</span>72 <span style=''>   * @param subject
+</span>73 <span style=''>   *   The item that owes the Container behavior.
+</span>74 <span style=''>   */
+</span>75 <span style=''>  case class SimpleContainer(
+</span>76 <span style=''>    itemRefs: Set[ItemRef],
+</span>77 <span style=''>    openable: Openable
+</span>78 <span style=''>  )(implicit val subject: I)
+</span>79 <span style=''>    extends Container
+</span>80 <span style=''>    with Delegate {
+</span>81 <span style=''>
+</span>82 <span style=''>    override def delegateTriggers: ItemTriggers = </span><span style='background: #AEF1AE'>openable.triggers</span><span style=''>
 </span>83 <span style=''>
-</span>84 <span style=''>    override def items(implicit state: S): Set[I] = </span><span style='background: #AEF1AE'>itemRefs.map(state.items(_))</span><span style=''>
-</span>85 <span style=''>
-</span>86 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable.isOpen</span><span style=''>
-</span>87 <span style=''>
-</span>88 <span style=''>    override def revealItems: Reaction =
-</span>89 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>90 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- openable.open
-</span>91 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
-</span>92 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- CReactions.addMessage(CMessages.ReversedIntoLocation(items(s1)))
-</span>93 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
-</span>94 <span style=''>  }
-</span>95 <span style=''>
-</span>96 <span style=''>  /**
-</span>97 <span style=''>   * A companion object used to create &lt;b&gt;Container&lt;/b&gt; builders.
-</span>98 <span style=''>   */
-</span>99 <span style=''>  object Container {
-</span>100 <span style=''>
-</span>101 <span style=''>    /**
-</span>102 <span style=''>     * A builder for a container that does not require a &lt;b&gt;Key&lt;/b&gt; to be opened.
-</span>103 <span style=''>     * @param items
-</span>104 <span style=''>     *   Items that will be added to the location after opening the subject.
-</span>105 <span style=''>     * @return
-</span>106 <span style=''>     *   A builder for a container that does not require a Key to be opened.
-</span>107 <span style=''>     */
-</span>108 <span style=''>    def unlockedBuilder(
-</span>109 <span style=''>      items: Set[I]
-</span>110 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.unlockedBuilder()(i))(i)</span><span style=''>
-</span>111 <span style=''>
-</span>112 <span style=''>    /**
-</span>113 <span style=''>     * A builder for a container that requires a &lt;b&gt;Key&lt;/b&gt; to be opened.
-</span>114 <span style=''>     * @param items
-</span>115 <span style=''>     *   Items that will be added to the location after opening the subject.
-</span>116 <span style=''>     * @param key
-</span>117 <span style=''>     *   The Key required to open the containerized item.
-</span>118 <span style=''>     * @return
-</span>119 <span style=''>     *   A builder for a container that requires a Key to be opened.
-</span>120 <span style=''>     */
-</span>121 <span style=''>    def lockedBuilder(
-</span>122 <span style=''>      items: Set[I],
-</span>123 <span style=''>      key: Key
-</span>124 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.lockedBuilder(key)(i))(i)</span><span style=''>
-</span>125 <span style=''>  }
-</span>126 <span style=''>}
+</span>84 <span style=''>    override def receiverTriggers: ItemTriggers = {
+</span>85 <span style=''>      case (Open, maybeKey, s)
+</span>86 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.canBeOpened(maybeKey)(s)
+</span>87 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !openable.isOpen</span><span style=''> =&gt;
+</span>88 <span style=''>        </span><span style='background: #AEF1AE'>revealItems</span><span style=''>
+</span>89 <span style=''>    }
+</span>90 <span style=''>
+</span>91 <span style=''>    override def items(implicit state: S): Set[I] = </span><span style='background: #AEF1AE'>itemRefs.map(state.items(_))</span><span style=''>
+</span>92 <span style=''>
+</span>93 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable.isOpen</span><span style=''>
+</span>94 <span style=''>
+</span>95 <span style=''>    override def revealItems: Reaction =
+</span>96 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>97 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- openable.open
+</span>98 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.modifyLocationItems(_ ++ items(s1).map(_.ref))
+</span>99 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- CReactions.addMessage(CMessages.ReversedIntoLocation(items(s1)))
+</span>100 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>101 <span style=''>  }
+</span>102 <span style=''>
+</span>103 <span style=''>  /**
+</span>104 <span style=''>   * A companion object used to create &lt;b&gt;Container&lt;/b&gt; builders.
+</span>105 <span style=''>   */
+</span>106 <span style=''>  object Container {
+</span>107 <span style=''>
+</span>108 <span style=''>    /**
+</span>109 <span style=''>     * A builder for a container that does not require a &lt;b&gt;Key&lt;/b&gt; to be opened.
+</span>110 <span style=''>     * @param items
+</span>111 <span style=''>     *   Items that will be added to the location after opening the subject.
+</span>112 <span style=''>     * @return
+</span>113 <span style=''>     *   A builder for a container that does not require a Key to be opened.
+</span>114 <span style=''>     */
+</span>115 <span style=''>    def unlockedBuilder(
+</span>116 <span style=''>      items: Set[I]
+</span>117 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.unlockedBuilder()(i))(i)</span><span style=''>
+</span>118 <span style=''>
+</span>119 <span style=''>    /**
+</span>120 <span style=''>     * A builder for a container that requires a &lt;b&gt;Key&lt;/b&gt; to be opened.
+</span>121 <span style=''>     * @param items
+</span>122 <span style=''>     *   Items that will be added to the location after opening the subject.
+</span>123 <span style=''>     * @param key
+</span>124 <span style=''>     *   The Key required to open the containerized item.
+</span>125 <span style=''>     * @return
+</span>126 <span style=''>     *   A builder for a container that requires a Key to be opened.
+</span>127 <span style=''>     */
+</span>128 <span style=''>    def lockedBuilder(
+</span>129 <span style=''>      items: Set[I],
+</span>130 <span style=''>      key: Key
+</span>131 <span style=''>    ): I =&gt; Container = i =&gt; </span><span style='background: #AEF1AE'>SimpleContainer(items.map(_.ref), Openable.lockedBuilder(key)(i))(i)</span><span style=''>
+</span>132 <span style=''>  }
+</span>133 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -162,15 +169,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          75
+          82
         </td>
         <td>
           331
         </td>
         <td>
-          2555
+          2779
           -
-          2572
+          2796
         </td>
         <td>
           Select
@@ -186,15 +193,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          84
         </td>
         <td>
           337
         </td>
         <td>
-          2624
+          2848
           -
-          2624
+          2848
         </td>
         <td>
           Apply
@@ -210,15 +217,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          86
         </td>
         <td>
           332
         </td>
         <td>
-          2685
+          2909
           -
-          2692
+          2916
         </td>
         <td>
           Select
@@ -234,15 +241,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          86
         </td>
         <td>
           333
         </td>
         <td>
-          2697
+          2921
           -
-          2730
+          2954
         </td>
         <td>
           Apply
@@ -258,15 +265,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          87
         </td>
         <td>
           334
         </td>
         <td>
-          2746
+          2970
           -
-          2762
+          2986
         </td>
         <td>
           Select
@@ -282,15 +289,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          87
         </td>
         <td>
           335
         </td>
         <td>
-          2670
+          2894
           -
-          2762
+          2986
         </td>
         <td>
           Apply
@@ -306,15 +313,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          88
         </td>
         <td>
           336
         </td>
         <td>
-          2774
+          2998
           -
-          2785
+          3009
         </td>
         <td>
           Select
@@ -330,15 +337,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          91
         </td>
         <td>
           338
         </td>
         <td>
-          2858
+          3082
           -
-          2872
+          3096
         </td>
         <td>
           Apply
@@ -354,15 +361,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          91
         </td>
         <td>
           339
         </td>
         <td>
-          2845
+          3069
           -
-          2873
+          3097
         </td>
         <td>
           Apply
@@ -378,15 +385,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          93
         </td>
         <td>
           340
         </td>
         <td>
-          2910
+          3134
           -
-          2925
+          3149
         </td>
         <td>
           Select
@@ -402,15 +409,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          97
         </td>
         <td>
           341
         </td>
         <td>
-          2994
+          3218
           -
-          3007
+          3231
         </td>
         <td>
           Select
@@ -426,15 +433,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          97
         </td>
         <td>
           351
         </td>
         <td>
-          2974
+          3198
           -
-          3175
+          3399
         </td>
         <td>
           Apply
@@ -452,15 +459,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           342
         </td>
         <td>
-          3072
+          3296
           -
-          3077
+          3301
         </td>
         <td>
           Select
@@ -476,15 +483,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           343
         </td>
         <td>
-          3058
+          3282
           -
-          3078
+          3302
         </td>
         <td>
           Apply
@@ -500,15 +507,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           344
         </td>
         <td>
-          3053
+          3277
           -
-          3078
+          3302
         </td>
         <td>
           Apply
@@ -524,15 +531,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           345
         </td>
         <td>
-          3022
+          3246
           -
-          3079
+          3303
         </td>
         <td>
           Apply
@@ -548,15 +555,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           350
         </td>
         <td>
-          3016
+          3240
           -
-          3175
+          3399
         </td>
         <td>
           Apply
@@ -574,15 +581,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          99
         </td>
         <td>
           346
         </td>
         <td>
-          3147
+          3371
           -
-          3156
+          3380
         </td>
         <td>
           Apply
@@ -598,15 +605,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          99
         </td>
         <td>
           347
         </td>
         <td>
-          3116
+          3340
           -
-          3157
+          3381
         </td>
         <td>
           Apply
@@ -622,15 +629,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          99
         </td>
         <td>
           348
         </td>
         <td>
-          3094
+          3318
           -
-          3158
+          3382
         </td>
         <td>
           Apply
@@ -646,15 +653,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          99
         </td>
         <td>
           349
         </td>
         <td>
-          3088
+          3312
           -
-          3175
+          3399
         </td>
         <td>
           Apply
@@ -670,15 +677,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          117
         </td>
         <td>
           352
         </td>
         <td>
-          3642
+          3866
           -
-          3709
+          3933
         </td>
         <td>
           Apply
@@ -694,15 +701,15 @@
         </td>
       </tr><tr>
         <td>
-          124
+          131
         </td>
         <td>
           353
         </td>
         <td>
-          4146
+          4370
           -
-          4214
+          4438
         </td>
         <td>
           Apply

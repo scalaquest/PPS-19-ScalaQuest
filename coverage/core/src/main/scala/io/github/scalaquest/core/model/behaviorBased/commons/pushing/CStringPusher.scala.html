@@ -22,98 +22,105 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.pushing
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.TriggerPusher.{MessageTriggers, StringMessageTriggers}
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.{ComposableStringPusher, Direction}
-</span>6 <span style=''>
-</span>7 <span style=''>import scala.annotation.tailrec
-</span>8 <span style=''>
-</span>9 <span style=''>/**
-</span>10 <span style=''> * A [[ComposableStringPusher]] that have can handle the messages contained into [[CMessagesExt]].
-</span>11 <span style=''> *
-</span>12 <span style=''> * @param model
-</span>13 <span style=''> *   contains the Messages to interpret.
-</span>14 <span style=''> */
-</span>15 <span style=''>abstract class CStringPusher(model: BehaviorBasedModel with CMessagesExt)
-</span>16 <span style=''>  extends ComposableStringPusher {
-</span>17 <span style=''>  import model.CMessages._
-</span>18 <span style=''>
-</span>19 <span style=''>  /**
-</span>20 <span style=''>   * Recognize every common message and output its content.
-</span>21 <span style=''>   * @return
-</span>22 <span style=''>   */
-</span>23 <span style=''>  final def base: StringMessageTriggers = {
-</span>24 <span style=''>    case Inspected(room, items, neighbors) =&gt;
-</span>25 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.toString &lt; _.toString)</span><span style=''>
-</span>26 <span style=''>      s&quot;The ${room.name} contains ${printItems(ordItems)}${printNeighbors(neighbors)}&quot;
-</span>27 <span style=''>
-</span>28 <span style=''>    case InspectedBag(items) =&gt;
-</span>29 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.toString &lt; _.toString)</span><span style=''>
-</span>30 <span style=''>      s&quot;The bag contains ${printItems(ordItems)}&quot;
-</span>31 <span style=''>
-</span>32 <span style=''>    case ReversedIntoLocation(items) =&gt;
-</span>33 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.toString &lt; _.toString)</span><span style=''>
-</span>34 <span style=''>      s&quot;Current room now contains also ${printItems(ordItems)}!&quot;
-</span>35 <span style=''>
-</span>36 <span style=''>    case Eaten(item)  =&gt; s&quot;The $item has been eaten!&quot;
-</span>37 <span style=''>    case Taken(item)  =&gt; s&quot;The $item has been taken!&quot;
-</span>38 <span style=''>    case Opened(item) =&gt; s&quot;The $item has been opened!&quot;
-</span>39 <span style=''>
-</span>40 <span style=''>    case AlreadyOpened(item)         =&gt; s&quot;The $item is already opened!&quot;
-</span>41 <span style=''>    case FailedToOpen(item)          =&gt; s&quot;The $item failed to open!&quot;
-</span>42 <span style=''>    case FailedToEnter(item)         =&gt; s&quot;The $item is locked! You cannot enter now.&quot;
-</span>43 <span style=''>    case Navigated(room)             =&gt; s&quot;You entered $room!&quot;
-</span>44 <span style=''>    case FailedToNavigate(direction) =&gt; s&quot;You cannot go $direction from here!&quot;
-</span>45 <span style=''>    case Print(msg)                  =&gt; msg
-</span>46 <span style=''>    case Welcome(msg)                =&gt; msg
-</span>47 <span style=''>    case Won                         =&gt; </span><span style='background: #AEF1AE'>&quot;You win!&quot;</span><span style=''>
-</span>48 <span style=''>    case Lost                        =&gt; </span><span style='background: #AEF1AE'>&quot;You lose!&quot;</span><span style=''>
-</span>49 <span style=''>  }
-</span>50 <span style=''>
-</span>51 <span style=''>  @tailrec
-</span>52 <span style=''>  private def printItems(tail: List[CMessagesExt#I], acc: String = &quot;&quot;): String = {
-</span>53 <span style=''>    tail match {
-</span>54 <span style=''>      case ::(head, Nil)  =&gt; s&quot;${acc}a ${head.toString}.&quot;
-</span>55 <span style=''>      case ::(head, next) =&gt; </span><span style='background: #AEF1AE'>printItems(next, s&quot;${acc}a ${head.toString}, &quot;)</span><span style=''>
-</span>56 <span style=''>      case Nil            =&gt; </span><span style='background: #F0ADAD'>&quot;nothing.&quot;</span><span style=''>
-</span>57 <span style=''>    }
-</span>58 <span style=''>  }
-</span>59 <span style=''>
-</span>60 <span style=''>  private def printNeighbors(neighbors: Map[Direction, CMessagesExt#RM]): String = {
-</span>61 <span style=''>    neighbors match {
-</span>62 <span style=''>      case ns if </span><span style='background: #AEF1AE'>ns.isEmpty</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>&quot;\nYou cannot go anywhere now.&quot;</span><span style=''>
-</span>63 <span style=''>      case ns =&gt;
-</span>64 <span style=''>        </span><span style='background: #AEF1AE'>ns.map(n =&gt; s&quot;There is a ${n._2.toString} in direction ${n._1.toString}.&quot;)
-</span>65 <span style=''></span><span style='background: #AEF1AE'>          .fold(&quot;&quot;)(_ + &quot;\n&quot; + _)</span><span style=''>
-</span>66 <span style=''>    }
-</span>67 <span style=''>  }
-</span>68 <span style=''>}
-</span>69 <span style=''>
-</span>70 <span style=''>/**
-</span>71 <span style=''> * Object with a useful construct for create a [[CStringPusher]].
-</span>72 <span style=''> */
-</span>73 <span style=''>object CStringPusher {
-</span>74 <span style=''>
-</span>75 <span style=''>  /**
-</span>76 <span style=''>   * Create the pusher giving him only the game's model.
-</span>77 <span style=''>   * @param model
-</span>78 <span style=''>   *   the actual model game.
-</span>79 <span style=''>   * @param _additionalTriggers
-</span>80 <span style=''>   *   add some customized triggers with regard to the base ones.
-</span>81 <span style=''>   * @return
-</span>82 <span style=''>   *   an instance of CommonStringPusher.
-</span>83 <span style=''>   */
-</span>84 <span style=''>  def apply(
-</span>85 <span style=''>    model: CMessagesExt,
-</span>86 <span style=''>    _additionalTriggers: MessageTriggers[String] = PartialFunction.empty
-</span>87 <span style=''>  ): CStringPusher = {
-</span>88 <span style=''>    </span><span style='background: #AEF1AE'>new</span><span style=''> CStringPusher(model) {
-</span>89 <span style=''>      override def extra: MessageTriggers[String] = _additionalTriggers
-</span>90 <span style=''>    }
-</span>91 <span style=''>  }
-</span>92 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.pushing
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.TriggerPusher.{MessageTriggers, StringMessageTriggers}
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>12 <span style=''>import io.github.scalaquest.core.model.{ComposableStringPusher, Direction}
+</span>13 <span style=''>
+</span>14 <span style=''>import scala.annotation.tailrec
+</span>15 <span style=''>
+</span>16 <span style=''>/**
+</span>17 <span style=''> * A [[ComposableStringPusher]] that have can handle the messages contained into [[CMessagesExt]].
+</span>18 <span style=''> *
+</span>19 <span style=''> * @param model
+</span>20 <span style=''> *   contains the Messages to interpret.
+</span>21 <span style=''> */
+</span>22 <span style=''>abstract class CStringPusher(model: BehaviorBasedModel with CMessagesExt)
+</span>23 <span style=''>  extends ComposableStringPusher {
+</span>24 <span style=''>  import model.CMessages._
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * Recognize every common message and output its content.
+</span>28 <span style=''>   * @return
+</span>29 <span style=''>   */
+</span>30 <span style=''>  final def base: StringMessageTriggers = {
+</span>31 <span style=''>    case Inspected(room, items, neighbors) =&gt;
+</span>32 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.toString &lt; _.toString)</span><span style=''>
+</span>33 <span style=''>      s&quot;The ${room.name} contains ${printItems(ordItems)}${printNeighbors(neighbors)}&quot;
+</span>34 <span style=''>
+</span>35 <span style=''>    case InspectedBag(items) =&gt;
+</span>36 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.toString &lt; _.toString)</span><span style=''>
+</span>37 <span style=''>      s&quot;The bag contains ${printItems(ordItems)}&quot;
+</span>38 <span style=''>
+</span>39 <span style=''>    case ReversedIntoLocation(items) =&gt;
+</span>40 <span style=''>      val ordItems = </span><span style='background: #AEF1AE'>items.toList.sortWith(_.toString &lt; _.toString)</span><span style=''>
+</span>41 <span style=''>      s&quot;Current room now contains also ${printItems(ordItems)}!&quot;
+</span>42 <span style=''>
+</span>43 <span style=''>    case Eaten(item)  =&gt; s&quot;The $item has been eaten!&quot;
+</span>44 <span style=''>    case Taken(item)  =&gt; s&quot;The $item has been taken!&quot;
+</span>45 <span style=''>    case Opened(item) =&gt; s&quot;The $item has been opened!&quot;
+</span>46 <span style=''>
+</span>47 <span style=''>    case AlreadyOpened(item)         =&gt; s&quot;The $item is already opened!&quot;
+</span>48 <span style=''>    case FailedToOpen(item)          =&gt; s&quot;The $item failed to open!&quot;
+</span>49 <span style=''>    case FailedToEnter(item)         =&gt; s&quot;The $item is locked! You cannot enter now.&quot;
+</span>50 <span style=''>    case Navigated(room)             =&gt; s&quot;You entered $room!&quot;
+</span>51 <span style=''>    case FailedToNavigate(direction) =&gt; s&quot;You cannot go $direction from here!&quot;
+</span>52 <span style=''>    case Print(msg)                  =&gt; msg
+</span>53 <span style=''>    case Welcome(msg)                =&gt; msg
+</span>54 <span style=''>    case Won                         =&gt; </span><span style='background: #AEF1AE'>&quot;You win!&quot;</span><span style=''>
+</span>55 <span style=''>    case Lost                        =&gt; </span><span style='background: #AEF1AE'>&quot;You lose!&quot;</span><span style=''>
+</span>56 <span style=''>  }
+</span>57 <span style=''>
+</span>58 <span style=''>  @tailrec
+</span>59 <span style=''>  private def printItems(tail: List[CMessagesExt#I], acc: String = &quot;&quot;): String = {
+</span>60 <span style=''>    tail match {
+</span>61 <span style=''>      case ::(head, Nil)  =&gt; s&quot;${acc}a ${head.toString}.&quot;
+</span>62 <span style=''>      case ::(head, next) =&gt; </span><span style='background: #AEF1AE'>printItems(next, s&quot;${acc}a ${head.toString}, &quot;)</span><span style=''>
+</span>63 <span style=''>      case Nil            =&gt; </span><span style='background: #F0ADAD'>&quot;nothing.&quot;</span><span style=''>
+</span>64 <span style=''>    }
+</span>65 <span style=''>  }
+</span>66 <span style=''>
+</span>67 <span style=''>  private def printNeighbors(neighbors: Map[Direction, CMessagesExt#RM]): String = {
+</span>68 <span style=''>    neighbors match {
+</span>69 <span style=''>      case ns if </span><span style='background: #AEF1AE'>ns.isEmpty</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>&quot;\nYou cannot go anywhere now.&quot;</span><span style=''>
+</span>70 <span style=''>      case ns =&gt;
+</span>71 <span style=''>        </span><span style='background: #AEF1AE'>ns.map(n =&gt; s&quot;There is a ${n._2.toString} in direction ${n._1.toString}.&quot;)
+</span>72 <span style=''></span><span style='background: #AEF1AE'>          .fold(&quot;&quot;)(_ + &quot;\n&quot; + _)</span><span style=''>
+</span>73 <span style=''>    }
+</span>74 <span style=''>  }
+</span>75 <span style=''>}
+</span>76 <span style=''>
+</span>77 <span style=''>/**
+</span>78 <span style=''> * Object with a useful construct for create a [[CStringPusher]].
+</span>79 <span style=''> */
+</span>80 <span style=''>object CStringPusher {
+</span>81 <span style=''>
+</span>82 <span style=''>  /**
+</span>83 <span style=''>   * Create the pusher giving him only the game's model.
+</span>84 <span style=''>   * @param model
+</span>85 <span style=''>   *   the actual model game.
+</span>86 <span style=''>   * @param _additionalTriggers
+</span>87 <span style=''>   *   add some customized triggers with regard to the base ones.
+</span>88 <span style=''>   * @return
+</span>89 <span style=''>   *   an instance of CommonStringPusher.
+</span>90 <span style=''>   */
+</span>91 <span style=''>  def apply(
+</span>92 <span style=''>    model: CMessagesExt,
+</span>93 <span style=''>    _additionalTriggers: MessageTriggers[String] = PartialFunction.empty
+</span>94 <span style=''>  ): CStringPusher = {
+</span>95 <span style=''>    </span><span style='background: #AEF1AE'>new</span><span style=''> CStringPusher(model) {
+</span>96 <span style=''>      override def extra: MessageTriggers[String] = _additionalTriggers
+</span>97 <span style=''>    }
+</span>98 <span style=''>  }
+</span>99 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -128,15 +135,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           551
         </td>
         <td>
-          777
+          1001
           -
-          777
+          1001
         </td>
         <td>
           Apply
@@ -152,15 +159,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           537
         </td>
         <td>
-          868
+          1092
           -
-          878
+          1102
         </td>
         <td>
           Apply
@@ -176,15 +183,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           538
         </td>
         <td>
-          881
+          1105
           -
-          891
+          1115
         </td>
         <td>
           Apply
@@ -200,15 +207,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           539
         </td>
         <td>
-          868
+          1092
           -
-          891
+          1115
         </td>
         <td>
           Apply
@@ -224,15 +231,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           540
         </td>
         <td>
-          846
+          1070
           -
-          892
+          1116
         </td>
         <td>
           Apply
@@ -248,15 +255,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           541
         </td>
         <td>
-          1056
+          1280
           -
-          1066
+          1290
         </td>
         <td>
           Apply
@@ -272,15 +279,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           542
         </td>
         <td>
-          1069
+          1293
           -
-          1079
+          1303
         </td>
         <td>
           Apply
@@ -296,15 +303,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           543
         </td>
         <td>
-          1056
+          1280
           -
-          1079
+          1303
         </td>
         <td>
           Apply
@@ -320,15 +327,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           544
         </td>
         <td>
-          1034
+          1258
           -
-          1080
+          1304
         </td>
         <td>
           Apply
@@ -344,15 +351,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          40
         </td>
         <td>
           545
         </td>
         <td>
-          1215
+          1439
           -
-          1225
+          1449
         </td>
         <td>
           Apply
@@ -368,15 +375,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          40
         </td>
         <td>
           546
         </td>
         <td>
-          1228
+          1452
           -
-          1238
+          1462
         </td>
         <td>
           Apply
@@ -392,15 +399,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          40
         </td>
         <td>
           547
         </td>
         <td>
-          1215
+          1439
           -
-          1238
+          1462
         </td>
         <td>
           Apply
@@ -416,15 +423,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          40
         </td>
         <td>
           548
         </td>
         <td>
-          1193
+          1417
           -
-          1239
+          1463
         </td>
         <td>
           Apply
@@ -440,15 +447,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           549
         </td>
         <td>
-          1966
+          2190
           -
-          1976
+          2200
         </td>
         <td>
           Literal
@@ -464,15 +471,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          55
         </td>
         <td>
           550
         </td>
         <td>
-          2017
+          2241
           -
-          2028
+          2252
         </td>
         <td>
           Literal
@@ -488,15 +495,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          62
         </td>
         <td>
           552
         </td>
         <td>
-          2232
+          2456
           -
-          2279
+          2503
         </td>
         <td>
           Apply
@@ -512,15 +519,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          63
         </td>
         <td>
           553
         </td>
         <td>
-          2309
+          2533
           -
-          2319
+          2543
         </td>
         <td>
           Literal
@@ -536,15 +543,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          69
         </td>
         <td>
           554
         </td>
         <td>
-          2455
+          2679
           -
-          2465
+          2689
         </td>
         <td>
           Select
@@ -560,15 +567,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          69
         </td>
         <td>
           555
         </td>
         <td>
-          2469
+          2693
           -
-          2500
+          2724
         </td>
         <td>
           Literal
@@ -584,15 +591,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          72
         </td>
         <td>
           556
         </td>
         <td>
-          2617
+          2841
           -
-          2619
+          2843
         </td>
         <td>
           Literal
@@ -608,15 +615,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          72
         </td>
         <td>
           557
         </td>
         <td>
-          2621
+          2845
           -
-          2633
+          2857
         </td>
         <td>
           Apply
@@ -632,15 +639,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          72
         </td>
         <td>
           558
         </td>
         <td>
-          2526
+          2750
           -
-          2634
+          2858
         </td>
         <td>
           Apply
@@ -656,15 +663,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          95
         </td>
         <td>
           559
         </td>
         <td>
-          3154
+          3378
           -
-          3157
+          3381
         </td>
         <td>
           Apply

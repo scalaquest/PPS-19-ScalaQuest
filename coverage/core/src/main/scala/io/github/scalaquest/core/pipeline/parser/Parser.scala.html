@@ -22,42 +22,49 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.parser
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.parsing.engine.Engine
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.lexer.LexerResult
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * A parser that takes a sequence of Tokens and optionally returns an abstract syntax tree.
-</span>8 <span style=''> */
-</span>9 <span style=''>trait Parser {
-</span>10 <span style=''>
-</span>11 <span style=''>  /**
-</span>12 <span style=''>   * Performs the syntactic analysis on a sequence of tokens.
-</span>13 <span style=''>   *
-</span>14 <span style=''>   * @param lexerResult
-</span>15 <span style=''>   *   the input finite sequence of tokens
-</span>16 <span style=''>   * @return
-</span>17 <span style=''>   *   optionally the result of the syntactic analysis
-</span>18 <span style=''>   */
-</span>19 <span style=''>  def parse(lexerResult: LexerResult): Option[ParserResult]
-</span>20 <span style=''>}
-</span>21 <span style=''>
-</span>22 <span style=''>/** Result of the syntactic analysis operation. */
-</span>23 <span style=''>trait ParserResult {
-</span>24 <span style=''>
-</span>25 <span style=''>  /** The abstract syntax tree obtained. */
-</span>26 <span style=''>  def tree: AbstractSyntaxTree
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.parser
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.parsing.engine.Engine
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.lexer.LexerResult
+</span>12 <span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * A parser that takes a sequence of Tokens and optionally returns an abstract syntax tree.
+</span>15 <span style=''> */
+</span>16 <span style=''>trait Parser {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * Performs the syntactic analysis on a sequence of tokens.
+</span>20 <span style=''>   *
+</span>21 <span style=''>   * @param lexerResult
+</span>22 <span style=''>   *   the input finite sequence of tokens
+</span>23 <span style=''>   * @return
+</span>24 <span style=''>   *   optionally the result of the syntactic analysis
+</span>25 <span style=''>   */
+</span>26 <span style=''>  def parse(lexerResult: LexerResult): Option[ParserResult]
 </span>27 <span style=''>}
 </span>28 <span style=''>
-</span>29 <span style=''>/** Factory for creating [[Parser]]. */
-</span>30 <span style=''>object Parser {
+</span>29 <span style=''>/** Result of the syntactic analysis operation. */
+</span>30 <span style=''>trait ParserResult {
 </span>31 <span style=''>
-</span>32 <span style=''>  /** Allows to create a [[Parser]] using an [[Engine]]. */
-</span>33 <span style=''>  def apply(engine: Engine): Parser = </span><span style='background: #AEF1AE'>SimplePrologParser(engine)</span><span style=''>
-</span>34 <span style=''>
-</span>35 <span style=''>  case class SimplePrologParser(engine: Engine) extends PrologParser
-</span>36 <span style=''>}
+</span>32 <span style=''>  /** The abstract syntax tree obtained. */
+</span>33 <span style=''>  def tree: AbstractSyntaxTree
+</span>34 <span style=''>}
+</span>35 <span style=''>
+</span>36 <span style=''>/** Factory for creating [[Parser]]. */
+</span>37 <span style=''>object Parser {
+</span>38 <span style=''>
+</span>39 <span style=''>  /** Allows to create a [[Parser]] using an [[Engine]]. */
+</span>40 <span style=''>  def apply(engine: Engine): Parser = </span><span style='background: #AEF1AE'>SimplePrologParser(engine)</span><span style=''>
+</span>41 <span style=''>
+</span>42 <span style=''>  case class SimplePrologParser(engine: Engine) extends PrologParser
+</span>43 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -72,15 +79,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          33
+          40
         </td>
         <td>
           805
         </td>
         <td>
-          866
+          1090
           -
-          892
+          1116
         </td>
         <td>
           Apply

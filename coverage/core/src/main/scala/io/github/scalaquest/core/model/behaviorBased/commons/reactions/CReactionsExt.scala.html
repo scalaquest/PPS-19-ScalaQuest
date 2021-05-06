@@ -22,118 +22,125 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Direction, ItemRef, Message, RoomRef}
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * A mixable trait that contains some common &lt;b&gt;Reactions&lt;/b&gt;.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessagesExt {
-</span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * Companion Object with the effective implementation of the common [[Reaction]] s.
-</span>15 <span style=''>   */
-</span>16 <span style=''>  object CReactions {
-</span>17 <span style=''>
-</span>18 <span style=''>    /**
-</span>19 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that modifies the content of the player's bag, following the instructions
-</span>20 <span style=''>     * from the given function.
-</span>21 <span style=''>     * @param modifier
-</span>22 <span style=''>     *   A function that indicates how to modify the bag.
-</span>23 <span style=''>     * @return
-</span>24 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that modifies the content of the player's bag.
-</span>25 <span style=''>     */
-</span>26 <span style=''>    def modifyBag(modifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
-</span>27 <span style=''>      </span><span style='background: #AEF1AE'>Reaction(bagLens.modify(modifier))</span><span style=''>
-</span>28 <span style=''>
-</span>29 <span style=''>    /**
-</span>30 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that modifies the items contained into the player's location, following the
-</span>31 <span style=''>     * instructions from the given function.
-</span>32 <span style=''>     * @param modifier
-</span>33 <span style=''>     *   A function that indicates how to modify the items contained into the player's location.
-</span>34 <span style=''>     * @return
-</span>35 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that modifies the items contained into the player's location.
-</span>36 <span style=''>     */
-</span>37 <span style=''>    def modifyLocationItems(modifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
-</span>38 <span style=''>      s =&gt; </span><span style='background: #AEF1AE'>modifyRoomItems(s.location.ref, modifier)(s)</span><span style=''>
-</span>39 <span style=''>
-</span>40 <span style=''>    /**
-</span>41 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that changes the location of the player, given a &lt;b&gt;RoomRef&lt;/b&gt;.
-</span>42 <span style=''>     * @param location
-</span>43 <span style=''>     *   The new location of the player, as a &lt;b&gt;RoomRef&lt;/b&gt;.
-</span>44 <span style=''>     * @return
-</span>45 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that switches the location of the player.
-</span>46 <span style=''>     */
-</span>47 <span style=''>    def switchLocation(location: RoomRef): Reaction = </span><span style='background: #AEF1AE'>Reaction(locationLens.set(location))</span><span style=''>
-</span>48 <span style=''>
-</span>49 <span style=''>    /**
-</span>50 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that changes the location of the player.
-</span>51 <span style=''>     * @param location
-</span>52 <span style=''>     *   The new location of the player.
-</span>53 <span style=''>     * @return
-</span>54 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that switches the location of the player.
-</span>55 <span style=''>     */
-</span>56 <span style=''>    def switchLocation(location: RM): Reaction = </span><span style='background: #AEF1AE'>switchLocation(location.ref)</span><span style=''>
-</span>57 <span style=''>
-</span>58 <span style=''>    /**
-</span>59 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that adds a &lt;b&gt;Message&lt;/b&gt; to the ones to be returned.
-</span>60 <span style=''>     * @param message
-</span>61 <span style=''>     *   The new &lt;b&gt;Message&lt;/b&gt;.
-</span>62 <span style=''>     * @return
-</span>63 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that adds a &lt;b&gt;Message&lt;/b&gt; to the ones to be returned.
-</span>64 <span style=''>     */
-</span>65 <span style=''>    def addMessage(message: Message): Reaction = </span><span style='background: #AEF1AE'>Reaction.messages(message)</span><span style=''>
-</span>66 <span style=''>
-</span>67 <span style=''>    /**
-</span>68 <span style=''>     * Modifies the set of items of the given room.
-</span>69 <span style=''>     * @param roomRef
-</span>70 <span style=''>     *   The ref of the room to modify.
-</span>71 <span style=''>     * @param itemsModifier
-</span>72 <span style=''>     *   A function that indicates how to modify the items contained into the room.
-</span>73 <span style=''>     * @return
-</span>74 <span style=''>     *   Modifies the set of items of the given room.
-</span>75 <span style=''>     */
-</span>76 <span style=''>    def modifyRoomItems(roomRef: RoomRef, itemsModifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
-</span>77 <span style=''>      s =&gt; {
-</span>78 <span style=''>        val modifiedRoom = </span><span style='background: #AEF1AE'>roomItemsLens.modify(itemsModifier)(roomsLens.get(s)(roomRef))</span><span style=''>
-</span>79 <span style=''>        val react        = </span><span style='background: #AEF1AE'>Reaction(roomsLens.modify(_ + (roomRef -&gt; modifiedRoom)))</span><span style=''>
-</span>80 <span style=''>        </span><span style='background: #AEF1AE'>react(s)</span><span style=''>
-</span>81 <span style=''>      }
-</span>82 <span style=''>
-</span>83 <span style=''>    /**
-</span>84 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that adds a neighbor &lt;b&gt;Room&lt;/b&gt; to the actual player location.
-</span>85 <span style=''>     * @param direction
-</span>86 <span style=''>     *   the new visible direction.
-</span>87 <span style=''>     * @param room
-</span>88 <span style=''>     *   the new visible room.
-</span>89 <span style=''>     * @return
-</span>90 <span style=''>     *   the Reaction described above.
-</span>91 <span style=''>     */
-</span>92 <span style=''>    def addDirectionToLocation(direction: Direction, room: RM): Reaction =
-</span>93 <span style=''>      </span><span style='background: #AEF1AE'>Reaction(
-</span>94 <span style=''></span><span style='background: #AEF1AE'>        (locationRoomLens composeLens roomDirectionsLens).modify(_ + (direction -&gt; room.ref))
-</span>95 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>96 <span style=''>
-</span>97 <span style=''>    /**
-</span>98 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that ends the match in two possible scenario:
-</span>99 <span style=''>     *   - The player wins
-</span>100 <span style=''>     *   - The player loses
-</span>101 <span style=''>     * @param win
-</span>102 <span style=''>     *   True if game is finished with a victory, False for a defeat.
-</span>103 <span style=''>     * @return
-</span>104 <span style=''>     *   the Reaction cited above.
-</span>105 <span style=''>     */
-</span>106 <span style=''>    def finishGame(win: Boolean): Reaction =
-</span>107 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>108 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Reaction(matchEndedLens.set(true))
-</span>109 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- Reaction.messages(if (win) CMessages.Won else CMessages.Lost)
-</span>110 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
-</span>111 <span style=''>  }
-</span>112 <span style=''>}
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.reactions
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Direction, ItemRef, Message, RoomRef}
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.ReactionUtilsExt
+</span>14 <span style=''>
+</span>15 <span style=''>/**
+</span>16 <span style=''> * A mixable trait that contains some common &lt;b&gt;Reactions&lt;/b&gt;.
+</span>17 <span style=''> */
+</span>18 <span style=''>trait CReactionsExt extends BehaviorBasedModel with ReactionUtilsExt with CMessagesExt {
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * Companion Object with the effective implementation of the common [[Reaction]] s.
+</span>22 <span style=''>   */
+</span>23 <span style=''>  object CReactions {
+</span>24 <span style=''>
+</span>25 <span style=''>    /**
+</span>26 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that modifies the content of the player's bag, following the instructions
+</span>27 <span style=''>     * from the given function.
+</span>28 <span style=''>     * @param modifier
+</span>29 <span style=''>     *   A function that indicates how to modify the bag.
+</span>30 <span style=''>     * @return
+</span>31 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that modifies the content of the player's bag.
+</span>32 <span style=''>     */
+</span>33 <span style=''>    def modifyBag(modifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
+</span>34 <span style=''>      </span><span style='background: #AEF1AE'>Reaction(bagLens.modify(modifier))</span><span style=''>
+</span>35 <span style=''>
+</span>36 <span style=''>    /**
+</span>37 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that modifies the items contained into the player's location, following the
+</span>38 <span style=''>     * instructions from the given function.
+</span>39 <span style=''>     * @param modifier
+</span>40 <span style=''>     *   A function that indicates how to modify the items contained into the player's location.
+</span>41 <span style=''>     * @return
+</span>42 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that modifies the items contained into the player's location.
+</span>43 <span style=''>     */
+</span>44 <span style=''>    def modifyLocationItems(modifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
+</span>45 <span style=''>      s =&gt; </span><span style='background: #AEF1AE'>modifyRoomItems(s.location.ref, modifier)(s)</span><span style=''>
+</span>46 <span style=''>
+</span>47 <span style=''>    /**
+</span>48 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that changes the location of the player, given a &lt;b&gt;RoomRef&lt;/b&gt;.
+</span>49 <span style=''>     * @param location
+</span>50 <span style=''>     *   The new location of the player, as a &lt;b&gt;RoomRef&lt;/b&gt;.
+</span>51 <span style=''>     * @return
+</span>52 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that switches the location of the player.
+</span>53 <span style=''>     */
+</span>54 <span style=''>    def switchLocation(location: RoomRef): Reaction = </span><span style='background: #AEF1AE'>Reaction(locationLens.set(location))</span><span style=''>
+</span>55 <span style=''>
+</span>56 <span style=''>    /**
+</span>57 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that changes the location of the player.
+</span>58 <span style=''>     * @param location
+</span>59 <span style=''>     *   The new location of the player.
+</span>60 <span style=''>     * @return
+</span>61 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that switches the location of the player.
+</span>62 <span style=''>     */
+</span>63 <span style=''>    def switchLocation(location: RM): Reaction = </span><span style='background: #AEF1AE'>switchLocation(location.ref)</span><span style=''>
+</span>64 <span style=''>
+</span>65 <span style=''>    /**
+</span>66 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that adds a &lt;b&gt;Message&lt;/b&gt; to the ones to be returned.
+</span>67 <span style=''>     * @param message
+</span>68 <span style=''>     *   The new &lt;b&gt;Message&lt;/b&gt;.
+</span>69 <span style=''>     * @return
+</span>70 <span style=''>     *   &lt;b&gt;Reaction&lt;/b&gt; that adds a &lt;b&gt;Message&lt;/b&gt; to the ones to be returned.
+</span>71 <span style=''>     */
+</span>72 <span style=''>    def addMessage(message: Message): Reaction = </span><span style='background: #AEF1AE'>Reaction.messages(message)</span><span style=''>
+</span>73 <span style=''>
+</span>74 <span style=''>    /**
+</span>75 <span style=''>     * Modifies the set of items of the given room.
+</span>76 <span style=''>     * @param roomRef
+</span>77 <span style=''>     *   The ref of the room to modify.
+</span>78 <span style=''>     * @param itemsModifier
+</span>79 <span style=''>     *   A function that indicates how to modify the items contained into the room.
+</span>80 <span style=''>     * @return
+</span>81 <span style=''>     *   Modifies the set of items of the given room.
+</span>82 <span style=''>     */
+</span>83 <span style=''>    def modifyRoomItems(roomRef: RoomRef, itemsModifier: Set[ItemRef] =&gt; Set[ItemRef]): Reaction =
+</span>84 <span style=''>      s =&gt; {
+</span>85 <span style=''>        val modifiedRoom = </span><span style='background: #AEF1AE'>roomItemsLens.modify(itemsModifier)(roomsLens.get(s)(roomRef))</span><span style=''>
+</span>86 <span style=''>        val react        = </span><span style='background: #AEF1AE'>Reaction(roomsLens.modify(_ + (roomRef -&gt; modifiedRoom)))</span><span style=''>
+</span>87 <span style=''>        </span><span style='background: #AEF1AE'>react(s)</span><span style=''>
+</span>88 <span style=''>      }
+</span>89 <span style=''>
+</span>90 <span style=''>    /**
+</span>91 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that adds a neighbor &lt;b&gt;Room&lt;/b&gt; to the actual player location.
+</span>92 <span style=''>     * @param direction
+</span>93 <span style=''>     *   the new visible direction.
+</span>94 <span style=''>     * @param room
+</span>95 <span style=''>     *   the new visible room.
+</span>96 <span style=''>     * @return
+</span>97 <span style=''>     *   the Reaction described above.
+</span>98 <span style=''>     */
+</span>99 <span style=''>    def addDirectionToLocation(direction: Direction, room: RM): Reaction =
+</span>100 <span style=''>      </span><span style='background: #AEF1AE'>Reaction(
+</span>101 <span style=''></span><span style='background: #AEF1AE'>        (locationRoomLens composeLens roomDirectionsLens).modify(_ + (direction -&gt; room.ref))
+</span>102 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>103 <span style=''>
+</span>104 <span style=''>    /**
+</span>105 <span style=''>     * &lt;b&gt;Reaction&lt;/b&gt; that ends the match in two possible scenario:
+</span>106 <span style=''>     *   - The player wins
+</span>107 <span style=''>     *   - The player loses
+</span>108 <span style=''>     * @param win
+</span>109 <span style=''>     *   True if game is finished with a victory, False for a defeat.
+</span>110 <span style=''>     * @return
+</span>111 <span style=''>     *   the Reaction cited above.
+</span>112 <span style=''>     */
+</span>113 <span style=''>    def finishGame(win: Boolean): Reaction =
+</span>114 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>115 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Reaction(matchEndedLens.set(true))
+</span>116 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- Reaction.messages(if (win) CMessages.Won else CMessages.Lost)
+</span>117 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>118 <span style=''>  }
+</span>119 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -148,15 +155,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           560
         </td>
         <td>
-          1068
+          1292
           -
-          1092
+          1316
         </td>
         <td>
           Apply
@@ -172,15 +179,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           561
         </td>
         <td>
-          1059
+          1283
           -
-          1093
+          1317
         </td>
         <td>
           Apply
@@ -196,15 +203,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           562
         </td>
         <td>
-          1568
+          1792
           -
-          1612
+          1836
         </td>
         <td>
           Apply
@@ -220,15 +227,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           563
         </td>
         <td>
-          1948
+          2172
           -
-          1974
+          2198
         </td>
         <td>
           Apply
@@ -244,15 +251,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
           564
         </td>
         <td>
-          1939
+          2163
           -
-          1975
+          2199
         </td>
         <td>
           Apply
@@ -268,15 +275,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          63
         </td>
         <td>
           565
         </td>
         <td>
-          2267
+          2491
           -
-          2279
+          2503
         </td>
         <td>
           Select
@@ -292,15 +299,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          63
         </td>
         <td>
           566
         </td>
         <td>
-          2252
+          2476
           -
-          2280
+          2504
         </td>
         <td>
           Apply
@@ -316,15 +323,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          72
         </td>
         <td>
           567
         </td>
         <td>
-          2575
+          2799
           -
-          2601
+          2825
         </td>
         <td>
           Apply
@@ -340,15 +347,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          85
         </td>
         <td>
           568
         </td>
         <td>
-          3089
+          3313
           -
-          3114
+          3338
         </td>
         <td>
           Apply
@@ -364,15 +371,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          85
         </td>
         <td>
           569
         </td>
         <td>
-          3053
+          3277
           -
-          3115
+          3339
         </td>
         <td>
           Apply
@@ -388,15 +395,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          86
         </td>
         <td>
           570
         </td>
         <td>
-          3174
+          3398
           -
-          3197
+          3421
         </td>
         <td>
           Apply
@@ -412,15 +419,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          86
         </td>
         <td>
           571
         </td>
         <td>
-          3169
+          3393
           -
-          3198
+          3422
         </td>
         <td>
           Apply
@@ -436,15 +443,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          86
         </td>
         <td>
           572
         </td>
         <td>
-          3152
+          3376
           -
-          3199
+          3423
         </td>
         <td>
           Apply
@@ -460,15 +467,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          86
         </td>
         <td>
           573
         </td>
         <td>
-          3143
+          3367
           -
-          3200
+          3424
         </td>
         <td>
           Apply
@@ -484,15 +491,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          87
         </td>
         <td>
           574
         </td>
         <td>
-          3209
+          3433
           -
-          3217
+          3441
         </td>
         <td>
           Apply
@@ -508,15 +515,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          100
         </td>
         <td>
           580
         </td>
         <td>
-          3575
+          3799
           -
-          3686
+          3910
         </td>
         <td>
           Apply
@@ -532,15 +539,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           575
         </td>
         <td>
-          3623
+          3847
           -
-          3641
+          3865
         </td>
         <td>
           Select
@@ -556,15 +563,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           576
         </td>
         <td>
-          3668
+          3892
           -
-          3676
+          3900
         </td>
         <td>
           Select
@@ -580,15 +587,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           577
         </td>
         <td>
-          3655
+          3879
           -
-          3676
+          3900
         </td>
         <td>
           Apply
@@ -604,15 +611,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           578
         </td>
         <td>
-          3650
+          3874
           -
-          3677
+          3901
         </td>
         <td>
           Apply
@@ -628,15 +635,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           579
         </td>
         <td>
-          3594
+          3818
           -
-          3678
+          3902
         </td>
         <td>
           Apply
@@ -652,15 +659,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          115
         </td>
         <td>
           581
         </td>
         <td>
-          4045
+          4269
           -
-          4069
+          4293
         </td>
         <td>
           Apply
@@ -676,15 +683,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          115
         </td>
         <td>
           582
         </td>
         <td>
-          4036
+          4260
           -
-          4070
+          4294
         </td>
         <td>
           Apply
@@ -700,15 +707,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          115
         </td>
         <td>
           589
         </td>
         <td>
-          4017
+          4241
           -
-          4161
+          4385
         </td>
         <td>
           Apply
@@ -729,15 +736,15 @@ else
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           583
         </td>
         <td>
-          4111
+          4335
           -
-          4124
+          4348
         </td>
         <td>
           Select
@@ -753,15 +760,15 @@ else
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           584
         </td>
         <td>
-          4111
+          4335
           -
-          4124
+          4348
         </td>
         <td>
           Block
@@ -777,15 +784,15 @@ else
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           585
         </td>
         <td>
-          4130
+          4354
           -
-          4144
+          4368
         </td>
         <td>
           Select
@@ -801,15 +808,15 @@ else
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           586
         </td>
         <td>
-          4130
+          4354
           -
-          4144
+          4368
         </td>
         <td>
           Block
@@ -825,15 +832,15 @@ else
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           587
         </td>
         <td>
-          4084
+          4308
           -
-          4145
+          4369
         </td>
         <td>
           Apply
@@ -852,15 +859,15 @@ else
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           588
         </td>
         <td>
-          4079
+          4303
           -
-          4161
+          4385
         </td>
         <td>
           Apply

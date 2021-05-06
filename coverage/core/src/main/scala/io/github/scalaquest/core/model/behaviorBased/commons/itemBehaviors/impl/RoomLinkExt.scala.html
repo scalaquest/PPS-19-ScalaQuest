@@ -22,252 +22,259 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Direction, RoomRef}
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Enter, Open}
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;RoomLink&lt;/b&gt; behavior.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CReactionsExt {
-</span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; associated to a &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that enables the possibility to
-</span>15 <span style=''>   * change the player location when entered, like a &lt;b&gt;Door&lt;/b&gt;. Conceptually, an subject that
-</span>16 <span style=''>   * exposes a &lt;b&gt;RoomLink&lt;/b&gt; behavior could also be opened before permitting to the player to
-</span>17 <span style=''>   * enter.
-</span>18 <span style=''>   */
-</span>19 <span style=''>  abstract class RoomLink extends ItemBehavior {
-</span>20 <span style=''>
-</span>21 <span style=''>    /**
-</span>22 <span style=''>     * The &quot;openness&quot; state of the subject, as a boolean value. An open subject is conceptually
-</span>23 <span style=''>     * &quot;ready-to-use&quot;, as it can be entered. Always open, if the subject is not openable.
-</span>24 <span style=''>     * @return
-</span>25 <span style=''>     *   True if RoomLink is open, false otherwise.
-</span>26 <span style=''>     */
-</span>27 <span style=''>    def isOpen: Boolean
-</span>28 <span style=''>
-</span>29 <span style=''>    /**
-</span>30 <span style=''>     * If the subject have to be opened before entering, the &lt;b&gt;RoomLink&lt;/b&gt; should include [[Some]]
-</span>31 <span style=''>     * &lt;b&gt;Openable&lt;/b&gt; behavior here. If the subject is set as always open, it can be set to
-</span>32 <span style=''>     * [[None]].
-</span>33 <span style=''>     * @return
-</span>34 <span style=''>     *   [[Some]] with an &lt;b&gt;Openable&lt;/b&gt; behavior if the subject should be opened before entering,
-</span>35 <span style=''>     *   [[None]] otherwise.
-</span>36 <span style=''>     */
-</span>37 <span style=''>    def openable: Option[Openable]
-</span>38 <span style=''>
-</span>39 <span style=''>    /**
-</span>40 <span style=''>     * The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
-</span>41 <span style=''>     * subject.
-</span>42 <span style=''>     * @param s
-</span>43 <span style=''>     *   The current &lt;b&gt;State&lt;/b&gt;.
-</span>44 <span style=''>     * @return
-</span>45 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
-</span>46 <span style=''>     *   subject.
-</span>47 <span style=''>     */
-</span>48 <span style=''>    def endRoom(implicit s: S): RM
-</span>49 <span style=''>
-</span>50 <span style=''>    /**
-</span>51 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state. Internally, it should exploit the
-</span>52 <span style=''>     * &lt;b&gt;Openable::open&lt;/b&gt; &lt;b&gt;Reaction&lt;/b&gt;, if an &lt;b&gt;Openable&lt;/b&gt; is passed.
-</span>53 <span style=''>     * @return
-</span>54 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
-</span>55 <span style=''>     */
-</span>56 <span style=''>    def open: Reaction
-</span>57 <span style=''>
-</span>58 <span style=''>    /**
-</span>59 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the new location of the player to &lt;b&gt;RoomLink::endRoom&lt;/b&gt;, and
-</span>60 <span style=''>     * notifies the move to the user.
-</span>61 <span style=''>     * @return
-</span>62 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the new location of the player to &lt;b&gt;RoomLink::endRoom&lt;/b&gt;, and
-</span>63 <span style=''>     *   notifies the move to the user.
-</span>64 <span style=''>     */
-</span>65 <span style=''>    def enter: Reaction
-</span>66 <span style=''>  }
-</span>67 <span style=''>
-</span>68 <span style=''>  /**
-</span>69 <span style=''>   * Standard implementation of &lt;b&gt;RoomLink&lt;/b&gt;.
-</span>70 <span style=''>   *
-</span>71 <span style=''>   * @param endRoomRef
-</span>72 <span style=''>   *   The [[RoomRef]] of the &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after
-</span>73 <span style=''>   *   entering the subject.
-</span>74 <span style=''>   * @param endRoomDirection
-</span>75 <span style=''>   *   The [[Direction]] that will be associated to the end room, when available to enter.
-</span>76 <span style=''>   * @param openable
-</span>77 <span style=''>   *   If the subject have to be opened before entering, the &lt;b&gt;RoomLink&lt;/b&gt; should include [[Some]]
-</span>78 <span style=''>   *   &lt;b&gt;Openable&lt;/b&gt; behavior here. If the subject is set as always open, it can be set to
-</span>79 <span style=''>   *   [[None]].
-</span>80 <span style=''>   * @param onEnterExtra
-</span>81 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed into the &lt;b&gt;State&lt;/b&gt; when entered, after the standard
-</span>82 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt;. It can be omitted.
-</span>83 <span style=''>   */
-</span>84 <span style=''>  case class SimpleRoomLink(
-</span>85 <span style=''>    endRoomRef: RoomRef,
-</span>86 <span style=''>    endRoomDirection: Direction,
-</span>87 <span style=''>    openable: Option[Openable] = None,
-</span>88 <span style=''>    onEnterExtra: Reaction = Reaction.empty
-</span>89 <span style=''>  )(implicit val subject: I)
-</span>90 <span style=''>    extends RoomLink
-</span>91 <span style=''>    with Delegate {
-</span>92 <span style=''>
-</span>93 <span style=''>    /**
-</span>94 <span style=''>     * If the subject can also be opened, che associated &lt;b&gt;Openable&lt;/b&gt; triggers are used as a
-</span>95 <span style=''>     * delegate.
-</span>96 <span style=''>     * @return
-</span>97 <span style=''>     *   The &lt;b&gt;Openable&lt;/b&gt; triggers, if the openable is passed; an empty [[PartialFunction]]
-</span>98 <span style=''>     *   otherwise.
-</span>99 <span style=''>     */
-</span>100 <span style=''>    override def delegateTriggers: ItemTriggers =
-</span>101 <span style=''>      </span><span style='background: #AEF1AE'>openable map (_.triggers) getOrElse PartialFunction.empty</span><span style=''>: ItemTriggers
-</span>102 <span style=''>
-</span>103 <span style=''>    override def receiverTriggers: ItemTriggers = {
-</span>104 <span style=''>      case (Open, maybeKey, s)
-</span>105 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.forall(_.canBeOpened(maybeKey)(s))
-</span>106 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !isOpen &amp;&amp; openable.isDefined</span><span style=''> =&gt;
-</span>107 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
-</span>108 <span style=''>
-</span>109 <span style=''>      case (Enter, None, s) if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.forall(_.isOpen)</span><span style=''> =&gt;
-</span>110 <span style=''>        </span><span style='background: #AEF1AE'>enter</span><span style=''>
-</span>111 <span style=''>
-</span>112 <span style=''>      case (Enter, _, _) =&gt;
-</span>113 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.messages(CMessages.FailedToEnter(subject))</span><span style=''>
-</span>114 <span style=''>    }
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Direction, RoomRef}
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.{Enter, Open}
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>14 <span style=''>
+</span>15 <span style=''>/**
+</span>16 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;RoomLink&lt;/b&gt; behavior.
+</span>17 <span style=''> */
+</span>18 <span style=''>trait RoomLinkExt extends BehaviorBasedModel with OpenableExt with CReactionsExt {
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; associated to a &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that enables the possibility to
+</span>22 <span style=''>   * change the player location when entered, like a &lt;b&gt;Door&lt;/b&gt;. Conceptually, an subject that
+</span>23 <span style=''>   * exposes a &lt;b&gt;RoomLink&lt;/b&gt; behavior could also be opened before permitting to the player to
+</span>24 <span style=''>   * enter.
+</span>25 <span style=''>   */
+</span>26 <span style=''>  abstract class RoomLink extends ItemBehavior {
+</span>27 <span style=''>
+</span>28 <span style=''>    /**
+</span>29 <span style=''>     * The &quot;openness&quot; state of the subject, as a boolean value. An open subject is conceptually
+</span>30 <span style=''>     * &quot;ready-to-use&quot;, as it can be entered. Always open, if the subject is not openable.
+</span>31 <span style=''>     * @return
+</span>32 <span style=''>     *   True if RoomLink is open, false otherwise.
+</span>33 <span style=''>     */
+</span>34 <span style=''>    def isOpen: Boolean
+</span>35 <span style=''>
+</span>36 <span style=''>    /**
+</span>37 <span style=''>     * If the subject have to be opened before entering, the &lt;b&gt;RoomLink&lt;/b&gt; should include [[Some]]
+</span>38 <span style=''>     * &lt;b&gt;Openable&lt;/b&gt; behavior here. If the subject is set as always open, it can be set to
+</span>39 <span style=''>     * [[None]].
+</span>40 <span style=''>     * @return
+</span>41 <span style=''>     *   [[Some]] with an &lt;b&gt;Openable&lt;/b&gt; behavior if the subject should be opened before entering,
+</span>42 <span style=''>     *   [[None]] otherwise.
+</span>43 <span style=''>     */
+</span>44 <span style=''>    def openable: Option[Openable]
+</span>45 <span style=''>
+</span>46 <span style=''>    /**
+</span>47 <span style=''>     * The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>48 <span style=''>     * subject.
+</span>49 <span style=''>     * @param s
+</span>50 <span style=''>     *   The current &lt;b&gt;State&lt;/b&gt;.
+</span>51 <span style=''>     * @return
+</span>52 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>53 <span style=''>     *   subject.
+</span>54 <span style=''>     */
+</span>55 <span style=''>    def endRoom(implicit s: S): RM
+</span>56 <span style=''>
+</span>57 <span style=''>    /**
+</span>58 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state. Internally, it should exploit the
+</span>59 <span style=''>     * &lt;b&gt;Openable::open&lt;/b&gt; &lt;b&gt;Reaction&lt;/b&gt;, if an &lt;b&gt;Openable&lt;/b&gt; is passed.
+</span>60 <span style=''>     * @return
+</span>61 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
+</span>62 <span style=''>     */
+</span>63 <span style=''>    def open: Reaction
+</span>64 <span style=''>
+</span>65 <span style=''>    /**
+</span>66 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the new location of the player to &lt;b&gt;RoomLink::endRoom&lt;/b&gt;, and
+</span>67 <span style=''>     * notifies the move to the user.
+</span>68 <span style=''>     * @return
+</span>69 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the new location of the player to &lt;b&gt;RoomLink::endRoom&lt;/b&gt;, and
+</span>70 <span style=''>     *   notifies the move to the user.
+</span>71 <span style=''>     */
+</span>72 <span style=''>    def enter: Reaction
+</span>73 <span style=''>  }
+</span>74 <span style=''>
+</span>75 <span style=''>  /**
+</span>76 <span style=''>   * Standard implementation of &lt;b&gt;RoomLink&lt;/b&gt;.
+</span>77 <span style=''>   *
+</span>78 <span style=''>   * @param endRoomRef
+</span>79 <span style=''>   *   The [[RoomRef]] of the &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after
+</span>80 <span style=''>   *   entering the subject.
+</span>81 <span style=''>   * @param endRoomDirection
+</span>82 <span style=''>   *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>83 <span style=''>   * @param openable
+</span>84 <span style=''>   *   If the subject have to be opened before entering, the &lt;b&gt;RoomLink&lt;/b&gt; should include [[Some]]
+</span>85 <span style=''>   *   &lt;b&gt;Openable&lt;/b&gt; behavior here. If the subject is set as always open, it can be set to
+</span>86 <span style=''>   *   [[None]].
+</span>87 <span style=''>   * @param onEnterExtra
+</span>88 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed into the &lt;b&gt;State&lt;/b&gt; when entered, after the standard
+</span>89 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt;. It can be omitted.
+</span>90 <span style=''>   */
+</span>91 <span style=''>  case class SimpleRoomLink(
+</span>92 <span style=''>    endRoomRef: RoomRef,
+</span>93 <span style=''>    endRoomDirection: Direction,
+</span>94 <span style=''>    openable: Option[Openable] = None,
+</span>95 <span style=''>    onEnterExtra: Reaction = Reaction.empty
+</span>96 <span style=''>  )(implicit val subject: I)
+</span>97 <span style=''>    extends RoomLink
+</span>98 <span style=''>    with Delegate {
+</span>99 <span style=''>
+</span>100 <span style=''>    /**
+</span>101 <span style=''>     * If the subject can also be opened, che associated &lt;b&gt;Openable&lt;/b&gt; triggers are used as a
+</span>102 <span style=''>     * delegate.
+</span>103 <span style=''>     * @return
+</span>104 <span style=''>     *   The &lt;b&gt;Openable&lt;/b&gt; triggers, if the openable is passed; an empty [[PartialFunction]]
+</span>105 <span style=''>     *   otherwise.
+</span>106 <span style=''>     */
+</span>107 <span style=''>    override def delegateTriggers: ItemTriggers =
+</span>108 <span style=''>      </span><span style='background: #AEF1AE'>openable map (_.triggers) getOrElse PartialFunction.empty</span><span style=''>: ItemTriggers
+</span>109 <span style=''>
+</span>110 <span style=''>    override def receiverTriggers: ItemTriggers = {
+</span>111 <span style=''>      case (Open, maybeKey, s)
+</span>112 <span style=''>          if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.forall(_.canBeOpened(maybeKey)(s))
+</span>113 <span style=''></span><span style='background: #AEF1AE'>            &amp;&amp; !isOpen &amp;&amp; openable.isDefined</span><span style=''> =&gt;
+</span>114 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
 </span>115 <span style=''>
-</span>116 <span style=''>    override def enter: Reaction =
-</span>117 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>118 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
-</span>119 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.switchLocation(endRoomRef)
-</span>120 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.addMessage(CMessages.Navigated(endRoom(s1)))
-</span>121 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onEnterExtra
-</span>122 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
-</span>123 <span style=''>
-</span>124 <span style=''>    override def open: Reaction =
-</span>125 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>126 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- openable map (_.open) getOrElse </span><span style='background: #F0ADAD'>Reaction.empty</span><span style='background: #AEF1AE'>
-</span>127 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- CReactions.addDirectionToLocation(endRoomDirection, endRoom(s1))
-</span>128 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
-</span>129 <span style=''>
-</span>130 <span style=''>    override def endRoom(implicit state: S): RM = </span><span style='background: #AEF1AE'>state.rooms(endRoomRef)</span><span style=''>
-</span>131 <span style=''>
-</span>132 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable forall (_.isOpen)</span><span style=''>
-</span>133 <span style=''>  }
-</span>134 <span style=''>
-</span>135 <span style=''>  /**
-</span>136 <span style=''>   * Companion object for &lt;b&gt;RoomLink&lt;/b&gt;.
-</span>137 <span style=''>   */
-</span>138 <span style=''>  object RoomLink {
-</span>139 <span style=''>
-</span>140 <span style=''>    /**
-</span>141 <span style=''>     * Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
-</span>142 <span style=''>     *
-</span>143 <span style=''>     * @param endRoom
-</span>144 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
-</span>145 <span style=''>     *   subject.
-</span>146 <span style=''>     * @param endRoomDirection
-</span>147 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
-</span>148 <span style=''>     * @param openableBuilder
-</span>149 <span style=''>     *   A function that returns the &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject, when the
-</span>150 <span style=''>     *   subject is passed.
-</span>151 <span style=''>     * @param onEnterExtra
-</span>152 <span style=''>     *   An extra behavior generated when player enter the target room.
-</span>153 <span style=''>     * @return
-</span>154 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
-</span>155 <span style=''>     */
-</span>156 <span style=''>    def builder(
-</span>157 <span style=''>      endRoom: RM,
-</span>158 <span style=''>      endRoomDirection: Direction,
-</span>159 <span style=''>      openableBuilder: Option[I =&gt; Openable] = None,
-</span>160 <span style=''>      onEnterExtra: Reaction = Reaction.empty
-</span>161 <span style=''>    ): I =&gt; RoomLink =
-</span>162 <span style=''>      i =&gt;
-</span>163 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
-</span>164 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
-</span>165 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
-</span>166 <span style=''></span><span style='background: #AEF1AE'>          openableBuilder.map(_(i)),
-</span>167 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
-</span>168 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
-</span>169 <span style=''>
-</span>170 <span style=''>    /**
-</span>171 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is open yet, an can be entered
-</span>172 <span style=''>     * directly.
-</span>173 <span style=''>     *
-</span>174 <span style=''>     * @param endRoom
-</span>175 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
-</span>176 <span style=''>     *   subject.
-</span>177 <span style=''>     * @param endRoomDirection
-</span>178 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
-</span>179 <span style=''>     * @param onEnterExtra
-</span>180 <span style=''>     *   An extra behavior generated when player enter the target room.
-</span>181 <span style=''>     * @return
-</span>182 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
-</span>183 <span style=''>     */
-</span>184 <span style=''>    def openedBuilder(
-</span>185 <span style=''>      endRoom: RM,
-</span>186 <span style=''>      endRoomDirection: Direction,
-</span>187 <span style=''>      onEnterExtra: Reaction = Reaction.empty
-</span>188 <span style=''>    ): I =&gt; RoomLink = </span><span style='background: #AEF1AE'>builder(endRoom, endRoomDirection, None, onEnterExtra)</span><span style=''>
-</span>189 <span style=''>
-</span>190 <span style=''>    /**
-</span>191 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is closed without &lt;b&gt;Key&lt;/b&gt;,
-</span>192 <span style=''>     * and can be entered after being opened.
-</span>193 <span style=''>     *
-</span>194 <span style=''>     * @param endRoom
-</span>195 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
-</span>196 <span style=''>     *   subject.
-</span>197 <span style=''>     * @param endRoomDirection
-</span>198 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
-</span>199 <span style=''>     * @param onEnterExtra
-</span>200 <span style=''>     *   An extra behavior generated when player enter the target room.
-</span>201 <span style=''>     * @param onOpenExtra
-</span>202 <span style=''>     *   An extra behavior generated when player opens the subject.
-</span>203 <span style=''>     * @return
-</span>204 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
-</span>205 <span style=''>     */
-</span>206 <span style=''>    def closedUnlockedBuilder(
-</span>207 <span style=''>      endRoom: RM,
-</span>208 <span style=''>      endRoomDirection: Direction,
-</span>209 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
-</span>210 <span style=''>      onOpenExtra: Reaction = Reaction.empty
-</span>211 <span style=''>    ): I =&gt; RoomLink =
-</span>212 <span style=''>      </span><span style='background: #AEF1AE'>builder(endRoom, endRoomDirection, Some(Openable.unlockedBuilder(onOpenExtra)), onEnterExtra)</span><span style=''>
-</span>213 <span style=''>
-</span>214 <span style=''>    /**
-</span>215 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is closed with a &lt;b&gt;Key&lt;/b&gt;, and
-</span>216 <span style=''>     * can be entered after being opened.
-</span>217 <span style=''>     *
-</span>218 <span style=''>     * @param key
-</span>219 <span style=''>     *   The &lt;b&gt;Key&lt;/b&gt; to be used to open the subject.
-</span>220 <span style=''>     * @param endRoom
-</span>221 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
-</span>222 <span style=''>     *   subject.
-</span>223 <span style=''>     * @param endRoomDirection
-</span>224 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
-</span>225 <span style=''>     * @param onEnterExtra
-</span>226 <span style=''>     *   An extra behavior generated when player enter the target room.
-</span>227 <span style=''>     * @param onOpenExtra
-</span>228 <span style=''>     *   An extra behavior generated when player opens the subject.
-</span>229 <span style=''>     * @return
-</span>230 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
-</span>231 <span style=''>     */
-</span>232 <span style=''>    def closedLockedBuilder(
-</span>233 <span style=''>      key: Key,
-</span>234 <span style=''>      endRoom: RM,
-</span>235 <span style=''>      endRoomDirection: Direction,
-</span>236 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
-</span>237 <span style=''>      onOpenExtra: Reaction = Reaction.empty
-</span>238 <span style=''>    ): I =&gt; RoomLink =
-</span>239 <span style=''>      </span><span style='background: #AEF1AE'>builder(
-</span>240 <span style=''></span><span style='background: #AEF1AE'>        endRoom,
-</span>241 <span style=''></span><span style='background: #AEF1AE'>        endRoomDirection,
-</span>242 <span style=''></span><span style='background: #AEF1AE'>        Some(Openable.lockedBuilder(key, onOpenExtra)),
-</span>243 <span style=''></span><span style='background: #AEF1AE'>        onEnterExtra
-</span>244 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>245 <span style=''>  }
-</span>246 <span style=''>}
+</span>116 <span style=''>      case (Enter, None, s) if </span><span style='background: #AEF1AE'>s.isInLocation(subject) &amp;&amp; openable.forall(_.isOpen)</span><span style=''> =&gt;
+</span>117 <span style=''>        </span><span style='background: #AEF1AE'>enter</span><span style=''>
+</span>118 <span style=''>
+</span>119 <span style=''>      case (Enter, _, _) =&gt;
+</span>120 <span style=''>        </span><span style='background: #AEF1AE'>Reaction.messages(CMessages.FailedToEnter(subject))</span><span style=''>
+</span>121 <span style=''>    }
+</span>122 <span style=''>
+</span>123 <span style=''>    override def enter: Reaction =
+</span>124 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>125 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
+</span>126 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.switchLocation(endRoomRef)
+</span>127 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.addMessage(CMessages.Navigated(endRoom(s1)))
+</span>128 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onEnterExtra
+</span>129 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>130 <span style=''>
+</span>131 <span style=''>    override def open: Reaction =
+</span>132 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>133 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- openable map (_.open) getOrElse </span><span style='background: #F0ADAD'>Reaction.empty</span><span style='background: #AEF1AE'>
+</span>134 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- CReactions.addDirectionToLocation(endRoomDirection, endRoom(s1))
+</span>135 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>136 <span style=''>
+</span>137 <span style=''>    override def endRoom(implicit state: S): RM = </span><span style='background: #AEF1AE'>state.rooms(endRoomRef)</span><span style=''>
+</span>138 <span style=''>
+</span>139 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>openable forall (_.isOpen)</span><span style=''>
+</span>140 <span style=''>  }
+</span>141 <span style=''>
+</span>142 <span style=''>  /**
+</span>143 <span style=''>   * Companion object for &lt;b&gt;RoomLink&lt;/b&gt;.
+</span>144 <span style=''>   */
+</span>145 <span style=''>  object RoomLink {
+</span>146 <span style=''>
+</span>147 <span style=''>    /**
+</span>148 <span style=''>     * Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>149 <span style=''>     *
+</span>150 <span style=''>     * @param endRoom
+</span>151 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>152 <span style=''>     *   subject.
+</span>153 <span style=''>     * @param endRoomDirection
+</span>154 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>155 <span style=''>     * @param openableBuilder
+</span>156 <span style=''>     *   A function that returns the &lt;b&gt;Openable&lt;/b&gt; behavior associated to the subject, when the
+</span>157 <span style=''>     *   subject is passed.
+</span>158 <span style=''>     * @param onEnterExtra
+</span>159 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>160 <span style=''>     * @return
+</span>161 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>162 <span style=''>     */
+</span>163 <span style=''>    def builder(
+</span>164 <span style=''>      endRoom: RM,
+</span>165 <span style=''>      endRoomDirection: Direction,
+</span>166 <span style=''>      openableBuilder: Option[I =&gt; Openable] = None,
+</span>167 <span style=''>      onEnterExtra: Reaction = Reaction.empty
+</span>168 <span style=''>    ): I =&gt; RoomLink =
+</span>169 <span style=''>      i =&gt;
+</span>170 <span style=''>        </span><span style='background: #AEF1AE'>SimpleRoomLink(
+</span>171 <span style=''></span><span style='background: #AEF1AE'>          endRoom.ref,
+</span>172 <span style=''></span><span style='background: #AEF1AE'>          endRoomDirection,
+</span>173 <span style=''></span><span style='background: #AEF1AE'>          openableBuilder.map(_(i)),
+</span>174 <span style=''></span><span style='background: #AEF1AE'>          onEnterExtra
+</span>175 <span style=''></span><span style='background: #AEF1AE'>        )(i)</span><span style=''>
+</span>176 <span style=''>
+</span>177 <span style=''>    /**
+</span>178 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is open yet, an can be entered
+</span>179 <span style=''>     * directly.
+</span>180 <span style=''>     *
+</span>181 <span style=''>     * @param endRoom
+</span>182 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>183 <span style=''>     *   subject.
+</span>184 <span style=''>     * @param endRoomDirection
+</span>185 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>186 <span style=''>     * @param onEnterExtra
+</span>187 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>188 <span style=''>     * @return
+</span>189 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>190 <span style=''>     */
+</span>191 <span style=''>    def openedBuilder(
+</span>192 <span style=''>      endRoom: RM,
+</span>193 <span style=''>      endRoomDirection: Direction,
+</span>194 <span style=''>      onEnterExtra: Reaction = Reaction.empty
+</span>195 <span style=''>    ): I =&gt; RoomLink = </span><span style='background: #AEF1AE'>builder(endRoom, endRoomDirection, None, onEnterExtra)</span><span style=''>
+</span>196 <span style=''>
+</span>197 <span style=''>    /**
+</span>198 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is closed without &lt;b&gt;Key&lt;/b&gt;,
+</span>199 <span style=''>     * and can be entered after being opened.
+</span>200 <span style=''>     *
+</span>201 <span style=''>     * @param endRoom
+</span>202 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>203 <span style=''>     *   subject.
+</span>204 <span style=''>     * @param endRoomDirection
+</span>205 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>206 <span style=''>     * @param onEnterExtra
+</span>207 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>208 <span style=''>     * @param onOpenExtra
+</span>209 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>210 <span style=''>     * @return
+</span>211 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>212 <span style=''>     */
+</span>213 <span style=''>    def closedUnlockedBuilder(
+</span>214 <span style=''>      endRoom: RM,
+</span>215 <span style=''>      endRoomDirection: Direction,
+</span>216 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>217 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>218 <span style=''>    ): I =&gt; RoomLink =
+</span>219 <span style=''>      </span><span style='background: #AEF1AE'>builder(endRoom, endRoomDirection, Some(Openable.unlockedBuilder(onOpenExtra)), onEnterExtra)</span><span style=''>
+</span>220 <span style=''>
+</span>221 <span style=''>    /**
+</span>222 <span style=''>     * Builder to generate a &lt;b&gt;RoomLink&lt;/b&gt; (given a subject) that is closed with a &lt;b&gt;Key&lt;/b&gt;, and
+</span>223 <span style=''>     * can be entered after being opened.
+</span>224 <span style=''>     *
+</span>225 <span style=''>     * @param key
+</span>226 <span style=''>     *   The &lt;b&gt;Key&lt;/b&gt; to be used to open the subject.
+</span>227 <span style=''>     * @param endRoom
+</span>228 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; that will be set as the new location of the player, after entering the
+</span>229 <span style=''>     *   subject.
+</span>230 <span style=''>     * @param endRoomDirection
+</span>231 <span style=''>     *   The [[Direction]] that will be associated to the end room, when available to enter.
+</span>232 <span style=''>     * @param onEnterExtra
+</span>233 <span style=''>     *   An extra behavior generated when player enter the target room.
+</span>234 <span style=''>     * @param onOpenExtra
+</span>235 <span style=''>     *   An extra behavior generated when player opens the subject.
+</span>236 <span style=''>     * @return
+</span>237 <span style=''>     *   Builder to generate a simple &lt;b&gt;RoomLink&lt;/b&gt;, given a subject.
+</span>238 <span style=''>     */
+</span>239 <span style=''>    def closedLockedBuilder(
+</span>240 <span style=''>      key: Key,
+</span>241 <span style=''>      endRoom: RM,
+</span>242 <span style=''>      endRoomDirection: Direction,
+</span>243 <span style=''>      onEnterExtra: Reaction = Reaction.empty,
+</span>244 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>245 <span style=''>    ): I =&gt; RoomLink =
+</span>246 <span style=''>      </span><span style='background: #AEF1AE'>builder(
+</span>247 <span style=''></span><span style='background: #AEF1AE'>        endRoom,
+</span>248 <span style=''></span><span style='background: #AEF1AE'>        endRoomDirection,
+</span>249 <span style=''></span><span style='background: #AEF1AE'>        Some(Openable.lockedBuilder(key, onOpenExtra)),
+</span>250 <span style=''></span><span style='background: #AEF1AE'>        onEnterExtra
+</span>251 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>252 <span style=''>  }
+</span>253 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -282,15 +289,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          101
+          108
         </td>
         <td>
           422
         </td>
         <td>
-          3932
+          4156
           -
-          3942
+          4166
         </td>
         <td>
           Select
@@ -306,15 +313,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          108
         </td>
         <td>
           423
         </td>
         <td>
-          3954
+          4178
           -
-          3975
+          4199
         </td>
         <td>
           TypeApply
@@ -330,15 +337,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          108
         </td>
         <td>
           424
         </td>
         <td>
-          3918
+          4142
           -
-          3975
+          4199
         </td>
         <td>
           Apply
@@ -354,15 +361,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          110
         </td>
         <td>
           440
         </td>
         <td>
-          4041
+          4265
           -
-          4041
+          4265
         </td>
         <td>
           Apply
@@ -378,15 +385,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          112
         </td>
         <td>
           425
         </td>
         <td>
-          4102
+          4326
           -
-          4109
+          4333
         </td>
         <td>
           Select
@@ -402,15 +409,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          112
         </td>
         <td>
           426
         </td>
         <td>
-          4130
+          4354
           -
-          4156
+          4380
         </td>
         <td>
           Apply
@@ -426,15 +433,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          112
         </td>
         <td>
           427
         </td>
         <td>
-          4114
+          4338
           -
-          4157
+          4381
         </td>
         <td>
           Apply
@@ -450,15 +457,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           428
         </td>
         <td>
-          4173
+          4397
           -
-          4180
+          4404
         </td>
         <td>
           Select
@@ -474,15 +481,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           429
         </td>
         <td>
-          4184
+          4408
           -
-          4202
+          4426
         </td>
         <td>
           Select
@@ -498,15 +505,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           430
         </td>
         <td>
-          4087
+          4311
           -
-          4202
+          4426
         </td>
         <td>
           Apply
@@ -522,15 +529,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          114
         </td>
         <td>
           431
         </td>
         <td>
-          4214
+          4438
           -
-          4218
+          4442
         </td>
         <td>
           Select
@@ -546,15 +553,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           432
         </td>
         <td>
-          4266
+          4490
           -
-          4273
+          4497
         </td>
         <td>
           Select
@@ -570,15 +577,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           433
         </td>
         <td>
-          4294
+          4518
           -
-          4302
+          4526
         </td>
         <td>
           Select
@@ -594,15 +601,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           434
         </td>
         <td>
-          4278
+          4502
           -
-          4303
+          4527
         </td>
         <td>
           Apply
@@ -618,15 +625,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          116
         </td>
         <td>
           435
         </td>
         <td>
-          4251
+          4475
           -
-          4303
+          4527
         </td>
         <td>
           Apply
@@ -642,15 +649,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          117
         </td>
         <td>
           436
         </td>
         <td>
-          4315
+          4539
           -
-          4320
+          4544
         </td>
         <td>
           Select
@@ -666,15 +673,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          120
         </td>
         <td>
           437
         </td>
         <td>
-          4400
+          4624
           -
-          4407
+          4631
         </td>
         <td>
           Select
@@ -690,15 +697,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          120
         </td>
         <td>
           438
         </td>
         <td>
-          4376
+          4600
           -
-          4408
+          4632
         </td>
         <td>
           Apply
@@ -714,15 +721,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          120
         </td>
         <td>
           439
         </td>
         <td>
-          4358
+          4582
           -
-          4409
+          4633
         </td>
         <td>
           Apply
@@ -738,15 +745,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          125
         </td>
         <td>
           441
         </td>
         <td>
-          4478
+          4702
           -
-          4492
+          4716
         </td>
         <td>
           Select
@@ -762,15 +769,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          125
         </td>
         <td>
           451
         </td>
         <td>
-          4458
+          4682
           -
-          4658
+          4882
         </td>
         <td>
           Apply
@@ -790,15 +797,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           442
         </td>
         <td>
-          4533
+          4757
           -
-          4543
+          4767
         </td>
         <td>
           Select
@@ -814,15 +821,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           443
         </td>
         <td>
-          4507
+          4731
           -
-          4544
+          4768
         </td>
         <td>
           Apply
@@ -838,15 +845,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           450
         </td>
         <td>
-          4501
+          4725
           -
-          4658
+          4882
         </td>
         <td>
           Apply
@@ -866,15 +873,15 @@
         </td>
       </tr><tr>
         <td>
-          120
+          127
         </td>
         <td>
           444
         </td>
         <td>
-          4601
+          4825
           -
-          4612
+          4836
         </td>
         <td>
           Apply
@@ -890,15 +897,15 @@
         </td>
       </tr><tr>
         <td>
-          120
+          127
         </td>
         <td>
           445
         </td>
         <td>
-          4581
+          4805
           -
-          4613
+          4837
         </td>
         <td>
           Apply
@@ -914,15 +921,15 @@
         </td>
       </tr><tr>
         <td>
-          120
+          127
         </td>
         <td>
           446
         </td>
         <td>
-          4559
+          4783
           -
-          4614
+          4838
         </td>
         <td>
           Apply
@@ -938,15 +945,15 @@
         </td>
       </tr><tr>
         <td>
-          120
+          127
         </td>
         <td>
           449
         </td>
         <td>
-          4553
+          4777
           -
-          4658
+          4882
         </td>
         <td>
           Apply
@@ -964,15 +971,15 @@
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           447
         </td>
         <td>
-          4629
+          4853
           -
-          4641
+          4865
         </td>
         <td>
           Select
@@ -988,15 +995,15 @@
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           448
         </td>
         <td>
-          4623
+          4847
           -
-          4658
+          4882
         </td>
         <td>
           Apply
@@ -1012,15 +1019,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          133
         </td>
         <td>
           452
         </td>
         <td>
-          4734
+          4958
           -
-          4740
+          4964
         </td>
         <td>
           Select
@@ -1036,15 +1043,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          133
         </td>
         <td>
           453
         </td>
         <td>
-          4752
+          4976
           -
-          4766
+          4990
         </td>
         <td>
           Select
@@ -1060,15 +1067,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          133
         </td>
         <td>
           454
         </td>
         <td>
-          4720
+          4944
           -
-          4766
+          4990
         </td>
         <td>
           Apply
@@ -1084,15 +1091,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          133
         </td>
         <td>
           459
         </td>
         <td>
-          4700
+          4924
           -
-          4862
+          5086
         </td>
         <td>
           Apply
@@ -1108,15 +1115,15 @@
         </td>
       </tr><tr>
         <td>
-          127
+          134
         </td>
         <td>
           455
         </td>
         <td>
-          4815
+          5039
           -
-          4831
+          5055
         </td>
         <td>
           Select
@@ -1132,15 +1139,15 @@
         </td>
       </tr><tr>
         <td>
-          127
+          134
         </td>
         <td>
           456
         </td>
         <td>
-          4833
+          5057
           -
-          4844
+          5068
         </td>
         <td>
           Apply
@@ -1156,15 +1163,15 @@
         </td>
       </tr><tr>
         <td>
-          127
+          134
         </td>
         <td>
           457
         </td>
         <td>
-          4781
+          5005
           -
-          4845
+          5069
         </td>
         <td>
           Apply
@@ -1180,15 +1187,15 @@
         </td>
       </tr><tr>
         <td>
-          127
+          134
         </td>
         <td>
           458
         </td>
         <td>
-          4775
+          4999
           -
-          4862
+          5086
         </td>
         <td>
           Apply
@@ -1204,15 +1211,15 @@
         </td>
       </tr><tr>
         <td>
-          130
+          137
         </td>
         <td>
           460
         </td>
         <td>
-          4926
+          5150
           -
-          4936
+          5160
         </td>
         <td>
           Select
@@ -1228,15 +1235,15 @@
         </td>
       </tr><tr>
         <td>
-          130
+          137
         </td>
         <td>
           461
         </td>
         <td>
-          4914
+          5138
           -
-          4937
+          5161
         </td>
         <td>
           Apply
@@ -1252,15 +1259,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          139
         </td>
         <td>
           462
         </td>
         <td>
-          4991
+          5215
           -
-          4999
+          5223
         </td>
         <td>
           Select
@@ -1276,15 +1283,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          139
         </td>
         <td>
           463
         </td>
         <td>
-          4974
+          5198
           -
-          5000
+          5224
         </td>
         <td>
           Apply
@@ -1300,15 +1307,15 @@
         </td>
       </tr><tr>
         <td>
-          168
+          175
         </td>
         <td>
           464
         </td>
         <td>
-          5989
+          6213
           -
-          6128
+          6352
         </td>
         <td>
           Apply
@@ -1324,15 +1331,15 @@
         </td>
       </tr><tr>
         <td>
-          188
+          195
         </td>
         <td>
           465
         </td>
         <td>
-          6896
+          7120
           -
-          6900
+          7124
         </td>
         <td>
           Select
@@ -1348,15 +1355,15 @@
         </td>
       </tr><tr>
         <td>
-          188
+          195
         </td>
         <td>
           466
         </td>
         <td>
-          6861
+          7085
           -
-          6915
+          7139
         </td>
         <td>
           Apply
@@ -1372,15 +1379,15 @@
         </td>
       </tr><tr>
         <td>
-          212
+          219
         </td>
         <td>
           467
         </td>
         <td>
-          7870
+          8094
           -
-          7907
+          8131
         </td>
         <td>
           Apply
@@ -1396,15 +1403,15 @@
         </td>
       </tr><tr>
         <td>
-          212
+          219
         </td>
         <td>
           468
         </td>
         <td>
-          7865
+          8089
           -
-          7908
+          8132
         </td>
         <td>
           Apply
@@ -1420,15 +1427,15 @@
         </td>
       </tr><tr>
         <td>
-          212
+          219
         </td>
         <td>
           469
         </td>
         <td>
-          7830
+          8054
           -
-          7923
+          8147
         </td>
         <td>
           Apply
@@ -1444,15 +1451,15 @@
         </td>
       </tr><tr>
         <td>
-          239
+          246
         </td>
         <td>
           472
         </td>
         <td>
-          8925
+          9149
           -
-          9061
+          9285
         </td>
         <td>
           Apply
@@ -1468,15 +1475,15 @@
         </td>
       </tr><tr>
         <td>
-          242
+          249
         </td>
         <td>
           470
         </td>
         <td>
-          8990
+          9214
           -
-          9030
+          9254
         </td>
         <td>
           Apply
@@ -1492,15 +1499,15 @@
         </td>
       </tr><tr>
         <td>
-          242
+          249
         </td>
         <td>
           471
         </td>
         <td>
-          8985
+          9209
           -
-          9031
+          9255
         </td>
         <td>
           Apply

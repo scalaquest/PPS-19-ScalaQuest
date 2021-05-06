@@ -22,41 +22,48 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model
-</span>2 <span style=''>
-</span>3 <span style=''>sealed trait Direction
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * Represents the cardinal points from which it is possible to move, starting from a [[Model.Room]].
-</span>7 <span style=''> */
-</span>8 <span style=''>object Direction {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model
 </span>9 <span style=''>
-</span>10 <span style=''>  case object North extends Direction {
-</span>11 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;North&quot;</span><span style=''>
-</span>12 <span style=''>  }
-</span>13 <span style=''>
-</span>14 <span style=''>  case object South extends Direction {
-</span>15 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;South&quot;</span><span style=''>
-</span>16 <span style=''>  }
-</span>17 <span style=''>
-</span>18 <span style=''>  case object East extends Direction {
-</span>19 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;East&quot;</span><span style=''>
-</span>20 <span style=''>  }
-</span>21 <span style=''>
-</span>22 <span style=''>  case object West extends Direction {
-</span>23 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;West&quot;</span><span style=''>
-</span>24 <span style=''>  }
-</span>25 <span style=''>
-</span>26 <span style=''>  case object Up extends Direction {
-</span>27 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;Up&quot;</span><span style=''>
-</span>28 <span style=''>  }
-</span>29 <span style=''>
-</span>30 <span style=''>  case object Down extends Direction {
-</span>31 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;Down&quot;</span><span style=''>
-</span>32 <span style=''>  }
-</span>33 <span style=''>
-</span>34 <span style=''>  def all: Set[Direction] = </span><span style='background: #AEF1AE'>Set(North, South, East, West, Up, Down)</span><span style=''>
-</span>35 <span style=''>}
+</span>10 <span style=''>sealed trait Direction
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * Represents the cardinal points from which it is possible to move, starting from a [[Model.Room]].
+</span>14 <span style=''> */
+</span>15 <span style=''>object Direction {
+</span>16 <span style=''>
+</span>17 <span style=''>  case object North extends Direction {
+</span>18 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;North&quot;</span><span style=''>
+</span>19 <span style=''>  }
+</span>20 <span style=''>
+</span>21 <span style=''>  case object South extends Direction {
+</span>22 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;South&quot;</span><span style=''>
+</span>23 <span style=''>  }
+</span>24 <span style=''>
+</span>25 <span style=''>  case object East extends Direction {
+</span>26 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;East&quot;</span><span style=''>
+</span>27 <span style=''>  }
+</span>28 <span style=''>
+</span>29 <span style=''>  case object West extends Direction {
+</span>30 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;West&quot;</span><span style=''>
+</span>31 <span style=''>  }
+</span>32 <span style=''>
+</span>33 <span style=''>  case object Up extends Direction {
+</span>34 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;Up&quot;</span><span style=''>
+</span>35 <span style=''>  }
+</span>36 <span style=''>
+</span>37 <span style=''>  case object Down extends Direction {
+</span>38 <span style=''>    override def toString: String = </span><span style='background: #AEF1AE'>&quot;Down&quot;</span><span style=''>
+</span>39 <span style=''>  }
+</span>40 <span style=''>
+</span>41 <span style=''>  def all: Set[Direction] = </span><span style='background: #AEF1AE'>Set(North, South, East, West, Up, Down)</span><span style=''>
+</span>42 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -71,15 +78,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           119
         </td>
         <td>
-          270
+          494
           -
-          277
+          501
         </td>
         <td>
           Literal
@@ -95,15 +102,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           120
         </td>
         <td>
-          359
+          583
           -
-          366
+          590
         </td>
         <td>
           Literal
@@ -119,15 +126,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           121
         </td>
         <td>
-          447
+          671
           -
-          453
+          677
         </td>
         <td>
           Literal
@@ -143,15 +150,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           122
         </td>
         <td>
-          534
+          758
           -
-          540
+          764
         </td>
         <td>
           Literal
@@ -167,15 +174,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           123
         </td>
         <td>
-          619
+          843
           -
-          623
+          847
         </td>
         <td>
           Literal
@@ -191,15 +198,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          38
         </td>
         <td>
           124
         </td>
         <td>
-          704
+          928
           -
-          710
+          934
         </td>
         <td>
           Literal
@@ -215,15 +222,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           125
         </td>
         <td>
-          748
+          972
           -
-          753
+          977
         </td>
         <td>
           Select
@@ -239,15 +246,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           126
         </td>
         <td>
-          755
+          979
           -
-          760
+          984
         </td>
         <td>
           Select
@@ -263,15 +270,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           127
         </td>
         <td>
-          762
+          986
           -
-          766
+          990
         </td>
         <td>
           Select
@@ -287,15 +294,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           128
         </td>
         <td>
-          768
+          992
           -
-          772
+          996
         </td>
         <td>
           Select
@@ -311,15 +318,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           129
         </td>
         <td>
-          774
+          998
           -
-          776
+          1000
         </td>
         <td>
           Select
@@ -335,15 +342,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           130
         </td>
         <td>
-          778
+          1002
           -
-          782
+          1006
         </td>
         <td>
           Select
@@ -359,15 +366,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           131
         </td>
         <td>
-          744
+          968
           -
-          783
+          1007
         </td>
         <td>
           Apply

@@ -22,32 +22,39 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.generators
-</span>2 <span style=''>
-</span>3 <span style=''>import cats.{Foldable, Functor, Monoid}
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * A `Generator` that operates on kinds. It is used to wrap functions from `F[A]` to `B`.
-</span>7 <span style=''> *
-</span>8 <span style=''> * This type class is useful to work with `A`s that live in a context such as `Option` or `List`.
-</span>9 <span style=''> *
-</span>10 <span style=''> * It is necessary that `B` is a monoid instance, because its `empty` and `combine` are used to fold
-</span>11 <span style=''> * on the `F`.
-</span>12 <span style=''> */
-</span>13 <span style=''>class GeneratorK[F[_]: Functor: Foldable, A, +B: Monoid](implicit G: Generator[A, B])
-</span>14 <span style=''>  extends Generator[F[A], B] {
-</span>15 <span style=''>
-</span>16 <span style=''>  override def generate(a: F[A]): B = {
-</span>17 <span style=''>    val b = </span><span style='background: #AEF1AE'>Functor[F].map(a)(Generator[A, B].generate)</span><span style=''>
-</span>18 <span style=''>    </span><span style='background: #AEF1AE'>Foldable[F].fold(b)</span><span style=''>
-</span>19 <span style=''>  }
-</span>20 <span style=''>}
-</span>21 <span style=''>
-</span>22 <span style=''>object GeneratorK {
-</span>23 <span style=''>
-</span>24 <span style=''>  /** Access to implicit `GeneratorK[F, A, B]`. */
-</span>25 <span style=''>  def apply[F[_], A, B](implicit G: GeneratorK[F, A, B]): GeneratorK[F, A, B] = G
-</span>26 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary.generators
+</span>9 <span style=''>
+</span>10 <span style=''>import cats.{Foldable, Functor, Monoid}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * A `Generator` that operates on kinds. It is used to wrap functions from `F[A]` to `B`.
+</span>14 <span style=''> *
+</span>15 <span style=''> * This type class is useful to work with `A`s that live in a context such as `Option` or `List`.
+</span>16 <span style=''> *
+</span>17 <span style=''> * It is necessary that `B` is a monoid instance, because its `empty` and `combine` are used to fold
+</span>18 <span style=''> * on the `F`.
+</span>19 <span style=''> */
+</span>20 <span style=''>class GeneratorK[F[_]: Functor: Foldable, A, +B: Monoid](implicit G: Generator[A, B])
+</span>21 <span style=''>  extends Generator[F[A], B] {
+</span>22 <span style=''>
+</span>23 <span style=''>  override def generate(a: F[A]): B = {
+</span>24 <span style=''>    val b = </span><span style='background: #AEF1AE'>Functor[F].map(a)(Generator[A, B].generate)</span><span style=''>
+</span>25 <span style=''>    </span><span style='background: #AEF1AE'>Foldable[F].fold(b)</span><span style=''>
+</span>26 <span style=''>  }
+</span>27 <span style=''>}
+</span>28 <span style=''>
+</span>29 <span style=''>object GeneratorK {
+</span>30 <span style=''>
+</span>31 <span style=''>  /** Access to implicit `GeneratorK[F, A, B]`. */
+</span>32 <span style=''>  def apply[F[_], A, B](implicit G: GeneratorK[F, A, B]): GeneratorK[F, A, B] = G
+</span>33 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -62,15 +69,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           84
         </td>
         <td>
-          593
+          817
           -
-          593
+          817
         </td>
         <td>
           Select
@@ -86,15 +93,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           85
         </td>
         <td>
-          604
+          828
           -
-          628
+          852
         </td>
         <td>
           Apply
@@ -110,15 +117,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           86
         </td>
         <td>
-          586
+          810
           -
-          629
+          853
         </td>
         <td>
           Apply
@@ -137,15 +144,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           87
         </td>
         <td>
-          642
+          866
           -
-          642
+          866
         </td>
         <td>
           Select
@@ -161,15 +168,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           88
         </td>
         <td>
-          650
+          874
           -
-          650
+          874
         </td>
         <td>
           Select
@@ -185,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           89
         </td>
         <td>
-          634
+          858
           -
-          653
+          877
         </td>
         <td>
           ApplyToImplicitArgs

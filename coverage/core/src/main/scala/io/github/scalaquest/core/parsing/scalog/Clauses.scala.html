@@ -22,78 +22,85 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog
-</span>2 <span style=''>
-</span>3 <span style=''>/** Unit of information ending with the full-stop. */
-</span>4 <span style=''>sealed trait Clause extends CodeGen
-</span>5 <span style=''>
-</span>6 <span style=''>/** A special case of clause with empty body. */
-</span>7 <span style=''>case class Fact(head: Term) extends Clause {
-</span>8 <span style=''>
-</span>9 <span style=''>  /**
-</span>10 <span style=''>   * Allows the creation of a [[DCGRule]].
-</span>11 <span style=''>   * @param right
-</span>12 <span style=''>   *   the right side of the operation
-</span>13 <span style=''>   * @return
-</span>14 <span style=''>   *   the resulting DCG rule.
-</span>15 <span style=''>   */
-</span>16 <span style=''>  def --&gt;(right: Term): DCGRule = </span><span style='background: #AEF1AE'>DCGRule(head, right)</span><span style=''>
-</span>17 <span style=''>
-</span>18 <span style=''>  /**
-</span>19 <span style=''>   * Allows the creation of a [[Rule]].
-</span>20 <span style=''>   * @param right
-</span>21 <span style=''>   *   the right side of the operation
-</span>22 <span style=''>   * @return
-</span>23 <span style=''>   *   the resulting rule.
-</span>24 <span style=''>   */
-</span>25 <span style=''>  def :-(right: Term): Rule = </span><span style='background: #AEF1AE'>Rule(head, right)</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  override def generate: String = s&quot;${head.generate}.&quot;
-</span>28 <span style=''>}
-</span>29 <span style=''>
-</span>30 <span style=''>/**
-</span>31 <span style=''> * A horn clause. It is read `head` is true if `body` is true.
-</span>32 <span style=''> *
-</span>33 <span style=''> * The following example:
-</span>34 <span style=''> * {{{
-</span>35 <span style=''> *   Rule(Compound(Atom(&quot;hello&quot;), Atom(&quot;world&quot;)), Atom(&quot;hello&quot;)).generate
-</span>36 <span style=''> * }}}
-</span>37 <span style=''> *
-</span>38 <span style=''> * Should result in the following Prolog clause being printed:
-</span>39 <span style=''> * {{{
-</span>40 <span style=''> *   hello(world) :- hello.
-</span>41 <span style=''> * }}}
-</span>42 <span style=''> *
-</span>43 <span style=''> * @param head
-</span>44 <span style=''> *   the left term
-</span>45 <span style=''> * @param body
-</span>46 <span style=''> *   the right term
-</span>47 <span style=''> */
-</span>48 <span style=''>case class Rule(head: Term, body: Term) extends Clause {
-</span>49 <span style=''>  override def generate: String = s&quot;${head.generate} :- ${body.generate}.&quot;
-</span>50 <span style=''>}
-</span>51 <span style=''>
-</span>52 <span style=''>/**
-</span>53 <span style=''> * A definite clause grammar rule.
-</span>54 <span style=''> *
-</span>55 <span style=''> * The following example:
-</span>56 <span style=''> * {{{
-</span>57 <span style=''> *   DCGRule(Compound(Atom(&quot;hello&quot;), Atom(&quot;world&quot;)), ListP(Atom(&quot;hello&quot;), Atom(&quot;world&quot;))).generate
-</span>58 <span style=''> * }}}
-</span>59 <span style=''> *
-</span>60 <span style=''> * Should result in the following Prolog clause being printed:
-</span>61 <span style=''> * {{{
-</span>62 <span style=''> *   hello(world) --&gt; [&quot;hello&quot;,&quot;world&quot;].
-</span>63 <span style=''> * }}}
-</span>64 <span style=''> *
-</span>65 <span style=''> * @param left
-</span>66 <span style=''> *   the left term
-</span>67 <span style=''> * @param right
-</span>68 <span style=''> *   the right term
-</span>69 <span style=''> */
-</span>70 <span style=''>case class DCGRule(left: Term, right: Term) extends Clause {
-</span>71 <span style=''>  override def generate: String = s&quot;${left.generate} --&gt; ${right.generate}.&quot;
-</span>72 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.scalog
+</span>9 <span style=''>
+</span>10 <span style=''>/** Unit of information ending with the full-stop. */
+</span>11 <span style=''>sealed trait Clause extends CodeGen
+</span>12 <span style=''>
+</span>13 <span style=''>/** A special case of clause with empty body. */
+</span>14 <span style=''>case class Fact(head: Term) extends Clause {
+</span>15 <span style=''>
+</span>16 <span style=''>  /**
+</span>17 <span style=''>   * Allows the creation of a [[DCGRule]].
+</span>18 <span style=''>   * @param right
+</span>19 <span style=''>   *   the right side of the operation
+</span>20 <span style=''>   * @return
+</span>21 <span style=''>   *   the resulting DCG rule.
+</span>22 <span style=''>   */
+</span>23 <span style=''>  def --&gt;(right: Term): DCGRule = </span><span style='background: #AEF1AE'>DCGRule(head, right)</span><span style=''>
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * Allows the creation of a [[Rule]].
+</span>27 <span style=''>   * @param right
+</span>28 <span style=''>   *   the right side of the operation
+</span>29 <span style=''>   * @return
+</span>30 <span style=''>   *   the resulting rule.
+</span>31 <span style=''>   */
+</span>32 <span style=''>  def :-(right: Term): Rule = </span><span style='background: #AEF1AE'>Rule(head, right)</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  override def generate: String = s&quot;${head.generate}.&quot;
+</span>35 <span style=''>}
+</span>36 <span style=''>
+</span>37 <span style=''>/**
+</span>38 <span style=''> * A horn clause. It is read `head` is true if `body` is true.
+</span>39 <span style=''> *
+</span>40 <span style=''> * The following example:
+</span>41 <span style=''> * {{{
+</span>42 <span style=''> *   Rule(Compound(Atom(&quot;hello&quot;), Atom(&quot;world&quot;)), Atom(&quot;hello&quot;)).generate
+</span>43 <span style=''> * }}}
+</span>44 <span style=''> *
+</span>45 <span style=''> * Should result in the following Prolog clause being printed:
+</span>46 <span style=''> * {{{
+</span>47 <span style=''> *   hello(world) :- hello.
+</span>48 <span style=''> * }}}
+</span>49 <span style=''> *
+</span>50 <span style=''> * @param head
+</span>51 <span style=''> *   the left term
+</span>52 <span style=''> * @param body
+</span>53 <span style=''> *   the right term
+</span>54 <span style=''> */
+</span>55 <span style=''>case class Rule(head: Term, body: Term) extends Clause {
+</span>56 <span style=''>  override def generate: String = s&quot;${head.generate} :- ${body.generate}.&quot;
+</span>57 <span style=''>}
+</span>58 <span style=''>
+</span>59 <span style=''>/**
+</span>60 <span style=''> * A definite clause grammar rule.
+</span>61 <span style=''> *
+</span>62 <span style=''> * The following example:
+</span>63 <span style=''> * {{{
+</span>64 <span style=''> *   DCGRule(Compound(Atom(&quot;hello&quot;), Atom(&quot;world&quot;)), ListP(Atom(&quot;hello&quot;), Atom(&quot;world&quot;))).generate
+</span>65 <span style=''> * }}}
+</span>66 <span style=''> *
+</span>67 <span style=''> * Should result in the following Prolog clause being printed:
+</span>68 <span style=''> * {{{
+</span>69 <span style=''> *   hello(world) --&gt; [&quot;hello&quot;,&quot;world&quot;].
+</span>70 <span style=''> * }}}
+</span>71 <span style=''> *
+</span>72 <span style=''> * @param left
+</span>73 <span style=''> *   the left term
+</span>74 <span style=''> * @param right
+</span>75 <span style=''> *   the right term
+</span>76 <span style=''> */
+</span>77 <span style=''>case class DCGRule(left: Term, right: Term) extends Clause {
+</span>78 <span style=''>  override def generate: String = s&quot;${left.generate} --&gt; ${right.generate}.&quot;
+</span>79 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -108,15 +115,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           744
         </td>
         <td>
-          434
+          658
           -
-          438
+          662
         </td>
         <td>
           Select
@@ -132,15 +139,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           745
         </td>
         <td>
-          426
+          650
           -
-          446
+          670
         </td>
         <td>
           Apply
@@ -156,15 +163,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           746
         </td>
         <td>
-          632
+          856
           -
-          636
+          860
         </td>
         <td>
           Select
@@ -180,15 +187,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           747
         </td>
         <td>
-          627
+          851
           -
-          644
+          868
         </td>
         <td>
           Apply

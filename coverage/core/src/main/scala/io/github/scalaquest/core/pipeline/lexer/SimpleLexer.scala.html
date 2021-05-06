@@ -22,15 +22,22 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.lexer
-</span>2 <span style=''>
-</span>3 <span style=''>case class SimpleLexerResult(tokens: Seq[Token]) extends LexerResult
-</span>4 <span style=''>
-</span>5 <span style=''>case object SimpleLexer extends Lexer {
-</span>6 <span style=''>
-</span>7 <span style=''>  override def tokenize(rawSentence: String): LexerResult =
-</span>8 <span style=''>    </span><span style='background: #AEF1AE'>SimpleLexerResult((rawSentence.toLowerCase split &quot; &quot;).filter(_ != &quot;&quot;).toSeq)</span><span style=''>
-</span>9 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.lexer
+</span>9 <span style=''>
+</span>10 <span style=''>case class SimpleLexerResult(tokens: Seq[Token]) extends LexerResult
+</span>11 <span style=''>
+</span>12 <span style=''>case object SimpleLexer extends Lexer {
+</span>13 <span style=''>
+</span>14 <span style=''>  override def tokenize(rawSentence: String): LexerResult =
+</span>15 <span style=''>    </span><span style='background: #AEF1AE'>SimpleLexerResult((rawSentence.toLowerCase split &quot; &quot;).filter(_ != &quot;&quot;).toSeq)</span><span style=''>
+</span>16 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -45,15 +52,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           800
         </td>
         <td>
-          244
+          468
           -
-          277
+          501
         </td>
         <td>
           Apply
@@ -69,15 +76,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           801
         </td>
         <td>
-          286
+          510
           -
-          293
+          517
         </td>
         <td>
           Apply
@@ -93,15 +100,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           802
         </td>
         <td>
-          244
+          468
           -
-          294
+          518
         </td>
         <td>
           Apply
@@ -117,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           803
         </td>
         <td>
-          244
+          468
           -
-          300
+          524
         </td>
         <td>
           Select
@@ -141,15 +148,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           804
         </td>
         <td>
-          225
+          449
           -
-          301
+          525
         </td>
         <td>
           Apply

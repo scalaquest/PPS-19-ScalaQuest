@@ -22,45 +22,52 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.reducer
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * A wrapper for the output of the [[Reducer]] execution. It should contain a [[Model.State]]
-</span>7 <span style=''> * instance.
-</span>8 <span style=''> * @tparam S
-</span>9 <span style=''> *   The [[Model.State]] concrete type.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait ReducerResult[S] {
-</span>12 <span style=''>  def state: S
-</span>13 <span style=''>  def message: Seq[Message]
-</span>14 <span style=''>}
-</span>15 <span style=''>
-</span>16 <span style=''>/**
-</span>17 <span style=''> * A companion object for the [[ReducerResult]] trait. It exposes an [[ReducerResult::apply()]] to
-</span>18 <span style=''> * instantiate the [[ReducerResult]] with the right constraints between types.
-</span>19 <span style=''> */
-</span>20 <span style=''>object ReducerResult {
-</span>21 <span style=''>
-</span>22 <span style=''>  /**
-</span>23 <span style=''>   * Builds an [[ReducerResult]], with the right constraints between types.
-</span>24 <span style=''>   * @param model
-</span>25 <span style=''>   *   The concrete instance of the [[Model]] in use.
-</span>26 <span style=''>   * @param state
-</span>27 <span style=''>   *   The [[Model.State]] instance to be wrapped. The [[Model.State]] type must be derived from the
-</span>28 <span style=''>   *   `model` passed as parameter.
-</span>29 <span style=''>   * @tparam M
-</span>30 <span style=''>   *   The concrete type of the [[Model]] in use.
-</span>31 <span style=''>   * @return
-</span>32 <span style=''>   *   An [[ReducerResult]], with the right type constraints.
-</span>33 <span style=''>   */
-</span>34 <span style=''>  def apply[M &lt;: Model](model: M)(state: model.S, message: Seq[Message]): ReducerResult[model.S] = {
-</span>35 <span style=''>    case class SimpleReducerResult(state: model.S, message: Seq[Message])
-</span>36 <span style=''>      extends ReducerResult[model.S]
-</span>37 <span style=''>    </span><span style='background: #AEF1AE'>SimpleReducerResult(state, message)</span><span style=''>
-</span>38 <span style=''>  }
-</span>39 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.reducer
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * A wrapper for the output of the [[Reducer]] execution. It should contain a [[Model.State]]
+</span>14 <span style=''> * instance.
+</span>15 <span style=''> * @tparam S
+</span>16 <span style=''> *   The [[Model.State]] concrete type.
+</span>17 <span style=''> */
+</span>18 <span style=''>trait ReducerResult[S] {
+</span>19 <span style=''>  def state: S
+</span>20 <span style=''>  def message: Seq[Message]
+</span>21 <span style=''>}
+</span>22 <span style=''>
+</span>23 <span style=''>/**
+</span>24 <span style=''> * A companion object for the [[ReducerResult]] trait. It exposes an [[ReducerResult::apply()]] to
+</span>25 <span style=''> * instantiate the [[ReducerResult]] with the right constraints between types.
+</span>26 <span style=''> */
+</span>27 <span style=''>object ReducerResult {
+</span>28 <span style=''>
+</span>29 <span style=''>  /**
+</span>30 <span style=''>   * Builds an [[ReducerResult]], with the right constraints between types.
+</span>31 <span style=''>   * @param model
+</span>32 <span style=''>   *   The concrete instance of the [[Model]] in use.
+</span>33 <span style=''>   * @param state
+</span>34 <span style=''>   *   The [[Model.State]] instance to be wrapped. The [[Model.State]] type must be derived from the
+</span>35 <span style=''>   *   `model` passed as parameter.
+</span>36 <span style=''>   * @tparam M
+</span>37 <span style=''>   *   The concrete type of the [[Model]] in use.
+</span>38 <span style=''>   * @return
+</span>39 <span style=''>   *   An [[ReducerResult]], with the right type constraints.
+</span>40 <span style=''>   */
+</span>41 <span style=''>  def apply[M &lt;: Model](model: M)(state: model.S, message: Seq[Message]): ReducerResult[model.S] = {
+</span>42 <span style=''>    case class SimpleReducerResult(state: model.S, message: Seq[Message])
+</span>43 <span style=''>      extends ReducerResult[model.S]
+</span>44 <span style=''>    </span><span style='background: #AEF1AE'>SimpleReducerResult(state, message)</span><span style=''>
+</span>45 <span style=''>  }
+</span>46 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -75,15 +82,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           851
         </td>
         <td>
-          1229
+          1453
           -
-          1264
+          1488
         </td>
         <td>
           Apply

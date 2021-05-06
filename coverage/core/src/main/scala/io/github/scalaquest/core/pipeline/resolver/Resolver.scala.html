@@ -22,53 +22,60 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.resolver
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Model}
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.parser.ParserResult
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and
-</span>8 <span style=''> * returns a [[Statement]] wrapped into an [[ResolverResult]]. The execution may fail, when the
-</span>9 <span style=''> * given [[AbstractSyntaxTree]] has not a match with the [[Model]] components.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait Resolver {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.resolver
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef, Model}
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.parser.ParserResult
 </span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * Triggers the [[Resolver]] execution.
-</span>15 <span style=''>   * @param parserResult
-</span>16 <span style=''>   *   A wrapper for the input [[AbstractSyntaxTree]].
-</span>17 <span style=''>   * @return
-</span>18 <span style=''>   *   An [[Either]] describing the resolver result. If the [[Resolver]] fails, the result is a
-</span>19 <span style=''>   *   [[Left]] describing what went wrong. Otherwise, it is a [[Right]] with the [[ResolverResult]]
-</span>20 <span style=''>   *   (wrapper for a [[Statement]] ).
-</span>21 <span style=''>   */
-</span>22 <span style=''>  def resolve(parserResult: ParserResult): Either[String, ResolverResult]
-</span>23 <span style=''>}
-</span>24 <span style=''>
-</span>25 <span style=''>/**
-</span>26 <span style=''> * Companion object for the [[Resolver]] trait. It exposes the [[Resolver::apply()]] to instantiate
-</span>27 <span style=''> * the [[Resolver]] .
-</span>28 <span style=''> */
-</span>29 <span style=''>object Resolver {
-</span>30 <span style=''>
-</span>31 <span style=''>  type Builder[S] = S =&gt; Resolver
-</span>32 <span style=''>
-</span>33 <span style=''>  def builder[M &lt;: Model](implicit model: M): Builder[model.S] =
-</span>34 <span style=''>    s =&gt;
-</span>35 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> AbstractSyntaxTreeResolver {
-</span>36 <span style=''>
-</span>37 <span style=''>        override def actions(v: (String, Option[String])): Either[String, Action] =
-</span>38 <span style=''>          </span><span style='background: #AEF1AE'>s.actions get v toRight s&quot;I couldn't understand what you said.&quot;</span><span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * A pipeline component that takes a [[AbstractSyntaxTree]] (wrapped into an [[ParserResult]] ) and
+</span>15 <span style=''> * returns a [[Statement]] wrapped into an [[ResolverResult]]. The execution may fail, when the
+</span>16 <span style=''> * given [[AbstractSyntaxTree]] has not a match with the [[Model]] components.
+</span>17 <span style=''> */
+</span>18 <span style=''>trait Resolver {
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * Triggers the [[Resolver]] execution.
+</span>22 <span style=''>   * @param parserResult
+</span>23 <span style=''>   *   A wrapper for the input [[AbstractSyntaxTree]].
+</span>24 <span style=''>   * @return
+</span>25 <span style=''>   *   An [[Either]] describing the resolver result. If the [[Resolver]] fails, the result is a
+</span>26 <span style=''>   *   [[Left]] describing what went wrong. Otherwise, it is a [[Right]] with the [[ResolverResult]]
+</span>27 <span style=''>   *   (wrapper for a [[Statement]] ).
+</span>28 <span style=''>   */
+</span>29 <span style=''>  def resolve(parserResult: ParserResult): Either[String, ResolverResult]
+</span>30 <span style=''>}
+</span>31 <span style=''>
+</span>32 <span style=''>/**
+</span>33 <span style=''> * Companion object for the [[Resolver]] trait. It exposes the [[Resolver::apply()]] to instantiate
+</span>34 <span style=''> * the [[Resolver]] .
+</span>35 <span style=''> */
+</span>36 <span style=''>object Resolver {
+</span>37 <span style=''>
+</span>38 <span style=''>  type Builder[S] = S =&gt; Resolver
 </span>39 <span style=''>
-</span>40 <span style=''>        override def items(d: ItemDescription): Either[String, ItemRef] =
-</span>41 <span style=''>          </span><span style='background: #AEF1AE'>s.scope.filter(i =&gt; d.isSubset(i.description)).toList</span><span style=''> match {
-</span>42 <span style=''>            case x :: Nil =&gt; </span><span style='background: #AEF1AE'>Right(x.ref)</span><span style=''>
-</span>43 <span style=''>            case _ :: _   =&gt; </span><span style='background: #AEF1AE'>Left(s&quot;Which ${d.mkString} are you talking about?&quot;)</span><span style=''>
-</span>44 <span style=''>            case _        =&gt; </span><span style='background: #AEF1AE'>Left(s&quot;I can't see any ${d.mkString}.&quot;)</span><span style=''>
-</span>45 <span style=''>          }
-</span>46 <span style=''>      }
-</span>47 <span style=''>}
+</span>40 <span style=''>  def builder[M &lt;: Model](implicit model: M): Builder[model.S] =
+</span>41 <span style=''>    s =&gt;
+</span>42 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> AbstractSyntaxTreeResolver {
+</span>43 <span style=''>
+</span>44 <span style=''>        override def actions(v: (String, Option[String])): Either[String, Action] =
+</span>45 <span style=''>          </span><span style='background: #AEF1AE'>s.actions get v toRight s&quot;I couldn't understand what you said.&quot;</span><span style=''>
+</span>46 <span style=''>
+</span>47 <span style=''>        override def items(d: ItemDescription): Either[String, ItemRef] =
+</span>48 <span style=''>          </span><span style='background: #AEF1AE'>s.scope.filter(i =&gt; d.isSubset(i.description)).toList</span><span style=''> match {
+</span>49 <span style=''>            case x :: Nil =&gt; </span><span style='background: #AEF1AE'>Right(x.ref)</span><span style=''>
+</span>50 <span style=''>            case _ :: _   =&gt; </span><span style='background: #AEF1AE'>Left(s&quot;Which ${d.mkString} are you talking about?&quot;)</span><span style=''>
+</span>51 <span style=''>            case _        =&gt; </span><span style='background: #AEF1AE'>Left(s&quot;I can't see any ${d.mkString}.&quot;)</span><span style=''>
+</span>52 <span style=''>          }
+</span>53 <span style=''>      }
+</span>54 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -83,15 +90,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           876
         </td>
         <td>
-          1222
+          1446
           -
-          1225
+          1449
         </td>
         <td>
           Apply
@@ -107,15 +114,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           868
         </td>
         <td>
-          1350
+          1574
           -
-          1413
+          1637
         </td>
         <td>
           Apply
@@ -131,15 +138,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           869
         </td>
         <td>
-          1530
+          1754
           -
-          1543
+          1767
         </td>
         <td>
           Select
@@ -155,15 +162,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           870
         </td>
         <td>
-          1519
+          1743
           -
-          1544
+          1768
         </td>
         <td>
           Apply
@@ -179,15 +186,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           871
         </td>
         <td>
-          1499
+          1723
           -
-          1552
+          1776
         </td>
         <td>
           Select
@@ -203,15 +210,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           872
         </td>
         <td>
-          1596
+          1820
           -
-          1601
+          1825
         </td>
         <td>
           Select
@@ -227,15 +234,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           873
         </td>
         <td>
-          1590
+          1814
           -
-          1602
+          1826
         </td>
         <td>
           Apply
@@ -251,15 +258,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           874
         </td>
         <td>
-          1632
+          1856
           -
-          1683
+          1907
         </td>
         <td>
           Apply
@@ -275,15 +282,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           875
         </td>
         <td>
-          1713
+          1937
           -
-          1752
+          1976
         </td>
         <td>
           Apply

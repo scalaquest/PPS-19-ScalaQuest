@@ -22,33 +22,40 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.application
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Model
-</span>4 <span style=''>import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
-</span>5 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
-</span>6 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
-</span>7 <span style=''>import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
-</span>8 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
-</span>9 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
-</span>10 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
-</span>11 <span style=''>
-</span>12 <span style=''>/** A `PipelineProvider` that uses the default implementation of its components. */
-</span>13 <span style=''>trait DefaultPipelineProvider[M0 &lt;: Model] extends PipelineProvider[M0] {
-</span>14 <span style=''>
-</span>15 <span style=''>  /** The theory used to create the `Theory` for the `Engine`. */
-</span>16 <span style=''>  def baseTheory: String
-</span>17 <span style=''>
-</span>18 <span style=''>  override def lexer: Lexer = </span><span style='background: #F0ADAD'>SimpleLexer</span><span style=''>
-</span>19 <span style=''>
-</span>20 <span style=''>  override def parser: Parser = </span><span style='background: #F0ADAD'>Parser(Engine(Theory(baseTheory), Set(DCGLibrary)))</span><span style=''>
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.application
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Model
+</span>11 <span style=''>import io.github.scalaquest.core.parsing.engine.{DCGLibrary, Engine, Theory}
+</span>12 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>13 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter.Builder
+</span>14 <span style=''>import io.github.scalaquest.core.pipeline.lexer.{Lexer, SimpleLexer}
+</span>15 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>16 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>17 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>18 <span style=''>
+</span>19 <span style=''>/** A `PipelineProvider` that uses the default implementation of its components. */
+</span>20 <span style=''>trait DefaultPipelineProvider[M0 &lt;: Model] extends PipelineProvider[M0] {
 </span>21 <span style=''>
-</span>22 <span style=''>  override def resolver: Resolver.Builder[S] = </span><span style='background: #F0ADAD'>Resolver.builder(model)</span><span style=''>
-</span>23 <span style=''>
-</span>24 <span style=''>  override def interpreter: Builder[M, S, React] = </span><span style='background: #F0ADAD'>Interpreter.builder(model)</span><span style=''>
-</span>25 <span style=''>
-</span>26 <span style=''>  override def reducer: Reducer.Builder[M, S, React] = </span><span style='background: #F0ADAD'>Reducer.builder(model)</span><span style=''>
-</span>27 <span style=''>}
+</span>22 <span style=''>  /** The theory used to create the `Theory` for the `Engine`. */
+</span>23 <span style=''>  def baseTheory: String
+</span>24 <span style=''>
+</span>25 <span style=''>  override def lexer: Lexer = </span><span style='background: #F0ADAD'>SimpleLexer</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  override def parser: Parser = </span><span style='background: #F0ADAD'>Parser(Engine(Theory(baseTheory), Set(DCGLibrary)))</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>  override def resolver: Resolver.Builder[S] = </span><span style='background: #F0ADAD'>Resolver.builder(model)</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  override def interpreter: Builder[M, S, React] = </span><span style='background: #F0ADAD'>Interpreter.builder(model)</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>  override def reducer: Reducer.Builder[M, S, React] = </span><span style='background: #F0ADAD'>Reducer.builder(model)</span><span style=''>
+</span>34 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -63,15 +70,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           10
         </td>
         <td>
-          834
+          1058
           -
-          845
+          1069
         </td>
         <td>
           Select
@@ -87,15 +94,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          27
         </td>
         <td>
           11
         </td>
         <td>
-          900
+          1124
           -
-          910
+          1134
         </td>
         <td>
           Select
@@ -111,15 +118,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          27
         </td>
         <td>
           12
         </td>
         <td>
-          893
+          1117
           -
-          911
+          1135
         </td>
         <td>
           Apply
@@ -135,15 +142,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          27
         </td>
         <td>
           13
         </td>
         <td>
-          917
+          1141
           -
-          927
+          1151
         </td>
         <td>
           Select
@@ -159,15 +166,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          27
         </td>
         <td>
           14
         </td>
         <td>
-          913
+          1137
           -
-          928
+          1152
         </td>
         <td>
           Apply
@@ -183,15 +190,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          27
         </td>
         <td>
           15
         </td>
         <td>
-          886
+          1110
           -
-          929
+          1153
         </td>
         <td>
           Apply
@@ -207,15 +214,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          27
         </td>
         <td>
           16
         </td>
         <td>
-          879
+          1103
           -
-          930
+          1154
         </td>
         <td>
           Apply
@@ -231,15 +238,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           17
         </td>
         <td>
-          996
+          1220
           -
-          1001
+          1225
         </td>
         <td>
           Select
@@ -255,15 +262,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           18
         </td>
         <td>
-          979
+          1203
           -
-          1002
+          1226
         </td>
         <td>
           Apply
@@ -279,15 +286,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          31
         </td>
         <td>
           19
         </td>
         <td>
-          1075
+          1299
           -
-          1080
+          1304
         </td>
         <td>
           Select
@@ -303,15 +310,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          31
         </td>
         <td>
           20
         </td>
         <td>
-          1055
+          1279
           -
-          1081
+          1305
         </td>
         <td>
           Apply
@@ -327,15 +334,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          33
         </td>
         <td>
           21
         </td>
         <td>
-          1154
+          1378
           -
-          1159
+          1383
         </td>
         <td>
           Select
@@ -351,15 +358,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          33
         </td>
         <td>
           22
         </td>
         <td>
-          1138
+          1362
           -
-          1160
+          1384
         </td>
         <td>
           Apply

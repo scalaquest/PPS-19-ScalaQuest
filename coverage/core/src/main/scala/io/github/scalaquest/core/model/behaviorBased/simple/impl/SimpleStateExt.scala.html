@@ -22,87 +22,94 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.dictionary.verbs.VerbPrep
-</span>4 <span style=''>import io.github.scalaquest.core.model._
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CGroundExt
-</span>7 <span style=''>import monocle.Lens
-</span>8 <span style=''>import monocle.macros.GenLens
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.simple.impl
 </span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * Extension for the model. Adds a base implementation of the [[Model.State]].
-</span>12 <span style=''> */
-</span>13 <span style=''>trait SimpleStateExt extends BehaviorBasedModel with CGroundExt {
-</span>14 <span style=''>
-</span>15 <span style=''>  override type S = SimpleState
+</span>10 <span style=''>import io.github.scalaquest.core.dictionary.verbs.VerbPrep
+</span>11 <span style=''>import io.github.scalaquest.core.model._
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.grounds.CGroundExt
+</span>14 <span style=''>import monocle.Lens
+</span>15 <span style=''>import monocle.macros.GenLens
 </span>16 <span style=''>
-</span>17 <span style=''>  /**
-</span>18 <span style=''>   * Class that implement the [[Model.State]] interface.
-</span>19 <span style=''>   * @param actions
-</span>20 <span style=''>   *   [[Map]] that found for each &lt;b&gt;verb&lt;/b&gt; the specific [[Action]].
-</span>21 <span style=''>   * @param rooms
-</span>22 <span style=''>   *   [[Map]] that found for each &lt;b&gt;room&lt;/b&gt; reference the updated [[Room]].
-</span>23 <span style=''>   * @param items
-</span>24 <span style=''>   *   [[Map]] that found for each &lt;b&gt;item&lt;/b&gt; reference the updated [[Item]].
-</span>25 <span style=''>   * @param ground
-</span>26 <span style=''>   *   &lt;b&gt;Ground&lt;/b&gt; implementation used in this &lt;b&gt;State&lt;/b&gt;.
-</span>27 <span style=''>   * @param _bag
-</span>28 <span style=''>   *   Player's &lt;b&gt;bag&lt;/b&gt; reference.
-</span>29 <span style=''>   * @param _location
-</span>30 <span style=''>   *   &lt;b&gt;Room&lt;/b&gt; reference where player start the match.
-</span>31 <span style=''>   * @param ended
-</span>32 <span style=''>   *   True if game is ended, false otherwise.
-</span>33 <span style=''>   */
-</span>34 <span style=''>  case class SimpleState(
-</span>35 <span style=''>    actions: Map[VerbPrep, Action],
-</span>36 <span style=''>    rooms: Map[RoomRef, RM],
-</span>37 <span style=''>    items: Map[ItemRef, I],
-</span>38 <span style=''>    ground: G,
-</span>39 <span style=''>    _bag: Set[ItemRef],
-</span>40 <span style=''>    _location: RoomRef,
-</span>41 <span style=''>    ended: Boolean = false
-</span>42 <span style=''>  ) extends State {
-</span>43 <span style=''>    override def bag: Set[I]  = </span><span style='background: #AEF1AE'>_bag.flatMap(items.get)</span><span style=''>
-</span>44 <span style=''>    override def location: RM = </span><span style='background: #AEF1AE'>rooms(_location)</span><span style=''>
-</span>45 <span style=''>  }
-</span>46 <span style=''>
-</span>47 <span style=''>  /**
-</span>48 <span style=''>   * Companion object with apply for SimpleState.
-</span>49 <span style=''>   */
-</span>50 <span style=''>  object State {
-</span>51 <span style=''>
-</span>52 <span style=''>    /**
-</span>53 <span style=''>     * Facility methods for SimpleState.
-</span>54 <span style=''>     * @param actions
-</span>55 <span style=''>     *   [[Map]] that found for each &lt;b&gt;verb&lt;/b&gt; the specific [[Action]].
-</span>56 <span style=''>     * @param rooms
-</span>57 <span style=''>     *   [[Map]] that found for each &lt;b&gt;room&lt;/b&gt; reference the updated [[Room]].
-</span>58 <span style=''>     * @param items
-</span>59 <span style=''>     *   [[Map]] that found for each &lt;b&gt;item&lt;/b&gt; reference the updated [[Item]].
-</span>60 <span style=''>     * @param ground
-</span>61 <span style=''>     *   &lt;b&gt;Ground&lt;/b&gt; implementation used in this &lt;b&gt;State&lt;/b&gt;.
-</span>62 <span style=''>     * @param ended
-</span>63 <span style=''>     *   True if game is ended, false otherwise.
-</span>64 <span style=''>     */
-</span>65 <span style=''>    def apply(
-</span>66 <span style=''>      actions: Map[VerbPrep, Action],
-</span>67 <span style=''>      rooms: Map[RoomRef, RM],
-</span>68 <span style=''>      items: Map[ItemRef, I],
-</span>69 <span style=''>      ground: G = CGround(),
-</span>70 <span style=''>      bag: Set[ItemRef] = Set.empty,
-</span>71 <span style=''>      location: RoomRef,
-</span>72 <span style=''>      ended: Boolean = false
-</span>73 <span style=''>    ): S = </span><span style='background: #AEF1AE'>SimpleState(actions, rooms, items, ground, bag, location, ended)</span><span style=''>
-</span>74 <span style=''>  }
-</span>75 <span style=''>
-</span>76 <span style=''>  override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)
-</span>77 <span style=''>  override def itemsLens: Lens[S, Map[ItemRef, I]]  = GenLens[S](_.items)
-</span>78 <span style=''>  override def matchEndedLens: Lens[S, Boolean]     = GenLens[S](_.ended)
-</span>79 <span style=''>  override def bagLens: Lens[S, Set[ItemRef]]       = GenLens[S](_._bag)
-</span>80 <span style=''>  override def locationLens: Lens[S, RoomRef]       = GenLens[S](_._location)
-</span>81 <span style=''>}
+</span>17 <span style=''>/**
+</span>18 <span style=''> * Extension for the model. Adds a base implementation of the [[Model.State]].
+</span>19 <span style=''> */
+</span>20 <span style=''>trait SimpleStateExt extends BehaviorBasedModel with CGroundExt {
+</span>21 <span style=''>
+</span>22 <span style=''>  override type S = SimpleState
+</span>23 <span style=''>
+</span>24 <span style=''>  /**
+</span>25 <span style=''>   * Class that implement the [[Model.State]] interface.
+</span>26 <span style=''>   * @param actions
+</span>27 <span style=''>   *   [[Map]] that found for each &lt;b&gt;verb&lt;/b&gt; the specific [[Action]].
+</span>28 <span style=''>   * @param rooms
+</span>29 <span style=''>   *   [[Map]] that found for each &lt;b&gt;room&lt;/b&gt; reference the updated [[Room]].
+</span>30 <span style=''>   * @param items
+</span>31 <span style=''>   *   [[Map]] that found for each &lt;b&gt;item&lt;/b&gt; reference the updated [[Item]].
+</span>32 <span style=''>   * @param ground
+</span>33 <span style=''>   *   &lt;b&gt;Ground&lt;/b&gt; implementation used in this &lt;b&gt;State&lt;/b&gt;.
+</span>34 <span style=''>   * @param _bag
+</span>35 <span style=''>   *   Player's &lt;b&gt;bag&lt;/b&gt; reference.
+</span>36 <span style=''>   * @param _location
+</span>37 <span style=''>   *   &lt;b&gt;Room&lt;/b&gt; reference where player start the match.
+</span>38 <span style=''>   * @param ended
+</span>39 <span style=''>   *   True if game is ended, false otherwise.
+</span>40 <span style=''>   */
+</span>41 <span style=''>  case class SimpleState(
+</span>42 <span style=''>    actions: Map[VerbPrep, Action],
+</span>43 <span style=''>    rooms: Map[RoomRef, RM],
+</span>44 <span style=''>    items: Map[ItemRef, I],
+</span>45 <span style=''>    ground: G,
+</span>46 <span style=''>    _bag: Set[ItemRef],
+</span>47 <span style=''>    _location: RoomRef,
+</span>48 <span style=''>    ended: Boolean = false
+</span>49 <span style=''>  ) extends State {
+</span>50 <span style=''>    override def bag: Set[I]  = </span><span style='background: #AEF1AE'>_bag.flatMap(items.get)</span><span style=''>
+</span>51 <span style=''>    override def location: RM = </span><span style='background: #AEF1AE'>rooms(_location)</span><span style=''>
+</span>52 <span style=''>  }
+</span>53 <span style=''>
+</span>54 <span style=''>  /**
+</span>55 <span style=''>   * Companion object with apply for SimpleState.
+</span>56 <span style=''>   */
+</span>57 <span style=''>  object State {
+</span>58 <span style=''>
+</span>59 <span style=''>    /**
+</span>60 <span style=''>     * Facility methods for SimpleState.
+</span>61 <span style=''>     * @param actions
+</span>62 <span style=''>     *   [[Map]] that found for each &lt;b&gt;verb&lt;/b&gt; the specific [[Action]].
+</span>63 <span style=''>     * @param rooms
+</span>64 <span style=''>     *   [[Map]] that found for each &lt;b&gt;room&lt;/b&gt; reference the updated [[Room]].
+</span>65 <span style=''>     * @param items
+</span>66 <span style=''>     *   [[Map]] that found for each &lt;b&gt;item&lt;/b&gt; reference the updated [[Item]].
+</span>67 <span style=''>     * @param ground
+</span>68 <span style=''>     *   &lt;b&gt;Ground&lt;/b&gt; implementation used in this &lt;b&gt;State&lt;/b&gt;.
+</span>69 <span style=''>     * @param ended
+</span>70 <span style=''>     *   True if game is ended, false otherwise.
+</span>71 <span style=''>     */
+</span>72 <span style=''>    def apply(
+</span>73 <span style=''>      actions: Map[VerbPrep, Action],
+</span>74 <span style=''>      rooms: Map[RoomRef, RM],
+</span>75 <span style=''>      items: Map[ItemRef, I],
+</span>76 <span style=''>      ground: G = CGround(),
+</span>77 <span style=''>      bag: Set[ItemRef] = Set.empty,
+</span>78 <span style=''>      location: RoomRef,
+</span>79 <span style=''>      ended: Boolean = false
+</span>80 <span style=''>    ): S = </span><span style='background: #AEF1AE'>SimpleState(actions, rooms, items, ground, bag, location, ended)</span><span style=''>
+</span>81 <span style=''>  }
+</span>82 <span style=''>
+</span>83 <span style=''>  override def roomsLens: Lens[S, Map[RoomRef, RM]] = GenLens[S](_.rooms)
+</span>84 <span style=''>  override def itemsLens: Lens[S, Map[ItemRef, I]]  = GenLens[S](_.items)
+</span>85 <span style=''>  override def matchEndedLens: Lens[S, Boolean]     = GenLens[S](_.ended)
+</span>86 <span style=''>  override def bagLens: Lens[S, Set[ItemRef]]       = GenLens[S](_._bag)
+</span>87 <span style=''>  override def locationLens: Lens[S, RoomRef]       = GenLens[S](_._location)
+</span>88 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -117,15 +124,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           658
         </td>
         <td>
-          1469
+          1693
           -
-          1478
+          1702
         </td>
         <td>
           Apply
@@ -141,15 +148,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           659
         </td>
         <td>
-          1456
+          1680
           -
-          1479
+          1703
         </td>
         <td>
           Apply
@@ -165,15 +172,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           660
         </td>
         <td>
-          1518
+          1742
           -
-          1527
+          1751
         </td>
         <td>
           Select
@@ -189,15 +196,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           661
         </td>
         <td>
-          1512
+          1736
           -
-          1528
+          1752
         </td>
         <td>
           Apply
@@ -213,15 +220,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          80
         </td>
         <td>
           662
         </td>
         <td>
-          2369
+          2593
           -
-          2433
+          2657
         </td>
         <td>
           Apply

@@ -22,161 +22,168 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Action, Model}
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * This is a partial implementation of [[Model]], following a &lt;b&gt;behavior-based fashion&lt;/b&gt;. This is
-</span>7 <span style=''> * a style that enables the &quot;decoration&quot; of [[Model.Item]] s and the [[Model.Ground]] by the use of
-</span>8 <span style=''> * the &lt;b&gt;Behavior&lt;/b&gt;: a sort of composable plugin that matches dynamically various
-</span>9 <span style=''> * action-item-state scenarios.
-</span>10 <span style=''> */
-</span>11 <span style=''>abstract class BehaviorBasedModel extends Model {
-</span>12 <span style=''>  override type I = BehaviorBasedItem
-</span>13 <span style=''>
-</span>14 <span style=''>  /**
-</span>15 <span style=''>   * A [[Item]] capable to process [[ItemBehavior]] s to react to specific action-item-state
-</span>16 <span style=''>   * combinations.
-</span>17 <span style=''>   *
-</span>18 <span style=''>   * Items that exploit the behavioral mechanism should extend this partial implementation. This
-</span>19 <span style=''>   * because the handling of use* functions following this style (by exploring the available
-</span>20 <span style=''>   * triggers) is implemented here.
-</span>21 <span style=''>   */
-</span>22 <span style=''>  abstract class BehaviorBasedItem extends Item {
-</span>23 <span style=''>
-</span>24 <span style=''>    /**
-</span>25 <span style=''>     * [[ItemBehavior]] s associated to the Item.
-</span>26 <span style=''>     *
-</span>27 <span style=''>     * @return
-</span>28 <span style=''>     *   [[ItemBehavior]] s associated to the Item.
-</span>29 <span style=''>     */
-</span>30 <span style=''>    def behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>Seq.empty</span><span style=''>
-</span>31 <span style=''>
-</span>32 <span style=''>    override def use(action: Action, maybeSideItem: Option[I])(implicit
-</span>33 <span style=''>      state: S
-</span>34 <span style=''>    ): Option[Reaction] =
-</span>35 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
-</span>36 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
-</span>37 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
-</span>38 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(PartialFunction.empty)
-</span>39 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, maybeSideItem, state))</span><span style=''>
-</span>40 <span style=''>  }
-</span>41 <span style=''>
-</span>42 <span style=''>  /**
-</span>43 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations
-</span>44 <span style=''>   * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
-</span>45 <span style=''>   * [[ItemBehavior]] is based into this construct.
-</span>46 <span style=''>   */
-</span>47 <span style=''>  type ItemTriggers = PartialFunction[(Action, Option[I], S), Reaction]
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Action, Model}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * This is a partial implementation of [[Model]], following a &lt;b&gt;behavior-based fashion&lt;/b&gt;. This is
+</span>14 <span style=''> * a style that enables the &quot;decoration&quot; of [[Model.Item]] s and the [[Model.Ground]] by the use of
+</span>15 <span style=''> * the &lt;b&gt;Behavior&lt;/b&gt;: a sort of composable plugin that matches dynamically various
+</span>16 <span style=''> * action-item-state scenarios.
+</span>17 <span style=''> */
+</span>18 <span style=''>abstract class BehaviorBasedModel extends Model {
+</span>19 <span style=''>  override type I = BehaviorBasedItem
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * A [[Item]] capable to process [[ItemBehavior]] s to react to specific action-item-state
+</span>23 <span style=''>   * combinations.
+</span>24 <span style=''>   *
+</span>25 <span style=''>   * Items that exploit the behavioral mechanism should extend this partial implementation. This
+</span>26 <span style=''>   * because the handling of use* functions following this style (by exploring the available
+</span>27 <span style=''>   * triggers) is implemented here.
+</span>28 <span style=''>   */
+</span>29 <span style=''>  abstract class BehaviorBasedItem extends Item {
+</span>30 <span style=''>
+</span>31 <span style=''>    /**
+</span>32 <span style=''>     * [[ItemBehavior]] s associated to the Item.
+</span>33 <span style=''>     *
+</span>34 <span style=''>     * @return
+</span>35 <span style=''>     *   [[ItemBehavior]] s associated to the Item.
+</span>36 <span style=''>     */
+</span>37 <span style=''>    def behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>Seq.empty</span><span style=''>
+</span>38 <span style=''>
+</span>39 <span style=''>    override def use(action: Action, maybeSideItem: Option[I])(implicit
+</span>40 <span style=''>      state: S
+</span>41 <span style=''>    ): Option[Reaction] =
+</span>42 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
+</span>43 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
+</span>44 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
+</span>45 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(PartialFunction.empty)
+</span>46 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, maybeSideItem, state))</span><span style=''>
+</span>47 <span style=''>  }
 </span>48 <span style=''>
 </span>49 <span style=''>  /**
-</span>50 <span style=''>   * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
-</span>51 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
-</span>52 <span style=''>   */
-</span>53 <span style=''>  abstract class ItemBehavior {
-</span>54 <span style=''>
-</span>55 <span style=''>    /**
-</span>56 <span style=''>     * All the [[ItemTriggers]] of this [[ItemBehavior]].
-</span>57 <span style=''>     * @return
-</span>58 <span style=''>     *   the [[ItemTriggers]].
-</span>59 <span style=''>     */
-</span>60 <span style=''>    def triggers: ItemTriggers = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>50 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations
+</span>51 <span style=''>   * action-item-sideItem-state (or action-item-state) responding with a [[Reaction]]. The
+</span>52 <span style=''>   * [[ItemBehavior]] is based into this construct.
+</span>53 <span style=''>   */
+</span>54 <span style=''>  type ItemTriggers = PartialFunction[(Action, Option[I], S), Reaction]
+</span>55 <span style=''>
+</span>56 <span style=''>  /**
+</span>57 <span style=''>   * Makes a [[BehaviorBasedItem]] react to specific [[ItemTriggers]] with a [[Reaction]]. The
+</span>58 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
+</span>59 <span style=''>   */
+</span>60 <span style=''>  abstract class ItemBehavior {
 </span>61 <span style=''>
 </span>62 <span style=''>    /**
-</span>63 <span style=''>     * The &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that owe the behavior.
+</span>63 <span style=''>     * All the [[ItemTriggers]] of this [[ItemBehavior]].
 </span>64 <span style=''>     * @return
-</span>65 <span style=''>     *   The &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that owe the behavior.
+</span>65 <span style=''>     *   the [[ItemTriggers]].
 </span>66 <span style=''>     */
-</span>67 <span style=''>    def subject: I
-</span>68 <span style=''>  }
-</span>69 <span style=''>
-</span>70 <span style=''>  /**
-</span>71 <span style=''>   * A mixin for [[ItemBehavior]], that enables the possibility implement the delegation pattern for
-</span>72 <span style=''>   * them. It means that the receiver behavior (the one that mixes in [[Delegate]] ) can owe
-</span>73 <span style=''>   * internally another one, inheriting its [[ItemTriggers]]. If the receiver overwrites some of the
-</span>74 <span style=''>   * delegate triggers, the receiver ones have the priority, and the delegate ones are not executed.
-</span>75 <span style=''>   */
-</span>76 <span style=''>  trait Delegate extends ItemBehavior {
-</span>77 <span style=''>
-</span>78 <span style=''>    /**
-</span>79 <span style=''>     * Should be overrode with the delegate [[ItemBehavior]] 's [[ItemTriggers]].
-</span>80 <span style=''>     *
-</span>81 <span style=''>     * @return
-</span>82 <span style=''>     *   The delegate [[ItemBehavior]] 's [[ItemTriggers]].
-</span>83 <span style=''>     */
-</span>84 <span style=''>    def delegateTriggers: ItemTriggers
-</span>85 <span style=''>
-</span>86 <span style=''>    /**
-</span>87 <span style=''>     * Should be overrode with the [[ItemTriggers]] of the receiver (the behavior that mixes in
-</span>88 <span style=''>     * [[Delegate]] ).
-</span>89 <span style=''>     *
-</span>90 <span style=''>     * @return
-</span>91 <span style=''>     *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
-</span>92 <span style=''>     */
-</span>93 <span style=''>    def receiverTriggers: ItemTriggers
-</span>94 <span style=''>
-</span>95 <span style=''>    /**
-</span>96 <span style=''>     * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
-</span>97 <span style=''>     * receiver overwrites some of the delegate triggers, the receiver ones have the priority, and
-</span>98 <span style=''>     * the delegate ones are not executed.
-</span>99 <span style=''>     *
-</span>100 <span style=''>     * @return
-</span>101 <span style=''>     *   The combined triggers.
-</span>102 <span style=''>     */
-</span>103 <span style=''>    final override def triggers: ItemTriggers =
-</span>104 <span style=''>      </span><span style='background: #AEF1AE'>Seq(receiverTriggers, delegateTriggers).reduce(_ orElse _)</span><span style=''>
-</span>105 <span style=''>  }
-</span>106 <span style=''>
-</span>107 <span style=''>  override type G = BehaviorBasedGround
-</span>108 <span style=''>
-</span>109 <span style=''>  /**
-</span>110 <span style=''>   * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
-</span>111 <span style=''>   * combinations.
-</span>112 <span style=''>   *
-</span>113 <span style=''>   * A Ground that exploit the behavioral mechanism should extend this partial implementation. This
-</span>114 <span style=''>   * because the handling of use* functions following this style (by exploring the available
-</span>115 <span style=''>   * triggers) is implemented here.
-</span>116 <span style=''>   */
-</span>117 <span style=''>  abstract class BehaviorBasedGround extends Ground {
-</span>118 <span style=''>
-</span>119 <span style=''>    /**
-</span>120 <span style=''>     * [[GroundBehavior]] s associated to the Ground.
-</span>121 <span style=''>     *
-</span>122 <span style=''>     * @return
-</span>123 <span style=''>     *   [[GroundBehavior]] s associated to the Ground.
-</span>124 <span style=''>     */
-</span>125 <span style=''>    def behaviors: Seq[GroundBehavior] = </span><span style='background: #AEF1AE'>Seq.empty</span><span style=''>
-</span>126 <span style=''>
-</span>127 <span style=''>    override def use(action: Action)(implicit state: S): Option[Reaction] =
-</span>128 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
-</span>129 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
-</span>130 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
-</span>131 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(PartialFunction.empty)
-</span>132 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, state))</span><span style=''>
-</span>133 <span style=''>  }
-</span>134 <span style=''>
-</span>135 <span style=''>  /**
-</span>136 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations action-state,
-</span>137 <span style=''>   * responding with a [[Reaction]]. The [[GroundBehavior]] is based into this construct.
-</span>138 <span style=''>   */
-</span>139 <span style=''>  type GroundTriggers = PartialFunction[(Action, S), Reaction]
-</span>140 <span style=''>
-</span>141 <span style=''>  /**
-</span>142 <span style=''>   * Makes a [[BehaviorBasedGround]] react to specific [[GroundTriggers]] with a [[Reaction]]. The
-</span>143 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
-</span>144 <span style=''>   */
-</span>145 <span style=''>  abstract class GroundBehavior {
-</span>146 <span style=''>
-</span>147 <span style=''>    /**
-</span>148 <span style=''>     * [[GroundTriggers]] s associated to the Ground.
-</span>149 <span style=''>     *
-</span>150 <span style=''>     * @return
-</span>151 <span style=''>     *   [[GroundTriggers]] s associated to the Ground.
-</span>152 <span style=''>     */
-</span>153 <span style=''>    def triggers: GroundTriggers = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
-</span>154 <span style=''>  }
-</span>155 <span style=''>}
+</span>67 <span style=''>    def triggers: ItemTriggers = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>68 <span style=''>
+</span>69 <span style=''>    /**
+</span>70 <span style=''>     * The &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that owe the behavior.
+</span>71 <span style=''>     * @return
+</span>72 <span style=''>     *   The &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that owe the behavior.
+</span>73 <span style=''>     */
+</span>74 <span style=''>    def subject: I
+</span>75 <span style=''>  }
+</span>76 <span style=''>
+</span>77 <span style=''>  /**
+</span>78 <span style=''>   * A mixin for [[ItemBehavior]], that enables the possibility implement the delegation pattern for
+</span>79 <span style=''>   * them. It means that the receiver behavior (the one that mixes in [[Delegate]] ) can owe
+</span>80 <span style=''>   * internally another one, inheriting its [[ItemTriggers]]. If the receiver overwrites some of the
+</span>81 <span style=''>   * delegate triggers, the receiver ones have the priority, and the delegate ones are not executed.
+</span>82 <span style=''>   */
+</span>83 <span style=''>  trait Delegate extends ItemBehavior {
+</span>84 <span style=''>
+</span>85 <span style=''>    /**
+</span>86 <span style=''>     * Should be overrode with the delegate [[ItemBehavior]] 's [[ItemTriggers]].
+</span>87 <span style=''>     *
+</span>88 <span style=''>     * @return
+</span>89 <span style=''>     *   The delegate [[ItemBehavior]] 's [[ItemTriggers]].
+</span>90 <span style=''>     */
+</span>91 <span style=''>    def delegateTriggers: ItemTriggers
+</span>92 <span style=''>
+</span>93 <span style=''>    /**
+</span>94 <span style=''>     * Should be overrode with the [[ItemTriggers]] of the receiver (the behavior that mixes in
+</span>95 <span style=''>     * [[Delegate]] ).
+</span>96 <span style=''>     *
+</span>97 <span style=''>     * @return
+</span>98 <span style=''>     *   The [[ItemTriggers]] of the receiver (the behavior that mixes in [[Delegate]] ).
+</span>99 <span style=''>     */
+</span>100 <span style=''>    def receiverTriggers: ItemTriggers
+</span>101 <span style=''>
+</span>102 <span style=''>    /**
+</span>103 <span style=''>     * Composes together all the [[ItemTriggers]], both of the receiver and of the delegate. If the
+</span>104 <span style=''>     * receiver overwrites some of the delegate triggers, the receiver ones have the priority, and
+</span>105 <span style=''>     * the delegate ones are not executed.
+</span>106 <span style=''>     *
+</span>107 <span style=''>     * @return
+</span>108 <span style=''>     *   The combined triggers.
+</span>109 <span style=''>     */
+</span>110 <span style=''>    final override def triggers: ItemTriggers =
+</span>111 <span style=''>      </span><span style='background: #AEF1AE'>Seq(receiverTriggers, delegateTriggers).reduce(_ orElse _)</span><span style=''>
+</span>112 <span style=''>  }
+</span>113 <span style=''>
+</span>114 <span style=''>  override type G = BehaviorBasedGround
+</span>115 <span style=''>
+</span>116 <span style=''>  /**
+</span>117 <span style=''>   * A [[Ground]] capable to process [[GroundBehavior]] s to react to specific action-state
+</span>118 <span style=''>   * combinations.
+</span>119 <span style=''>   *
+</span>120 <span style=''>   * A Ground that exploit the behavioral mechanism should extend this partial implementation. This
+</span>121 <span style=''>   * because the handling of use* functions following this style (by exploring the available
+</span>122 <span style=''>   * triggers) is implemented here.
+</span>123 <span style=''>   */
+</span>124 <span style=''>  abstract class BehaviorBasedGround extends Ground {
+</span>125 <span style=''>
+</span>126 <span style=''>    /**
+</span>127 <span style=''>     * [[GroundBehavior]] s associated to the Ground.
+</span>128 <span style=''>     *
+</span>129 <span style=''>     * @return
+</span>130 <span style=''>     *   [[GroundBehavior]] s associated to the Ground.
+</span>131 <span style=''>     */
+</span>132 <span style=''>    def behaviors: Seq[GroundBehavior] = </span><span style='background: #AEF1AE'>Seq.empty</span><span style=''>
+</span>133 <span style=''>
+</span>134 <span style=''>    override def use(action: Action)(implicit state: S): Option[Reaction] =
+</span>135 <span style=''>      </span><span style='background: #AEF1AE'>behaviors
+</span>136 <span style=''></span><span style='background: #AEF1AE'>        .map(_.triggers)
+</span>137 <span style=''></span><span style='background: #AEF1AE'>        .reduceOption(_ orElse _)
+</span>138 <span style=''></span><span style='background: #AEF1AE'>        .getOrElse(PartialFunction.empty)
+</span>139 <span style=''></span><span style='background: #AEF1AE'>        .lift((action, state))</span><span style=''>
+</span>140 <span style=''>  }
+</span>141 <span style=''>
+</span>142 <span style=''>  /**
+</span>143 <span style=''>   * A [[PartialFunction]], that makes possible to react to specific combinations action-state,
+</span>144 <span style=''>   * responding with a [[Reaction]]. The [[GroundBehavior]] is based into this construct.
+</span>145 <span style=''>   */
+</span>146 <span style=''>  type GroundTriggers = PartialFunction[(Action, S), Reaction]
+</span>147 <span style=''>
+</span>148 <span style=''>  /**
+</span>149 <span style=''>   * Makes a [[BehaviorBasedGround]] react to specific [[GroundTriggers]] with a [[Reaction]]. The
+</span>150 <span style=''>   * [[BehaviorBasedModel]] is based into this construct.
+</span>151 <span style=''>   */
+</span>152 <span style=''>  abstract class GroundBehavior {
+</span>153 <span style=''>
+</span>154 <span style=''>    /**
+</span>155 <span style=''>     * [[GroundTriggers]] s associated to the Ground.
+</span>156 <span style=''>     *
+</span>157 <span style=''>     * @return
+</span>158 <span style=''>     *   [[GroundTriggers]] s associated to the Ground.
+</span>159 <span style=''>     */
+</span>160 <span style=''>    def triggers: GroundTriggers = </span><span style='background: #AEF1AE'>PartialFunction.empty</span><span style=''>
+</span>161 <span style=''>  }
+</span>162 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -191,15 +198,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           196
         </td>
         <td>
-          1111
+          1335
           -
-          1120
+          1344
         </td>
         <td>
           TypeApply
@@ -215,15 +222,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          43
         </td>
         <td>
           197
         </td>
         <td>
-          1264
+          1488
           -
-          1274
+          1498
         </td>
         <td>
           Select
@@ -239,15 +246,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           198
         </td>
         <td>
-          1298
+          1522
           -
-          1308
+          1532
         </td>
         <td>
           Apply
@@ -263,15 +270,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           199
         </td>
         <td>
-          1329
+          1553
           -
-          1350
+          1574
         </td>
         <td>
           TypeApply
@@ -287,15 +294,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           200
         </td>
         <td>
-          1366
+          1590
           -
-          1396
+          1620
         </td>
         <td>
           Apply
@@ -311,15 +318,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          46
         </td>
         <td>
           201
         </td>
         <td>
-          1241
+          1465
           -
-          1397
+          1621
         </td>
         <td>
           Apply
@@ -335,15 +342,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          67
         </td>
         <td>
           202
         </td>
         <td>
-          2064
+          2288
           -
-          2085
+          2309
         </td>
         <td>
           TypeApply
@@ -359,15 +366,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          111
         </td>
         <td>
           203
         </td>
         <td>
-          3588
+          3812
           -
-          3604
+          3828
         </td>
         <td>
           Select
@@ -383,15 +390,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          111
         </td>
         <td>
           204
         </td>
         <td>
-          3606
+          3830
           -
-          3622
+          3846
         </td>
         <td>
           Select
@@ -407,15 +414,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          111
         </td>
         <td>
           205
         </td>
         <td>
-          3631
+          3855
           -
-          3641
+          3865
         </td>
         <td>
           Apply
@@ -431,15 +438,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          111
         </td>
         <td>
           206
         </td>
         <td>
-          3584
+          3808
           -
-          3642
+          3866
         </td>
         <td>
           Apply
@@ -455,15 +462,15 @@
         </td>
       </tr><tr>
         <td>
-          125
+          132
         </td>
         <td>
           207
         </td>
         <td>
-          4290
+          4514
           -
-          4299
+          4523
         </td>
         <td>
           TypeApply
@@ -479,15 +486,15 @@
         </td>
       </tr><tr>
         <td>
-          129
+          136
         </td>
         <td>
           208
         </td>
         <td>
-          4406
+          4630
           -
-          4416
+          4640
         </td>
         <td>
           Select
@@ -503,15 +510,15 @@
         </td>
       </tr><tr>
         <td>
-          130
+          137
         </td>
         <td>
           209
         </td>
         <td>
-          4440
+          4664
           -
-          4450
+          4674
         </td>
         <td>
           Apply
@@ -527,15 +534,15 @@
         </td>
       </tr><tr>
         <td>
-          131
+          138
         </td>
         <td>
           210
         </td>
         <td>
-          4471
+          4695
           -
-          4492
+          4716
         </td>
         <td>
           TypeApply
@@ -551,15 +558,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          139
         </td>
         <td>
           211
         </td>
         <td>
-          4508
+          4732
           -
-          4523
+          4747
         </td>
         <td>
           Apply
@@ -575,15 +582,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          139
         </td>
         <td>
           212
         </td>
         <td>
-          4383
+          4607
           -
-          4524
+          4748
         </td>
         <td>
           Apply
@@ -599,15 +606,15 @@
         </td>
       </tr><tr>
         <td>
-          153
+          160
         </td>
         <td>
           213
         </td>
         <td>
-          5179
+          5403
           -
-          5200
+          5424
         </td>
         <td>
           TypeApply

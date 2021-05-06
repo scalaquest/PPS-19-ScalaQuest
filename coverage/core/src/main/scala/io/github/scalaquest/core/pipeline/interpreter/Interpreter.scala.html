@@ -22,90 +22,97 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.interpreter
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Model
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * A pipeline component that takes a [[Statement]] (wrapped into a [[ResolverResult]] ) and returns
-</span>8 <span style=''> * a [[Model.Reaction]] wrapped into an [[InterpreterResult]]. The execution may fail, when the
-</span>9 <span style=''> * given [[Statement]] does not generate a [[Model.Reaction]].
-</span>10 <span style=''> * @tparam M
-</span>11 <span style=''> *   The concrete type of the [[Model]] in use.
-</span>12 <span style=''> * @tparam R
-</span>13 <span style=''> *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
-</span>14 <span style=''> */
-</span>15 <span style=''>trait Interpreter[M &lt;: Model, R] {
-</span>16 <span style=''>
-</span>17 <span style=''>  /**
-</span>18 <span style=''>   * Triggers the [[Interpreter]] execution.
-</span>19 <span style=''>   * @param resolverResult
-</span>20 <span style=''>   *   A wrapper for the input [[Statement]].
-</span>21 <span style=''>   * @return
-</span>22 <span style=''>   *   An [[Either]] describing the interpreter result. If the [[Interpreter]] fails, the result is
-</span>23 <span style=''>   *   a [[Left]] describing what went wrong. Otherwise, it is a [[Right]] with the
-</span>24 <span style=''>   *   [[InterpreterResult]] (wrapper for a [[Model.Reaction]] ).
-</span>25 <span style=''>   */
-</span>26 <span style=''>  def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[R]]
-</span>27 <span style=''>}
-</span>28 <span style=''>
-</span>29 <span style=''>/**
-</span>30 <span style=''> * Companion object for the [[Interpreter]] trait. It exposes some utilities to instantiate the
-</span>31 <span style=''> * [[Interpreter]] with the right constraints between types.
-</span>32 <span style=''> *
-</span>33 <span style=''> * It exposes an [[Interpreter::apply()]] to build an [[Interpreter]] &lt;b&gt;with the right types&lt;/b&gt;,
-</span>34 <span style=''> * as some constraints between the used types are defined. In addition, it provides a
-</span>35 <span style=''> * [[Interpreter::builder()]] utility used into the pipeline to inject the [[Model.State]] in a
-</span>36 <span style=''> * separate phase, compared to passing the state directly to [[Interpreter::interpret()]].
-</span>37 <span style=''> */
-</span>38 <span style=''>object Interpreter {
-</span>39 <span style=''>
-</span>40 <span style=''>  /**
-</span>41 <span style=''>   * A generator of [[Interpreter]] instances, giving the possibility to inject the [[Model.State]]
-</span>42 <span style=''>   * separately from the [[Interpreter::interpret()]] call.
-</span>43 <span style=''>   * @tparam M
-</span>44 <span style=''>   *   The concrete type of the [[Model]] in use.
-</span>45 <span style=''>   * @tparam S
-</span>46 <span style=''>   *   The concrete type of the [[Model.State]] in use. It should be derived from [[M]].
-</span>47 <span style=''>   * @tparam R
-</span>48 <span style=''>   *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
-</span>49 <span style=''>   */
-</span>50 <span style=''>  type Builder[M &lt;: Model, S, R] = S =&gt; Interpreter[M, R]
-</span>51 <span style=''>
-</span>52 <span style=''>  /**
-</span>53 <span style=''>   * It generates a [[Builder]] with the right type constraints.
-</span>54 <span style=''>   * @param model
-</span>55 <span style=''>   *   The concrete instance of the [[Model]] in use.
-</span>56 <span style=''>   * @tparam M
-</span>57 <span style=''>   *   The concrete type of the [[Model]] in use.
-</span>58 <span style=''>   * @return
-</span>59 <span style=''>   *   A [[Builder]] of [[Interpreter]] instances, with the right type constraints.
-</span>60 <span style=''>   */
-</span>61 <span style=''>  def builder[M &lt;: Model](model: M): Builder[model.type, model.S, model.Reaction] =
-</span>62 <span style=''>    state =&gt; {
-</span>63 <span style=''>      implicit val s: model.S           = state
-</span>64 <span style=''>      val refToItem: RefToItem[model.I] = </span><span style='background: #AEF1AE'>RefToItem(model)(state.items)</span><span style=''>
-</span>65 <span style=''>      val actionNotFound: String        = </span><span style='background: #AEF1AE'>&quot;I can't do that!&quot;</span><span style=''>
-</span>66 <span style=''>
-</span>67 <span style=''>      // shortcut for implementing the Interpreter, as it is a single method trait
-</span>68 <span style=''>      (resolverResult: ResolverResult) =&gt;
-</span>69 <span style=''>        </span><span style='background: #AEF1AE'>for {
-</span>70 <span style=''></span><span style='background: #AEF1AE'>          maybeReaction &lt;- resolverResult.statement match {
-</span>71 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Intransitive(action) =&gt;
-</span>72 <span style=''></span><span style='background: #AEF1AE'>              state.ground.use(action).toRight(actionNotFound)
-</span>73 <span style=''></span><span style='background: #AEF1AE'>
-</span>74 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Transitive(action, refToItem(item)) =&gt;
-</span>75 <span style=''></span><span style='background: #AEF1AE'>              item.use(action).toRight(actionNotFound)
-</span>76 <span style=''></span><span style='background: #AEF1AE'>
-</span>77 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =&gt;
-</span>78 <span style=''></span><span style='background: #AEF1AE'>              directObj.use(action, Some(indirectObj)).toRight(actionNotFound)
-</span>79 <span style=''></span><span style='background: #AEF1AE'>
-</span>80 <span style=''></span><span style='background: #AEF1AE'>            case _ =&gt; </span><span style='background: #F0ADAD'>Left(actionNotFound)</span><span style='background: #AEF1AE'>
-</span>81 <span style=''></span><span style='background: #AEF1AE'>          }
-</span>82 <span style=''></span><span style='background: #AEF1AE'>        } yield InterpreterResult(model)(maybeReaction)</span><span style=''>
-</span>83 <span style=''>    }
-</span>84 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.interpreter
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Model
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.resolver.{ResolverResult, Statement}
+</span>12 <span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * A pipeline component that takes a [[Statement]] (wrapped into a [[ResolverResult]] ) and returns
+</span>15 <span style=''> * a [[Model.Reaction]] wrapped into an [[InterpreterResult]]. The execution may fail, when the
+</span>16 <span style=''> * given [[Statement]] does not generate a [[Model.Reaction]].
+</span>17 <span style=''> * @tparam M
+</span>18 <span style=''> *   The concrete type of the [[Model]] in use.
+</span>19 <span style=''> * @tparam R
+</span>20 <span style=''> *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
+</span>21 <span style=''> */
+</span>22 <span style=''>trait Interpreter[M &lt;: Model, R] {
+</span>23 <span style=''>
+</span>24 <span style=''>  /**
+</span>25 <span style=''>   * Triggers the [[Interpreter]] execution.
+</span>26 <span style=''>   * @param resolverResult
+</span>27 <span style=''>   *   A wrapper for the input [[Statement]].
+</span>28 <span style=''>   * @return
+</span>29 <span style=''>   *   An [[Either]] describing the interpreter result. If the [[Interpreter]] fails, the result is
+</span>30 <span style=''>   *   a [[Left]] describing what went wrong. Otherwise, it is a [[Right]] with the
+</span>31 <span style=''>   *   [[InterpreterResult]] (wrapper for a [[Model.Reaction]] ).
+</span>32 <span style=''>   */
+</span>33 <span style=''>  def interpret(resolverResult: ResolverResult): Either[String, InterpreterResult[R]]
+</span>34 <span style=''>}
+</span>35 <span style=''>
+</span>36 <span style=''>/**
+</span>37 <span style=''> * Companion object for the [[Interpreter]] trait. It exposes some utilities to instantiate the
+</span>38 <span style=''> * [[Interpreter]] with the right constraints between types.
+</span>39 <span style=''> *
+</span>40 <span style=''> * It exposes an [[Interpreter::apply()]] to build an [[Interpreter]] &lt;b&gt;with the right types&lt;/b&gt;,
+</span>41 <span style=''> * as some constraints between the used types are defined. In addition, it provides a
+</span>42 <span style=''> * [[Interpreter::builder()]] utility used into the pipeline to inject the [[Model.State]] in a
+</span>43 <span style=''> * separate phase, compared to passing the state directly to [[Interpreter::interpret()]].
+</span>44 <span style=''> */
+</span>45 <span style=''>object Interpreter {
+</span>46 <span style=''>
+</span>47 <span style=''>  /**
+</span>48 <span style=''>   * A generator of [[Interpreter]] instances, giving the possibility to inject the [[Model.State]]
+</span>49 <span style=''>   * separately from the [[Interpreter::interpret()]] call.
+</span>50 <span style=''>   * @tparam M
+</span>51 <span style=''>   *   The concrete type of the [[Model]] in use.
+</span>52 <span style=''>   * @tparam S
+</span>53 <span style=''>   *   The concrete type of the [[Model.State]] in use. It should be derived from [[M]].
+</span>54 <span style=''>   * @tparam R
+</span>55 <span style=''>   *   The concrete type of the [[Model.Reaction]] in use. It should be derived from [[M]].
+</span>56 <span style=''>   */
+</span>57 <span style=''>  type Builder[M &lt;: Model, S, R] = S =&gt; Interpreter[M, R]
+</span>58 <span style=''>
+</span>59 <span style=''>  /**
+</span>60 <span style=''>   * It generates a [[Builder]] with the right type constraints.
+</span>61 <span style=''>   * @param model
+</span>62 <span style=''>   *   The concrete instance of the [[Model]] in use.
+</span>63 <span style=''>   * @tparam M
+</span>64 <span style=''>   *   The concrete type of the [[Model]] in use.
+</span>65 <span style=''>   * @return
+</span>66 <span style=''>   *   A [[Builder]] of [[Interpreter]] instances, with the right type constraints.
+</span>67 <span style=''>   */
+</span>68 <span style=''>  def builder[M &lt;: Model](model: M): Builder[model.type, model.S, model.Reaction] =
+</span>69 <span style=''>    state =&gt; {
+</span>70 <span style=''>      implicit val s: model.S           = state
+</span>71 <span style=''>      val refToItem: RefToItem[model.I] = </span><span style='background: #AEF1AE'>RefToItem(model)(state.items)</span><span style=''>
+</span>72 <span style=''>      val actionNotFound: String        = </span><span style='background: #AEF1AE'>&quot;I can't do that!&quot;</span><span style=''>
+</span>73 <span style=''>
+</span>74 <span style=''>      // shortcut for implementing the Interpreter, as it is a single method trait
+</span>75 <span style=''>      (resolverResult: ResolverResult) =&gt;
+</span>76 <span style=''>        </span><span style='background: #AEF1AE'>for {
+</span>77 <span style=''></span><span style='background: #AEF1AE'>          maybeReaction &lt;- resolverResult.statement match {
+</span>78 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Intransitive(action) =&gt;
+</span>79 <span style=''></span><span style='background: #AEF1AE'>              state.ground.use(action).toRight(actionNotFound)
+</span>80 <span style=''></span><span style='background: #AEF1AE'>
+</span>81 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Transitive(action, refToItem(item)) =&gt;
+</span>82 <span style=''></span><span style='background: #AEF1AE'>              item.use(action).toRight(actionNotFound)
+</span>83 <span style=''></span><span style='background: #AEF1AE'>
+</span>84 <span style=''></span><span style='background: #AEF1AE'>            case Statement.Ditransitive(action, refToItem(directObj), refToItem(indirectObj)) =&gt;
+</span>85 <span style=''></span><span style='background: #AEF1AE'>              directObj.use(action, Some(indirectObj)).toRight(actionNotFound)
+</span>86 <span style=''></span><span style='background: #AEF1AE'>
+</span>87 <span style=''></span><span style='background: #AEF1AE'>            case _ =&gt; </span><span style='background: #F0ADAD'>Left(actionNotFound)</span><span style='background: #AEF1AE'>
+</span>88 <span style=''></span><span style='background: #AEF1AE'>          }
+</span>89 <span style=''></span><span style='background: #AEF1AE'>        } yield InterpreterResult(model)(maybeReaction)</span><span style=''>
+</span>90 <span style=''>    }
+</span>91 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -120,15 +127,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          64
+          71
         </td>
         <td>
           787
         </td>
         <td>
-          2716
+          2940
           -
-          2727
+          2951
         </td>
         <td>
           Select
@@ -144,15 +151,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          71
         </td>
         <td>
           788
         </td>
         <td>
-          2699
+          2923
           -
-          2728
+          2952
         </td>
         <td>
           Apply
@@ -168,15 +175,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          72
         </td>
         <td>
           789
         </td>
         <td>
-          2771
+          2995
           -
-          2789
+          3013
         </td>
         <td>
           Literal
@@ -192,15 +199,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          77
         </td>
         <td>
           790
         </td>
         <td>
-          2957
+          3181
           -
-          2981
+          3205
         </td>
         <td>
           Select
@@ -216,15 +223,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          77
         </td>
         <td>
           796
         </td>
         <td>
-          2924
+          3148
           -
-          3514
+          3738
         </td>
         <td>
           Apply
@@ -245,15 +252,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          79
         </td>
         <td>
           791
         </td>
         <td>
-          3055
+          3279
           -
-          3103
+          3327
         </td>
         <td>
           Apply
@@ -269,15 +276,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          82
         </td>
         <td>
           792
         </td>
         <td>
-          3185
+          3409
           -
-          3225
+          3449
         </td>
         <td>
           Apply
@@ -293,15 +300,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          85
         </td>
         <td>
           793
         </td>
         <td>
-          3338
+          3562
           -
-          3402
+          3626
         </td>
         <td>
           Apply
@@ -317,15 +324,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          87
         </td>
         <td>
           794
         </td>
         <td>
-          3426
+          3650
           -
-          3446
+          3670
         </td>
         <td>
           Apply
@@ -341,15 +348,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          89
         </td>
         <td>
           795
         </td>
         <td>
-          3475
+          3699
           -
-          3514
+          3738
         </td>
         <td>
           Apply

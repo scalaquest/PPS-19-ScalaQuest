@@ -22,122 +22,129 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine.tuprolog
-</span>2 <span style=''>
-</span>3 <span style=''>import alice.tuprolog
-</span>4 <span style=''>import alice.tuprolog.{
-</span>5 <span style=''>  SolveInfo,
-</span>6 <span style=''>  Struct,
-</span>7 <span style=''>  Var,
-</span>8 <span style=''>  Prolog =&gt; TuProlog,
-</span>9 <span style=''>  Term =&gt; TuPrologTerm,
-</span>10 <span style=''>  Theory =&gt; TuPrologTheory
-</span>11 <span style=''>}
-</span>12 <span style=''>import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
-</span>13 <span style=''>import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
-</span>14 <span style=''>import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
-</span>15 <span style=''>import io.github.scalaquest.core.parsing.scalog
-</span>16 <span style=''>import io.github.scalaquest.core.parsing.scalog._
-</span>17 <span style=''>
-</span>18 <span style=''>import scala.annotation.nowarn
-</span>19 <span style=''>
-</span>20 <span style=''>/**
-</span>21 <span style=''> * Engine implementation that uses a tuProlog engine under the hood.
-</span>22 <span style=''> * @note
-</span>23 <span style=''> *   this implementation computes solutions in a lazy way
-</span>24 <span style=''> */
-</span>25 <span style=''>private class TuPrologEngine(prolog: TuProlog) extends Engine {
-</span>26 <span style=''>  import implicits._
-</span>27 <span style=''>
-</span>28 <span style=''>  private def exploreSolutions(goal: TuPrologTerm): Seq[SolveInfo] = {
-</span>29 <span style=''>    def go(info: SolveInfo): LazyList[SolveInfo] = {
-</span>30 <span style=''>      val current =
-</span>31 <span style=''>        if (</span><span style='background: #AEF1AE'>info.isSuccess</span><span style=''>) </span><span style='background: #AEF1AE'>LazyList(info)</span><span style=''>
-</span>32 <span style=''>        else </span><span style='background: #AEF1AE'>LazyList.empty</span><span style=''>
-</span>33 <span style=''>      lazy val next = if (prolog.hasOpenAlternatives) go(prolog.solveNext()) else LazyList.empty
-</span>34 <span style=''>      current </span><span style='background: #AEF1AE'>#::: next</span><span style=''>
-</span>35 <span style=''>    }
-</span>36 <span style=''>
-</span>37 <span style=''>    </span><span style='background: #AEF1AE'>go(prolog.solve(goal))</span><span style=''>
-</span>38 <span style=''>  }
-</span>39 <span style=''>
-</span>40 <span style=''>  override def solve(term: Term): Seq[Solution] =
-</span>41 <span style=''>    </span><span style='background: #AEF1AE'>exploreSolutions(term.toTuPrologTerm).map(TuPrologSolution)</span><span style=''>
-</span>42 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.engine.tuprolog
+</span>9 <span style=''>
+</span>10 <span style=''>import alice.tuprolog
+</span>11 <span style=''>import alice.tuprolog.{
+</span>12 <span style=''>  SolveInfo,
+</span>13 <span style=''>  Struct,
+</span>14 <span style=''>  Var,
+</span>15 <span style=''>  Prolog =&gt; TuProlog,
+</span>16 <span style=''>  Term =&gt; TuPrologTerm,
+</span>17 <span style=''>  Theory =&gt; TuPrologTheory
+</span>18 <span style=''>}
+</span>19 <span style=''>import io.github.scalaquest.core.parsing.engine.exceptions.InvalidTheoryException
+</span>20 <span style=''>import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine.{buildCompound, buildNumber}
+</span>21 <span style=''>import io.github.scalaquest.core.parsing.engine.{Engine, Library, Solution, Theory}
+</span>22 <span style=''>import io.github.scalaquest.core.parsing.scalog
+</span>23 <span style=''>import io.github.scalaquest.core.parsing.scalog._
+</span>24 <span style=''>
+</span>25 <span style=''>import scala.annotation.nowarn
+</span>26 <span style=''>
+</span>27 <span style=''>/**
+</span>28 <span style=''> * Engine implementation that uses a tuProlog engine under the hood.
+</span>29 <span style=''> * @note
+</span>30 <span style=''> *   this implementation computes solutions in a lazy way
+</span>31 <span style=''> */
+</span>32 <span style=''>private class TuPrologEngine(prolog: TuProlog) extends Engine {
+</span>33 <span style=''>  import implicits._
+</span>34 <span style=''>
+</span>35 <span style=''>  private def exploreSolutions(goal: TuPrologTerm): Seq[SolveInfo] = {
+</span>36 <span style=''>    def go(info: SolveInfo): LazyList[SolveInfo] = {
+</span>37 <span style=''>      val current =
+</span>38 <span style=''>        if (</span><span style='background: #AEF1AE'>info.isSuccess</span><span style=''>) </span><span style='background: #AEF1AE'>LazyList(info)</span><span style=''>
+</span>39 <span style=''>        else </span><span style='background: #AEF1AE'>LazyList.empty</span><span style=''>
+</span>40 <span style=''>      lazy val next = if (prolog.hasOpenAlternatives) go(prolog.solveNext()) else LazyList.empty
+</span>41 <span style=''>      current </span><span style='background: #AEF1AE'>#::: next</span><span style=''>
+</span>42 <span style=''>    }
 </span>43 <span style=''>
-</span>44 <span style=''>object TuPrologEngine {
-</span>45 <span style=''>  import implicits._
+</span>44 <span style=''>    </span><span style='background: #AEF1AE'>go(prolog.solve(goal))</span><span style=''>
+</span>45 <span style=''>  }
 </span>46 <span style=''>
-</span>47 <span style=''>  /**
-</span>48 <span style=''>   * Creates an [[Engine]] with the provided theory and libraries using tuProlog under the hood.
-</span>49 <span style=''>   * @note
-</span>50 <span style=''>   *   this implementation computes solutions lazily.
-</span>51 <span style=''>   */
-</span>52 <span style=''>  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
-</span>53 <span style=''>    </span><span style='background: #AEF1AE'>new TuPrologEngine(createTuProlog(theory.toTuProlog, libraries))</span><span style=''>
-</span>54 <span style=''>
-</span>55 <span style=''>  private def getArgs(struct: Struct): Seq[Term] = {
-</span>56 <span style=''>    (</span><span style='background: #AEF1AE'>0 until struct.getArity)
-</span>57 <span style=''></span><span style='background: #AEF1AE'>      .map(i =&gt; struct.getTerm(i))
-</span>58 <span style=''></span><span style='background: #AEF1AE'>      .map(_.toTerm)</span><span style=''>
-</span>59 <span style=''>  }
-</span>60 <span style=''>
-</span>61 <span style=''>  @nowarn(&quot;msg=exhaustive&quot;)
-</span>62 <span style=''>  /**
-</span>63 <span style=''>   * @note
-</span>64 <span style=''>   *   this will fail if called with a Struct with no arguments.
-</span>65 <span style=''>   */
-</span>66 <span style=''>  private[tuprolog] def buildCompound(struct: Struct): Compound =
-</span>67 <span style=''>    </span><span style='background: #AEF1AE'>getArgs(struct).toList</span><span style=''> match {
-</span>68 <span style=''>      case h :: t =&gt;
-</span>69 <span style=''>        </span><span style='background: #AEF1AE'>Compound(Atom(struct.getName), h, t)</span><span style=''>
-</span>70 <span style=''>    }
-</span>71 <span style=''>
-</span>72 <span style=''>  /**
-</span>73 <span style=''>   * @note
-</span>74 <span style=''>   *   this might fail if not called with an Integer, but for now we don't use any other Number
-</span>75 <span style=''>   *   implementation
-</span>76 <span style=''>   */
-</span>77 <span style=''>  private[tuprolog] def buildNumber(number: tuprolog.Number): scalog.Number =
-</span>78 <span style=''>    </span><span style='background: #AEF1AE'>Number(number.intValue)</span><span style=''>
-</span>79 <span style=''>
-</span>80 <span style=''>  /**
-</span>81 <span style=''>   * @note
-</span>82 <span style=''>   *   this might throw if called with an invalid theory
+</span>47 <span style=''>  override def solve(term: Term): Seq[Solution] =
+</span>48 <span style=''>    </span><span style='background: #AEF1AE'>exploreSolutions(term.toTuPrologTerm).map(TuPrologSolution)</span><span style=''>
+</span>49 <span style=''>}
+</span>50 <span style=''>
+</span>51 <span style=''>object TuPrologEngine {
+</span>52 <span style=''>  import implicits._
+</span>53 <span style=''>
+</span>54 <span style=''>  /**
+</span>55 <span style=''>   * Creates an [[Engine]] with the provided theory and libraries using tuProlog under the hood.
+</span>56 <span style=''>   * @note
+</span>57 <span style=''>   *   this implementation computes solutions lazily.
+</span>58 <span style=''>   */
+</span>59 <span style=''>  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
+</span>60 <span style=''>    </span><span style='background: #AEF1AE'>new TuPrologEngine(createTuProlog(theory.toTuProlog, libraries))</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>  private def getArgs(struct: Struct): Seq[Term] = {
+</span>63 <span style=''>    (</span><span style='background: #AEF1AE'>0 until struct.getArity)
+</span>64 <span style=''></span><span style='background: #AEF1AE'>      .map(i =&gt; struct.getTerm(i))
+</span>65 <span style=''></span><span style='background: #AEF1AE'>      .map(_.toTerm)</span><span style=''>
+</span>66 <span style=''>  }
+</span>67 <span style=''>
+</span>68 <span style=''>  @nowarn(&quot;msg=exhaustive&quot;)
+</span>69 <span style=''>  /**
+</span>70 <span style=''>   * @note
+</span>71 <span style=''>   *   this will fail if called with a Struct with no arguments.
+</span>72 <span style=''>   */
+</span>73 <span style=''>  private[tuprolog] def buildCompound(struct: Struct): Compound =
+</span>74 <span style=''>    </span><span style='background: #AEF1AE'>getArgs(struct).toList</span><span style=''> match {
+</span>75 <span style=''>      case h :: t =&gt;
+</span>76 <span style=''>        </span><span style='background: #AEF1AE'>Compound(Atom(struct.getName), h, t)</span><span style=''>
+</span>77 <span style=''>    }
+</span>78 <span style=''>
+</span>79 <span style=''>  /**
+</span>80 <span style=''>   * @note
+</span>81 <span style=''>   *   this might fail if not called with an Integer, but for now we don't use any other Number
+</span>82 <span style=''>   *   implementation
 </span>83 <span style=''>   */
-</span>84 <span style=''>  private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
-</span>85 <span style=''>    val prolog = </span><span style='background: #AEF1AE'>new TuProlog</span><span style=''>
-</span>86 <span style=''>    try {
-</span>87 <span style=''>      </span><span style='background: #AEF1AE'>prolog.setTheory(theory)</span><span style=''>
-</span>88 <span style=''>    } catch {
-</span>89 <span style=''>      case e: alice.tuprolog.InvalidTheoryException =&gt; </span><span style='background: #AEF1AE'>throw InvalidTheoryException(e)</span><span style=''>
-</span>90 <span style=''>    }
-</span>91 <span style=''>    </span><span style='background: #AEF1AE'>libraries.foreach(l =&gt; prolog.loadLibrary(l.toTuProlog))</span><span style=''>
-</span>92 <span style=''>    prolog
-</span>93 <span style=''>  }
-</span>94 <span style=''>}
-</span>95 <span style=''>
-</span>96 <span style=''>private[tuprolog] object implicits {
-</span>97 <span style=''>
-</span>98 <span style=''>  implicit class EnhancedTerm(term: Term) {
-</span>99 <span style=''>    def toTuPrologTerm: TuPrologTerm = </span><span style='background: #AEF1AE'>TuPrologTerm.createTerm(term.generate)</span><span style=''>
+</span>84 <span style=''>  private[tuprolog] def buildNumber(number: tuprolog.Number): scalog.Number =
+</span>85 <span style=''>    </span><span style='background: #AEF1AE'>Number(number.intValue)</span><span style=''>
+</span>86 <span style=''>
+</span>87 <span style=''>  /**
+</span>88 <span style=''>   * @note
+</span>89 <span style=''>   *   this might throw if called with an invalid theory
+</span>90 <span style=''>   */
+</span>91 <span style=''>  private def createTuProlog(theory: TuPrologTheory, libraries: Set[Library]): TuProlog = {
+</span>92 <span style=''>    val prolog = </span><span style='background: #AEF1AE'>new TuProlog</span><span style=''>
+</span>93 <span style=''>    try {
+</span>94 <span style=''>      </span><span style='background: #AEF1AE'>prolog.setTheory(theory)</span><span style=''>
+</span>95 <span style=''>    } catch {
+</span>96 <span style=''>      case e: alice.tuprolog.InvalidTheoryException =&gt; </span><span style='background: #AEF1AE'>throw InvalidTheoryException(e)</span><span style=''>
+</span>97 <span style=''>    }
+</span>98 <span style=''>    </span><span style='background: #AEF1AE'>libraries.foreach(l =&gt; prolog.loadLibrary(l.toTuProlog))</span><span style=''>
+</span>99 <span style=''>    prolog
 </span>100 <span style=''>  }
-</span>101 <span style=''>
-</span>102 <span style=''>  implicit class EnhancedTuPrologTerm(tuPrologTerm: TuPrologTerm) {
-</span>103 <span style=''>
-</span>104 <span style=''>    @nowarn(&quot;msg=match.*exhaustive&quot;)
-</span>105 <span style=''>    def toTerm: Term =
-</span>106 <span style=''>      </span><span style='background: #AEF1AE'>tuPrologTerm</span><span style=''> match {
-</span>107 <span style=''>        case number: tuprolog.Number =&gt; </span><span style='background: #AEF1AE'>buildNumber(number)</span><span style=''>
-</span>108 <span style=''>        case struct: Struct =&gt;
-</span>109 <span style=''>          struct match {
-</span>110 <span style=''>            case s if </span><span style='background: #AEF1AE'>s.isCompound</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>buildCompound(s)</span><span style=''>
-</span>111 <span style=''>            case a                 =&gt; </span><span style='background: #AEF1AE'>Atom(a.getName)</span><span style=''>
-</span>112 <span style=''>          }
-</span>113 <span style=''>        case _var: Var =&gt; </span><span style='background: #F0ADAD'>Variable(_var.getName)</span><span style=''>
-</span>114 <span style=''>      }
-</span>115 <span style=''>  }
-</span>116 <span style=''>}
+</span>101 <span style=''>}
+</span>102 <span style=''>
+</span>103 <span style=''>private[tuprolog] object implicits {
+</span>104 <span style=''>
+</span>105 <span style=''>  implicit class EnhancedTerm(term: Term) {
+</span>106 <span style=''>    def toTuPrologTerm: TuPrologTerm = </span><span style='background: #AEF1AE'>TuPrologTerm.createTerm(term.generate)</span><span style=''>
+</span>107 <span style=''>  }
+</span>108 <span style=''>
+</span>109 <span style=''>  implicit class EnhancedTuPrologTerm(tuPrologTerm: TuPrologTerm) {
+</span>110 <span style=''>
+</span>111 <span style=''>    @nowarn(&quot;msg=match.*exhaustive&quot;)
+</span>112 <span style=''>    def toTerm: Term =
+</span>113 <span style=''>      </span><span style='background: #AEF1AE'>tuPrologTerm</span><span style=''> match {
+</span>114 <span style=''>        case number: tuprolog.Number =&gt; </span><span style='background: #AEF1AE'>buildNumber(number)</span><span style=''>
+</span>115 <span style=''>        case struct: Struct =&gt;
+</span>116 <span style=''>          struct match {
+</span>117 <span style=''>            case s if </span><span style='background: #AEF1AE'>s.isCompound</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>buildCompound(s)</span><span style=''>
+</span>118 <span style=''>            case a                 =&gt; </span><span style='background: #AEF1AE'>Atom(a.getName)</span><span style=''>
+</span>119 <span style=''>          }
+</span>120 <span style=''>        case _var: Var =&gt; </span><span style='background: #F0ADAD'>Variable(_var.getName)</span><span style=''>
+</span>121 <span style=''>      }
+</span>122 <span style=''>  }
+</span>123 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -152,15 +159,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          31
+          38
         </td>
         <td>
           695
         </td>
         <td>
-          994
+          1218
           -
-          1008
+          1232
         </td>
         <td>
           Apply
@@ -176,15 +183,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          38
         </td>
         <td>
           696
         </td>
         <td>
-          1010
+          1234
           -
-          1024
+          1248
         </td>
         <td>
           Apply
@@ -200,15 +207,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          38
         </td>
         <td>
           697
         </td>
         <td>
-          1010
+          1234
           -
-          1024
+          1248
         </td>
         <td>
           Block
@@ -224,15 +231,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          39
         </td>
         <td>
           698
         </td>
         <td>
-          1038
+          1262
           -
-          1052
+          1276
         </td>
         <td>
           TypeApply
@@ -248,15 +255,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          39
         </td>
         <td>
           699
         </td>
         <td>
-          1038
+          1262
           -
-          1052
+          1276
         </td>
         <td>
           Block
@@ -272,15 +279,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           700
         </td>
         <td>
-          1164
+          1388
           -
-          1173
+          1397
         </td>
         <td>
           Apply
@@ -296,15 +303,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           701
         </td>
         <td>
-          1188
+          1412
           -
-          1206
+          1430
         </td>
         <td>
           Apply
@@ -320,15 +327,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          44
         </td>
         <td>
           702
         </td>
         <td>
-          1185
+          1409
           -
-          1207
+          1431
         </td>
         <td>
           Apply
@@ -344,15 +351,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           703
         </td>
         <td>
-          1267
+          1491
           -
-          1326
+          1550
         </td>
         <td>
           Apply
@@ -368,15 +375,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           704
         </td>
         <td>
-          1659
+          1883
           -
-          1676
+          1900
         </td>
         <td>
           Select
@@ -392,15 +399,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           705
         </td>
         <td>
-          1644
+          1868
           -
-          1688
+          1912
         </td>
         <td>
           Apply
@@ -416,15 +423,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           706
         </td>
         <td>
-          1625
+          1849
           -
-          1689
+          1913
         </td>
         <td>
           Apply
@@ -440,15 +447,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          63
         </td>
         <td>
           707
         </td>
         <td>
-          1749
+          1973
           -
-          1750
+          1974
         </td>
         <td>
           Literal
@@ -464,15 +471,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          63
         </td>
         <td>
           708
         </td>
         <td>
-          1757
+          1981
           -
-          1772
+          1996
         </td>
         <td>
           Apply
@@ -488,15 +495,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          64
         </td>
         <td>
           709
         </td>
         <td>
-          1790
+          2014
           -
-          1807
+          2031
         </td>
         <td>
           Apply
@@ -512,15 +519,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          65
         </td>
         <td>
           710
         </td>
         <td>
-          1820
+          2044
           -
-          1828
+          2052
         </td>
         <td>
           Select
@@ -536,15 +543,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          65
         </td>
         <td>
           711
         </td>
         <td>
-          1749
+          1973
           -
-          1829
+          2053
         </td>
         <td>
           Apply
@@ -560,15 +567,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          74
         </td>
         <td>
           712
         </td>
         <td>
-          2021
+          2245
           -
-          2043
+          2267
         </td>
         <td>
           Select
@@ -584,15 +591,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          76
         </td>
         <td>
           713
         </td>
         <td>
-          2095
+          2319
           -
-          2109
+          2333
         </td>
         <td>
           Apply
@@ -608,15 +615,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          76
         </td>
         <td>
           714
         </td>
         <td>
-          2090
+          2314
           -
-          2110
+          2334
         </td>
         <td>
           Apply
@@ -632,15 +639,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          76
         </td>
         <td>
           715
         </td>
         <td>
-          2081
+          2305
           -
-          2117
+          2341
         </td>
         <td>
           Apply
@@ -656,15 +663,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          85
         </td>
         <td>
           716
         </td>
         <td>
-          2355
+          2579
           -
-          2370
+          2594
         </td>
         <td>
           Apply
@@ -680,15 +687,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          85
         </td>
         <td>
           717
         </td>
         <td>
-          2348
+          2572
           -
-          2371
+          2595
         </td>
         <td>
           Apply
@@ -704,15 +711,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          92
         </td>
         <td>
           718
         </td>
         <td>
-          2562
+          2786
           -
-          2574
+          2798
         </td>
         <td>
           Apply
@@ -728,15 +735,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          94
         </td>
         <td>
           719
         </td>
         <td>
-          2591
+          2815
           -
-          2615
+          2839
         </td>
         <td>
           Apply
@@ -752,15 +759,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          94
         </td>
         <td>
           720
         </td>
         <td>
-          2591
+          2815
           -
-          2615
+          2839
         </td>
         <td>
           Block
@@ -776,15 +783,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          96
         </td>
         <td>
           721
         </td>
         <td>
-          2685
+          2909
           -
-          2716
+          2940
         </td>
         <td>
           Throw
@@ -800,15 +807,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           722
         </td>
         <td>
-          2769
+          2993
           -
-          2781
+          3005
         </td>
         <td>
           Select
@@ -824,15 +831,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           723
         </td>
         <td>
-          2750
+          2974
           -
-          2782
+          3006
         </td>
         <td>
           Apply
@@ -848,15 +855,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           724
         </td>
         <td>
-          2727
+          2951
           -
-          2783
+          3007
         </td>
         <td>
           Apply
@@ -872,15 +879,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          106
         </td>
         <td>
           725
         </td>
         <td>
-          2947
+          3171
           -
-          2960
+          3184
         </td>
         <td>
           Select
@@ -896,15 +903,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          106
         </td>
         <td>
           726
         </td>
         <td>
-          2923
+          3147
           -
-          2961
+          3185
         </td>
         <td>
           Apply
@@ -920,15 +927,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           727
         </td>
         <td>
-          3102
+          3326
           -
-          3114
+          3338
         </td>
         <td>
           Select
@@ -944,15 +951,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          114
         </td>
         <td>
           728
         </td>
         <td>
-          3163
+          3387
           -
-          3182
+          3406
         </td>
         <td>
           Apply
@@ -968,15 +975,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          117
         </td>
         <td>
           729
         </td>
         <td>
-          3261
+          3485
           -
-          3273
+          3497
         </td>
         <td>
           Apply
@@ -992,15 +999,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          117
         </td>
         <td>
           730
         </td>
         <td>
-          3277
+          3501
           -
-          3293
+          3517
         </td>
         <td>
           Apply
@@ -1016,15 +1023,15 @@
         </td>
       </tr><tr>
         <td>
-          111
+          118
         </td>
         <td>
           731
         </td>
         <td>
-          3337
+          3561
           -
-          3346
+          3570
         </td>
         <td>
           Apply
@@ -1040,15 +1047,15 @@
         </td>
       </tr><tr>
         <td>
-          111
+          118
         </td>
         <td>
           732
         </td>
         <td>
-          3332
+          3556
           -
-          3347
+          3571
         </td>
         <td>
           Apply
@@ -1064,15 +1071,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          120
         </td>
         <td>
           733
         </td>
         <td>
-          3395
+          3619
           -
-          3407
+          3631
         </td>
         <td>
           Apply
@@ -1088,15 +1095,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          120
         </td>
         <td>
           734
         </td>
         <td>
-          3386
+          3610
           -
-          3408
+          3632
         </td>
         <td>
           Apply

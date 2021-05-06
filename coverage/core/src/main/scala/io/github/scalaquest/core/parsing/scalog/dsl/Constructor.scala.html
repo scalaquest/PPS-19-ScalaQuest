@@ -22,31 +22,38 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog.dsl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Compound, Term}
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * A `Constructor` allows the generation of compound terms using a Prolog-like syntax that is
-</span>7 <span style=''> * checked by the scala compiler.
-</span>8 <span style=''> */
-</span>9 <span style=''>trait Constructor extends CompoundBase {
-</span>10 <span style=''>
-</span>11 <span style=''>  /** Accessor for the method `apply`. */
-</span>12 <span style=''>  object constructor {
-</span>13 <span style=''>
-</span>14 <span style=''>    /**
-</span>15 <span style=''>     * Allows to simulate the Prolog compound term declaration.
-</span>16 <span style=''>     * @param arg
-</span>17 <span style=''>     *   the first mandatory term
-</span>18 <span style=''>     * @param args
-</span>19 <span style=''>     *   the other optional terms
-</span>20 <span style=''>     * @return
-</span>21 <span style=''>     *   a [[Compound]] with the given arguments.
-</span>22 <span style=''>     */
-</span>23 <span style=''>    def apply(arg: Term, args: Term*): Compound = </span><span style='background: #AEF1AE'>Compound(functor, arg, args.toList)</span><span style=''>
-</span>24 <span style=''>  }
-</span>25 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.scalog.dsl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Compound, Term}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * A `Constructor` allows the generation of compound terms using a Prolog-like syntax that is
+</span>14 <span style=''> * checked by the scala compiler.
+</span>15 <span style=''> */
+</span>16 <span style=''>trait Constructor extends CompoundBase {
+</span>17 <span style=''>
+</span>18 <span style=''>  /** Accessor for the method `apply`. */
+</span>19 <span style=''>  object constructor {
+</span>20 <span style=''>
+</span>21 <span style=''>    /**
+</span>22 <span style=''>     * Allows to simulate the Prolog compound term declaration.
+</span>23 <span style=''>     * @param arg
+</span>24 <span style=''>     *   the first mandatory term
+</span>25 <span style=''>     * @param args
+</span>26 <span style=''>     *   the other optional terms
+</span>27 <span style=''>     * @return
+</span>28 <span style=''>     *   a [[Compound]] with the given arguments.
+</span>29 <span style=''>     */
+</span>30 <span style=''>    def apply(arg: Term, args: Term*): Compound = </span><span style='background: #AEF1AE'>Compound(functor, arg, args.toList)</span><span style=''>
+</span>31 <span style=''>  }
+</span>32 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -61,15 +68,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           757
         </td>
         <td>
-          673
+          897
           -
-          680
+          904
         </td>
         <td>
           Select
@@ -85,15 +92,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           758
         </td>
         <td>
-          687
+          911
           -
-          698
+          922
         </td>
         <td>
           Select
@@ -109,15 +116,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           759
         </td>
         <td>
-          664
+          888
           -
-          699
+          923
         </td>
         <td>
           Apply

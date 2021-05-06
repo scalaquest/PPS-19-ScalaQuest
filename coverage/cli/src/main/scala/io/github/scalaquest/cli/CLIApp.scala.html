@@ -22,20 +22,27 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.cli
-</span>2 <span style=''>
-</span>3 <span style=''>import zio.{ExitCode, URIO}
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * An application that exposes a main method that executes the given `CLI`.
-</span>7 <span style=''> */
-</span>8 <span style=''>trait CLIApp extends zio.App {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.cli
 </span>9 <span style=''>
-</span>10 <span style=''>  /** The CLI application to run. */
-</span>11 <span style=''>  def cli: CLI
-</span>12 <span style=''>
-</span>13 <span style=''>  final override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = </span><span style='background: #AEF1AE'>cli.start.exitCode</span><span style=''>
-</span>14 <span style=''>}
+</span>10 <span style=''>import zio.{ExitCode, URIO}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * An application that exposes a main method that executes the given `CLI`.
+</span>14 <span style=''> */
+</span>15 <span style=''>trait CLIApp extends zio.App {
+</span>16 <span style=''>
+</span>17 <span style=''>  /** The CLI application to run. */
+</span>18 <span style=''>  def cli: CLI
+</span>19 <span style=''>
+</span>20 <span style=''>  final override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = </span><span style='background: #AEF1AE'>cli.start.exitCode</span><span style=''>
+</span>21 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -50,15 +57,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           86
         </td>
         <td>
-          305
+          529
           -
-          323
+          547
         </td>
         <td>
           Select

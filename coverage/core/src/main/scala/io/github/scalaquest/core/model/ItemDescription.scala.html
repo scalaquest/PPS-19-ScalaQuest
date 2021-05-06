@@ -22,212 +22,219 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model
-</span>2 <span style=''>
-</span>3 <span style=''>import scala.annotation.tailrec
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * A trait that is used for describe an Item. The description of the object should be univocal.
-</span>7 <span style=''> */
-</span>8 <span style=''>sealed trait ItemDescription
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model
 </span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * The common name of the Item.
-</span>12 <span style=''> * @param name
-</span>13 <span style=''> *   of the Item.
+</span>10 <span style=''>import scala.annotation.tailrec
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * A trait that is used for describe an Item. The description of the object should be univocal.
 </span>14 <span style=''> */
-</span>15 <span style=''>final case class BaseItem(name: String) extends ItemDescription
+</span>15 <span style=''>sealed trait ItemDescription
 </span>16 <span style=''>
 </span>17 <span style=''>/**
-</span>18 <span style=''> * The description of the name.
-</span>19 <span style=''> * @param decoration
-</span>20 <span style=''> *   should be an adjective that adds specificity to the BaseItem name.
-</span>21 <span style=''> * @param item
-</span>22 <span style=''> *   could be:
-</span>23 <span style=''> *   - an other DecoratedItem to add some more specificity
-</span>24 <span style=''> *   - the BaseItem
-</span>25 <span style=''> */
-</span>26 <span style=''>final case class DecoratedItem(decoration: String, item: ItemDescription) extends ItemDescription
-</span>27 <span style=''>
-</span>28 <span style=''>/**
-</span>29 <span style=''> * Contain some methods to facilitates the build of an ItemDescription.
-</span>30 <span style=''> */
-</span>31 <span style=''>object ItemDescription {
-</span>32 <span style=''>
-</span>33 <span style=''>  /**
-</span>34 <span style=''>   * An object that contain some methods in order to add more declarativeness to the
-</span>35 <span style=''>   * ItemDescription.
-</span>36 <span style=''>   */
-</span>37 <span style=''>  object dsl {
-</span>38 <span style=''>
-</span>39 <span style=''>    /**
-</span>40 <span style=''>     * A class with all the decorations for an ItemDescription.
-</span>41 <span style=''>     * @param decorators
-</span>42 <span style=''>     *   all the decorators
-</span>43 <span style=''>     */
-</span>44 <span style=''>    final case class DecoratorBuilder(decorators: List[String])
+</span>18 <span style=''> * The common name of the Item.
+</span>19 <span style=''> * @param name
+</span>20 <span style=''> *   of the Item.
+</span>21 <span style=''> */
+</span>22 <span style=''>final case class BaseItem(name: String) extends ItemDescription
+</span>23 <span style=''>
+</span>24 <span style=''>/**
+</span>25 <span style=''> * The description of the name.
+</span>26 <span style=''> * @param decoration
+</span>27 <span style=''> *   should be an adjective that adds specificity to the BaseItem name.
+</span>28 <span style=''> * @param item
+</span>29 <span style=''> *   could be:
+</span>30 <span style=''> *   - an other DecoratedItem to add some more specificity
+</span>31 <span style=''> *   - the BaseItem
+</span>32 <span style=''> */
+</span>33 <span style=''>final case class DecoratedItem(decoration: String, item: ItemDescription) extends ItemDescription
+</span>34 <span style=''>
+</span>35 <span style=''>/**
+</span>36 <span style=''> * Contain some methods to facilitates the build of an ItemDescription.
+</span>37 <span style=''> */
+</span>38 <span style=''>object ItemDescription {
+</span>39 <span style=''>
+</span>40 <span style=''>  /**
+</span>41 <span style=''>   * An object that contain some methods in order to add more declarativeness to the
+</span>42 <span style=''>   * ItemDescription.
+</span>43 <span style=''>   */
+</span>44 <span style=''>  object dsl {
 </span>45 <span style=''>
 </span>46 <span style=''>    /**
-</span>47 <span style=''>     * Create a DecoratorBuilder with all the decorations. The first is mandatory.
-</span>48 <span style=''>     * @param decorator0
-</span>49 <span style=''>     *   the first decorator term.
-</span>50 <span style=''>     * @param decorators
-</span>51 <span style=''>     *   the other decorator terms.
-</span>52 <span style=''>     * @return
-</span>53 <span style=''>     */
-</span>54 <span style=''>    def d(decorator0: String, decorators: String*): DecoratorBuilder =
-</span>55 <span style=''>      </span><span style='background: #AEF1AE'>DecoratorBuilder((decorator0 +: decorators).toList)</span><span style=''>
-</span>56 <span style=''>
-</span>57 <span style=''>    /**
-</span>58 <span style=''>     * Create an ItemDescription given the name and a DecoratorBuilder with all the decorations.
-</span>59 <span style=''>     * @param decoratorBuilder
-</span>60 <span style=''>     *   the decorationBuilder.
-</span>61 <span style=''>     * @param base
-</span>62 <span style=''>     *   the name of the ItemDescription.
-</span>63 <span style=''>     * @return
-</span>64 <span style=''>     *   the ItemDescription.
-</span>65 <span style=''>     */
-</span>66 <span style=''>    def i(decoratorBuilder: DecoratorBuilder, base: String): ItemDescription = {
-</span>67 <span style=''>      def go(decorators: List[String]): ItemDescription =
-</span>68 <span style=''>        decorators match {
-</span>69 <span style=''>          case head :: next =&gt; </span><span style='background: #AEF1AE'>DecoratedItem(head, go(next))</span><span style=''>
-</span>70 <span style=''>          case Nil          =&gt; </span><span style='background: #AEF1AE'>BaseItem(base)</span><span style=''>
-</span>71 <span style=''>        }
-</span>72 <span style=''>      </span><span style='background: #AEF1AE'>go(decoratorBuilder.decorators)</span><span style=''>
-</span>73 <span style=''>    }
-</span>74 <span style=''>
-</span>75 <span style=''>    def i(base: String): ItemDescription = </span><span style='background: #AEF1AE'>BaseItem(base)</span><span style=''>
-</span>76 <span style=''>  }
-</span>77 <span style=''>
-</span>78 <span style=''>  /**
-</span>79 <span style=''>   * A method that facilitates the creation for ItemDescription avoiding the creation of all the
-</span>80 <span style=''>   * Structures.
-</span>81 <span style=''>   * @param base
-</span>82 <span style=''>   *   the name for BaseItem.
-</span>83 <span style=''>   * @param decorators
-</span>84 <span style=''>   *   all the adjectives for
-</span>85 <span style=''>   * @return
-</span>86 <span style=''>   *   the ItemDescription.
-</span>87 <span style=''>   */
-</span>88 <span style=''>  def apply(base: String, decorators: String*): ItemDescription = {
-</span>89 <span style=''>    def go(decorators: List[String]): ItemDescription =
-</span>90 <span style=''>      decorators match {
-</span>91 <span style=''>        case head :: next =&gt; </span><span style='background: #AEF1AE'>DecoratedItem(head, go(next))</span><span style=''>
-</span>92 <span style=''>        case Nil          =&gt; </span><span style='background: #AEF1AE'>BaseItem(base)</span><span style=''>
-</span>93 <span style=''>      }
-</span>94 <span style=''>    </span><span style='background: #AEF1AE'>go(decorators.toList)</span><span style=''>
-</span>95 <span style=''>  }
-</span>96 <span style=''>
-</span>97 <span style=''>  /**
-</span>98 <span style=''>   * It individuates the base of an ItemDescription.
-</span>99 <span style=''>   * @param d
-</span>100 <span style=''>   *   the ItemDescription.
-</span>101 <span style=''>   * @return
-</span>102 <span style=''>   *   the BaseItem.
-</span>103 <span style=''>   */
-</span>104 <span style=''>  @tailrec
-</span>105 <span style=''>  def base(d: ItemDescription): BaseItem =
-</span>106 <span style=''>    d match {
-</span>107 <span style=''>      case i: BaseItem         =&gt; i
-</span>108 <span style=''>      case DecoratedItem(_, i) =&gt; </span><span style='background: #AEF1AE'>base(i)</span><span style=''>
-</span>109 <span style=''>    }
-</span>110 <span style=''>
-</span>111 <span style=''>  /**
-</span>112 <span style=''>   * It individuates all the decorations of an ItemDescription.
-</span>113 <span style=''>   * @param d
-</span>114 <span style=''>   *   the ItemDescription.
-</span>115 <span style=''>   * @return
-</span>116 <span style=''>   *   the all the adjectives.
-</span>117 <span style=''>   */
-</span>118 <span style=''>  def decorators(d: ItemDescription): Set[String] = {
-</span>119 <span style=''>    @tailrec
-</span>120 <span style=''>    def go(d: ItemDescription, acc: Set[String]): Set[String] =
-</span>121 <span style=''>      d match {
-</span>122 <span style=''>        case DecoratedItem(decoration, item) =&gt; </span><span style='background: #AEF1AE'>go(item, acc + decoration)</span><span style=''>
-</span>123 <span style=''>        case _                               =&gt; acc
-</span>124 <span style=''>      }
-</span>125 <span style=''>    </span><span style='background: #AEF1AE'>go(d, Set())</span><span style=''>
-</span>126 <span style=''>  }
-</span>127 <span style=''>
-</span>128 <span style=''>  /**
-</span>129 <span style=''>   * It individuates if two Items have a common part. In order to do this, there are two fundamental
-</span>130 <span style=''>   * properties:
-</span>131 <span style=''>   *   - items must have the same base.
-</span>132 <span style=''>   *   - decorators must be subsets of each other.
-</span>133 <span style=''>   * @param d1
-</span>134 <span style=''>   *   first ItemDescription.
-</span>135 <span style=''>   * @param d2
-</span>136 <span style=''>   *   second ItemDescription.
-</span>137 <span style=''>   * @return
-</span>138 <span style=''>   */
-</span>139 <span style=''>  def isSubset(d1: ItemDescription, d2: ItemDescription): Boolean =
-</span>140 <span style=''>    </span><span style='background: #AEF1AE'>base(d1) == base(d2) &amp;&amp; decorators(d1).subsetOf(decorators(d2))</span><span style=''>
-</span>141 <span style=''>
-</span>142 <span style=''>  /**
-</span>143 <span style=''>   * Prepare in a String the description of an ItemDescription. Start with adjectives, end with
-</span>144 <span style=''>   * BaseItem.
-</span>145 <span style=''>   * @param itemDescription
-</span>146 <span style=''>   *   the itemDescription that have to be printed.
-</span>147 <span style=''>   * @param separator
-</span>148 <span style=''>   *   the separation between each word printed.
-</span>149 <span style=''>   * @return
-</span>150 <span style=''>   *   the description.
-</span>151 <span style=''>   */
-</span>152 <span style=''>  def mkString(itemDescription: ItemDescription, separator: String = &quot; &quot;): String = {
-</span>153 <span style=''>    def go: ItemDescription =&gt; String = {
-</span>154 <span style=''>      case BaseItem(name)                 =&gt; name
-</span>155 <span style=''>      case DecoratedItem(decorator, item) =&gt; s&quot;${decorator}${separator}${go(item)}&quot;
-</span>156 <span style=''>    }
-</span>157 <span style=''>    </span><span style='background: #AEF1AE'>go(itemDescription)</span><span style=''>
-</span>158 <span style=''>  }
-</span>159 <span style=''>
-</span>160 <span style=''>  /**
-</span>161 <span style=''>   * A class that add some more useful methods for ItemDescription.
-</span>162 <span style=''>   * @param self
-</span>163 <span style=''>   *   the ItemDescription wrapped into [[EnhancedItemDescription]].
-</span>164 <span style=''>   */
-</span>165 <span style=''>  implicit final class EnhancedItemDescription(self: ItemDescription) {
+</span>47 <span style=''>     * A class with all the decorations for an ItemDescription.
+</span>48 <span style=''>     * @param decorators
+</span>49 <span style=''>     *   all the decorators
+</span>50 <span style=''>     */
+</span>51 <span style=''>    final case class DecoratorBuilder(decorators: List[String])
+</span>52 <span style=''>
+</span>53 <span style=''>    /**
+</span>54 <span style=''>     * Create a DecoratorBuilder with all the decorations. The first is mandatory.
+</span>55 <span style=''>     * @param decorator0
+</span>56 <span style=''>     *   the first decorator term.
+</span>57 <span style=''>     * @param decorators
+</span>58 <span style=''>     *   the other decorator terms.
+</span>59 <span style=''>     * @return
+</span>60 <span style=''>     */
+</span>61 <span style=''>    def d(decorator0: String, decorators: String*): DecoratorBuilder =
+</span>62 <span style=''>      </span><span style='background: #AEF1AE'>DecoratorBuilder((decorator0 +: decorators).toList)</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>    /**
+</span>65 <span style=''>     * Create an ItemDescription given the name and a DecoratorBuilder with all the decorations.
+</span>66 <span style=''>     * @param decoratorBuilder
+</span>67 <span style=''>     *   the decorationBuilder.
+</span>68 <span style=''>     * @param base
+</span>69 <span style=''>     *   the name of the ItemDescription.
+</span>70 <span style=''>     * @return
+</span>71 <span style=''>     *   the ItemDescription.
+</span>72 <span style=''>     */
+</span>73 <span style=''>    def i(decoratorBuilder: DecoratorBuilder, base: String): ItemDescription = {
+</span>74 <span style=''>      def go(decorators: List[String]): ItemDescription =
+</span>75 <span style=''>        decorators match {
+</span>76 <span style=''>          case head :: next =&gt; </span><span style='background: #AEF1AE'>DecoratedItem(head, go(next))</span><span style=''>
+</span>77 <span style=''>          case Nil          =&gt; </span><span style='background: #AEF1AE'>BaseItem(base)</span><span style=''>
+</span>78 <span style=''>        }
+</span>79 <span style=''>      </span><span style='background: #AEF1AE'>go(decoratorBuilder.decorators)</span><span style=''>
+</span>80 <span style=''>    }
+</span>81 <span style=''>
+</span>82 <span style=''>    def i(base: String): ItemDescription = </span><span style='background: #AEF1AE'>BaseItem(base)</span><span style=''>
+</span>83 <span style=''>  }
+</span>84 <span style=''>
+</span>85 <span style=''>  /**
+</span>86 <span style=''>   * A method that facilitates the creation for ItemDescription avoiding the creation of all the
+</span>87 <span style=''>   * Structures.
+</span>88 <span style=''>   * @param base
+</span>89 <span style=''>   *   the name for BaseItem.
+</span>90 <span style=''>   * @param decorators
+</span>91 <span style=''>   *   all the adjectives for
+</span>92 <span style=''>   * @return
+</span>93 <span style=''>   *   the ItemDescription.
+</span>94 <span style=''>   */
+</span>95 <span style=''>  def apply(base: String, decorators: String*): ItemDescription = {
+</span>96 <span style=''>    def go(decorators: List[String]): ItemDescription =
+</span>97 <span style=''>      decorators match {
+</span>98 <span style=''>        case head :: next =&gt; </span><span style='background: #AEF1AE'>DecoratedItem(head, go(next))</span><span style=''>
+</span>99 <span style=''>        case Nil          =&gt; </span><span style='background: #AEF1AE'>BaseItem(base)</span><span style=''>
+</span>100 <span style=''>      }
+</span>101 <span style=''>    </span><span style='background: #AEF1AE'>go(decorators.toList)</span><span style=''>
+</span>102 <span style=''>  }
+</span>103 <span style=''>
+</span>104 <span style=''>  /**
+</span>105 <span style=''>   * It individuates the base of an ItemDescription.
+</span>106 <span style=''>   * @param d
+</span>107 <span style=''>   *   the ItemDescription.
+</span>108 <span style=''>   * @return
+</span>109 <span style=''>   *   the BaseItem.
+</span>110 <span style=''>   */
+</span>111 <span style=''>  @tailrec
+</span>112 <span style=''>  def base(d: ItemDescription): BaseItem =
+</span>113 <span style=''>    d match {
+</span>114 <span style=''>      case i: BaseItem         =&gt; i
+</span>115 <span style=''>      case DecoratedItem(_, i) =&gt; </span><span style='background: #AEF1AE'>base(i)</span><span style=''>
+</span>116 <span style=''>    }
+</span>117 <span style=''>
+</span>118 <span style=''>  /**
+</span>119 <span style=''>   * It individuates all the decorations of an ItemDescription.
+</span>120 <span style=''>   * @param d
+</span>121 <span style=''>   *   the ItemDescription.
+</span>122 <span style=''>   * @return
+</span>123 <span style=''>   *   the all the adjectives.
+</span>124 <span style=''>   */
+</span>125 <span style=''>  def decorators(d: ItemDescription): Set[String] = {
+</span>126 <span style=''>    @tailrec
+</span>127 <span style=''>    def go(d: ItemDescription, acc: Set[String]): Set[String] =
+</span>128 <span style=''>      d match {
+</span>129 <span style=''>        case DecoratedItem(decoration, item) =&gt; </span><span style='background: #AEF1AE'>go(item, acc + decoration)</span><span style=''>
+</span>130 <span style=''>        case _                               =&gt; acc
+</span>131 <span style=''>      }
+</span>132 <span style=''>    </span><span style='background: #AEF1AE'>go(d, Set())</span><span style=''>
+</span>133 <span style=''>  }
+</span>134 <span style=''>
+</span>135 <span style=''>  /**
+</span>136 <span style=''>   * It individuates if two Items have a common part. In order to do this, there are two fundamental
+</span>137 <span style=''>   * properties:
+</span>138 <span style=''>   *   - items must have the same base.
+</span>139 <span style=''>   *   - decorators must be subsets of each other.
+</span>140 <span style=''>   * @param d1
+</span>141 <span style=''>   *   first ItemDescription.
+</span>142 <span style=''>   * @param d2
+</span>143 <span style=''>   *   second ItemDescription.
+</span>144 <span style=''>   * @return
+</span>145 <span style=''>   */
+</span>146 <span style=''>  def isSubset(d1: ItemDescription, d2: ItemDescription): Boolean =
+</span>147 <span style=''>    </span><span style='background: #AEF1AE'>base(d1) == base(d2) &amp;&amp; decorators(d1).subsetOf(decorators(d2))</span><span style=''>
+</span>148 <span style=''>
+</span>149 <span style=''>  /**
+</span>150 <span style=''>   * Prepare in a String the description of an ItemDescription. Start with adjectives, end with
+</span>151 <span style=''>   * BaseItem.
+</span>152 <span style=''>   * @param itemDescription
+</span>153 <span style=''>   *   the itemDescription that have to be printed.
+</span>154 <span style=''>   * @param separator
+</span>155 <span style=''>   *   the separation between each word printed.
+</span>156 <span style=''>   * @return
+</span>157 <span style=''>   *   the description.
+</span>158 <span style=''>   */
+</span>159 <span style=''>  def mkString(itemDescription: ItemDescription, separator: String = &quot; &quot;): String = {
+</span>160 <span style=''>    def go: ItemDescription =&gt; String = {
+</span>161 <span style=''>      case BaseItem(name)                 =&gt; name
+</span>162 <span style=''>      case DecoratedItem(decorator, item) =&gt; s&quot;${decorator}${separator}${go(item)}&quot;
+</span>163 <span style=''>    }
+</span>164 <span style=''>    </span><span style='background: #AEF1AE'>go(itemDescription)</span><span style=''>
+</span>165 <span style=''>  }
 </span>166 <span style=''>
-</span>167 <span style=''>    /**
-</span>168 <span style=''>     * Compare this ItemDescription with an other using ItemDescription method 'isSubset'.
-</span>169 <span style=''>     * @param other
-</span>170 <span style=''>     *   the other ItemDescription.
-</span>171 <span style=''>     * @return
-</span>172 <span style=''>     *   True if this is subset of the 'other' ItemDescription. False otherwise
-</span>173 <span style=''>     */
-</span>174 <span style=''>    def isSubset(other: ItemDescription): Boolean = </span><span style='background: #AEF1AE'>ItemDescription.isSubset(self, other)</span><span style=''>
-</span>175 <span style=''>
-</span>176 <span style=''>    /**
-</span>177 <span style=''>     * The baseItem of this ItemDescription.
+</span>167 <span style=''>  /**
+</span>168 <span style=''>   * A class that add some more useful methods for ItemDescription.
+</span>169 <span style=''>   * @param self
+</span>170 <span style=''>   *   the ItemDescription wrapped into [[EnhancedItemDescription]].
+</span>171 <span style=''>   */
+</span>172 <span style=''>  implicit final class EnhancedItemDescription(self: ItemDescription) {
+</span>173 <span style=''>
+</span>174 <span style=''>    /**
+</span>175 <span style=''>     * Compare this ItemDescription with an other using ItemDescription method 'isSubset'.
+</span>176 <span style=''>     * @param other
+</span>177 <span style=''>     *   the other ItemDescription.
 </span>178 <span style=''>     * @return
-</span>179 <span style=''>     *   The baseItem of this ItemDescription.
+</span>179 <span style=''>     *   True if this is subset of the 'other' ItemDescription. False otherwise
 </span>180 <span style=''>     */
-</span>181 <span style=''>    def base: BaseItem = </span><span style='background: #AEF1AE'>ItemDescription.base(self)</span><span style=''>
+</span>181 <span style=''>    def isSubset(other: ItemDescription): Boolean = </span><span style='background: #AEF1AE'>ItemDescription.isSubset(self, other)</span><span style=''>
 </span>182 <span style=''>
 </span>183 <span style=''>    /**
-</span>184 <span style=''>     * The decorations of this ItemDescription.
+</span>184 <span style=''>     * The baseItem of this ItemDescription.
 </span>185 <span style=''>     * @return
-</span>186 <span style=''>     *   The decorations of this ItemDescription.
+</span>186 <span style=''>     *   The baseItem of this ItemDescription.
 </span>187 <span style=''>     */
-</span>188 <span style=''>    def decorators: Set[String] = </span><span style='background: #AEF1AE'>ItemDescription.decorators(self)</span><span style=''>
+</span>188 <span style=''>    def base: BaseItem = </span><span style='background: #AEF1AE'>ItemDescription.base(self)</span><span style=''>
 </span>189 <span style=''>
 </span>190 <span style=''>    /**
-</span>191 <span style=''>     * The description of this ItemDescription.
-</span>192 <span style=''>     * @param separator
-</span>193 <span style=''>     *   used between each words.
-</span>194 <span style=''>     * @return
-</span>195 <span style=''>     *   the description.
-</span>196 <span style=''>     */
-</span>197 <span style=''>    def mkString(separator: String = &quot; &quot;): String = </span><span style='background: #AEF1AE'>ItemDescription.mkString(self, separator)</span><span style=''>
-</span>198 <span style=''>
-</span>199 <span style=''>    /**
-</span>200 <span style=''>     * Used mkString with default separation.
+</span>191 <span style=''>     * The decorations of this ItemDescription.
+</span>192 <span style=''>     * @return
+</span>193 <span style=''>     *   The decorations of this ItemDescription.
+</span>194 <span style=''>     */
+</span>195 <span style=''>    def decorators: Set[String] = </span><span style='background: #AEF1AE'>ItemDescription.decorators(self)</span><span style=''>
+</span>196 <span style=''>
+</span>197 <span style=''>    /**
+</span>198 <span style=''>     * The description of this ItemDescription.
+</span>199 <span style=''>     * @param separator
+</span>200 <span style=''>     *   used between each words.
 </span>201 <span style=''>     * @return
-</span>202 <span style=''>     *   The description of this ItemDescription.
+</span>202 <span style=''>     *   the description.
 </span>203 <span style=''>     */
-</span>204 <span style=''>    def mkString: String = </span><span style='background: #AEF1AE'>this.mkString()</span><span style=''>
-</span>205 <span style=''>  }
-</span>206 <span style=''>}
+</span>204 <span style=''>    def mkString(separator: String = &quot; &quot;): String = </span><span style='background: #AEF1AE'>ItemDescription.mkString(self, separator)</span><span style=''>
+</span>205 <span style=''>
+</span>206 <span style=''>    /**
+</span>207 <span style=''>     * Used mkString with default separation.
+</span>208 <span style=''>     * @return
+</span>209 <span style=''>     *   The description of this ItemDescription.
+</span>210 <span style=''>     */
+</span>211 <span style=''>    def mkString: String = </span><span style='background: #AEF1AE'>this.mkString()</span><span style=''>
+</span>212 <span style=''>  }
+</span>213 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -242,15 +249,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          55
+          62
         </td>
         <td>
           132
         </td>
         <td>
-          1467
+          1691
           -
-          1480
+          1704
         </td>
         <td>
           Apply
@@ -266,15 +273,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          62
         </td>
         <td>
           133
         </td>
         <td>
-          1456
+          1680
           -
-          1488
+          1712
         </td>
         <td>
           Select
@@ -293,15 +300,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          62
         </td>
         <td>
           134
         </td>
         <td>
-          1438
+          1662
           -
-          1489
+          1713
         </td>
         <td>
           Apply
@@ -320,15 +327,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          76
         </td>
         <td>
           135
         </td>
         <td>
-          1990
+          2214
           -
-          1998
+          2222
         </td>
         <td>
           Apply
@@ -344,15 +351,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          76
         </td>
         <td>
           136
         </td>
         <td>
-          1970
+          2194
           -
-          1999
+          2223
         </td>
         <td>
           Apply
@@ -368,15 +375,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          77
         </td>
         <td>
           137
         </td>
         <td>
-          2031
+          2255
           -
-          2045
+          2269
         </td>
         <td>
           Apply
@@ -392,15 +399,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          79
         </td>
         <td>
           138
         </td>
         <td>
-          2065
+          2289
           -
-          2092
+          2316
         </td>
         <td>
           Select
@@ -416,15 +423,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          79
         </td>
         <td>
           139
         </td>
         <td>
-          2062
+          2286
           -
-          2093
+          2317
         </td>
         <td>
           Apply
@@ -440,15 +447,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          82
         </td>
         <td>
           140
         </td>
         <td>
-          2144
+          2368
           -
-          2158
+          2382
         </td>
         <td>
           Apply
@@ -464,15 +471,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           141
         </td>
         <td>
-          2629
+          2853
           -
-          2637
+          2861
         </td>
         <td>
           Apply
@@ -488,15 +495,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           142
         </td>
         <td>
-          2609
+          2833
           -
-          2638
+          2862
         </td>
         <td>
           Apply
@@ -512,15 +519,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          99
         </td>
         <td>
           143
         </td>
         <td>
-          2668
+          2892
           -
-          2682
+          2906
         </td>
         <td>
           Apply
@@ -536,15 +543,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           144
         </td>
         <td>
-          2698
+          2922
           -
-          2715
+          2939
         </td>
         <td>
           Select
@@ -560,15 +567,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           145
         </td>
         <td>
-          2695
+          2919
           -
-          2716
+          2940
         </td>
         <td>
           Apply
@@ -584,15 +591,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          115
         </td>
         <td>
           146
         </td>
         <td>
-          3001
+          3225
           -
-          3008
+          3232
         </td>
         <td>
           Apply
@@ -608,15 +615,15 @@
         </td>
       </tr><tr>
         <td>
-          122
+          129
         </td>
         <td>
           147
         </td>
         <td>
-          3382
+          3606
           -
-          3398
+          3622
         </td>
         <td>
           Apply
@@ -632,15 +639,15 @@
         </td>
       </tr><tr>
         <td>
-          122
+          129
         </td>
         <td>
           148
         </td>
         <td>
-          3373
+          3597
           -
-          3399
+          3623
         </td>
         <td>
           Apply
@@ -656,15 +663,15 @@
         </td>
       </tr><tr>
         <td>
-          125
+          132
         </td>
         <td>
           149
         </td>
         <td>
-          3470
+          3694
           -
-          3475
+          3699
         </td>
         <td>
           Apply
@@ -680,15 +687,15 @@
         </td>
       </tr><tr>
         <td>
-          125
+          132
         </td>
         <td>
           150
         </td>
         <td>
-          3464
+          3688
           -
-          3476
+          3700
         </td>
         <td>
           Apply
@@ -704,15 +711,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          147
         </td>
         <td>
           151
         </td>
         <td>
-          3891
+          4115
           -
-          3899
+          4123
         </td>
         <td>
           Apply
@@ -728,15 +735,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          147
         </td>
         <td>
           152
         </td>
         <td>
-          3927
+          4151
           -
-          3941
+          4165
         </td>
         <td>
           Apply
@@ -752,15 +759,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          147
         </td>
         <td>
           153
         </td>
         <td>
-          3903
+          4127
           -
-          3942
+          4166
         </td>
         <td>
           Apply
@@ -776,15 +783,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          147
         </td>
         <td>
           154
         </td>
         <td>
-          3879
+          4103
           -
-          3942
+          4166
         </td>
         <td>
           Apply
@@ -800,15 +807,15 @@
         </td>
       </tr><tr>
         <td>
-          157
+          164
         </td>
         <td>
           155
         </td>
         <td>
-          4527
+          4751
           -
-          4546
+          4770
         </td>
         <td>
           Apply
@@ -824,15 +831,15 @@
         </td>
       </tr><tr>
         <td>
-          174
+          181
         </td>
         <td>
           156
         </td>
         <td>
-          5126
+          5350
           -
-          5130
+          5354
         </td>
         <td>
           Select
@@ -848,15 +855,15 @@
         </td>
       </tr><tr>
         <td>
-          174
+          181
         </td>
         <td>
           157
         </td>
         <td>
-          5101
+          5325
           -
-          5138
+          5362
         </td>
         <td>
           Apply
@@ -872,15 +879,15 @@
         </td>
       </tr><tr>
         <td>
-          181
+          188
         </td>
         <td>
           158
         </td>
         <td>
-          5309
+          5533
           -
-          5313
+          5537
         </td>
         <td>
           Select
@@ -896,15 +903,15 @@
         </td>
       </tr><tr>
         <td>
-          181
+          188
         </td>
         <td>
           159
         </td>
         <td>
-          5288
+          5512
           -
-          5314
+          5538
         </td>
         <td>
           Apply
@@ -920,15 +927,15 @@
         </td>
       </tr><tr>
         <td>
-          188
+          195
         </td>
         <td>
           160
         </td>
         <td>
-          5506
+          5730
           -
-          5510
+          5734
         </td>
         <td>
           Select
@@ -944,15 +951,15 @@
         </td>
       </tr><tr>
         <td>
-          188
+          195
         </td>
         <td>
           161
         </td>
         <td>
-          5479
+          5703
           -
-          5511
+          5735
         </td>
         <td>
           Apply
@@ -968,15 +975,15 @@
         </td>
       </tr><tr>
         <td>
-          197
+          204
         </td>
         <td>
           162
         </td>
         <td>
-          5753
+          5977
           -
-          5757
+          5981
         </td>
         <td>
           Select
@@ -992,15 +999,15 @@
         </td>
       </tr><tr>
         <td>
-          197
+          204
         </td>
         <td>
           163
         </td>
         <td>
-          5728
+          5952
           -
-          5769
+          5993
         </td>
         <td>
           Apply
@@ -1016,15 +1023,15 @@
         </td>
       </tr><tr>
         <td>
-          204
+          211
         </td>
         <td>
           164
         </td>
         <td>
-          5930
+          6154
           -
-          5930
+          6154
         </td>
         <td>
           Select
@@ -1040,15 +1047,15 @@
         </td>
       </tr><tr>
         <td>
-          204
+          211
         </td>
         <td>
           165
         </td>
         <td>
-          5925
+          6149
           -
-          5940
+          6164
         </td>
         <td>
           Apply

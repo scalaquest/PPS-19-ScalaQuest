@@ -22,39 +22,46 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog
-</span>2 <span style=''>
-</span>3 <span style=''>/**
-</span>4 <span style=''> * This package includes some facility methods in order to create terms in a Prolog-like syntax.
-</span>5 <span style=''> *
-</span>6 <span style=''> * If you include implicit conversions and [[dsl.CompoundBuilder]] you can create terms as in this
-</span>7 <span style=''> * example:
-</span>8 <span style=''> * {{{
-</span>9 <span style=''> *   val hello = CompoundBuilder(&quot;hello&quot;).constructor
-</span>10 <span style=''> *   val X = Variable(&quot;X&quot;)
-</span>11 <span style=''> *   (hello(X) --&gt; ListP(&quot;hello&quot;, X)).generate
-</span>12 <span style=''> * }}}
-</span>13 <span style=''> *
-</span>14 <span style=''> * Should result in the following Prolog clause being printed:
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.scalog
+</span>9 <span style=''>
+</span>10 <span style=''>/**
+</span>11 <span style=''> * This package includes some facility methods in order to create terms in a Prolog-like syntax.
+</span>12 <span style=''> *
+</span>13 <span style=''> * If you include implicit conversions and [[dsl.CompoundBuilder]] you can create terms as in this
+</span>14 <span style=''> * example:
 </span>15 <span style=''> * {{{
-</span>16 <span style=''> *   hello(X) --&gt; [&quot;hello&quot;, X].
-</span>17 <span style=''> * }}}
-</span>18 <span style=''> */
-</span>19 <span style=''>package object dsl {
-</span>20 <span style=''>
-</span>21 <span style=''>  /** Enables the implicit conversion from `String` to `Atom` */
-</span>22 <span style=''>  implicit def stringToAtom(name: String): Atom = </span><span style='background: #AEF1AE'>Atom(name)</span><span style=''>
-</span>23 <span style=''>
-</span>24 <span style=''>  /** Enables the implicit conversion from `Int` to `Number` */
-</span>25 <span style=''>  implicit def intToNumber(n: Int): Number = </span><span style='background: #AEF1AE'>Number(n)</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  /** Enables the implicit conversion from `Term` to `Fact` */
-</span>28 <span style=''>  implicit def termToFact(term: Term): Fact = </span><span style='background: #AEF1AE'>Fact(term)</span><span style=''>
-</span>29 <span style=''>
-</span>30 <span style=''>  /** Enables the implicit conversion fron `Seq[Term]` to `ListP` */
-</span>31 <span style=''>  implicit def seqToListP(seq: Seq[Term]): ListP = </span><span style='background: #AEF1AE'>ListP(seq: _*)</span><span style=''>
-</span>32 <span style=''>
-</span>33 <span style=''>}
+</span>16 <span style=''> *   val hello = CompoundBuilder(&quot;hello&quot;).constructor
+</span>17 <span style=''> *   val X = Variable(&quot;X&quot;)
+</span>18 <span style=''> *   (hello(X) --&gt; ListP(&quot;hello&quot;, X)).generate
+</span>19 <span style=''> * }}}
+</span>20 <span style=''> *
+</span>21 <span style=''> * Should result in the following Prolog clause being printed:
+</span>22 <span style=''> * {{{
+</span>23 <span style=''> *   hello(X) --&gt; [&quot;hello&quot;, X].
+</span>24 <span style=''> * }}}
+</span>25 <span style=''> */
+</span>26 <span style=''>package object dsl {
+</span>27 <span style=''>
+</span>28 <span style=''>  /** Enables the implicit conversion from `String` to `Atom` */
+</span>29 <span style=''>  implicit def stringToAtom(name: String): Atom = </span><span style='background: #AEF1AE'>Atom(name)</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  /** Enables the implicit conversion from `Int` to `Number` */
+</span>32 <span style=''>  implicit def intToNumber(n: Int): Number = </span><span style='background: #AEF1AE'>Number(n)</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  /** Enables the implicit conversion from `Term` to `Fact` */
+</span>35 <span style=''>  implicit def termToFact(term: Term): Fact = </span><span style='background: #AEF1AE'>Fact(term)</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>  /** Enables the implicit conversion fron `Seq[Term]` to `ListP` */
+</span>38 <span style=''>  implicit def seqToListP(seq: Seq[Term]): ListP = </span><span style='background: #AEF1AE'>ListP(seq: _*)</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -69,15 +76,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           770
         </td>
         <td>
-          660
+          884
           -
-          670
+          894
         </td>
         <td>
           Apply
@@ -93,15 +100,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           771
         </td>
         <td>
-          781
+          1005
           -
-          790
+          1014
         </td>
         <td>
           Apply
@@ -117,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          35
         </td>
         <td>
           772
         </td>
         <td>
-          901
+          1125
           -
-          911
+          1135
         </td>
         <td>
           Apply
@@ -141,15 +148,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          38
         </td>
         <td>
           773
         </td>
         <td>
-          1033
+          1257
           -
-          1047
+          1271
         </td>
         <td>
           Apply

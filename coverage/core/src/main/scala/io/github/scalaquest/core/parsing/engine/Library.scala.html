@@ -22,23 +22,30 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine
-</span>2 <span style=''>
-</span>3 <span style=''>import alice.tuprolog.lib.{DCGLibrary =&gt; TuPrologDCGLibrary}
-</span>4 <span style=''>import alice.tuprolog.{Library =&gt; TuPrologLibrary}
-</span>5 <span style=''>
-</span>6 <span style=''>/** Representation of a Prolog library */
-</span>7 <span style=''>abstract class BaseLibrary
-</span>8 <span style=''>
-</span>9 <span style=''>/** A tuProlog enabled library */
-</span>10 <span style=''>trait TuProlog { self: BaseLibrary =&gt;
-</span>11 <span style=''>  def toTuProlog: TuPrologLibrary
-</span>12 <span style=''>}
-</span>13 <span style=''>
-</span>14 <span style=''>/** Declarative Clause Grammar library */
-</span>15 <span style=''>case object DCGLibrary extends BaseLibrary with TuProlog {
-</span>16 <span style=''>  override def toTuProlog: TuPrologLibrary = </span><span style='background: #AEF1AE'>new TuPrologDCGLibrary</span><span style=''>
-</span>17 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.engine
+</span>9 <span style=''>
+</span>10 <span style=''>import alice.tuprolog.lib.{DCGLibrary =&gt; TuPrologDCGLibrary}
+</span>11 <span style=''>import alice.tuprolog.{Library =&gt; TuPrologLibrary}
+</span>12 <span style=''>
+</span>13 <span style=''>/** Representation of a Prolog library */
+</span>14 <span style=''>abstract class BaseLibrary
+</span>15 <span style=''>
+</span>16 <span style=''>/** A tuProlog enabled library */
+</span>17 <span style=''>trait TuProlog { self: BaseLibrary =&gt;
+</span>18 <span style=''>  def toTuProlog: TuPrologLibrary
+</span>19 <span style=''>}
+</span>20 <span style=''>
+</span>21 <span style=''>/** Declarative Clause Grammar library */
+</span>22 <span style=''>case object DCGLibrary extends BaseLibrary with TuProlog {
+</span>23 <span style=''>  override def toTuProlog: TuPrologLibrary = </span><span style='background: #AEF1AE'>new TuPrologDCGLibrary</span><span style=''>
+</span>24 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -53,15 +60,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           688
         </td>
         <td>
-          488
+          712
           -
-          510
+          734
         </td>
         <td>
           Apply

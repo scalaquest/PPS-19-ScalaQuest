@@ -22,38 +22,45 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.cli
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.Game
-</span>4 <span style=''>import io.github.scalaquest.core.application.{
-</span>5 <span style=''>  DefaultPipelineProvider,
-</span>6 <span style=''>  DictionaryProvider,
-</span>7 <span style=''>  PipelineProvider
-</span>8 <span style=''>}
-</span>9 <span style=''>import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
-</span>10 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline
-</span>11 <span style=''>
-</span>12 <span style=''>/** An application that uses a `Pipeline` instance to build a `CLI`. */
-</span>13 <span style=''>abstract class GameCLIApp[M0 &lt;: Model](val model: M0)
-</span>14 <span style=''>  extends CLIApp
-</span>15 <span style=''>  with PipelineProvider[M0]
-</span>16 <span style=''>  with DefaultPipelineProvider[M0]
-</span>17 <span style=''>  with DictionaryProvider[M0] {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.cli
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.Game
+</span>11 <span style=''>import io.github.scalaquest.core.application.{
+</span>12 <span style=''>  DefaultPipelineProvider,
+</span>13 <span style=''>  DictionaryProvider,
+</span>14 <span style=''>  PipelineProvider
+</span>15 <span style=''>}
+</span>16 <span style=''>import io.github.scalaquest.core.model.{Message, MessagePusher, Model}
+</span>17 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline
 </span>18 <span style=''>
-</span>19 <span style=''>  def pipelineBuilder: Pipeline.PartialBuilder[S, M] = </span><span style='background: #F0ADAD'>makePipeline</span><span style=''>
-</span>20 <span style=''>
-</span>21 <span style=''>  def state: S
-</span>22 <span style=''>
-</span>23 <span style=''>  def messagePusher: MessagePusher[String]
-</span>24 <span style=''>
-</span>25 <span style=''>  def initialMessages: Seq[Message] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  def game: Game[M] = </span><span style='background: #AEF1AE'>Game.builderFrom[M](model).build(pipelineBuilder)</span><span style=''>
-</span>28 <span style=''>
-</span>29 <span style=''>  override def cli: CLI =
-</span>30 <span style=''>    </span><span style='background: #F0ADAD'>CLI.builderFrom[M](model).build(state, game, messagePusher, initialMessages)</span><span style=''>
+</span>19 <span style=''>/** An application that uses a `Pipeline` instance to build a `CLI`. */
+</span>20 <span style=''>abstract class GameCLIApp[M0 &lt;: Model](val model: M0)
+</span>21 <span style=''>  extends CLIApp
+</span>22 <span style=''>  with PipelineProvider[M0]
+</span>23 <span style=''>  with DefaultPipelineProvider[M0]
+</span>24 <span style=''>  with DictionaryProvider[M0] {
+</span>25 <span style=''>
+</span>26 <span style=''>  def pipelineBuilder: Pipeline.PartialBuilder[S, M] = </span><span style='background: #F0ADAD'>makePipeline</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>  def state: S
+</span>29 <span style=''>
+</span>30 <span style=''>  def messagePusher: MessagePusher[String]
 </span>31 <span style=''>
-</span>32 <span style=''>}
+</span>32 <span style=''>  def initialMessages: Seq[Message] = </span><span style='background: #F0ADAD'>Seq.empty</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  def game: Game[M] = </span><span style='background: #AEF1AE'>Game.builderFrom[M](model).build(pipelineBuilder)</span><span style=''>
+</span>35 <span style=''>
+</span>36 <span style=''>  override def cli: CLI =
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>CLI.builderFrom[M](model).build(state, game, messagePusher, initialMessages)</span><span style=''>
+</span>38 <span style=''>
+</span>39 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -68,15 +75,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           100
         </td>
         <td>
-          606
+          830
           -
-          618
+          842
         </td>
         <td>
           Select
@@ -92,15 +99,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           101
         </td>
         <td>
-          718
+          942
           -
-          727
+          951
         </td>
         <td>
           TypeApply
@@ -116,15 +123,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           102
         </td>
         <td>
-          784
+          1008
           -
-          799
+          1023
         </td>
         <td>
           Select
@@ -140,15 +147,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           103
         </td>
         <td>
-          751
+          975
           -
-          800
+          1024
         </td>
         <td>
           Apply
@@ -164,15 +171,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           104
         </td>
         <td>
-          864
+          1088
           -
-          869
+          1093
         </td>
         <td>
           Select
@@ -188,15 +195,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           105
         </td>
         <td>
-          871
+          1095
           -
-          875
+          1099
         </td>
         <td>
           Select
@@ -212,15 +219,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           106
         </td>
         <td>
-          877
+          1101
           -
-          890
+          1114
         </td>
         <td>
           Select
@@ -236,15 +243,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           107
         </td>
         <td>
-          892
+          1116
           -
-          907
+          1131
         </td>
         <td>
           Select
@@ -260,15 +267,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           108
         </td>
         <td>
-          832
+          1056
           -
-          908
+          1132
         </td>
         <td>
           Apply

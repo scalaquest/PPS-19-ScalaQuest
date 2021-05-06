@@ -22,131 +22,138 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt
-</span>6 <span style=''>
-</span>7 <span style=''>/**
-</span>8 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Chest BehaviorBasedItem&lt;/b&gt;.
-</span>9 <span style=''> */
-</span>10 <span style=''>trait ChestExt extends BehaviorBasedModel with ContainerExt {
-</span>11 <span style=''>
-</span>12 <span style=''>  /**
-</span>13 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be opened, and reveals a set of items when opened.
-</span>14 <span style=''>   */
-</span>15 <span style=''>  trait Chest extends BehaviorBasedItem {
-</span>16 <span style=''>
-</span>17 <span style=''>    /**
-</span>18 <span style=''>     * The &quot;openness&quot; state of the item, as a boolean value. Initially closed.
-</span>19 <span style=''>     * @return
-</span>20 <span style=''>     *   True if item is already opened, False otherwise.
-</span>21 <span style=''>     */
-</span>22 <span style=''>    def isOpen: Boolean
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl.ContainerExt
+</span>13 <span style=''>
+</span>14 <span style=''>/**
+</span>15 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Chest BehaviorBasedItem&lt;/b&gt;.
+</span>16 <span style=''> */
+</span>17 <span style=''>trait ChestExt extends BehaviorBasedModel with ContainerExt {
+</span>18 <span style=''>
+</span>19 <span style=''>  /**
+</span>20 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be opened, and reveals a set of items when opened.
+</span>21 <span style=''>   */
+</span>22 <span style=''>  trait Chest extends BehaviorBasedItem {
 </span>23 <span style=''>
 </span>24 <span style=''>    /**
-</span>25 <span style=''>     * A &lt;b&gt;Chest&lt;/b&gt; has always an associated &lt;b&gt;Container&lt;/b&gt; behavior, that can be referenced
-</span>26 <span style=''>     * from here.
-</span>27 <span style=''>     * @return
-</span>28 <span style=''>     *   The &lt;b&gt;Container&lt;/b&gt; behavior of the item.
-</span>29 <span style=''>     */
-</span>30 <span style=''>    def container: Container
-</span>31 <span style=''>  }
-</span>32 <span style=''>
-</span>33 <span style=''>  /**
-</span>34 <span style=''>   * A standard implementation for &lt;b&gt;Chest&lt;/b&gt;.
-</span>35 <span style=''>   * @param description
-</span>36 <span style=''>   *   An [[ItemDescription]] for the item.
-</span>37 <span style=''>   * @param ref
-</span>38 <span style=''>   *   A unique reference to the item.
-</span>39 <span style=''>   * @param containerBuilder
-</span>40 <span style=''>   *   A builder for the &lt;b&gt;Container&lt;/b&gt; behavior associated to the item.
-</span>41 <span style=''>   * @param extraBehavBuilders
-</span>42 <span style=''>   *   Additional behaviors associated to the item.
-</span>43 <span style=''>   */
-</span>44 <span style=''>  case class SimpleChest(
-</span>45 <span style=''>    description: ItemDescription,
-</span>46 <span style=''>    ref: ItemRef,
-</span>47 <span style=''>    containerBuilder: I =&gt; Container,
-</span>48 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>49 <span style=''>  ) extends Chest {
-</span>50 <span style=''>    override val container: Container         = </span><span style='background: #AEF1AE'>containerBuilder(this)</span><span style=''>
-</span>51 <span style=''>    override val behaviors: Seq[ItemBehavior] = container </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
-</span>52 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>container.isOpen</span><span style=''>
-</span>53 <span style=''>  }
-</span>54 <span style=''>
-</span>55 <span style=''>  /**
-</span>56 <span style=''>   * Companion object for &lt;b&gt;Chest&lt;/b&gt;.
-</span>57 <span style=''>   */
-</span>58 <span style=''>  object Chest {
-</span>59 <span style=''>
-</span>60 <span style=''>    /**
-</span>61 <span style=''>     * Creates a standard &lt;b&gt;Chest&lt;/b&gt;.
-</span>62 <span style=''>     * @param description
-</span>63 <span style=''>     *   An [[ItemDescription]] for the item.
-</span>64 <span style=''>     * @param containerBuilder
-</span>65 <span style=''>     *   A builder for the &lt;b&gt;Container&lt;/b&gt; behavior associated to the item.
-</span>66 <span style=''>     * @param extraBehavBuilder
-</span>67 <span style=''>     *   Additional behaviors associated to the item.
-</span>68 <span style=''>     * @return
-</span>69 <span style=''>     *   An instance of a standard &lt;b&gt;Chest&lt;/b&gt;.
-</span>70 <span style=''>     */
-</span>71 <span style=''>    def apply(
-</span>72 <span style=''>      description: ItemDescription,
-</span>73 <span style=''>      containerBuilder: I =&gt; Container,
-</span>74 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>75 <span style=''>    ): Chest = </span><span style='background: #AEF1AE'>SimpleChest(description, ItemRef(description), containerBuilder, extraBehavBuilder)</span><span style=''>
-</span>76 <span style=''>
-</span>77 <span style=''>    /**
-</span>78 <span style=''>     * A chest that to be opened doesn't need any key.
-</span>79 <span style=''>     * @param description
-</span>80 <span style=''>     *   the [[ItemDescription]] of the chest.
-</span>81 <span style=''>     * @param items
-</span>82 <span style=''>     *   the items contained in a chest
-</span>83 <span style=''>     * @param extraBehavBuilder
-</span>84 <span style=''>     *   possible extra behavior when is open the container item.
-</span>85 <span style=''>     * @return
-</span>86 <span style=''>     *   an instance that implements chest trait.
-</span>87 <span style=''>     */
-</span>88 <span style=''>    def createUnlocked(
-</span>89 <span style=''>      description: ItemDescription,
-</span>90 <span style=''>      items: Set[I] = Set.empty,
-</span>91 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>92 <span style=''>    ): Chest =
-</span>93 <span style=''>      </span><span style='background: #AEF1AE'>apply(
-</span>94 <span style=''></span><span style='background: #AEF1AE'>        description,
-</span>95 <span style=''></span><span style='background: #AEF1AE'>        Container.unlockedBuilder(items),
-</span>96 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder
-</span>97 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>98 <span style=''>
-</span>99 <span style=''>    /**
-</span>100 <span style=''>     * A chest that to be opened require a key.
-</span>101 <span style=''>     * @param description
-</span>102 <span style=''>     *   the [[ItemDescription]] of the chest.
-</span>103 <span style=''>     * @param items
-</span>104 <span style=''>     *   the items contained in a chest.
-</span>105 <span style=''>     * @param key
-</span>106 <span style=''>     *   the key required to open the chest.
-</span>107 <span style=''>     * @param extraBehavBuilder
-</span>108 <span style=''>     *   possible extra behavior when is open the container item.
-</span>109 <span style=''>     * @return
-</span>110 <span style=''>     *   an instance that implements chest trait.
-</span>111 <span style=''>     * @return
-</span>112 <span style=''>     */
-</span>113 <span style=''>    def createLocked(
-</span>114 <span style=''>      description: ItemDescription,
-</span>115 <span style=''>      items: Set[I] = Set.empty,
-</span>116 <span style=''>      key: Key,
-</span>117 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>118 <span style=''>    ): Chest =
-</span>119 <span style=''>      </span><span style='background: #AEF1AE'>apply(
-</span>120 <span style=''></span><span style='background: #AEF1AE'>        description,
-</span>121 <span style=''></span><span style='background: #AEF1AE'>        Container.lockedBuilder(items, key),
-</span>122 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder
-</span>123 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
-</span>124 <span style=''>  }
-</span>125 <span style=''>}
+</span>25 <span style=''>     * The &quot;openness&quot; state of the item, as a boolean value. Initially closed.
+</span>26 <span style=''>     * @return
+</span>27 <span style=''>     *   True if item is already opened, False otherwise.
+</span>28 <span style=''>     */
+</span>29 <span style=''>    def isOpen: Boolean
+</span>30 <span style=''>
+</span>31 <span style=''>    /**
+</span>32 <span style=''>     * A &lt;b&gt;Chest&lt;/b&gt; has always an associated &lt;b&gt;Container&lt;/b&gt; behavior, that can be referenced
+</span>33 <span style=''>     * from here.
+</span>34 <span style=''>     * @return
+</span>35 <span style=''>     *   The &lt;b&gt;Container&lt;/b&gt; behavior of the item.
+</span>36 <span style=''>     */
+</span>37 <span style=''>    def container: Container
+</span>38 <span style=''>  }
+</span>39 <span style=''>
+</span>40 <span style=''>  /**
+</span>41 <span style=''>   * A standard implementation for &lt;b&gt;Chest&lt;/b&gt;.
+</span>42 <span style=''>   * @param description
+</span>43 <span style=''>   *   An [[ItemDescription]] for the item.
+</span>44 <span style=''>   * @param ref
+</span>45 <span style=''>   *   A unique reference to the item.
+</span>46 <span style=''>   * @param containerBuilder
+</span>47 <span style=''>   *   A builder for the &lt;b&gt;Container&lt;/b&gt; behavior associated to the item.
+</span>48 <span style=''>   * @param extraBehavBuilders
+</span>49 <span style=''>   *   Additional behaviors associated to the item.
+</span>50 <span style=''>   */
+</span>51 <span style=''>  case class SimpleChest(
+</span>52 <span style=''>    description: ItemDescription,
+</span>53 <span style=''>    ref: ItemRef,
+</span>54 <span style=''>    containerBuilder: I =&gt; Container,
+</span>55 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>56 <span style=''>  ) extends Chest {
+</span>57 <span style=''>    override val container: Container         = </span><span style='background: #AEF1AE'>containerBuilder(this)</span><span style=''>
+</span>58 <span style=''>    override val behaviors: Seq[ItemBehavior] = container </span><span style='background: #AEF1AE'>+: extraBehavBuilders.map(_(this))</span><span style=''>
+</span>59 <span style=''>    override def isOpen: Boolean              = </span><span style='background: #AEF1AE'>container.isOpen</span><span style=''>
+</span>60 <span style=''>  }
+</span>61 <span style=''>
+</span>62 <span style=''>  /**
+</span>63 <span style=''>   * Companion object for &lt;b&gt;Chest&lt;/b&gt;.
+</span>64 <span style=''>   */
+</span>65 <span style=''>  object Chest {
+</span>66 <span style=''>
+</span>67 <span style=''>    /**
+</span>68 <span style=''>     * Creates a standard &lt;b&gt;Chest&lt;/b&gt;.
+</span>69 <span style=''>     * @param description
+</span>70 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>71 <span style=''>     * @param containerBuilder
+</span>72 <span style=''>     *   A builder for the &lt;b&gt;Container&lt;/b&gt; behavior associated to the item.
+</span>73 <span style=''>     * @param extraBehavBuilder
+</span>74 <span style=''>     *   Additional behaviors associated to the item.
+</span>75 <span style=''>     * @return
+</span>76 <span style=''>     *   An instance of a standard &lt;b&gt;Chest&lt;/b&gt;.
+</span>77 <span style=''>     */
+</span>78 <span style=''>    def apply(
+</span>79 <span style=''>      description: ItemDescription,
+</span>80 <span style=''>      containerBuilder: I =&gt; Container,
+</span>81 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>82 <span style=''>    ): Chest = </span><span style='background: #AEF1AE'>SimpleChest(description, ItemRef(description), containerBuilder, extraBehavBuilder)</span><span style=''>
+</span>83 <span style=''>
+</span>84 <span style=''>    /**
+</span>85 <span style=''>     * A chest that to be opened doesn't need any key.
+</span>86 <span style=''>     * @param description
+</span>87 <span style=''>     *   the [[ItemDescription]] of the chest.
+</span>88 <span style=''>     * @param items
+</span>89 <span style=''>     *   the items contained in a chest
+</span>90 <span style=''>     * @param extraBehavBuilder
+</span>91 <span style=''>     *   possible extra behavior when is open the container item.
+</span>92 <span style=''>     * @return
+</span>93 <span style=''>     *   an instance that implements chest trait.
+</span>94 <span style=''>     */
+</span>95 <span style=''>    def createUnlocked(
+</span>96 <span style=''>      description: ItemDescription,
+</span>97 <span style=''>      items: Set[I] = Set.empty,
+</span>98 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>99 <span style=''>    ): Chest =
+</span>100 <span style=''>      </span><span style='background: #AEF1AE'>apply(
+</span>101 <span style=''></span><span style='background: #AEF1AE'>        description,
+</span>102 <span style=''></span><span style='background: #AEF1AE'>        Container.unlockedBuilder(items),
+</span>103 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder
+</span>104 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>105 <span style=''>
+</span>106 <span style=''>    /**
+</span>107 <span style=''>     * A chest that to be opened require a key.
+</span>108 <span style=''>     * @param description
+</span>109 <span style=''>     *   the [[ItemDescription]] of the chest.
+</span>110 <span style=''>     * @param items
+</span>111 <span style=''>     *   the items contained in a chest.
+</span>112 <span style=''>     * @param key
+</span>113 <span style=''>     *   the key required to open the chest.
+</span>114 <span style=''>     * @param extraBehavBuilder
+</span>115 <span style=''>     *   possible extra behavior when is open the container item.
+</span>116 <span style=''>     * @return
+</span>117 <span style=''>     *   an instance that implements chest trait.
+</span>118 <span style=''>     * @return
+</span>119 <span style=''>     */
+</span>120 <span style=''>    def createLocked(
+</span>121 <span style=''>      description: ItemDescription,
+</span>122 <span style=''>      items: Set[I] = Set.empty,
+</span>123 <span style=''>      key: Key,
+</span>124 <span style=''>      extraBehavBuilder: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>125 <span style=''>    ): Chest =
+</span>126 <span style=''>      </span><span style='background: #AEF1AE'>apply(
+</span>127 <span style=''></span><span style='background: #AEF1AE'>        description,
+</span>128 <span style=''></span><span style='background: #AEF1AE'>        Container.lockedBuilder(items, key),
+</span>129 <span style=''></span><span style='background: #AEF1AE'>        extraBehavBuilder
+</span>130 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>131 <span style=''>  }
+</span>132 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -161,15 +168,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          50
+          57
         </td>
         <td>
           492
         </td>
         <td>
-          1664
+          1888
           -
-          1686
+          1910
         </td>
         <td>
           Apply
@@ -185,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          58
         </td>
         <td>
           493
         </td>
         <td>
-          1745
+          1969
           -
-          1779
+          2003
         </td>
         <td>
           Apply
@@ -209,15 +216,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          59
         </td>
         <td>
           494
         </td>
         <td>
-          1828
+          2052
           -
-          1844
+          2068
         </td>
         <td>
           Select
@@ -233,15 +240,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          82
         </td>
         <td>
           495
         </td>
         <td>
-          2497
+          2721
           -
-          2517
+          2741
         </td>
         <td>
           Apply
@@ -257,15 +264,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          82
         </td>
         <td>
           496
         </td>
         <td>
-          2472
+          2696
           -
-          2555
+          2779
         </td>
         <td>
           Apply
@@ -281,15 +288,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          100
         </td>
         <td>
           498
         </td>
         <td>
-          3098
+          3322
           -
-          3201
+          3425
         </td>
         <td>
           Apply
@@ -305,15 +312,15 @@
         </td>
       </tr><tr>
         <td>
-          95
+          102
         </td>
         <td>
           497
         </td>
         <td>
-          3134
+          3358
           -
-          3166
+          3390
         </td>
         <td>
           Apply
@@ -329,15 +336,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           500
         </td>
         <td>
-          3830
+          4054
           -
-          3936
+          4160
         </td>
         <td>
           Apply
@@ -353,15 +360,15 @@
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           499
         </td>
         <td>
-          3866
+          4090
           -
-          3901
+          4125
         </td>
         <td>
           Apply

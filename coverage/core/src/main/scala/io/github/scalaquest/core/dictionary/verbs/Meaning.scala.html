@@ -22,15 +22,22 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.verbs
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Action
-</span>4 <span style=''>
-</span>5 <span style=''>trait Meaning extends BaseVerb {
-</span>6 <span style=''>  def action: Action
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>  def binding: (VerbPrep, Action) = </span><span style='background: #AEF1AE'>(name, prep) -&gt; action</span><span style=''>
-</span>9 <span style=''>}
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary.verbs
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Action
+</span>11 <span style=''>
+</span>12 <span style=''>trait Meaning extends BaseVerb {
+</span>13 <span style=''>  def action: Action
+</span>14 <span style=''>
+</span>15 <span style=''>  def binding: (VerbPrep, Action) = </span><span style='background: #AEF1AE'>(name, prep) -&gt; action</span><span style=''>
+</span>16 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -45,15 +52,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           109
         </td>
         <td>
-          191
+          415
           -
-          195
+          419
         </td>
         <td>
           Select
@@ -69,15 +76,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           110
         </td>
         <td>
-          197
+          421
           -
-          201
+          425
         </td>
         <td>
           Select
@@ -93,15 +100,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           111
         </td>
         <td>
-          190
+          414
           -
-          202
+          426
         </td>
         <td>
           Apply
@@ -117,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           112
         </td>
         <td>
-          206
+          430
           -
-          212
+          436
         </td>
         <td>
           Select
@@ -141,15 +148,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           113
         </td>
         <td>
-          190
+          414
           -
-          212
+          436
         </td>
         <td>
           Apply

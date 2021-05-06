@@ -22,42 +22,49 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.generators
-</span>2 <span style=''>
-</span>3 <span style=''>/**
-</span>4 <span style=''> * A type class modeling a relation between two types. It is used as a composable wrapper around a
-</span>5 <span style=''> * function from A to B.
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
 </span>6 <span style=''> */
-</span>7 <span style=''>trait Generator[-A, +B] {
-</span>8 <span style=''>
-</span>9 <span style=''>  /**
-</span>10 <span style=''>   * Generates the output value for a given element.
-</span>11 <span style=''>   * @param a
-</span>12 <span style=''>   *   the input element
-</span>13 <span style=''>   * @return
-</span>14 <span style=''>   *   the output value
-</span>15 <span style=''>   */
-</span>16 <span style=''>  def generate(a: A): B
-</span>17 <span style=''>}
-</span>18 <span style=''>
-</span>19 <span style=''>object Generator {
-</span>20 <span style=''>
-</span>21 <span style=''>  /** Access to implicit `Generator[A, B]`. */
-</span>22 <span style=''>  def apply[A, B](implicit G: Generator[A, B]): Generator[A, B] = G
-</span>23 <span style=''>
-</span>24 <span style=''>  /** Creates a generator wrapping a function from `A` to `B`. */
-</span>25 <span style=''>  def instance[A, B](gen: A =&gt; B): Generator[A, B] = (a: A) =&gt; </span><span style='background: #AEF1AE'>gen(a)</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  /**
-</span>28 <span style=''>   * Creates a generator wrapping a function from `T` to `(K, V)`. Then this tuple is returned in a
-</span>29 <span style=''>   * singlet `Map`.
-</span>30 <span style=''>   * @param f
-</span>31 <span style=''>   *   the mapping function
-</span>32 <span style=''>   * @return
-</span>33 <span style=''>   *   a generator from `T` to a singlet `Map[K, V]`.
-</span>34 <span style=''>   */
-</span>35 <span style=''>  def makeEntry[T, K, V](f: T =&gt; (K, V)): Generator[T, Map[K, V]] = </span><span style='background: #AEF1AE'>instance(t =&gt; Map(f(t)))</span><span style=''>
-</span>36 <span style=''>}
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary.generators
+</span>9 <span style=''>
+</span>10 <span style=''>/**
+</span>11 <span style=''> * A type class modeling a relation between two types. It is used as a composable wrapper around a
+</span>12 <span style=''> * function from A to B.
+</span>13 <span style=''> */
+</span>14 <span style=''>trait Generator[-A, +B] {
+</span>15 <span style=''>
+</span>16 <span style=''>  /**
+</span>17 <span style=''>   * Generates the output value for a given element.
+</span>18 <span style=''>   * @param a
+</span>19 <span style=''>   *   the input element
+</span>20 <span style=''>   * @return
+</span>21 <span style=''>   *   the output value
+</span>22 <span style=''>   */
+</span>23 <span style=''>  def generate(a: A): B
+</span>24 <span style=''>}
+</span>25 <span style=''>
+</span>26 <span style=''>object Generator {
+</span>27 <span style=''>
+</span>28 <span style=''>  /** Access to implicit `Generator[A, B]`. */
+</span>29 <span style=''>  def apply[A, B](implicit G: Generator[A, B]): Generator[A, B] = G
+</span>30 <span style=''>
+</span>31 <span style=''>  /** Creates a generator wrapping a function from `A` to `B`. */
+</span>32 <span style=''>  def instance[A, B](gen: A =&gt; B): Generator[A, B] = (a: A) =&gt; </span><span style='background: #AEF1AE'>gen(a)</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  /**
+</span>35 <span style=''>   * Creates a generator wrapping a function from `T` to `(K, V)`. Then this tuple is returned in a
+</span>36 <span style=''>   * singlet `Map`.
+</span>37 <span style=''>   * @param f
+</span>38 <span style=''>   *   the mapping function
+</span>39 <span style=''>   * @return
+</span>40 <span style=''>   *   a generator from `T` to a singlet `Map[K, V]`.
+</span>41 <span style=''>   */
+</span>42 <span style=''>  def makeEntry[T, K, V](f: T =&gt; (K, V)): Generator[T, Map[K, V]] = </span><span style='background: #AEF1AE'>instance(t =&gt; Map(f(t)))</span><span style=''>
+</span>43 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -72,15 +79,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           72
         </td>
         <td>
-          649
+          873
           -
-          655
+          879
         </td>
         <td>
           Apply
@@ -96,15 +103,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           73
         </td>
         <td>
-          984
+          1208
           -
-          988
+          1212
         </td>
         <td>
           Apply
@@ -120,15 +127,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           74
         </td>
         <td>
-          980
+          1204
           -
-          989
+          1213
         </td>
         <td>
           Apply
@@ -144,15 +151,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          42
         </td>
         <td>
           75
         </td>
         <td>
-          966
+          1190
           -
-          990
+          1214
         </td>
         <td>
           Apply

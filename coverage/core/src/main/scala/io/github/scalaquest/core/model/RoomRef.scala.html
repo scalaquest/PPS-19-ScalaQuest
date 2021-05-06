@@ -22,34 +22,41 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model
-</span>2 <span style=''>
-</span>3 <span style=''>/**
-</span>4 <span style=''> * A unique identifier for a [[Model.Room]].
-</span>5 <span style=''> */
-</span>6 <span style=''>trait RoomRef
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * Companion object for [[RoomRef]]. Exposes a factory to build the [[RoomRef]] based on a
-</span>10 <span style=''> * [[String]] (hopefully, the room name).
-</span>11 <span style=''> */
-</span>12 <span style=''>object RoomRef {
-</span>13 <span style=''>
-</span>14 <span style=''>  /**
-</span>15 <span style=''>   * The String Reference to a [[Model.Room]].
-</span>16 <span style=''>   * @param name
-</span>17 <span style=''>   *   the name of [[Model.Room]].
-</span>18 <span style=''>   */
-</span>19 <span style=''>  private final case class StringRef(name: String) extends RoomRef
+</span>8 <span style=''>package io.github.scalaquest.core.model
+</span>9 <span style=''>
+</span>10 <span style=''>/**
+</span>11 <span style=''> * A unique identifier for a [[Model.Room]].
+</span>12 <span style=''> */
+</span>13 <span style=''>trait RoomRef
+</span>14 <span style=''>
+</span>15 <span style=''>/**
+</span>16 <span style=''> * Companion object for [[RoomRef]]. Exposes a factory to build the [[RoomRef]] based on a
+</span>17 <span style=''> * [[String]] (hopefully, the room name).
+</span>18 <span style=''> */
+</span>19 <span style=''>object RoomRef {
 </span>20 <span style=''>
 </span>21 <span style=''>  /**
-</span>22 <span style=''>   * A factory to build the [[RoomRef]] based on a [[String]] (hopefully, the room name).
-</span>23 <span style=''>   * @param roomName
-</span>24 <span style=''>   *   the (hopefully) room name.
-</span>25 <span style=''>   * @return
-</span>26 <span style=''>   */
-</span>27 <span style=''>  def apply(roomName: String): RoomRef = </span><span style='background: #AEF1AE'>StringRef(roomName)</span><span style=''>
-</span>28 <span style=''>}
+</span>22 <span style=''>   * The String Reference to a [[Model.Room]].
+</span>23 <span style=''>   * @param name
+</span>24 <span style=''>   *   the name of [[Model.Room]].
+</span>25 <span style=''>   */
+</span>26 <span style=''>  private final case class StringRef(name: String) extends RoomRef
+</span>27 <span style=''>
+</span>28 <span style=''>  /**
+</span>29 <span style=''>   * A factory to build the [[RoomRef]] based on a [[String]] (hopefully, the room name).
+</span>30 <span style=''>   * @param roomName
+</span>31 <span style=''>   *   the (hopefully) room name.
+</span>32 <span style=''>   * @return
+</span>33 <span style=''>   */
+</span>34 <span style=''>  def apply(roomName: String): RoomRef = </span><span style='background: #AEF1AE'>StringRef(roomName)</span><span style=''>
+</span>35 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -64,15 +71,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           182
         </td>
         <td>
-          658
+          882
           -
-          677
+          901
         </td>
         <td>
           Apply

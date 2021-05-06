@@ -22,21 +22,28 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.verbs
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.Fact
-</span>4 <span style=''>import io.github.scalaquest.core.parsing.scalog.dsl.{intToNumber, stringToAtom, termToFact}
-</span>5 <span style=''>
-</span>6 <span style=''>trait ClauseOps { self: BaseVerb =&gt;
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>  protected def arity: Int
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary.verbs
 </span>9 <span style=''>
-</span>10 <span style=''>  def clause: Fact =
-</span>11 <span style=''>    </span><span style='background: #AEF1AE'>prep</span><span style=''> match {
-</span>12 <span style=''>      case Some(value) =&gt; </span><span style='background: #AEF1AE'>verb(arity, name, value)</span><span style=''>
-</span>13 <span style=''>      case None        =&gt; </span><span style='background: #AEF1AE'>verb(arity, name)</span><span style=''>
-</span>14 <span style=''>    }
-</span>15 <span style=''>}
+</span>10 <span style=''>import io.github.scalaquest.core.parsing.scalog.Fact
+</span>11 <span style=''>import io.github.scalaquest.core.parsing.scalog.dsl.{intToNumber, stringToAtom, termToFact}
+</span>12 <span style=''>
+</span>13 <span style=''>trait ClauseOps { self: BaseVerb =&gt;
+</span>14 <span style=''>
+</span>15 <span style=''>  protected def arity: Int
+</span>16 <span style=''>
+</span>17 <span style=''>  def clause: Fact =
+</span>18 <span style=''>    </span><span style='background: #AEF1AE'>prep</span><span style=''> match {
+</span>19 <span style=''>      case Some(value) =&gt; </span><span style='background: #AEF1AE'>verb(arity, name, value)</span><span style=''>
+</span>20 <span style=''>      case None        =&gt; </span><span style='background: #AEF1AE'>verb(arity, name)</span><span style=''>
+</span>21 <span style=''>    }
+</span>22 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -51,15 +58,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           95
         </td>
         <td>
-          288
+          512
           -
-          292
+          516
         </td>
         <td>
           Select
@@ -75,15 +82,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           96
         </td>
         <td>
-          332
+          556
           -
-          337
+          561
         </td>
         <td>
           Select
@@ -99,15 +106,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           97
         </td>
         <td>
-          332
+          556
           -
-          337
+          561
         </td>
         <td>
           ApplyImplicitView
@@ -123,15 +130,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           98
         </td>
         <td>
-          339
+          563
           -
-          343
+          567
         </td>
         <td>
           Select
@@ -147,15 +154,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           99
         </td>
         <td>
-          339
+          563
           -
-          343
+          567
         </td>
         <td>
           ApplyImplicitView
@@ -171,15 +178,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           100
         </td>
         <td>
-          345
+          569
           -
-          350
+          574
         </td>
         <td>
           ApplyImplicitView
@@ -195,15 +202,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           101
         </td>
         <td>
-          327
+          551
           -
-          351
+          575
         </td>
         <td>
           Apply
@@ -219,15 +226,15 @@
         </td>
       </tr><tr>
         <td>
-          12
+          19
         </td>
         <td>
           102
         </td>
         <td>
-          327
+          551
           -
-          351
+          575
         </td>
         <td>
           ApplyImplicitView
@@ -243,15 +250,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           103
         </td>
         <td>
-          383
+          607
           -
-          388
+          612
         </td>
         <td>
           Select
@@ -267,15 +274,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           104
         </td>
         <td>
-          383
+          607
           -
-          388
+          612
         </td>
         <td>
           ApplyImplicitView
@@ -291,15 +298,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           105
         </td>
         <td>
-          390
+          614
           -
-          394
+          618
         </td>
         <td>
           Select
@@ -315,15 +322,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           106
         </td>
         <td>
-          390
+          614
           -
-          394
+          618
         </td>
         <td>
           ApplyImplicitView
@@ -339,15 +346,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           107
         </td>
         <td>
-          378
+          602
           -
-          395
+          619
         </td>
         <td>
           Apply
@@ -363,15 +370,15 @@
         </td>
       </tr><tr>
         <td>
-          13
+          20
         </td>
         <td>
           108
         </td>
         <td>
-          378
+          602
           -
-          395
+          619
         </td>
         <td>
           ApplyImplicitView

@@ -22,164 +22,171 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
-</span>8 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.itemBehaviors.impl
 </span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Openable&lt;/b&gt; behavior.
-</span>12 <span style=''> */
-</span>13 <span style=''>trait OpenableExt
-</span>14 <span style=''>  extends BehaviorBasedModel
-</span>15 <span style=''>  with KeyExt
-</span>16 <span style=''>  with CMessagesExt
-</span>17 <span style=''>  with CReactionsExt
-</span>18 <span style=''>  with StateUtilsExt {
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; associated to a &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be opened a single
-</span>22 <span style=''>   * time.
-</span>23 <span style=''>   */
-</span>24 <span style=''>  abstract class Openable extends ItemBehavior {
-</span>25 <span style=''>
-</span>26 <span style=''>    /**
-</span>27 <span style=''>     * The &quot;openness&quot; state of the subject, as a boolean value. Initially closed.
-</span>28 <span style=''>     * @return
-</span>29 <span style=''>     *   True if subject is already opened, False otherwise.
-</span>30 <span style=''>     */
-</span>31 <span style=''>    def isOpen: Boolean
+</span>10 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Open
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.items.impl.KeyExt
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>14 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>15 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>16 <span style=''>
+</span>17 <span style=''>/**
+</span>18 <span style=''> * The trait makes possible to add into the [[BehaviorBasedModel]] the &lt;b&gt;Openable&lt;/b&gt; behavior.
+</span>19 <span style=''> */
+</span>20 <span style=''>trait OpenableExt
+</span>21 <span style=''>  extends BehaviorBasedModel
+</span>22 <span style=''>  with KeyExt
+</span>23 <span style=''>  with CMessagesExt
+</span>24 <span style=''>  with CReactionsExt
+</span>25 <span style=''>  with StateUtilsExt {
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * An &lt;b&gt;ItemBehavior&lt;/b&gt; associated to a &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that can be opened a single
+</span>29 <span style=''>   * time.
+</span>30 <span style=''>   */
+</span>31 <span style=''>  abstract class Openable extends ItemBehavior {
 </span>32 <span style=''>
 </span>33 <span style=''>    /**
-</span>34 <span style=''>     * The &lt;b&gt;Key&lt;/b&gt; to be used to open the subject. If the subject can be opened without
-</span>35 <span style=''>     * &lt;b&gt;Key&lt;/b&gt;, it can be set to [[None]].
-</span>36 <span style=''>     * @return
-</span>37 <span style=''>     *   [[Some]] with the &lt;b&gt;Key&lt;/b&gt; if key is required, [[None]] otherwise.
-</span>38 <span style=''>     */
-</span>39 <span style=''>    def requiredKey: Option[Key]
-</span>40 <span style=''>
-</span>41 <span style=''>    /**
-</span>42 <span style=''>     * Checks whether the subject can be opened with the current configuration.
-</span>43 <span style=''>     *
-</span>44 <span style=''>     * @param state
-</span>45 <span style=''>     *   The current &lt;b&gt;State&lt;/b&gt;.
-</span>46 <span style=''>     * @param usedKey
-</span>47 <span style=''>     *   The eventual key passed explicitly by the user, e.g. , with a statement like &quot;open the item
-</span>48 <span style=''>     *   with the key&quot;.
-</span>49 <span style=''>     * @return
-</span>50 <span style=''>     *   True if:
-</span>51 <span style=''>     *   - A &lt;b&gt;Key&lt;/b&gt; was passed explicitly, is effectively into the bag of the player (or in the
-</span>52 <span style=''>     *     location) and that &lt;b&gt;Key&lt;/b&gt; is effectively required to open the subject.
-</span>53 <span style=''>     *   - No &lt;b&gt;Key&lt;/b&gt; was passed explicitly, is effectively into the bag of the player and that
-</span>54 <span style=''>     *     &lt;b&gt;Key&lt;/b&gt; is effectively required to open the subject.
-</span>55 <span style=''>     *   - No &lt;b&gt;Key&lt;/b&gt; was passed explicitly, and no &lt;b&gt;Key&lt;/b&gt; is required.
-</span>56 <span style=''>     *
-</span>57 <span style=''>     * False otherwise.
-</span>58 <span style=''>     */
-</span>59 <span style=''>    def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
-</span>60 <span style=''>
-</span>61 <span style=''>    /**
-</span>62 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
-</span>63 <span style=''>     * @return
-</span>64 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
+</span>34 <span style=''>     * The &quot;openness&quot; state of the subject, as a boolean value. Initially closed.
+</span>35 <span style=''>     * @return
+</span>36 <span style=''>     *   True if subject is already opened, False otherwise.
+</span>37 <span style=''>     */
+</span>38 <span style=''>    def isOpen: Boolean
+</span>39 <span style=''>
+</span>40 <span style=''>    /**
+</span>41 <span style=''>     * The &lt;b&gt;Key&lt;/b&gt; to be used to open the subject. If the subject can be opened without
+</span>42 <span style=''>     * &lt;b&gt;Key&lt;/b&gt;, it can be set to [[None]].
+</span>43 <span style=''>     * @return
+</span>44 <span style=''>     *   [[Some]] with the &lt;b&gt;Key&lt;/b&gt; if key is required, [[None]] otherwise.
+</span>45 <span style=''>     */
+</span>46 <span style=''>    def requiredKey: Option[Key]
+</span>47 <span style=''>
+</span>48 <span style=''>    /**
+</span>49 <span style=''>     * Checks whether the subject can be opened with the current configuration.
+</span>50 <span style=''>     *
+</span>51 <span style=''>     * @param state
+</span>52 <span style=''>     *   The current &lt;b&gt;State&lt;/b&gt;.
+</span>53 <span style=''>     * @param usedKey
+</span>54 <span style=''>     *   The eventual key passed explicitly by the user, e.g. , with a statement like &quot;open the item
+</span>55 <span style=''>     *   with the key&quot;.
+</span>56 <span style=''>     * @return
+</span>57 <span style=''>     *   True if:
+</span>58 <span style=''>     *   - A &lt;b&gt;Key&lt;/b&gt; was passed explicitly, is effectively into the bag of the player (or in the
+</span>59 <span style=''>     *     location) and that &lt;b&gt;Key&lt;/b&gt; is effectively required to open the subject.
+</span>60 <span style=''>     *   - No &lt;b&gt;Key&lt;/b&gt; was passed explicitly, is effectively into the bag of the player and that
+</span>61 <span style=''>     *     &lt;b&gt;Key&lt;/b&gt; is effectively required to open the subject.
+</span>62 <span style=''>     *   - No &lt;b&gt;Key&lt;/b&gt; was passed explicitly, and no &lt;b&gt;Key&lt;/b&gt; is required.
+</span>63 <span style=''>     *
+</span>64 <span style=''>     * False otherwise.
 </span>65 <span style=''>     */
-</span>66 <span style=''>    def open: Reaction
-</span>67 <span style=''>  }
-</span>68 <span style=''>
-</span>69 <span style=''>  /**
-</span>70 <span style=''>   * Standard implementation of the &lt;b&gt;Openable&lt;/b&gt; behavior.
-</span>71 <span style=''>   *
-</span>72 <span style=''>   * This is a behavior associated to an Item that can be opened a single time. The standard
-</span>73 <span style=''>   * &lt;b&gt;Reaction&lt;/b&gt; consists into changing an internal variable that indicates the &quot;openness&quot; of
-</span>74 <span style=''>   * the subject, when &lt;b&gt;Statement&lt;/b&gt; &quot;open subject (with something)&quot; is called.
-</span>75 <span style=''>   * @param requiredKey
-</span>76 <span style=''>   *   The &lt;b&gt;Key&lt;/b&gt; required to open the Item. If not passed, the Item does not require a
-</span>77 <span style=''>   *   &lt;b&gt;Key&lt;/b&gt; to be opened.
-</span>78 <span style=''>   * @param onOpenExtra
-</span>79 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed into the State when opened, after the standard
-</span>80 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt;. It can be omitted.
-</span>81 <span style=''>   */
-</span>82 <span style=''>  case class SimpleOpenable(
-</span>83 <span style=''>    requiredKey: Option[Key] = None,
-</span>84 <span style=''>    onOpenExtra: Reaction = Reaction.empty
-</span>85 <span style=''>  )(implicit val subject: I)
-</span>86 <span style=''>    extends Openable {
-</span>87 <span style=''>    var _isOpen: Boolean = </span><span style='background: #AEF1AE'>false</span><span style=''>
-</span>88 <span style=''>
-</span>89 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>_isOpen</span><span style=''>
-</span>90 <span style=''>
-</span>91 <span style=''>    override def triggers: ItemTriggers = {
-</span>92 <span style=''>      case (Open, maybeKey, state)
-</span>93 <span style=''>          if </span><span style='background: #AEF1AE'>state.isInLocation(subject) &amp;&amp; canBeOpened(maybeKey)(state) &amp;&amp; !isOpen</span><span style=''> =&gt;
-</span>94 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
+</span>66 <span style=''>    def canBeOpened(usedKey: Option[I])(implicit state: S): Boolean
+</span>67 <span style=''>
+</span>68 <span style=''>    /**
+</span>69 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
+</span>70 <span style=''>     * @return
+</span>71 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the subject in an open state.
+</span>72 <span style=''>     */
+</span>73 <span style=''>    def open: Reaction
+</span>74 <span style=''>  }
+</span>75 <span style=''>
+</span>76 <span style=''>  /**
+</span>77 <span style=''>   * Standard implementation of the &lt;b&gt;Openable&lt;/b&gt; behavior.
+</span>78 <span style=''>   *
+</span>79 <span style=''>   * This is a behavior associated to an Item that can be opened a single time. The standard
+</span>80 <span style=''>   * &lt;b&gt;Reaction&lt;/b&gt; consists into changing an internal variable that indicates the &quot;openness&quot; of
+</span>81 <span style=''>   * the subject, when &lt;b&gt;Statement&lt;/b&gt; &quot;open subject (with something)&quot; is called.
+</span>82 <span style=''>   * @param requiredKey
+</span>83 <span style=''>   *   The &lt;b&gt;Key&lt;/b&gt; required to open the Item. If not passed, the Item does not require a
+</span>84 <span style=''>   *   &lt;b&gt;Key&lt;/b&gt; to be opened.
+</span>85 <span style=''>   * @param onOpenExtra
+</span>86 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed into the State when opened, after the standard
+</span>87 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt;. It can be omitted.
+</span>88 <span style=''>   */
+</span>89 <span style=''>  case class SimpleOpenable(
+</span>90 <span style=''>    requiredKey: Option[Key] = None,
+</span>91 <span style=''>    onOpenExtra: Reaction = Reaction.empty
+</span>92 <span style=''>  )(implicit val subject: I)
+</span>93 <span style=''>    extends Openable {
+</span>94 <span style=''>    var _isOpen: Boolean = </span><span style='background: #AEF1AE'>false</span><span style=''>
 </span>95 <span style=''>
-</span>96 <span style=''>      case (Open, _, _) =&gt;
-</span>97 <span style=''>        if (</span><span style='background: #AEF1AE'>!isOpen</span><span style=''>)
-</span>98 <span style=''>          </span><span style='background: #AEF1AE'>CReactions.addMessage(CMessages.FailedToOpen(subject))</span><span style=''>
-</span>99 <span style=''>        else
-</span>100 <span style=''>          </span><span style='background: #AEF1AE'>CReactions.addMessage(CMessages.AlreadyOpened(subject))</span><span style=''>
-</span>101 <span style=''>    }
+</span>96 <span style=''>    override def isOpen: Boolean = </span><span style='background: #AEF1AE'>_isOpen</span><span style=''>
+</span>97 <span style=''>
+</span>98 <span style=''>    override def triggers: ItemTriggers = {
+</span>99 <span style=''>      case (Open, maybeKey, state)
+</span>100 <span style=''>          if </span><span style='background: #AEF1AE'>state.isInLocation(subject) &amp;&amp; canBeOpened(maybeKey)(state) &amp;&amp; !isOpen</span><span style=''> =&gt;
+</span>101 <span style=''>        </span><span style='background: #AEF1AE'>open</span><span style=''>
 </span>102 <span style=''>
-</span>103 <span style=''>    override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
-</span>104 <span style=''>      usedKey match {
-</span>105 <span style=''>        case Some(key) =&gt; </span><span style='background: #AEF1AE'>requiredKey.contains(key)</span><span style=''>
-</span>106 <span style=''>        case None      =&gt; </span><span style='background: #AEF1AE'>requiredKey.fold(true)(_ =&gt; false)</span><span style=''>
-</span>107 <span style=''>      }
+</span>103 <span style=''>      case (Open, _, _) =&gt;
+</span>104 <span style=''>        if (</span><span style='background: #AEF1AE'>!isOpen</span><span style=''>)
+</span>105 <span style=''>          </span><span style='background: #AEF1AE'>CReactions.addMessage(CMessages.FailedToOpen(subject))</span><span style=''>
+</span>106 <span style=''>        else
+</span>107 <span style=''>          </span><span style='background: #AEF1AE'>CReactions.addMessage(CMessages.AlreadyOpened(subject))</span><span style=''>
 </span>108 <span style=''>    }
 </span>109 <span style=''>
-</span>110 <span style=''>    override def open: Reaction = {
-</span>111 <span style=''>      </span><span style='background: #AEF1AE'>_isOpen = true</span><span style=''>
-</span>112 <span style=''>
-</span>113 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>114 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
-</span>115 <span style=''></span><span style='background: #AEF1AE'>          if (requiredKey.exists(_.disposable)) CReactions.modifyBag(_ - requiredKey.get.ref)
-</span>116 <span style=''></span><span style='background: #AEF1AE'>          else Reaction.empty
-</span>117 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
-</span>118 <span style=''></span><span style='background: #AEF1AE'>          if (requiredKey.exists(_.disposable))
-</span>119 <span style=''></span><span style='background: #AEF1AE'>            CReactions.modifyLocationItems(_ - requiredKey.get.ref)
-</span>120 <span style=''></span><span style='background: #AEF1AE'>          else Reaction.empty
-</span>121 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(CMessages.Opened(subject))
-</span>122 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- onOpenExtra
-</span>123 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
-</span>124 <span style=''>    }
-</span>125 <span style=''>  }
-</span>126 <span style=''>
-</span>127 <span style=''>  /**
-</span>128 <span style=''>   * Companion object for &lt;b&gt;Openable&lt;/b&gt;.
-</span>129 <span style=''>   */
-</span>130 <span style=''>  object Openable {
-</span>131 <span style=''>
-</span>132 <span style=''>    /**
-</span>133 <span style=''>     * Builder for an &lt;b&gt;Openable&lt;/b&gt; that requires a specific &lt;b&gt;Key&lt;/b&gt; to open the subject.
-</span>134 <span style=''>     * @param requiredKey
-</span>135 <span style=''>     *   The key required in order to open the subject.
-</span>136 <span style=''>     * @param onOpenExtra
-</span>137 <span style=''>     *   An extra &lt;b&gt;ItemBehavior&lt;/b&gt; generated when the subject is opened. It can be omitted.
-</span>138 <span style=''>     * @return
-</span>139 <span style=''>     *   A builder for an &lt;b&gt;Openable&lt;/b&gt; that requirea a specific &lt;b&gt;Key&lt;/b&gt; to open the subject.
-</span>140 <span style=''>     */
-</span>141 <span style=''>    def lockedBuilder(
-</span>142 <span style=''>      requiredKey: Key,
-</span>143 <span style=''>      onOpenExtra: Reaction = Reaction.empty
-</span>144 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(Some(requiredKey), onOpenExtra)(_)</span><span style=''>
-</span>145 <span style=''>
-</span>146 <span style=''>    /**
-</span>147 <span style=''>     * Builder for an &lt;b&gt;Openable&lt;/b&gt; that not requires a specific &lt;b&gt;Key&lt;/b&gt; to open the subject.
-</span>148 <span style=''>     * @param onOpenExtra
-</span>149 <span style=''>     *   An extra &lt;b&gt;ItemBehavior&lt;/b&gt; generated when the subject is opened. It can be omitted.
-</span>150 <span style=''>     * @return
-</span>151 <span style=''>     *   A builder for an &lt;b&gt;Openable&lt;/b&gt; that not requires a specific &lt;b&gt;Key&lt;/b&gt; to open the
-</span>152 <span style=''>     *   subject.
-</span>153 <span style=''>     */
-</span>154 <span style=''>    def unlockedBuilder(
-</span>155 <span style=''>      onOpenExtra: Reaction = Reaction.empty
-</span>156 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(None, onOpenExtra)(_)</span><span style=''>
-</span>157 <span style=''>  }
-</span>158 <span style=''>}
+</span>110 <span style=''>    override def canBeOpened(usedKey: Option[I] = None)(implicit state: S): Boolean = {
+</span>111 <span style=''>      usedKey match {
+</span>112 <span style=''>        case Some(key) =&gt; </span><span style='background: #AEF1AE'>requiredKey.contains(key)</span><span style=''>
+</span>113 <span style=''>        case None      =&gt; </span><span style='background: #AEF1AE'>requiredKey.fold(true)(_ =&gt; false)</span><span style=''>
+</span>114 <span style=''>      }
+</span>115 <span style=''>    }
+</span>116 <span style=''>
+</span>117 <span style=''>    override def open: Reaction = {
+</span>118 <span style=''>      </span><span style='background: #AEF1AE'>_isOpen = true</span><span style=''>
+</span>119 <span style=''>
+</span>120 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>121 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
+</span>122 <span style=''></span><span style='background: #AEF1AE'>          if (requiredKey.exists(_.disposable)) CReactions.modifyBag(_ - requiredKey.get.ref)
+</span>123 <span style=''></span><span style='background: #AEF1AE'>          else Reaction.empty
+</span>124 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;-
+</span>125 <span style=''></span><span style='background: #AEF1AE'>          if (requiredKey.exists(_.disposable))
+</span>126 <span style=''></span><span style='background: #AEF1AE'>            CReactions.modifyLocationItems(_ - requiredKey.get.ref)
+</span>127 <span style=''></span><span style='background: #AEF1AE'>          else Reaction.empty
+</span>128 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(CMessages.Opened(subject))
+</span>129 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- onOpenExtra
+</span>130 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>131 <span style=''>    }
+</span>132 <span style=''>  }
+</span>133 <span style=''>
+</span>134 <span style=''>  /**
+</span>135 <span style=''>   * Companion object for &lt;b&gt;Openable&lt;/b&gt;.
+</span>136 <span style=''>   */
+</span>137 <span style=''>  object Openable {
+</span>138 <span style=''>
+</span>139 <span style=''>    /**
+</span>140 <span style=''>     * Builder for an &lt;b&gt;Openable&lt;/b&gt; that requires a specific &lt;b&gt;Key&lt;/b&gt; to open the subject.
+</span>141 <span style=''>     * @param requiredKey
+</span>142 <span style=''>     *   The key required in order to open the subject.
+</span>143 <span style=''>     * @param onOpenExtra
+</span>144 <span style=''>     *   An extra &lt;b&gt;ItemBehavior&lt;/b&gt; generated when the subject is opened. It can be omitted.
+</span>145 <span style=''>     * @return
+</span>146 <span style=''>     *   A builder for an &lt;b&gt;Openable&lt;/b&gt; that requirea a specific &lt;b&gt;Key&lt;/b&gt; to open the subject.
+</span>147 <span style=''>     */
+</span>148 <span style=''>    def lockedBuilder(
+</span>149 <span style=''>      requiredKey: Key,
+</span>150 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>151 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(Some(requiredKey), onOpenExtra)(_)</span><span style=''>
+</span>152 <span style=''>
+</span>153 <span style=''>    /**
+</span>154 <span style=''>     * Builder for an &lt;b&gt;Openable&lt;/b&gt; that not requires a specific &lt;b&gt;Key&lt;/b&gt; to open the subject.
+</span>155 <span style=''>     * @param onOpenExtra
+</span>156 <span style=''>     *   An extra &lt;b&gt;ItemBehavior&lt;/b&gt; generated when the subject is opened. It can be omitted.
+</span>157 <span style=''>     * @return
+</span>158 <span style=''>     *   A builder for an &lt;b&gt;Openable&lt;/b&gt; that not requires a specific &lt;b&gt;Key&lt;/b&gt; to open the
+</span>159 <span style=''>     *   subject.
+</span>160 <span style=''>     */
+</span>161 <span style=''>    def unlockedBuilder(
+</span>162 <span style=''>      onOpenExtra: Reaction = Reaction.empty
+</span>163 <span style=''>    ): I =&gt; Openable = </span><span style='background: #AEF1AE'>SimpleOpenable(None, onOpenExtra)(_)</span><span style=''>
+</span>164 <span style=''>  }
+</span>165 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -194,15 +201,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          87
+          94
         </td>
         <td>
           374
         </td>
         <td>
-          3346
+          3570
           -
-          3351
+          3575
         </td>
         <td>
           Literal
@@ -218,15 +225,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          96
         </td>
         <td>
           375
         </td>
         <td>
-          3388
+          3612
           -
-          3395
+          3619
         </td>
         <td>
           Select
@@ -242,15 +249,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          98
         </td>
         <td>
           390
         </td>
         <td>
-          3439
+          3663
           -
-          3439
+          3663
         </td>
         <td>
           Apply
@@ -266,15 +273,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          100
         </td>
         <td>
           376
         </td>
         <td>
-          3508
+          3732
           -
-          3515
+          3739
         </td>
         <td>
           Select
@@ -290,15 +297,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          100
         </td>
         <td>
           377
         </td>
         <td>
-          3520
+          3744
           -
-          3548
+          3772
         </td>
         <td>
           Apply
@@ -314,15 +321,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          100
         </td>
         <td>
           378
         </td>
         <td>
-          3552
+          3776
           -
-          3559
+          3783
         </td>
         <td>
           Select
@@ -338,15 +345,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          100
         </td>
         <td>
           379
         </td>
         <td>
-          3489
+          3713
           -
-          3559
+          3783
         </td>
         <td>
           Apply
@@ -362,15 +369,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          101
         </td>
         <td>
           380
         </td>
         <td>
-          3571
+          3795
           -
-          3575
+          3799
         </td>
         <td>
           Select
@@ -386,15 +393,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          104
         </td>
         <td>
           381
         </td>
         <td>
-          3616
+          3840
           -
-          3623
+          3847
         </td>
         <td>
           Select
@@ -410,15 +417,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          105
         </td>
         <td>
           382
         </td>
         <td>
-          3680
+          3904
           -
-          3687
+          3911
         </td>
         <td>
           Select
@@ -434,15 +441,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          105
         </td>
         <td>
           383
         </td>
         <td>
-          3657
+          3881
           -
-          3688
+          3912
         </td>
         <td>
           Apply
@@ -458,15 +465,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          105
         </td>
         <td>
           384
         </td>
         <td>
-          3635
+          3859
           -
-          3689
+          3913
         </td>
         <td>
           Apply
@@ -482,15 +489,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          105
         </td>
         <td>
           385
         </td>
         <td>
-          3635
+          3859
           -
-          3689
+          3913
         </td>
         <td>
           Block
@@ -506,15 +513,15 @@
         </td>
       </tr><tr>
         <td>
-          100
+          107
         </td>
         <td>
           386
         </td>
         <td>
-          3759
+          3983
           -
-          3766
+          3990
         </td>
         <td>
           Select
@@ -530,15 +537,15 @@
         </td>
       </tr><tr>
         <td>
-          100
+          107
         </td>
         <td>
           387
         </td>
         <td>
-          3735
+          3959
           -
-          3767
+          3991
         </td>
         <td>
           Apply
@@ -554,15 +561,15 @@
         </td>
       </tr><tr>
         <td>
-          100
+          107
         </td>
         <td>
           388
         </td>
         <td>
-          3713
+          3937
           -
-          3768
+          3992
         </td>
         <td>
           Apply
@@ -578,15 +585,15 @@
         </td>
       </tr><tr>
         <td>
-          100
+          107
         </td>
         <td>
           389
         </td>
         <td>
-          3713
+          3937
           -
-          3768
+          3992
         </td>
         <td>
           Block
@@ -602,15 +609,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          112
         </td>
         <td>
           391
         </td>
         <td>
-          3912
+          4136
           -
-          3937
+          4161
         </td>
         <td>
           Apply
@@ -626,15 +633,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           392
         </td>
         <td>
-          3981
+          4205
           -
-          3985
+          4209
         </td>
         <td>
           Literal
@@ -650,15 +657,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           393
         </td>
         <td>
-          3992
+          4216
           -
-          3997
+          4221
         </td>
         <td>
           Literal
@@ -674,15 +681,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          113
         </td>
         <td>
           394
         </td>
         <td>
-          3964
+          4188
           -
-          3998
+          4222
         </td>
         <td>
           Apply
@@ -698,15 +705,15 @@
         </td>
       </tr><tr>
         <td>
-          111
+          118
         </td>
         <td>
           395
         </td>
         <td>
-          4056
+          4280
           -
-          4070
+          4294
         </td>
         <td>
           Apply
@@ -722,15 +729,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          121
         </td>
         <td>
           419
         </td>
         <td>
-          4078
+          4302
           -
-          4482
+          4706
         </td>
         <td>
           Apply
@@ -758,15 +765,15 @@ else
         </td>
       </tr><tr>
         <td>
-          115
+          122
         </td>
         <td>
           396
         </td>
         <td>
-          4130
+          4354
           -
-          4142
+          4366
         </td>
         <td>
           Select
@@ -782,15 +789,15 @@ else
         </td>
       </tr><tr>
         <td>
-          115
+          122
         </td>
         <td>
           397
         </td>
         <td>
-          4111
+          4335
           -
-          4143
+          4367
         </td>
         <td>
           Apply
@@ -806,15 +813,15 @@ else
         </td>
       </tr><tr>
         <td>
-          115
+          122
         </td>
         <td>
           398
         </td>
         <td>
-          4170
+          4394
           -
-          4189
+          4413
         </td>
         <td>
           Select
@@ -830,15 +837,15 @@ else
         </td>
       </tr><tr>
         <td>
-          115
+          122
         </td>
         <td>
           399
         </td>
         <td>
-          4166
+          4390
           -
-          4189
+          4413
         </td>
         <td>
           Apply
@@ -854,15 +861,15 @@ else
         </td>
       </tr><tr>
         <td>
-          115
+          122
         </td>
         <td>
           400
         </td>
         <td>
-          4145
+          4369
           -
-          4190
+          4414
         </td>
         <td>
           Apply
@@ -878,15 +885,15 @@ else
         </td>
       </tr><tr>
         <td>
-          115
+          122
         </td>
         <td>
           401
         </td>
         <td>
-          4145
+          4369
           -
-          4190
+          4414
         </td>
         <td>
           Block
@@ -902,15 +909,15 @@ else
         </td>
       </tr><tr>
         <td>
-          116
+          123
         </td>
         <td>
           402
         </td>
         <td>
-          4206
+          4430
           -
-          4220
+          4444
         </td>
         <td>
           Select
@@ -926,15 +933,15 @@ else
         </td>
       </tr><tr>
         <td>
-          116
+          123
         </td>
         <td>
           403
         </td>
         <td>
-          4206
+          4430
           -
-          4220
+          4444
         </td>
         <td>
           Block
@@ -950,15 +957,15 @@ else
         </td>
       </tr><tr>
         <td>
-          117
+          124
         </td>
         <td>
           418
         </td>
         <td>
-          4229
+          4453
           -
-          4482
+          4706
         </td>
         <td>
           Apply
@@ -981,15 +988,15 @@ else
         </td>
       </tr><tr>
         <td>
-          118
+          125
         </td>
         <td>
           404
         </td>
         <td>
-          4267
+          4491
           -
-          4279
+          4503
         </td>
         <td>
           Select
@@ -1005,15 +1012,15 @@ else
         </td>
       </tr><tr>
         <td>
-          118
+          125
         </td>
         <td>
           405
         </td>
         <td>
-          4248
+          4472
           -
-          4280
+          4504
         </td>
         <td>
           Apply
@@ -1029,15 +1036,15 @@ else
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           406
         </td>
         <td>
-          4329
+          4553
           -
-          4348
+          4572
         </td>
         <td>
           Select
@@ -1053,15 +1060,15 @@ else
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           407
         </td>
         <td>
-          4325
+          4549
           -
-          4348
+          4572
         </td>
         <td>
           Apply
@@ -1077,15 +1084,15 @@ else
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           408
         </td>
         <td>
-          4294
+          4518
           -
-          4349
+          4573
         </td>
         <td>
           Apply
@@ -1101,15 +1108,15 @@ else
         </td>
       </tr><tr>
         <td>
-          119
+          126
         </td>
         <td>
           409
         </td>
         <td>
-          4294
+          4518
           -
-          4349
+          4573
         </td>
         <td>
           Block
@@ -1125,15 +1132,15 @@ else
         </td>
       </tr><tr>
         <td>
-          120
+          127
         </td>
         <td>
           410
         </td>
         <td>
-          4365
+          4589
           -
-          4379
+          4603
         </td>
         <td>
           Select
@@ -1149,15 +1156,15 @@ else
         </td>
       </tr><tr>
         <td>
-          120
+          127
         </td>
         <td>
           411
         </td>
         <td>
-          4365
+          4589
           -
-          4379
+          4603
         </td>
         <td>
           Block
@@ -1173,15 +1180,15 @@ else
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           412
         </td>
         <td>
-          4432
+          4656
           -
-          4439
+          4663
         </td>
         <td>
           Select
@@ -1197,15 +1204,15 @@ else
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           413
         </td>
         <td>
-          4415
+          4639
           -
-          4440
+          4664
         </td>
         <td>
           Apply
@@ -1221,15 +1228,15 @@ else
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           414
         </td>
         <td>
-          4393
+          4617
           -
-          4441
+          4665
         </td>
         <td>
           Apply
@@ -1245,15 +1252,15 @@ else
         </td>
       </tr><tr>
         <td>
-          121
+          128
         </td>
         <td>
           417
         </td>
         <td>
-          4388
+          4612
           -
-          4482
+          4706
         </td>
         <td>
           Apply
@@ -1271,15 +1278,15 @@ else
         </td>
       </tr><tr>
         <td>
-          122
+          129
         </td>
         <td>
           415
         </td>
         <td>
-          4455
+          4679
           -
-          4466
+          4690
         </td>
         <td>
           Select
@@ -1295,15 +1302,15 @@ else
         </td>
       </tr><tr>
         <td>
-          122
+          129
         </td>
         <td>
           416
         </td>
         <td>
-          4450
+          4674
           -
-          4482
+          4706
         </td>
         <td>
           Apply
@@ -1319,15 +1326,15 @@ else
         </td>
       </tr><tr>
         <td>
-          144
+          151
         </td>
         <td>
           420
         </td>
         <td>
-          5113
+          5337
           -
-          5162
+          5386
         </td>
         <td>
           Apply
@@ -1343,15 +1350,15 @@ else
         </td>
       </tr><tr>
         <td>
-          156
+          163
         </td>
         <td>
           421
         </td>
         <td>
-          5620
+          5844
           -
-          5656
+          5880
         </td>
         <td>
           Apply

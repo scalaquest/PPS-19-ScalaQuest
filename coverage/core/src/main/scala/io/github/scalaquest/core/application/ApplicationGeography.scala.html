@@ -22,17 +22,24 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.application
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Model, RoomRef}
-</span>4 <span style=''>
-</span>5 <span style=''>abstract class ApplicationGeography[RM &lt;: Model#Room] {
-</span>6 <span style=''>  def allTheRooms: Set[RM]
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>  def checkRooms: Boolean = </span><span style='background: #F0ADAD'>allTheRooms.groupBy(_.ref).size == allTheRooms.size</span><span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.application
 </span>9 <span style=''>
-</span>10 <span style=''>  def refToRoom: Map[RoomRef, RM] = </span><span style='background: #F0ADAD'>allTheRooms.map(r =&gt; r.ref -&gt; r).toMap</span><span style=''>
-</span>11 <span style=''>}
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Model, RoomRef}
+</span>11 <span style=''>
+</span>12 <span style=''>abstract class ApplicationGeography[RM &lt;: Model#Room] {
+</span>13 <span style=''>  def allTheRooms: Set[RM]
+</span>14 <span style=''>
+</span>15 <span style=''>  def checkRooms: Boolean = </span><span style='background: #F0ADAD'>allTheRooms.groupBy(_.ref).size == allTheRooms.size</span><span style=''>
+</span>16 <span style=''>
+</span>17 <span style=''>  def refToRoom: Map[RoomRef, RM] = </span><span style='background: #F0ADAD'>allTheRooms.map(r =&gt; r.ref -&gt; r).toMap</span><span style=''>
+</span>18 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -47,15 +54,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           4
         </td>
         <td>
-          236
+          460
           -
-          241
+          465
         </td>
         <td>
           Select
@@ -71,15 +78,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           5
         </td>
         <td>
-          251
+          475
           -
-          267
+          491
         </td>
         <td>
           Select
@@ -95,15 +102,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          15
         </td>
         <td>
           6
         </td>
         <td>
-          216
+          440
           -
-          267
+          491
         </td>
         <td>
           Apply
@@ -119,15 +126,15 @@
         </td>
       </tr><tr>
         <td>
-          10
+          17
         </td>
         <td>
           7
         </td>
         <td>
-          326
+          550
           -
-          336
+          560
         </td>
         <td>
           Apply
@@ -143,15 +150,15 @@
         </td>
       </tr><tr>
         <td>
-          10
+          17
         </td>
         <td>
           8
         </td>
         <td>
-          338
+          562
           -
-          338
+          562
         </td>
         <td>
           TypeApply
@@ -167,15 +174,15 @@
         </td>
       </tr><tr>
         <td>
-          10
+          17
         </td>
         <td>
           9
         </td>
         <td>
-          305
+          529
           -
-          343
+          567
         </td>
         <td>
           ApplyToImplicitArgs

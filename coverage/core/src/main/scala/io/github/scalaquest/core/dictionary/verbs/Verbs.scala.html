@@ -22,39 +22,46 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.dictionary.verbs
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Action
-</span>4 <span style=''>
-</span>5 <span style=''>abstract class BaseVerb {
-</span>6 <span style=''>  def name: String
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>  def prep: Option[String]
-</span>9 <span style=''>}
-</span>10 <span style=''>
-</span>11 <span style=''>// Trying to avoid to repeat all the mixed in traits for 3 times
-</span>12 <span style=''>sealed abstract class EnhancedVerb extends BaseVerb with ClauseOps with Meaning
-</span>13 <span style=''>
-</span>14 <span style=''>final case class Intransitive(name: String, action: Action, prep: Option[String] = None)
-</span>15 <span style=''>  extends EnhancedVerb {
-</span>16 <span style=''>
-</span>17 <span style=''>  override def arity: Int = </span><span style='background: #AEF1AE'>1</span><span style=''>
-</span>18 <span style=''>}
-</span>19 <span style=''>
-</span>20 <span style=''>final case class Transitive(name: String, action: Action, prep: Option[String] = None)
-</span>21 <span style=''>  extends EnhancedVerb {
-</span>22 <span style=''>
-</span>23 <span style=''>  override def arity: Int = </span><span style='background: #AEF1AE'>2</span><span style=''>
-</span>24 <span style=''>}
-</span>25 <span style=''>
-</span>26 <span style=''>final case class Ditransitive(
-</span>27 <span style=''>  name: String,
-</span>28 <span style=''>  action: Action,
-</span>29 <span style=''>  prep: Option[String] = None
-</span>30 <span style=''>) extends EnhancedVerb {
-</span>31 <span style=''>
-</span>32 <span style=''>  override def arity: Int = </span><span style='background: #AEF1AE'>3</span><span style=''>
-</span>33 <span style=''>}
+</span>8 <span style=''>package io.github.scalaquest.core.dictionary.verbs
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Action
+</span>11 <span style=''>
+</span>12 <span style=''>abstract class BaseVerb {
+</span>13 <span style=''>  def name: String
+</span>14 <span style=''>
+</span>15 <span style=''>  def prep: Option[String]
+</span>16 <span style=''>}
+</span>17 <span style=''>
+</span>18 <span style=''>// Trying to avoid to repeat all the mixed in traits for 3 times
+</span>19 <span style=''>sealed abstract class EnhancedVerb extends BaseVerb with ClauseOps with Meaning
+</span>20 <span style=''>
+</span>21 <span style=''>final case class Intransitive(name: String, action: Action, prep: Option[String] = None)
+</span>22 <span style=''>  extends EnhancedVerb {
+</span>23 <span style=''>
+</span>24 <span style=''>  override def arity: Int = </span><span style='background: #AEF1AE'>1</span><span style=''>
+</span>25 <span style=''>}
+</span>26 <span style=''>
+</span>27 <span style=''>final case class Transitive(name: String, action: Action, prep: Option[String] = None)
+</span>28 <span style=''>  extends EnhancedVerb {
+</span>29 <span style=''>
+</span>30 <span style=''>  override def arity: Int = </span><span style='background: #AEF1AE'>2</span><span style=''>
+</span>31 <span style=''>}
+</span>32 <span style=''>
+</span>33 <span style=''>final case class Ditransitive(
+</span>34 <span style=''>  name: String,
+</span>35 <span style=''>  action: Action,
+</span>36 <span style=''>  prep: Option[String] = None
+</span>37 <span style=''>) extends EnhancedVerb {
+</span>38 <span style=''>
+</span>39 <span style=''>  override def arity: Int = </span><span style='background: #AEF1AE'>3</span><span style=''>
+</span>40 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -69,15 +76,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           114
         </td>
         <td>
-          464
+          688
           -
-          465
+          689
         </td>
         <td>
           Literal
@@ -93,15 +100,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           115
         </td>
         <td>
-          610
+          834
           -
-          611
+          835
         </td>
         <td>
           Literal
@@ -117,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          39
         </td>
         <td>
           116
         </td>
         <td>
-          764
+          988
           -
-          765
+          989
         </td>
         <td>
           Literal

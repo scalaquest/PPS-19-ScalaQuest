@@ -22,69 +22,76 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.InspectBag
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;InspectableBag
-</span>10 <span style=''> * GroundBehavior&lt;/b&gt;.
-</span>11 <span style=''> */
-</span>12 <span style=''>trait InspectableBagExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
-</span>13 <span style=''>
-</span>14 <span style=''>  /**
-</span>15 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to know what items are contained into the
-</span>16 <span style=''>   * bag.
-</span>17 <span style=''>   */
-</span>18 <span style=''>  abstract class InspectableBag extends GroundBehavior {
-</span>19 <span style=''>
-</span>20 <span style=''>    /**
-</span>21 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user the items contained into the bag.
-</span>22 <span style=''>     * @return
-</span>23 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user the items contained into the bag.
-</span>24 <span style=''>     */
-</span>25 <span style=''>    def inspectBag: Reaction
-</span>26 <span style=''>  }
-</span>27 <span style=''>
-</span>28 <span style=''>  /**
-</span>29 <span style=''>   * A standard implementation for &lt;b&gt;InspectableBag&lt;/b&gt;.
-</span>30 <span style=''>   *
-</span>31 <span style=''>   * @param onInspectExtra
-</span>32 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspects the bag. It can be
-</span>33 <span style=''>   *   omitted.
-</span>34 <span style=''>   */
-</span>35 <span style=''>  case class SimpleInspectableBag(onInspectExtra: Reaction = Reaction.empty)
-</span>36 <span style=''>    extends InspectableBag {
-</span>37 <span style=''>
-</span>38 <span style=''>    override def triggers: GroundTriggers = { case (InspectBag, _) =&gt; </span><span style='background: #AEF1AE'>inspectBag</span><span style=''> }
-</span>39 <span style=''>
-</span>40 <span style=''>    override def inspectBag: Reaction =
-</span>41 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>42 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
-</span>43 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.addMessage(CMessages.InspectedBag(s1.bag))
-</span>44 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onInspectExtra
-</span>45 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
-</span>46 <span style=''>  }
-</span>47 <span style=''>
-</span>48 <span style=''>  /**
-</span>49 <span style=''>   * Companion object for &lt;b&gt;InspectableBag&lt;/b&gt;.
-</span>50 <span style=''>   */
-</span>51 <span style=''>  object InspectableBag {
-</span>52 <span style=''>
-</span>53 <span style=''>    /**
-</span>54 <span style=''>     * Shortcut for the standard implementation.
-</span>55 <span style=''>     * @param onInspectExtra
-</span>56 <span style=''>     *   An additional &lt;b&gt;Reaction&lt;/b&gt; generated when user inspects the bag.
-</span>57 <span style=''>     * @return
-</span>58 <span style=''>     *   An instance of &lt;b&gt;SimpleInspectableBag&lt;/b&gt;.
-</span>59 <span style=''>     */
-</span>60 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
-</span>61 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableBag(onInspectExtra)</span><span style=''>
-</span>62 <span style=''>  }
-</span>63 <span style=''>}
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.InspectBag
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>14 <span style=''>
+</span>15 <span style=''>/**
+</span>16 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;InspectableBag
+</span>17 <span style=''> * GroundBehavior&lt;/b&gt;.
+</span>18 <span style=''> */
+</span>19 <span style=''>trait InspectableBagExt extends BehaviorBasedModel with CMessagesExt with CReactionsExt {
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to know what items are contained into the
+</span>23 <span style=''>   * bag.
+</span>24 <span style=''>   */
+</span>25 <span style=''>  abstract class InspectableBag extends GroundBehavior {
+</span>26 <span style=''>
+</span>27 <span style=''>    /**
+</span>28 <span style=''>     * A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user the items contained into the bag.
+</span>29 <span style=''>     * @return
+</span>30 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that communicates to the user the items contained into the bag.
+</span>31 <span style=''>     */
+</span>32 <span style=''>    def inspectBag: Reaction
+</span>33 <span style=''>  }
+</span>34 <span style=''>
+</span>35 <span style=''>  /**
+</span>36 <span style=''>   * A standard implementation for &lt;b&gt;InspectableBag&lt;/b&gt;.
+</span>37 <span style=''>   *
+</span>38 <span style=''>   * @param onInspectExtra
+</span>39 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully inspects the bag. It can be
+</span>40 <span style=''>   *   omitted.
+</span>41 <span style=''>   */
+</span>42 <span style=''>  case class SimpleInspectableBag(onInspectExtra: Reaction = Reaction.empty)
+</span>43 <span style=''>    extends InspectableBag {
+</span>44 <span style=''>
+</span>45 <span style=''>    override def triggers: GroundTriggers = { case (InspectBag, _) =&gt; </span><span style='background: #AEF1AE'>inspectBag</span><span style=''> }
+</span>46 <span style=''>
+</span>47 <span style=''>    override def inspectBag: Reaction =
+</span>48 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>49 <span style=''></span><span style='background: #AEF1AE'>        s1 &lt;- Reaction.empty
+</span>50 <span style=''></span><span style='background: #AEF1AE'>        _  &lt;- CReactions.addMessage(CMessages.InspectedBag(s1.bag))
+</span>51 <span style=''></span><span style='background: #AEF1AE'>        s2 &lt;- onInspectExtra
+</span>52 <span style=''></span><span style='background: #AEF1AE'>      } yield s2</span><span style=''>
+</span>53 <span style=''>  }
+</span>54 <span style=''>
+</span>55 <span style=''>  /**
+</span>56 <span style=''>   * Companion object for &lt;b&gt;InspectableBag&lt;/b&gt;.
+</span>57 <span style=''>   */
+</span>58 <span style=''>  object InspectableBag {
+</span>59 <span style=''>
+</span>60 <span style=''>    /**
+</span>61 <span style=''>     * Shortcut for the standard implementation.
+</span>62 <span style=''>     * @param onInspectExtra
+</span>63 <span style=''>     *   An additional &lt;b&gt;Reaction&lt;/b&gt; generated when user inspects the bag.
+</span>64 <span style=''>     * @return
+</span>65 <span style=''>     *   An instance of &lt;b&gt;SimpleInspectableBag&lt;/b&gt;.
+</span>66 <span style=''>     */
+</span>67 <span style=''>    def apply(onInspectExtra: Reaction = Reaction.empty): InspectableBag =
+</span>68 <span style=''>      </span><span style='background: #AEF1AE'>SimpleInspectableBag(onInspectExtra)</span><span style=''>
+</span>69 <span style=''>  }
+</span>70 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -99,15 +106,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           279
         </td>
         <td>
-          1439
+          1663
           -
-          1449
+          1673
         </td>
         <td>
           Select
@@ -123,15 +130,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           280
         </td>
         <td>
-          1413
+          1637
           -
-          1413
+          1637
         </td>
         <td>
           Apply
@@ -147,15 +154,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           281
         </td>
         <td>
-          1519
+          1743
           -
-          1533
+          1757
         </td>
         <td>
           Select
@@ -171,15 +178,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          49
         </td>
         <td>
           288
         </td>
         <td>
-          1499
+          1723
           -
-          1647
+          1871
         </td>
         <td>
           Apply
@@ -197,15 +204,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           282
         </td>
         <td>
-          1593
+          1817
           -
-          1599
+          1823
         </td>
         <td>
           Select
@@ -221,15 +228,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           283
         </td>
         <td>
-          1570
+          1794
           -
-          1600
+          1824
         </td>
         <td>
           Apply
@@ -245,15 +252,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           284
         </td>
         <td>
-          1548
+          1772
           -
-          1601
+          1825
         </td>
         <td>
           Apply
@@ -269,15 +276,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          50
         </td>
         <td>
           287
         </td>
         <td>
-          1542
+          1766
           -
-          1647
+          1871
         </td>
         <td>
           Apply
@@ -295,15 +302,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           285
         </td>
         <td>
-          1616
+          1840
           -
-          1630
+          1854
         </td>
         <td>
           Select
@@ -319,15 +326,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          51
         </td>
         <td>
           286
         </td>
         <td>
-          1610
+          1834
           -
-          1647
+          1871
         </td>
         <td>
           Apply
@@ -343,15 +350,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          68
         </td>
         <td>
           289
         </td>
         <td>
-          2061
+          2285
           -
-          2097
+          2321
         </td>
         <td>
           Apply

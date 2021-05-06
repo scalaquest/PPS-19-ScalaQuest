@@ -22,48 +22,55 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.interpreter
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{ItemRef, Model}
-</span>4 <span style=''>
-</span>5 <span style=''>/**
-</span>6 <span style=''> * An utility to extract an [[Model.Item]], given its [[ItemRef]]. The [[RefToItem::unapply()]]
-</span>7 <span style=''> * functionality is exploited, as this utility is used in match cases.
-</span>8 <span style=''> * @tparam I
-</span>9 <span style=''> *   The concrete type of the [[Model.Item]] in use. It should be a subtype ofderived from
-</span>10 <span style=''> *   [[Model.Item]].
-</span>11 <span style=''> */
-</span>12 <span style=''>trait RefToItem[I] {
-</span>13 <span style=''>  def unapply(ref: ItemRef): Option[I]
-</span>14 <span style=''>}
-</span>15 <span style=''>
-</span>16 <span style=''>/**
-</span>17 <span style=''> * Companion object for the [[RefToItem]] trait. It exposes an [[RefToItem::apply()]] to build the
-</span>18 <span style=''> * [[RefToItem]] instance from a dictionary of [[Model.Item]] s.
-</span>19 <span style=''> */
-</span>20 <span style=''>object RefToItem {
-</span>21 <span style=''>
-</span>22 <span style=''>  /**
-</span>23 <span style=''>   * Used to build the [[RefToItem]] instance from a dictionary of [[Model.Item]], making
-</span>24 <span style=''>   * transparent the presence of it during its use.
-</span>25 <span style=''>   * @param model
-</span>26 <span style=''>   *   The concrete instance of the [[Model]] in use.
-</span>27 <span style=''>   * @param itemsDict
-</span>28 <span style=''>   *   A [[Map]] that indicates the [[ItemRef]] of each ot the [[Model.Item]] in use. The
-</span>29 <span style=''>   *   [[Model.Item]] type must be derived from the `model` passed as parameter.
-</span>30 <span style=''>   * @tparam M
-</span>31 <span style=''>   *   The concrete type of the [[Model]] in use.
-</span>32 <span style=''>   * @return
-</span>33 <span style=''>   *   An instance of [[RefToItem]], using transparently the given item dictionary to match
-</span>34 <span style=''>   *   [[ItemRef]] - [[Model.Item]] links.
-</span>35 <span style=''>   */
-</span>36 <span style=''>  def apply[M &lt;: Model](model: M)(itemsDict: Map[ItemRef, model.I]): RefToItem[model.I] = {
-</span>37 <span style=''>    case class SimpleRefToItem(itemsDict: Map[ItemRef, model.I]) extends RefToItem[model.I] {
-</span>38 <span style=''>      override def unapply(ref: ItemRef): Option[model.I] = </span><span style='background: #AEF1AE'>itemsDict get ref</span><span style=''>
-</span>39 <span style=''>    }
-</span>40 <span style=''>    </span><span style='background: #AEF1AE'>SimpleRefToItem(itemsDict)</span><span style=''>
-</span>41 <span style=''>  }
-</span>42 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.interpreter
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{ItemRef, Model}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * An utility to extract an [[Model.Item]], given its [[ItemRef]]. The [[RefToItem::unapply()]]
+</span>14 <span style=''> * functionality is exploited, as this utility is used in match cases.
+</span>15 <span style=''> * @tparam I
+</span>16 <span style=''> *   The concrete type of the [[Model.Item]] in use. It should be a subtype ofderived from
+</span>17 <span style=''> *   [[Model.Item]].
+</span>18 <span style=''> */
+</span>19 <span style=''>trait RefToItem[I] {
+</span>20 <span style=''>  def unapply(ref: ItemRef): Option[I]
+</span>21 <span style=''>}
+</span>22 <span style=''>
+</span>23 <span style=''>/**
+</span>24 <span style=''> * Companion object for the [[RefToItem]] trait. It exposes an [[RefToItem::apply()]] to build the
+</span>25 <span style=''> * [[RefToItem]] instance from a dictionary of [[Model.Item]] s.
+</span>26 <span style=''> */
+</span>27 <span style=''>object RefToItem {
+</span>28 <span style=''>
+</span>29 <span style=''>  /**
+</span>30 <span style=''>   * Used to build the [[RefToItem]] instance from a dictionary of [[Model.Item]], making
+</span>31 <span style=''>   * transparent the presence of it during its use.
+</span>32 <span style=''>   * @param model
+</span>33 <span style=''>   *   The concrete instance of the [[Model]] in use.
+</span>34 <span style=''>   * @param itemsDict
+</span>35 <span style=''>   *   A [[Map]] that indicates the [[ItemRef]] of each ot the [[Model.Item]] in use. The
+</span>36 <span style=''>   *   [[Model.Item]] type must be derived from the `model` passed as parameter.
+</span>37 <span style=''>   * @tparam M
+</span>38 <span style=''>   *   The concrete type of the [[Model]] in use.
+</span>39 <span style=''>   * @return
+</span>40 <span style=''>   *   An instance of [[RefToItem]], using transparently the given item dictionary to match
+</span>41 <span style=''>   *   [[ItemRef]] - [[Model.Item]] links.
+</span>42 <span style=''>   */
+</span>43 <span style=''>  def apply[M &lt;: Model](model: M)(itemsDict: Map[ItemRef, model.I]): RefToItem[model.I] = {
+</span>44 <span style=''>    case class SimpleRefToItem(itemsDict: Map[ItemRef, model.I]) extends RefToItem[model.I] {
+</span>45 <span style=''>      override def unapply(ref: ItemRef): Option[model.I] = </span><span style='background: #AEF1AE'>itemsDict get ref</span><span style=''>
+</span>46 <span style=''>    }
+</span>47 <span style=''>    </span><span style='background: #AEF1AE'>SimpleRefToItem(itemsDict)</span><span style=''>
+</span>48 <span style=''>  }
+</span>49 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -78,15 +85,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          38
+          45
         </td>
         <td>
           798
         </td>
         <td>
-          1546
+          1770
           -
-          1563
+          1787
         </td>
         <td>
           Apply
@@ -102,15 +109,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          47
         </td>
         <td>
           799
         </td>
         <td>
-          1574
+          1798
           -
-          1600
+          1824
         </td>
         <td>
           Apply

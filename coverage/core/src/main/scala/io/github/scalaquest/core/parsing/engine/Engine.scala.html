@@ -22,68 +22,75 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine
-</span>4 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * A data structure that contains the result of a Prolog query being evaluated as true.
-</span>8 <span style=''> */
-</span>9 <span style=''>trait Solution {
-</span>10 <span style=''>
-</span>11 <span style=''>  /** Returns the computed solution. */
-</span>12 <span style=''>  def body: Term
-</span>13 <span style=''>
-</span>14 <span style=''>  /**
-</span>15 <span style=''>   * Allows to retrieve the value of a given variable in the substitution.
-</span>16 <span style=''>   * @param variable
-</span>17 <span style=''>   *   the variable to look for
-</span>18 <span style=''>   * @return
-</span>19 <span style=''>   *   optionally, the value of the variable in the substitution.
-</span>20 <span style=''>   */
-</span>21 <span style=''>  def getVariable(variable: Variable): Option[Term]
-</span>22 <span style=''>}
-</span>23 <span style=''>
-</span>24 <span style=''>/**
-</span>25 <span style=''> * A generic Prolog engine. It allows to execute queries and collect the results.
-</span>26 <span style=''> *
-</span>27 <span style=''> * Example:
-</span>28 <span style=''> * {{{
-</span>29 <span style=''> *   val theory = Theory(
-</span>30 <span style=''> *     &quot;hello(mario).&quot; +
-</span>31 <span style=''> *     &quot;hello(luigi).&quot; +
-</span>32 <span style=''> *     &quot;hello(peach).&quot; +
-</span>33 <span style=''> *     &quot;hello(daisy).&quot;
-</span>34 <span style=''> *   )
-</span>35 <span style=''> *
-</span>36 <span style=''> *   val characters = for {
-</span>37 <span style=''> *     s &lt;- Engine(theory).solve(Compound(Atom(&quot;hello&quot;), Variable(&quot;X&quot;)))
-</span>38 <span style=''> *     x &lt;- s.getVariable(Variable(&quot;X&quot;))
-</span>39 <span style=''> *   } yield x
-</span>40 <span style=''> *
-</span>41 <span style=''> *   assert(characters == Seq(&quot;mario&quot;, &quot;luigi&quot;, &quot;peach&quot;, &quot;daisy&quot;)) // true
-</span>42 <span style=''> * }}}
-</span>43 <span style=''> */
-</span>44 <span style=''>trait Engine {
-</span>45 <span style=''>
-</span>46 <span style=''>  /**
-</span>47 <span style=''>   * Allows to query the engine for a term, it will return a sequence of solutions being evaluated
-</span>48 <span style=''>   * as true.
-</span>49 <span style=''>   * @param term
-</span>50 <span style=''>   *   the argument of the query
-</span>51 <span style=''>   * @return
-</span>52 <span style=''>   *   the sequence of positive solutions.
-</span>53 <span style=''>   */
-</span>54 <span style=''>  def solve(term: Term): Seq[Solution]
-</span>55 <span style=''>}
-</span>56 <span style=''>
-</span>57 <span style=''>object Engine {
-</span>58 <span style=''>
-</span>59 <span style=''>  /** Creates an [[Engine]] with the provided theory and libraries. */
-</span>60 <span style=''>  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
-</span>61 <span style=''>    </span><span style='background: #AEF1AE'>TuPrologEngine(theory, libraries)</span><span style=''>
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.engine
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.parsing.engine.tuprolog.TuPrologEngine
+</span>11 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
+</span>12 <span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * A data structure that contains the result of a Prolog query being evaluated as true.
+</span>15 <span style=''> */
+</span>16 <span style=''>trait Solution {
+</span>17 <span style=''>
+</span>18 <span style=''>  /** Returns the computed solution. */
+</span>19 <span style=''>  def body: Term
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * Allows to retrieve the value of a given variable in the substitution.
+</span>23 <span style=''>   * @param variable
+</span>24 <span style=''>   *   the variable to look for
+</span>25 <span style=''>   * @return
+</span>26 <span style=''>   *   optionally, the value of the variable in the substitution.
+</span>27 <span style=''>   */
+</span>28 <span style=''>  def getVariable(variable: Variable): Option[Term]
+</span>29 <span style=''>}
+</span>30 <span style=''>
+</span>31 <span style=''>/**
+</span>32 <span style=''> * A generic Prolog engine. It allows to execute queries and collect the results.
+</span>33 <span style=''> *
+</span>34 <span style=''> * Example:
+</span>35 <span style=''> * {{{
+</span>36 <span style=''> *   val theory = Theory(
+</span>37 <span style=''> *     &quot;hello(mario).&quot; +
+</span>38 <span style=''> *     &quot;hello(luigi).&quot; +
+</span>39 <span style=''> *     &quot;hello(peach).&quot; +
+</span>40 <span style=''> *     &quot;hello(daisy).&quot;
+</span>41 <span style=''> *   )
+</span>42 <span style=''> *
+</span>43 <span style=''> *   val characters = for {
+</span>44 <span style=''> *     s &lt;- Engine(theory).solve(Compound(Atom(&quot;hello&quot;), Variable(&quot;X&quot;)))
+</span>45 <span style=''> *     x &lt;- s.getVariable(Variable(&quot;X&quot;))
+</span>46 <span style=''> *   } yield x
+</span>47 <span style=''> *
+</span>48 <span style=''> *   assert(characters == Seq(&quot;mario&quot;, &quot;luigi&quot;, &quot;peach&quot;, &quot;daisy&quot;)) // true
+</span>49 <span style=''> * }}}
+</span>50 <span style=''> */
+</span>51 <span style=''>trait Engine {
+</span>52 <span style=''>
+</span>53 <span style=''>  /**
+</span>54 <span style=''>   * Allows to query the engine for a term, it will return a sequence of solutions being evaluated
+</span>55 <span style=''>   * as true.
+</span>56 <span style=''>   * @param term
+</span>57 <span style=''>   *   the argument of the query
+</span>58 <span style=''>   * @return
+</span>59 <span style=''>   *   the sequence of positive solutions.
+</span>60 <span style=''>   */
+</span>61 <span style=''>  def solve(term: Term): Seq[Solution]
 </span>62 <span style=''>}
+</span>63 <span style=''>
+</span>64 <span style=''>object Engine {
+</span>65 <span style=''>
+</span>66 <span style=''>  /** Creates an [[Engine]] with the provided theory and libraries. */
+</span>67 <span style=''>  def apply(theory: Theory, libraries: Set[Library] = Set()): Engine =
+</span>68 <span style=''>    </span><span style='background: #AEF1AE'>TuPrologEngine(theory, libraries)</span><span style=''>
+</span>69 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -98,15 +105,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          61
+          68
         </td>
         <td>
           687
         </td>
         <td>
-          1574
+          1798
           -
-          1607
+          1831
         </td>
         <td>
           Apply

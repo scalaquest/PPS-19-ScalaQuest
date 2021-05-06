@@ -22,82 +22,89 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.Direction
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>5 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Go
-</span>6 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
-</span>7 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
-</span>8 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.impl
 </span>9 <span style=''>
-</span>10 <span style=''>/**
-</span>11 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Navigable
-</span>12 <span style=''> * GroundBehavior&lt;/b&gt;.
-</span>13 <span style=''> */
-</span>14 <span style=''>trait NavigableExt
-</span>15 <span style=''>  extends BehaviorBasedModel
-</span>16 <span style=''>  with CMessagesExt
-</span>17 <span style=''>  with CReactionsExt
-</span>18 <span style=''>  with StateUtilsExt {
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to change the location using
-</span>22 <span style=''>   * &lt;b&gt;Directions&lt;b&gt;.
-</span>23 <span style=''>   */
-</span>24 <span style=''>  abstract class Navigable extends GroundBehavior {
-</span>25 <span style=''>
-</span>26 <span style=''>    /**
-</span>27 <span style=''>     * Sets the location of the player to the given &lt;b&gt;Room&lt;/b&gt;.
-</span>28 <span style=''>     * @param targetRoom
-</span>29 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; into which move the player.
-</span>30 <span style=''>     * @return
-</span>31 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the location of the player to the given &lt;b&gt;Room&lt;/b&gt;.
-</span>32 <span style=''>     */
-</span>33 <span style=''>    def movePlayer(targetRoom: RM): Reaction
-</span>34 <span style=''>  }
-</span>35 <span style=''>
-</span>36 <span style=''>  /**
-</span>37 <span style=''>   * Standard implementation of &lt;b&gt;Navigable&lt;/b&gt;.
-</span>38 <span style=''>   *
-</span>39 <span style=''>   * @param onNavigateExtra
-</span>40 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully navigate in a new &lt;b&gt;Room&lt;/b&gt;. It
-</span>41 <span style=''>   *   can be omitted.
-</span>42 <span style=''>   */
-</span>43 <span style=''>  case class SimpleNavigable(onNavigateExtra: Reaction = Reaction.empty) extends Navigable {
-</span>44 <span style=''>
-</span>45 <span style=''>    override def triggers: GroundTriggers = { case (Go(d), s) =&gt;
-</span>46 <span style=''>      </span><span style='background: #AEF1AE'>s.locationNeighbor(d) map movePlayer getOrElse failedToNavigate(d)</span><span style=''>
-</span>47 <span style=''>    }
-</span>48 <span style=''>
-</span>49 <span style=''>    override def movePlayer(targetRoom: RM): Reaction =
-</span>50 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>51 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.switchLocation(targetRoom)
-</span>52 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(CMessages.Navigated(targetRoom))
-</span>53 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- onNavigateExtra
-</span>54 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.Direction
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>12 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.actioning.CActions.Go
+</span>13 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.pushing.CMessagesExt
+</span>14 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.reactions.CReactionsExt
+</span>15 <span style=''>import io.github.scalaquest.core.model.behaviorBased.simple.impl.StateUtilsExt
+</span>16 <span style=''>
+</span>17 <span style=''>/**
+</span>18 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Navigable
+</span>19 <span style=''> * GroundBehavior&lt;/b&gt;.
+</span>20 <span style=''> */
+</span>21 <span style=''>trait NavigableExt
+</span>22 <span style=''>  extends BehaviorBasedModel
+</span>23 <span style=''>  with CMessagesExt
+</span>24 <span style=''>  with CReactionsExt
+</span>25 <span style=''>  with StateUtilsExt {
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * A &lt;b&gt;GroundBehavior&lt;/b&gt; that enables the possibility to change the location using
+</span>29 <span style=''>   * &lt;b&gt;Directions&lt;b&gt;.
+</span>30 <span style=''>   */
+</span>31 <span style=''>  abstract class Navigable extends GroundBehavior {
+</span>32 <span style=''>
+</span>33 <span style=''>    /**
+</span>34 <span style=''>     * Sets the location of the player to the given &lt;b&gt;Room&lt;/b&gt;.
+</span>35 <span style=''>     * @param targetRoom
+</span>36 <span style=''>     *   The &lt;b&gt;Room&lt;/b&gt; into which move the player.
+</span>37 <span style=''>     * @return
+</span>38 <span style=''>     *   A &lt;b&gt;Reaction&lt;/b&gt; that sets the location of the player to the given &lt;b&gt;Room&lt;/b&gt;.
+</span>39 <span style=''>     */
+</span>40 <span style=''>    def movePlayer(targetRoom: RM): Reaction
+</span>41 <span style=''>  }
+</span>42 <span style=''>
+</span>43 <span style=''>  /**
+</span>44 <span style=''>   * Standard implementation of &lt;b&gt;Navigable&lt;/b&gt;.
+</span>45 <span style=''>   *
+</span>46 <span style=''>   * @param onNavigateExtra
+</span>47 <span style=''>   *   &lt;b&gt;Reaction&lt;/b&gt; to be executed when the player successfully navigate in a new &lt;b&gt;Room&lt;/b&gt;. It
+</span>48 <span style=''>   *   can be omitted.
+</span>49 <span style=''>   */
+</span>50 <span style=''>  case class SimpleNavigable(onNavigateExtra: Reaction = Reaction.empty) extends Navigable {
+</span>51 <span style=''>
+</span>52 <span style=''>    override def triggers: GroundTriggers = { case (Go(d), s) =&gt;
+</span>53 <span style=''>      </span><span style='background: #AEF1AE'>s.locationNeighbor(d) map movePlayer getOrElse failedToNavigate(d)</span><span style=''>
+</span>54 <span style=''>    }
 </span>55 <span style=''>
-</span>56 <span style=''>    def failedToNavigate(direction: Direction): Reaction =
-</span>57 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.appendMessage(CMessages.FailedToNavigate(direction))(Reaction.empty)</span><span style=''>
-</span>58 <span style=''>  }
-</span>59 <span style=''>
-</span>60 <span style=''>  /**
-</span>61 <span style=''>   * Companion object for &lt;b&gt;Navigable&lt;/b&gt;.
-</span>62 <span style=''>   */
-</span>63 <span style=''>  object Navigable {
-</span>64 <span style=''>
-</span>65 <span style=''>    /**
-</span>66 <span style=''>     * Shortcut for the standard implementation.
-</span>67 <span style=''>     * @param onNavigateExtra
-</span>68 <span style=''>     *   &lt;b&gt;Reaction&lt;b&gt; to be executed when the player successfully navigate in a new &lt;b&gt;Room&lt;/b&gt;.
-</span>69 <span style=''>     *   It can be omitted.
-</span>70 <span style=''>     * @return
-</span>71 <span style=''>     *   The instance of &lt;b&gt;Navigable&lt;/b&gt;.
-</span>72 <span style=''>     */
-</span>73 <span style=''>    def apply(onNavigateExtra: Reaction = Reaction.empty): Navigable =
-</span>74 <span style=''>      </span><span style='background: #AEF1AE'>SimpleNavigable(onNavigateExtra)</span><span style=''>
-</span>75 <span style=''>  }
-</span>76 <span style=''>}
+</span>56 <span style=''>    override def movePlayer(targetRoom: RM): Reaction =
+</span>57 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>58 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.switchLocation(targetRoom)
+</span>59 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- CReactions.addMessage(CMessages.Navigated(targetRoom))
+</span>60 <span style=''></span><span style='background: #AEF1AE'>        s &lt;- onNavigateExtra
+</span>61 <span style=''></span><span style='background: #AEF1AE'>      } yield s</span><span style=''>
+</span>62 <span style=''>
+</span>63 <span style=''>    def failedToNavigate(direction: Direction): Reaction =
+</span>64 <span style=''>      </span><span style='background: #AEF1AE'>Reaction.appendMessage(CMessages.FailedToNavigate(direction))(Reaction.empty)</span><span style=''>
+</span>65 <span style=''>  }
+</span>66 <span style=''>
+</span>67 <span style=''>  /**
+</span>68 <span style=''>   * Companion object for &lt;b&gt;Navigable&lt;/b&gt;.
+</span>69 <span style=''>   */
+</span>70 <span style=''>  object Navigable {
+</span>71 <span style=''>
+</span>72 <span style=''>    /**
+</span>73 <span style=''>     * Shortcut for the standard implementation.
+</span>74 <span style=''>     * @param onNavigateExtra
+</span>75 <span style=''>     *   &lt;b&gt;Reaction&lt;b&gt; to be executed when the player successfully navigate in a new &lt;b&gt;Room&lt;/b&gt;.
+</span>76 <span style=''>     *   It can be omitted.
+</span>77 <span style=''>     * @return
+</span>78 <span style=''>     *   The instance of &lt;b&gt;Navigable&lt;/b&gt;.
+</span>79 <span style=''>     */
+</span>80 <span style=''>    def apply(onNavigateExtra: Reaction = Reaction.empty): Navigable =
+</span>81 <span style=''>      </span><span style='background: #AEF1AE'>SimpleNavigable(onNavigateExtra)</span><span style=''>
+</span>82 <span style=''>  }
+</span>83 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -112,15 +119,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          45
+          52
         </td>
         <td>
           306
         </td>
         <td>
-          1607
+          1831
           -
-          1607
+          1831
         </td>
         <td>
           Apply
@@ -136,15 +143,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          53
         </td>
         <td>
           303
         </td>
         <td>
-          1660
+          1884
           -
-          1670
+          1894
         </td>
         <td>
           Apply
@@ -160,15 +167,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          53
         </td>
         <td>
           304
         </td>
         <td>
-          1681
+          1905
           -
-          1700
+          1924
         </td>
         <td>
           Apply
@@ -184,15 +191,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          53
         </td>
         <td>
           305
         </td>
         <td>
-          1634
+          1858
           -
-          1700
+          1924
         </td>
         <td>
           Apply
@@ -208,15 +215,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          58
         </td>
         <td>
           307
         </td>
         <td>
-          1789
+          2013
           -
-          1826
+          2050
         </td>
         <td>
           Apply
@@ -232,15 +239,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          58
         </td>
         <td>
           313
         </td>
         <td>
-          1770
+          1994
           -
-          1939
+          2163
         </td>
         <td>
           Apply
@@ -260,15 +267,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          59
         </td>
         <td>
           308
         </td>
         <td>
-          1862
+          2086
           -
-          1893
+          2117
         </td>
         <td>
           Apply
@@ -284,15 +291,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          59
         </td>
         <td>
           309
         </td>
         <td>
-          1840
+          2064
           -
-          1894
+          2118
         </td>
         <td>
           Apply
@@ -308,15 +315,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          59
         </td>
         <td>
           312
         </td>
         <td>
-          1835
+          2059
           -
-          1939
+          2163
         </td>
         <td>
           Apply
@@ -334,15 +341,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           310
         </td>
         <td>
-          1908
+          2132
           -
-          1923
+          2147
         </td>
         <td>
           Select
@@ -358,15 +365,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           311
         </td>
         <td>
-          1903
+          2127
           -
-          1939
+          2163
         </td>
         <td>
           Apply
@@ -382,15 +389,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          64
         </td>
         <td>
           314
         </td>
         <td>
-          2029
+          2253
           -
-          2066
+          2290
         </td>
         <td>
           Apply
@@ -406,15 +413,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          64
         </td>
         <td>
           315
         </td>
         <td>
-          2068
+          2292
           -
-          2082
+          2306
         </td>
         <td>
           Select
@@ -430,15 +437,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          64
         </td>
         <td>
           316
         </td>
         <td>
-          2006
+          2230
           -
-          2083
+          2307
         </td>
         <td>
           Apply
@@ -454,15 +461,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          81
         </td>
         <td>
           317
         </td>
         <td>
-          2524
+          2748
           -
-          2556
+          2780
         </td>
         <td>
           Apply

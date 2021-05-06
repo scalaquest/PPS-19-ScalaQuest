@@ -22,48 +22,62 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
-</span>5 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
-</span>6 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
-</span>7 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
-</span>8 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline
 </span>9 <span style=''>
-</span>10 <span style=''>abstract class Pipeline[M &lt;: Model](val model: M) {
-</span>11 <span style=''>  def run(rawSentence: String): Either[String, (model.S, Seq[Message])]
-</span>12 <span style=''>}
-</span>13 <span style=''>
-</span>14 <span style=''>object Pipeline {
-</span>15 <span style=''>
-</span>16 <span style=''>  type PartialBuilder[S &lt;: Model#State, M &lt;: Model] = S =&gt; Pipeline[M]
-</span>17 <span style=''>
-</span>18 <span style=''>  def builderFrom[M &lt;: Model](model: M) = </span><span style='background: #AEF1AE'>new PipelineBuilder[M](model)</span><span style=''>
-</span>19 <span style=''>
-</span>20 <span style=''>  class PipelineBuilder[M &lt;: Model](val model: M) {
-</span>21 <span style=''>
-</span>22 <span style=''>    def build(
-</span>23 <span style=''>      lexer: Lexer,
-</span>24 <span style=''>      parser: Parser,
-</span>25 <span style=''>      resolver: Resolver.Builder[model.S],
-</span>26 <span style=''>      interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
-</span>27 <span style=''>      reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
-</span>28 <span style=''>    )(state: model.S): Pipeline[model.type] =
-</span>29 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> Pipeline[model.type](model) {
-</span>30 <span style=''>
-</span>31 <span style=''>        override def run(rawSentence: String): Either[String, (model.S, Seq[Message])] =
-</span>32 <span style=''>          </span><span style='background: #AEF1AE'>for {
-</span>33 <span style=''></span><span style='background: #AEF1AE'>            lr  &lt;- Right(lexer tokenize rawSentence)
-</span>34 <span style=''></span><span style='background: #AEF1AE'>            pr  &lt;- (parser parse lr) toRight &quot;Couldn't understand input.&quot;
-</span>35 <span style=''></span><span style='background: #AEF1AE'>            rr  &lt;- resolver(state) resolve pr
-</span>36 <span style=''></span><span style='background: #AEF1AE'>            ir  &lt;- interpreterBuilder(state) interpret rr
-</span>37 <span style=''></span><span style='background: #AEF1AE'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
-</span>38 <span style=''></span><span style='background: #AEF1AE'>          } yield (rdr.state, rdr.message)</span><span style=''>
-</span>39 <span style=''>      }
-</span>40 <span style=''>  }
-</span>41 <span style=''>
-</span>42 <span style=''>}
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.interpreter.Interpreter
+</span>12 <span style=''>import io.github.scalaquest.core.pipeline.lexer.Lexer
+</span>13 <span style=''>import io.github.scalaquest.core.pipeline.parser.Parser
+</span>14 <span style=''>import io.github.scalaquest.core.pipeline.reducer.Reducer
+</span>15 <span style=''>import io.github.scalaquest.core.pipeline.resolver.Resolver
+</span>16 <span style=''>
+</span>17 <span style=''>/**
+</span>18 <span style=''> * A basic game iteration, from a command to a modified state. The concept of Pipeline implicitly
+</span>19 <span style=''> * comprehends the initial State.
+</span>20 <span style=''> */
+</span>21 <span style=''>abstract class Pipeline[M &lt;: Model](val model: M) {
+</span>22 <span style=''>  def run(rawSentence: String): Either[String, (model.S, Seq[Message])]
+</span>23 <span style=''>}
+</span>24 <span style=''>
+</span>25 <span style=''>/**
+</span>26 <span style=''> * Contains a default builder for [[Pipeline]], splitting it into its components.
+</span>27 <span style=''> */
+</span>28 <span style=''>object Pipeline {
+</span>29 <span style=''>
+</span>30 <span style=''>  type PartialBuilder[S &lt;: Model#State, M &lt;: Model] = S =&gt; Pipeline[M]
+</span>31 <span style=''>
+</span>32 <span style=''>  def builderFrom[M &lt;: Model](model: M) = </span><span style='background: #AEF1AE'>new PipelineBuilder[M](model)</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  class PipelineBuilder[M &lt;: Model](val model: M) {
+</span>35 <span style=''>
+</span>36 <span style=''>    def build(
+</span>37 <span style=''>      lexer: Lexer,
+</span>38 <span style=''>      parser: Parser,
+</span>39 <span style=''>      resolver: Resolver.Builder[model.S],
+</span>40 <span style=''>      interpreterBuilder: Interpreter.Builder[model.type, model.S, model.Reaction],
+</span>41 <span style=''>      reducerBuilder: Reducer.Builder[model.type, model.S, model.Reaction]
+</span>42 <span style=''>    )(state: model.S): Pipeline[model.type] =
+</span>43 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> Pipeline[model.type](model) {
+</span>44 <span style=''>
+</span>45 <span style=''>        override def run(rawSentence: String): Either[String, (model.S, Seq[Message])] =
+</span>46 <span style=''>          </span><span style='background: #AEF1AE'>for {
+</span>47 <span style=''></span><span style='background: #AEF1AE'>            lr  &lt;- Right(lexer tokenize rawSentence)
+</span>48 <span style=''></span><span style='background: #AEF1AE'>            pr  &lt;- (parser parse lr) toRight &quot;Couldn't understand input.&quot;
+</span>49 <span style=''></span><span style='background: #AEF1AE'>            rr  &lt;- resolver(state) resolve pr
+</span>50 <span style=''></span><span style='background: #AEF1AE'>            ir  &lt;- interpreterBuilder(state) interpret rr
+</span>51 <span style=''></span><span style='background: #AEF1AE'>            rdr &lt;- Right(reducerBuilder(state) reduce ir)
+</span>52 <span style=''></span><span style='background: #AEF1AE'>          } yield (rdr.state, rdr.message)</span><span style=''>
+</span>53 <span style=''>      }
+</span>54 <span style=''>  }
+</span>55 <span style=''>
+</span>56 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -78,15 +92,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          18
+          32
         </td>
         <td>
           774
         </td>
         <td>
-          655
+          1109
           -
-          684
+          1138
         </td>
         <td>
           Apply
@@ -102,15 +116,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          43
         </td>
         <td>
           786
         </td>
         <td>
-          1050
+          1504
           -
-          1053
+          1507
         </td>
         <td>
           Apply
@@ -126,15 +140,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          47
         </td>
         <td>
           775
         </td>
         <td>
-          1215
+          1669
           -
-          1241
+          1695
         </td>
         <td>
           Apply
@@ -150,15 +164,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          47
         </td>
         <td>
           785
         </td>
         <td>
-          1184
+          1638
           -
-          1521
+          1975
         </td>
         <td>
           Apply
@@ -174,15 +188,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          48
         </td>
         <td>
           776
         </td>
         <td>
-          1288
+          1742
           -
-          1316
+          1770
         </td>
         <td>
           Literal
@@ -198,15 +212,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          48
         </td>
         <td>
           784
         </td>
         <td>
-          1255
+          1709
           -
-          1521
+          1975
         </td>
         <td>
           Apply
@@ -222,15 +236,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          49
         </td>
         <td>
           783
         </td>
         <td>
-          1329
+          1783
           -
-          1521
+          1975
         </td>
         <td>
           Apply
@@ -246,15 +260,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          50
         </td>
         <td>
           782
         </td>
         <td>
-          1375
+          1829
           -
-          1521
+          1975
         </td>
         <td>
           Apply
@@ -270,15 +284,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          51
         </td>
         <td>
           777
         </td>
         <td>
-          1446
+          1900
           -
-          1477
+          1931
         </td>
         <td>
           Apply
@@ -294,15 +308,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          51
         </td>
         <td>
           781
         </td>
         <td>
-          1433
+          1887
           -
-          1521
+          1975
         </td>
         <td>
           Apply
@@ -318,15 +332,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          52
         </td>
         <td>
           778
         </td>
         <td>
-          1498
+          1952
           -
-          1507
+          1961
         </td>
         <td>
           Select
@@ -342,15 +356,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          52
         </td>
         <td>
           779
         </td>
         <td>
-          1509
+          1963
           -
-          1520
+          1974
         </td>
         <td>
           Select
@@ -366,15 +380,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          52
         </td>
         <td>
           780
         </td>
         <td>
-          1497
+          1951
           -
-          1521
+          1975
         </td>
         <td>
           Apply

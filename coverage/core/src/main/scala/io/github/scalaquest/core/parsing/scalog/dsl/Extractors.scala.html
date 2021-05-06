@@ -22,37 +22,44 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog.dsl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
-</span>4 <span style=''>
-</span>5 <span style=''>import scala.annotation.nowarn
-</span>6 <span style=''>
-</span>7 <span style=''>trait Extractors extends CompoundBase {
-</span>8 <span style=''>
-</span>9 <span style=''>  object extractor {
-</span>10 <span style=''>
-</span>11 <span style=''>    object toTerms extends CompoundExtractor[Term] {
-</span>12 <span style=''>
-</span>13 <span style=''>      override def unapplySeq(term: Term): Option[Seq[Term]] =
-</span>14 <span style=''>        term match {
-</span>15 <span style=''>          case Compound(f, t0, terms) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>Some(t0 +: terms)</span><span style=''>
-</span>16 <span style=''>          case _                                      =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
-</span>17 <span style=''>        }
-</span>18 <span style=''>    }
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.scalog.dsl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Atom, Compound, Term}
+</span>11 <span style=''>
+</span>12 <span style=''>import scala.annotation.nowarn
+</span>13 <span style=''>
+</span>14 <span style=''>trait Extractors extends CompoundBase {
+</span>15 <span style=''>
+</span>16 <span style=''>  object extractor {
+</span>17 <span style=''>
+</span>18 <span style=''>    object toTerms extends CompoundExtractor[Term] {
 </span>19 <span style=''>
-</span>20 <span style=''>    object toStrings extends CompoundExtractor[String] {
-</span>21 <span style=''>
-</span>22 <span style=''>      @nowarn(&quot;msg=unchecked.*erasure&quot;)
-</span>23 <span style=''>      override def unapplySeq(term: Term): Option[Seq[String]] =
-</span>24 <span style=''>        term match {
-</span>25 <span style=''>          case Compound(f, Atom(t0), terms: List[Atom]) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt;
-</span>26 <span style=''>            </span><span style='background: #AEF1AE'>Some(t0 +: terms.map(_.name))</span><span style=''>
-</span>27 <span style=''>          case _ =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
-</span>28 <span style=''>        }
-</span>29 <span style=''>    }
-</span>30 <span style=''>  }
-</span>31 <span style=''>}
+</span>20 <span style=''>      override def unapplySeq(term: Term): Option[Seq[Term]] =
+</span>21 <span style=''>        term match {
+</span>22 <span style=''>          case Compound(f, t0, terms) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>Some(t0 +: terms)</span><span style=''>
+</span>23 <span style=''>          case _                                      =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>24 <span style=''>        }
+</span>25 <span style=''>    }
+</span>26 <span style=''>
+</span>27 <span style=''>    object toStrings extends CompoundExtractor[String] {
+</span>28 <span style=''>
+</span>29 <span style=''>      @nowarn(&quot;msg=unchecked.*erasure&quot;)
+</span>30 <span style=''>      override def unapplySeq(term: Term): Option[Seq[String]] =
+</span>31 <span style=''>        term match {
+</span>32 <span style=''>          case Compound(f, Atom(t0), terms: List[Atom]) if </span><span style='background: #AEF1AE'>f == functor</span><span style=''> =&gt;
+</span>33 <span style=''>            </span><span style='background: #AEF1AE'>Some(t0 +: terms.map(_.name))</span><span style=''>
+</span>34 <span style=''>          case _ =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>35 <span style=''>        }
+</span>36 <span style=''>    }
+</span>37 <span style=''>  }
+</span>38 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -67,15 +74,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           760
         </td>
         <td>
-          405
+          629
           -
-          412
+          636
         </td>
         <td>
           Select
@@ -91,15 +98,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           761
         </td>
         <td>
-          400
+          624
           -
-          412
+          636
         </td>
         <td>
           Apply
@@ -115,15 +122,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           762
         </td>
         <td>
-          424
+          648
           -
-          432
+          656
         </td>
         <td>
           Apply
@@ -139,15 +146,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           763
         </td>
         <td>
-          416
+          640
           -
-          433
+          657
         </td>
         <td>
           Apply
@@ -166,15 +173,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          23
         </td>
         <td>
           764
         </td>
         <td>
-          491
+          715
           -
-          495
+          719
         </td>
         <td>
           Select
@@ -190,15 +197,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           765
         </td>
         <td>
-          761
+          985
           -
-          768
+          992
         </td>
         <td>
           Select
@@ -214,15 +221,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           766
         </td>
         <td>
-          756
+          980
           -
-          768
+          992
         </td>
         <td>
           Apply
@@ -238,15 +245,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          33
         </td>
         <td>
           767
         </td>
         <td>
-          792
+          1016
           -
-          812
+          1036
         </td>
         <td>
           Apply
@@ -262,15 +269,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          33
         </td>
         <td>
           768
         </td>
         <td>
-          784
+          1008
           -
-          813
+          1037
         </td>
         <td>
           Apply
@@ -289,15 +296,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           769
         </td>
         <td>
-          834
+          1058
           -
-          838
+          1062
         </td>
         <td>
           Select

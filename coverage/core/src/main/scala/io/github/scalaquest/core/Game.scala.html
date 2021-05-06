@@ -22,38 +22,74 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
-</span>4 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline.PartialBuilder
-</span>5 <span style=''>
-</span>6 <span style=''>abstract class Game[M &lt;: Model](val model: M) {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
 </span>7 <span style=''>
-</span>8 <span style=''>  def send(input: String)(state: model.S): Either[String, (model.S, Seq[Message])]
-</span>9 <span style=''>}
-</span>10 <span style=''>
-</span>11 <span style=''>object Game {
+</span>8 <span style=''>package io.github.scalaquest.core
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.{Message, Model}
+</span>11 <span style=''>import io.github.scalaquest.core.pipeline.Pipeline.PartialBuilder
 </span>12 <span style=''>
-</span>13 <span style=''>  class GameBuilder[M &lt;: Model](val model: M) {
-</span>14 <span style=''>
-</span>15 <span style=''>    abstract class GameWithPipeline extends Game[model.type](model) {
-</span>16 <span style=''>
-</span>17 <span style=''>      def partialBuilder: PartialBuilder[model.S, model.type]
-</span>18 <span style=''>
-</span>19 <span style=''>      override def send(input: String)(state: model.S): Either[String, (model.S, Seq[Message])] =
-</span>20 <span style=''>        </span><span style='background: #AEF1AE'>partialBuilder(state) run input</span><span style=''>
-</span>21 <span style=''>    }
-</span>22 <span style=''>
-</span>23 <span style=''>    def build(
-</span>24 <span style=''>      _partialBuilder: PartialBuilder[model.S, model.type]
-</span>25 <span style=''>    ): Game[model.type] =
-</span>26 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> GameWithPipeline {
-</span>27 <span style=''>        override def partialBuilder: PartialBuilder[model.S, model.type] = _partialBuilder
-</span>28 <span style=''>      }
-</span>29 <span style=''>  }
-</span>30 <span style=''>
-</span>31 <span style=''>  def builderFrom[M &lt;: Model](model: M): GameBuilder[M] = </span><span style='background: #AEF1AE'>new GameBuilder(model)</span><span style=''>
-</span>32 <span style=''>}
+</span>13 <span style=''>/**
+</span>14 <span style=''> * A wrapper for the main game iteration, that given an input textual command and a State, it tries
+</span>15 <span style=''> * to interpret it and modify the state accordingly.
+</span>16 <span style=''> * @param model
+</span>17 <span style=''> *   The concrete type of the [[Model]] in use.
+</span>18 <span style=''> */
+</span>19 <span style=''>abstract class Game[M &lt;: Model](val model: M) {
+</span>20 <span style=''>
+</span>21 <span style=''>  /**
+</span>22 <span style=''>   * The main game iteration. Given an input textual command and a State, it tries to interpret it
+</span>23 <span style=''>   * and modify the state accordingly.
+</span>24 <span style=''>   * @param input
+</span>25 <span style=''>   *   A textual command from the user.
+</span>26 <span style=''>   * @param state
+</span>27 <span style=''>   *   The current [[Model.State]] of the game.
+</span>28 <span style=''>   * @return
+</span>29 <span style=''>   *   [[Right]] with the updated state and the resulting message, if no errors have been occurred;
+</span>30 <span style=''>   *   [[Left]] with a string message error, instead.
+</span>31 <span style=''>   */
+</span>32 <span style=''>  def send(input: String)(state: model.S): Either[String, (model.S, Seq[Message])]
+</span>33 <span style=''>}
+</span>34 <span style=''>
+</span>35 <span style=''>/**
+</span>36 <span style=''> * Contains a default builder for [[Game]], using an external instance of Pipeline.
+</span>37 <span style=''> */
+</span>38 <span style=''>object Game {
+</span>39 <span style=''>
+</span>40 <span style=''>  class GameBuilder[M &lt;: Model](val model: M) {
+</span>41 <span style=''>
+</span>42 <span style=''>    /**
+</span>43 <span style=''>     * A partial implementation of [[Game]], using an external instance of Pipeline.
+</span>44 <span style=''>     */
+</span>45 <span style=''>    abstract class GameWithPipeline extends Game[model.type](model) {
+</span>46 <span style=''>
+</span>47 <span style=''>      def partialBuilder: PartialBuilder[model.S, model.type]
+</span>48 <span style=''>
+</span>49 <span style=''>      override def send(input: String)(state: model.S): Either[String, (model.S, Seq[Message])] =
+</span>50 <span style=''>        </span><span style='background: #AEF1AE'>partialBuilder(state) run input</span><span style=''>
+</span>51 <span style=''>    }
+</span>52 <span style=''>
+</span>53 <span style=''>    /**
+</span>54 <span style=''>     * Builds a default instance of [[Game]], using an external instance of Pipeline.
+</span>55 <span style=''>     */
+</span>56 <span style=''>    def build(
+</span>57 <span style=''>      _partialBuilder: PartialBuilder[model.S, model.type]
+</span>58 <span style=''>    ): Game[model.type] =
+</span>59 <span style=''>      </span><span style='background: #AEF1AE'>new</span><span style=''> GameWithPipeline {
+</span>60 <span style=''>        override def partialBuilder: PartialBuilder[model.S, model.type] = _partialBuilder
+</span>61 <span style=''>      }
+</span>62 <span style=''>  }
+</span>63 <span style=''>
+</span>64 <span style=''>  /**
+</span>65 <span style=''>   * Generates the default builder.
+</span>66 <span style=''>   */
+</span>67 <span style=''>  def builderFrom[M &lt;: Model](model: M): GameBuilder[M] = </span><span style='background: #AEF1AE'>new GameBuilder(model)</span><span style=''>
+</span>68 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -68,15 +104,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          20
+          50
         </td>
         <td>
           1
         </td>
         <td>
-          597
+          1680
           -
-          628
+          1711
         </td>
         <td>
           Apply
@@ -92,15 +128,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          59
         </td>
         <td>
           2
         </td>
         <td>
-          742
+          1927
           -
-          745
+          1930
         </td>
         <td>
           Apply
@@ -116,15 +152,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          67
         </td>
         <td>
           3
         </td>
         <td>
-          927
+          2160
           -
-          949
+          2182
         </td>
         <td>
           Apply

@@ -22,70 +22,77 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Key BehaviorBasedItem&lt;/b&gt;.
-</span>8 <span style=''> */
-</span>9 <span style=''>trait KeyExt extends BehaviorBasedModel {
-</span>10 <span style=''>
-</span>11 <span style=''>  /**
-</span>12 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that should be used to open/close items with an &lt;b&gt;Openable&lt;/b&gt;
-</span>13 <span style=''>   * behavior.
-</span>14 <span style=''>   */
-</span>15 <span style=''>  trait Key extends BehaviorBasedItem {
-</span>16 <span style=''>
-</span>17 <span style=''>    /**
-</span>18 <span style=''>     * A disposable key is cancelled from the game after being used to open something.
-</span>19 <span style=''>     * @return
-</span>20 <span style=''>     *   True if key is cancelled after his use, False otherwise.
-</span>21 <span style=''>     */
-</span>22 <span style=''>    def disposable: Boolean
-</span>23 <span style=''>  }
-</span>24 <span style=''>
-</span>25 <span style=''>  /**
-</span>26 <span style=''>   * Standard implementation of &lt;b&gt;Key&lt;/b&gt;.
-</span>27 <span style=''>   *
-</span>28 <span style=''>   * @param description
-</span>29 <span style=''>   *   An [[ItemDescription]] for the item.
-</span>30 <span style=''>   * @param ref
-</span>31 <span style=''>   *   A unique reference to the item.
-</span>32 <span style=''>   * @param extraBehavBuilders
-</span>33 <span style=''>   *   Additional behaviors associated to the item.
-</span>34 <span style=''>   */
-</span>35 <span style=''>  case class SimpleKey(
-</span>36 <span style=''>    description: ItemDescription,
-</span>37 <span style=''>    ref: ItemRef,
-</span>38 <span style=''>    disposable: Boolean = true,
-</span>39 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>40 <span style=''>  ) extends Key {
-</span>41 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>extraBehavBuilders.map(_(this))</span><span style=''>
-</span>42 <span style=''>  }
-</span>43 <span style=''>
-</span>44 <span style=''>  /**
-</span>45 <span style=''>   * Companion object for &lt;b&gt;Key&lt;/b&gt;.
-</span>46 <span style=''>   */
-</span>47 <span style=''>  object Key {
-</span>48 <span style=''>
-</span>49 <span style=''>    /**
-</span>50 <span style=''>     * Creates a standard &lt;b&gt;Key&lt;/b&gt;.
-</span>51 <span style=''>     * @param description
-</span>52 <span style=''>     *   An [[ItemDescription]] for the item.
-</span>53 <span style=''>     * @param extraBehavBuilders
-</span>54 <span style=''>     *   Additional behaviors associated to the item.
-</span>55 <span style=''>     * @return
-</span>56 <span style=''>     *   An instance of a standard &lt;b&gt;Key&lt;/b&gt;.
-</span>57 <span style=''>     */
-</span>58 <span style=''>    def apply(
-</span>59 <span style=''>      description: ItemDescription,
-</span>60 <span style=''>      disposable: Boolean = true,
-</span>61 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
-</span>62 <span style=''>    ): Key = </span><span style='background: #AEF1AE'>SimpleKey(description, ItemRef(description), disposable, extraBehavBuilders)</span><span style=''>
-</span>63 <span style=''>  }
-</span>64 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.items.impl
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>11 <span style=''>import io.github.scalaquest.core.model.{ItemDescription, ItemRef}
+</span>12 <span style=''>
+</span>13 <span style=''>/**
+</span>14 <span style=''> * The trait makes possible to mix into a [[BehaviorBasedModel]] the &lt;b&gt;Key BehaviorBasedItem&lt;/b&gt;.
+</span>15 <span style=''> */
+</span>16 <span style=''>trait KeyExt extends BehaviorBasedModel {
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * A &lt;b&gt;BehaviorBasedItem&lt;/b&gt; that should be used to open/close items with an &lt;b&gt;Openable&lt;/b&gt;
+</span>20 <span style=''>   * behavior.
+</span>21 <span style=''>   */
+</span>22 <span style=''>  trait Key extends BehaviorBasedItem {
+</span>23 <span style=''>
+</span>24 <span style=''>    /**
+</span>25 <span style=''>     * A disposable key is cancelled from the game after being used to open something.
+</span>26 <span style=''>     * @return
+</span>27 <span style=''>     *   True if key is cancelled after his use, False otherwise.
+</span>28 <span style=''>     */
+</span>29 <span style=''>    def disposable: Boolean
+</span>30 <span style=''>  }
+</span>31 <span style=''>
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * Standard implementation of &lt;b&gt;Key&lt;/b&gt;.
+</span>34 <span style=''>   *
+</span>35 <span style=''>   * @param description
+</span>36 <span style=''>   *   An [[ItemDescription]] for the item.
+</span>37 <span style=''>   * @param ref
+</span>38 <span style=''>   *   A unique reference to the item.
+</span>39 <span style=''>   * @param extraBehavBuilders
+</span>40 <span style=''>   *   Additional behaviors associated to the item.
+</span>41 <span style=''>   */
+</span>42 <span style=''>  case class SimpleKey(
+</span>43 <span style=''>    description: ItemDescription,
+</span>44 <span style=''>    ref: ItemRef,
+</span>45 <span style=''>    disposable: Boolean = true,
+</span>46 <span style=''>    extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>47 <span style=''>  ) extends Key {
+</span>48 <span style=''>    override val behaviors: Seq[ItemBehavior] = </span><span style='background: #AEF1AE'>extraBehavBuilders.map(_(this))</span><span style=''>
+</span>49 <span style=''>  }
+</span>50 <span style=''>
+</span>51 <span style=''>  /**
+</span>52 <span style=''>   * Companion object for &lt;b&gt;Key&lt;/b&gt;.
+</span>53 <span style=''>   */
+</span>54 <span style=''>  object Key {
+</span>55 <span style=''>
+</span>56 <span style=''>    /**
+</span>57 <span style=''>     * Creates a standard &lt;b&gt;Key&lt;/b&gt;.
+</span>58 <span style=''>     * @param description
+</span>59 <span style=''>     *   An [[ItemDescription]] for the item.
+</span>60 <span style=''>     * @param extraBehavBuilders
+</span>61 <span style=''>     *   Additional behaviors associated to the item.
+</span>62 <span style=''>     * @return
+</span>63 <span style=''>     *   An instance of a standard &lt;b&gt;Key&lt;/b&gt;.
+</span>64 <span style=''>     */
+</span>65 <span style=''>    def apply(
+</span>66 <span style=''>      description: ItemDescription,
+</span>67 <span style=''>      disposable: Boolean = true,
+</span>68 <span style=''>      extraBehavBuilders: Seq[I =&gt; ItemBehavior] = Seq.empty
+</span>69 <span style=''>    ): Key = </span><span style='background: #AEF1AE'>SimpleKey(description, ItemRef(description), disposable, extraBehavBuilders)</span><span style=''>
+</span>70 <span style=''>  }
+</span>71 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -100,15 +107,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           533
         </td>
         <td>
-          1267
+          1491
           -
-          1274
+          1498
         </td>
         <td>
           Apply
@@ -124,15 +131,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           534
         </td>
         <td>
-          1244
+          1468
           -
-          1275
+          1499
         </td>
         <td>
           Apply
@@ -148,15 +155,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          69
         </td>
         <td>
           535
         </td>
         <td>
-          1804
+          2028
           -
-          1824
+          2048
         </td>
         <td>
           Apply
@@ -172,15 +179,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          69
         </td>
         <td>
           536
         </td>
         <td>
-          1781
+          2005
           -
-          1857
+          2081
         </td>
         <td>
           Apply

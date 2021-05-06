@@ -22,61 +22,68 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.grounds
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
-</span>4 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.CGroundBehaviorsExt
-</span>5 <span style=''>
-</span>6 <span style=''>/**
-</span>7 <span style=''> * Extension for the model, based on the behavior-based fashion. Adds a base implementation of the
-</span>8 <span style=''> * &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with common behaviors inside, extensible on demand with more
-</span>9 <span style=''> * behaviors.
-</span>10 <span style=''> */
-</span>11 <span style=''>trait CGroundExt extends BehaviorBasedModel with CGroundBehaviorsExt {
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.model.behaviorBased.commons.grounds
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.model.behaviorBased.BehaviorBasedModel
+</span>11 <span style=''>import io.github.scalaquest.core.model.behaviorBased.commons.groundBehaviors.CGroundBehaviorsExt
 </span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   * A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; implementation that includes all the common
-</span>15 <span style=''>   * &lt;b&gt;GroundBehaviors&lt;/b&gt;.
-</span>16 <span style=''>   * @param extraBehaviors
-</span>17 <span style=''>   *   &lt;b&gt;GroundBehaviors&lt;/b&gt; to include in addition to the common ones.
-</span>18 <span style=''>   */
-</span>19 <span style=''>  case class CGround(extraBehaviors: Seq[GroundBehavior] = Seq.empty) extends BehaviorBasedGround {
-</span>20 <span style=''>
-</span>21 <span style=''>    override val behaviors: Seq[GroundBehavior] =
-</span>22 <span style=''>      </span><span style='background: #AEF1AE'>extraBehaviors ++ Seq(InspectableLocation(), InspectableBag(), Navigable())</span><span style=''>
-</span>23 <span style=''>  }
-</span>24 <span style=''>
-</span>25 <span style=''>  /**
-</span>26 <span style=''>   * Companion object for &lt;b&gt;CGround&lt;/b&gt;.
-</span>27 <span style=''>   */
-</span>28 <span style=''>  object CGround {
-</span>29 <span style=''>
-</span>30 <span style=''>    /**
-</span>31 <span style=''>     * A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with the common &lt;b&gt;GroundBehaviors&lt;/b&gt;, and an extra custom
-</span>32 <span style=''>     * additional behavior.
-</span>33 <span style=''>     * @param extraBehavior
-</span>34 <span style=''>     *   The single additional behavior associated to the Ground.
-</span>35 <span style=''>     * @return
-</span>36 <span style=''>     *   A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with the common &lt;b&gt;GroundBehaviors&lt;/b&gt;, and an extra custom
-</span>37 <span style=''>     *   additional behavior.
-</span>38 <span style=''>     */
-</span>39 <span style=''>    def withSingleExtraBehavior(
-</span>40 <span style=''>      extraBehavior: GroundBehavior
-</span>41 <span style=''>    ): BehaviorBasedGround = </span><span style='background: #AEF1AE'>CGround(Seq(extraBehavior))</span><span style=''>
-</span>42 <span style=''>
-</span>43 <span style=''>    /**
-</span>44 <span style=''>     * A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with the common &lt;b&gt;GroundBehaviors&lt;/b&gt;, and an extra custom
-</span>45 <span style=''>     * additional behavior, created on-the-fly by some &lt;b&gt;GroundTriggers&lt;/b&gt;.
-</span>46 <span style=''>     * @param behaviorTriggers
-</span>47 <span style=''>     *   Triggers for the single behavior associated to the item.
-</span>48 <span style=''>     * @return
-</span>49 <span style=''>     *   An instance of a &lt;b&gt;GenericItem&lt;/b&gt; with a single behavior.
-</span>50 <span style=''>     */
-</span>51 <span style=''>    def withGenExtraBehavior(
-</span>52 <span style=''>      behaviorTriggers: GroundTriggers
-</span>53 <span style=''>    ): BehaviorBasedGround = </span><span style='background: #AEF1AE'>CGround(Seq(GenericGroundBehavior(behaviorTriggers)))</span><span style=''>
-</span>54 <span style=''>  }
-</span>55 <span style=''>}
+</span>13 <span style=''>/**
+</span>14 <span style=''> * Extension for the model, based on the behavior-based fashion. Adds a base implementation of the
+</span>15 <span style=''> * &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with common behaviors inside, extensible on demand with more
+</span>16 <span style=''> * behaviors.
+</span>17 <span style=''> */
+</span>18 <span style=''>trait CGroundExt extends BehaviorBasedModel with CGroundBehaviorsExt {
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; implementation that includes all the common
+</span>22 <span style=''>   * &lt;b&gt;GroundBehaviors&lt;/b&gt;.
+</span>23 <span style=''>   * @param extraBehaviors
+</span>24 <span style=''>   *   &lt;b&gt;GroundBehaviors&lt;/b&gt; to include in addition to the common ones.
+</span>25 <span style=''>   */
+</span>26 <span style=''>  case class CGround(extraBehaviors: Seq[GroundBehavior] = Seq.empty) extends BehaviorBasedGround {
+</span>27 <span style=''>
+</span>28 <span style=''>    override val behaviors: Seq[GroundBehavior] =
+</span>29 <span style=''>      </span><span style='background: #AEF1AE'>extraBehaviors ++ Seq(InspectableLocation(), InspectableBag(), Navigable())</span><span style=''>
+</span>30 <span style=''>  }
+</span>31 <span style=''>
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * Companion object for &lt;b&gt;CGround&lt;/b&gt;.
+</span>34 <span style=''>   */
+</span>35 <span style=''>  object CGround {
+</span>36 <span style=''>
+</span>37 <span style=''>    /**
+</span>38 <span style=''>     * A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with the common &lt;b&gt;GroundBehaviors&lt;/b&gt;, and an extra custom
+</span>39 <span style=''>     * additional behavior.
+</span>40 <span style=''>     * @param extraBehavior
+</span>41 <span style=''>     *   The single additional behavior associated to the Ground.
+</span>42 <span style=''>     * @return
+</span>43 <span style=''>     *   A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with the common &lt;b&gt;GroundBehaviors&lt;/b&gt;, and an extra custom
+</span>44 <span style=''>     *   additional behavior.
+</span>45 <span style=''>     */
+</span>46 <span style=''>    def withSingleExtraBehavior(
+</span>47 <span style=''>      extraBehavior: GroundBehavior
+</span>48 <span style=''>    ): BehaviorBasedGround = </span><span style='background: #AEF1AE'>CGround(Seq(extraBehavior))</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>    /**
+</span>51 <span style=''>     * A &lt;b&gt;BehaviorBasedGround&lt;/b&gt; with the common &lt;b&gt;GroundBehaviors&lt;/b&gt;, and an extra custom
+</span>52 <span style=''>     * additional behavior, created on-the-fly by some &lt;b&gt;GroundTriggers&lt;/b&gt;.
+</span>53 <span style=''>     * @param behaviorTriggers
+</span>54 <span style=''>     *   Triggers for the single behavior associated to the item.
+</span>55 <span style=''>     * @return
+</span>56 <span style=''>     *   An instance of a &lt;b&gt;GenericItem&lt;/b&gt; with a single behavior.
+</span>57 <span style=''>     */
+</span>58 <span style=''>    def withGenExtraBehavior(
+</span>59 <span style=''>      behaviorTriggers: GroundTriggers
+</span>60 <span style=''>    ): BehaviorBasedGround = </span><span style='background: #AEF1AE'>CGround(Seq(GenericGroundBehavior(behaviorTriggers)))</span><span style=''>
+</span>61 <span style=''>  }
+</span>62 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -91,15 +98,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           318
         </td>
         <td>
-          923
+          1147
           -
-          923
+          1147
         </td>
         <td>
           Select
@@ -115,15 +122,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           319
         </td>
         <td>
-          923
+          1147
           -
-          944
+          1168
         </td>
         <td>
           Apply
@@ -139,15 +146,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           320
         </td>
         <td>
-          946
+          1170
           -
-          946
+          1170
         </td>
         <td>
           Select
@@ -163,15 +170,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           321
         </td>
         <td>
-          946
+          1170
           -
-          962
+          1186
         </td>
         <td>
           Apply
@@ -187,15 +194,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           322
         </td>
         <td>
-          964
+          1188
           -
-          964
+          1188
         </td>
         <td>
           Select
@@ -211,15 +218,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           323
         </td>
         <td>
-          964
+          1188
           -
-          975
+          1199
         </td>
         <td>
           Apply
@@ -235,15 +242,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           324
         </td>
         <td>
-          919
+          1143
           -
-          976
+          1200
         </td>
         <td>
           Apply
@@ -259,15 +266,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           325
         </td>
         <td>
-          901
+          1125
           -
-          976
+          1200
         </td>
         <td>
           Apply
@@ -283,15 +290,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           326
         </td>
         <td>
-          1539
+          1763
           -
-          1557
+          1781
         </td>
         <td>
           Apply
@@ -307,15 +314,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          48
         </td>
         <td>
           327
         </td>
         <td>
-          1531
+          1755
           -
-          1558
+          1782
         </td>
         <td>
           Apply
@@ -331,15 +338,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           328
         </td>
         <td>
-          2041
+          2265
           -
-          2080
+          2304
         </td>
         <td>
           Apply
@@ -355,15 +362,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           329
         </td>
         <td>
-          2037
+          2261
           -
-          2081
+          2305
         </td>
         <td>
           Apply
@@ -379,15 +386,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          60
         </td>
         <td>
           330
         </td>
         <td>
-          2029
+          2253
           -
-          2082
+          2306
         </td>
         <td>
           Apply

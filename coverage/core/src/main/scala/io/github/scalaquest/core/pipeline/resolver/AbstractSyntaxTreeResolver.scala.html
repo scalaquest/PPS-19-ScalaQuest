@@ -22,45 +22,52 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.pipeline.resolver
-</span>2 <span style=''>
-</span>3 <span style=''>import io.github.scalaquest.core.dictionary.verbs.VerbPrep
-</span>4 <span style=''>import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef}
-</span>5 <span style=''>import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
-</span>6 <span style=''>
-</span>7 <span style=''>abstract class AbstractSyntaxTreeResolver extends Resolver {
-</span>8 <span style=''>
-</span>9 <span style=''>  def actions(v: VerbPrep): Either[String, Action]
-</span>10 <span style=''>
-</span>11 <span style=''>  def items(d: ItemDescription): Either[String, ItemRef]
-</span>12 <span style=''>
-</span>13 <span style=''>  override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
-</span>14 <span style=''>    </span><span style='background: #AEF1AE'>for {
-</span>15 <span style=''></span><span style='background: #AEF1AE'>      statement &lt;- parserResult.tree match {
-</span>16 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Intransitive(verb, prep, _) =&gt;
-</span>17 <span style=''></span><span style='background: #AEF1AE'>          for {
-</span>18 <span style=''></span><span style='background: #AEF1AE'>            action &lt;- actions((verb, prep))
-</span>19 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Intransitive(action)
-</span>20 <span style=''></span><span style='background: #AEF1AE'>
-</span>21 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Transitive(verb, prep, _, obj) =&gt;
-</span>22 <span style=''></span><span style='background: #AEF1AE'>          for {
-</span>23 <span style=''></span><span style='background: #AEF1AE'>            action  &lt;- actions((verb, prep))
-</span>24 <span style=''></span><span style='background: #AEF1AE'>            itemRef &lt;- items(obj)
-</span>25 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Transitive(action, itemRef)
-</span>26 <span style=''></span><span style='background: #AEF1AE'>
-</span>27 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Ditransitive(verb, prep, _, directObj, indirectObj) =&gt;
-</span>28 <span style=''></span><span style='background: #AEF1AE'>          for {
-</span>29 <span style=''></span><span style='background: #AEF1AE'>            action          &lt;- actions((verb, prep))
-</span>30 <span style=''></span><span style='background: #AEF1AE'>            directItemRef   &lt;- items(directObj)
-</span>31 <span style=''></span><span style='background: #AEF1AE'>            indirectItemRef &lt;- items(indirectObj)
-</span>32 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.pipeline.resolver
+</span>9 <span style=''>
+</span>10 <span style=''>import io.github.scalaquest.core.dictionary.verbs.VerbPrep
+</span>11 <span style=''>import io.github.scalaquest.core.model.{Action, ItemDescription, ItemRef}
+</span>12 <span style=''>import io.github.scalaquest.core.pipeline.parser.{AbstractSyntaxTree, ParserResult}
+</span>13 <span style=''>
+</span>14 <span style=''>abstract class AbstractSyntaxTreeResolver extends Resolver {
+</span>15 <span style=''>
+</span>16 <span style=''>  def actions(v: VerbPrep): Either[String, Action]
+</span>17 <span style=''>
+</span>18 <span style=''>  def items(d: ItemDescription): Either[String, ItemRef]
+</span>19 <span style=''>
+</span>20 <span style=''>  override def resolve(parserResult: ParserResult): Either[String, ResolverResult] = {
+</span>21 <span style=''>    </span><span style='background: #AEF1AE'>for {
+</span>22 <span style=''></span><span style='background: #AEF1AE'>      statement &lt;- parserResult.tree match {
+</span>23 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Intransitive(verb, prep, _) =&gt;
+</span>24 <span style=''></span><span style='background: #AEF1AE'>          for {
+</span>25 <span style=''></span><span style='background: #AEF1AE'>            action &lt;- actions((verb, prep))
+</span>26 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Intransitive(action)
+</span>27 <span style=''></span><span style='background: #AEF1AE'>
+</span>28 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Transitive(verb, prep, _, obj) =&gt;
+</span>29 <span style=''></span><span style='background: #AEF1AE'>          for {
+</span>30 <span style=''></span><span style='background: #AEF1AE'>            action  &lt;- actions((verb, prep))
+</span>31 <span style=''></span><span style='background: #AEF1AE'>            itemRef &lt;- items(obj)
+</span>32 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Transitive(action, itemRef)
 </span>33 <span style=''></span><span style='background: #AEF1AE'>
-</span>34 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; Left(&quot;The statement is wrong.&quot;)
-</span>35 <span style=''></span><span style='background: #AEF1AE'>      }
-</span>36 <span style=''></span><span style='background: #AEF1AE'>    } yield ResolverResult(statement)</span><span style=''>
-</span>37 <span style=''>  }
-</span>38 <span style=''>
-</span>39 <span style=''>}
+</span>34 <span style=''></span><span style='background: #AEF1AE'>        case AbstractSyntaxTree.Ditransitive(verb, prep, _, directObj, indirectObj) =&gt;
+</span>35 <span style=''></span><span style='background: #AEF1AE'>          for {
+</span>36 <span style=''></span><span style='background: #AEF1AE'>            action          &lt;- actions((verb, prep))
+</span>37 <span style=''></span><span style='background: #AEF1AE'>            directItemRef   &lt;- items(directObj)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>            indirectItemRef &lt;- items(indirectObj)
+</span>39 <span style=''></span><span style='background: #AEF1AE'>          } yield Statement.Ditransitive(action, directItemRef, indirectItemRef)
+</span>40 <span style=''></span><span style='background: #AEF1AE'>
+</span>41 <span style=''></span><span style='background: #AEF1AE'>        case _ =&gt; Left(&quot;The statement is wrong.&quot;)
+</span>42 <span style=''></span><span style='background: #AEF1AE'>      }
+</span>43 <span style=''></span><span style='background: #AEF1AE'>    } yield ResolverResult(statement)</span><span style=''>
+</span>44 <span style=''>  }
+</span>45 <span style=''>
+</span>46 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -75,15 +82,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           852
         </td>
         <td>
-          559
+          783
           -
-          576
+          800
         </td>
         <td>
           Select
@@ -99,15 +106,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           867
         </td>
         <td>
-          534
+          758
           -
-          1407
+          1631
         </td>
         <td>
           Apply
@@ -128,15 +135,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           853
         </td>
         <td>
-          694
+          918
           -
-          706
+          930
         </td>
         <td>
           Apply
@@ -152,15 +159,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           855
         </td>
         <td>
-          658
+          882
           -
-          756
+          980
         </td>
         <td>
           Apply
@@ -176,15 +183,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          26
         </td>
         <td>
           854
         </td>
         <td>
-          726
+          950
           -
-          756
+          980
         </td>
         <td>
           Apply
@@ -200,15 +207,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           856
         </td>
         <td>
-          871
+          1095
           -
-          883
+          1107
         </td>
         <td>
           Apply
@@ -224,15 +231,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          30
         </td>
         <td>
           859
         </td>
         <td>
-          834
+          1058
           -
-          974
+          1198
         </td>
         <td>
           Apply
@@ -248,15 +255,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          31
         </td>
         <td>
           858
         </td>
         <td>
-          897
+          1121
           -
-          974
+          1198
         </td>
         <td>
           Apply
@@ -272,15 +279,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          32
         </td>
         <td>
           857
         </td>
         <td>
-          937
+          1161
           -
-          974
+          1198
         </td>
         <td>
           Apply
@@ -296,15 +303,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           860
         </td>
         <td>
-          1118
+          1342
           -
-          1130
+          1354
         </td>
         <td>
           Apply
@@ -320,15 +327,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          36
         </td>
         <td>
           864
         </td>
         <td>
-          1073
+          1297
           -
-          1310
+          1534
         </td>
         <td>
           Apply
@@ -344,15 +351,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          37
         </td>
         <td>
           863
         </td>
         <td>
-          1144
+          1368
           -
-          1310
+          1534
         </td>
         <td>
           Apply
@@ -368,15 +375,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          38
         </td>
         <td>
           862
         </td>
         <td>
-          1192
+          1416
           -
-          1310
+          1534
         </td>
         <td>
           Apply
@@ -392,15 +399,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          39
         </td>
         <td>
           861
         </td>
         <td>
-          1248
+          1472
           -
-          1310
+          1534
         </td>
         <td>
           Apply
@@ -416,15 +423,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          41
         </td>
         <td>
           865
         </td>
         <td>
-          1330
+          1554
           -
-          1361
+          1585
         </td>
         <td>
           Apply
@@ -440,15 +447,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          43
         </td>
         <td>
           866
         </td>
         <td>
-          1382
+          1606
           -
-          1407
+          1631
         </td>
         <td>
           Apply

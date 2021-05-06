@@ -22,27 +22,34 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.engine.tuprolog
-</span>2 <span style=''>
-</span>3 <span style=''>import alice.tuprolog.{NoSolutionException, SolveInfo, UnknownVarException}
-</span>4 <span style=''>import io.github.scalaquest.core.parsing.engine.Solution
-</span>5 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
-</span>6 <span style=''>
-</span>7 <span style=''>/** Wrapper for a tuProlog solution. */
-</span>8 <span style=''>private[tuprolog] case class TuPrologSolution(solveInfo: SolveInfo) extends Solution {
-</span>9 <span style=''>  import implicits.EnhancedTuPrologTerm
-</span>10 <span style=''>
-</span>11 <span style=''>  override def body: Term = </span><span style='background: #AEF1AE'>solveInfo.getSolution.toTerm</span><span style=''>
-</span>12 <span style=''>
-</span>13 <span style=''>  override def getVariable(variable: Variable): Option[Term] = {
-</span>14 <span style=''>    try {
-</span>15 <span style=''>      </span><span style='background: #AEF1AE'>Some(solveInfo.getTerm(variable.name).toTerm)</span><span style=''>
-</span>16 <span style=''>    } catch {
-</span>17 <span style=''>      case _: UnknownVarException =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
-</span>18 <span style=''>      case _: NoSolutionException =&gt; </span><span style='background: #F0ADAD'>None</span><span style=''>
-</span>19 <span style=''>    }
-</span>20 <span style=''>  }
-</span>21 <span style=''>}
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.engine.tuprolog
+</span>9 <span style=''>
+</span>10 <span style=''>import alice.tuprolog.{NoSolutionException, SolveInfo, UnknownVarException}
+</span>11 <span style=''>import io.github.scalaquest.core.parsing.engine.Solution
+</span>12 <span style=''>import io.github.scalaquest.core.parsing.scalog.{Term, Variable}
+</span>13 <span style=''>
+</span>14 <span style=''>/** Wrapper for a tuProlog solution. */
+</span>15 <span style=''>private[tuprolog] case class TuPrologSolution(solveInfo: SolveInfo) extends Solution {
+</span>16 <span style=''>  import implicits.EnhancedTuPrologTerm
+</span>17 <span style=''>
+</span>18 <span style=''>  override def body: Term = </span><span style='background: #AEF1AE'>solveInfo.getSolution.toTerm</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>  override def getVariable(variable: Variable): Option[Term] = {
+</span>21 <span style=''>    try {
+</span>22 <span style=''>      </span><span style='background: #AEF1AE'>Some(solveInfo.getTerm(variable.name).toTerm)</span><span style=''>
+</span>23 <span style=''>    } catch {
+</span>24 <span style=''>      case _: UnknownVarException =&gt; </span><span style='background: #AEF1AE'>None</span><span style=''>
+</span>25 <span style=''>      case _: NoSolutionException =&gt; </span><span style='background: #F0ADAD'>None</span><span style=''>
+</span>26 <span style=''>    }
+</span>27 <span style=''>  }
+</span>28 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -57,15 +64,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           735
         </td>
         <td>
-          454
+          678
           -
-          475
+          699
         </td>
         <td>
           Apply
@@ -81,15 +88,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           736
         </td>
         <td>
-          454
+          678
           -
-          482
+          706
         </td>
         <td>
           Select
@@ -105,15 +112,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           737
         </td>
         <td>
-          588
+          812
           -
-          601
+          825
         </td>
         <td>
           Select
@@ -129,15 +136,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           738
         </td>
         <td>
-          570
+          794
           -
-          602
+          826
         </td>
         <td>
           Apply
@@ -153,15 +160,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           739
         </td>
         <td>
-          570
+          794
           -
-          609
+          833
         </td>
         <td>
           Select
@@ -177,15 +184,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           740
         </td>
         <td>
-          565
+          789
           -
-          610
+          834
         </td>
         <td>
           Apply
@@ -201,15 +208,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          22
         </td>
         <td>
           741
         </td>
         <td>
-          565
+          789
           -
-          610
+          834
         </td>
         <td>
           Block
@@ -225,15 +232,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           742
         </td>
         <td>
-          662
+          886
           -
-          666
+          890
         </td>
         <td>
           Select
@@ -249,15 +256,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          25
         </td>
         <td>
           743
         </td>
         <td>
-          704
+          928
           -
-          708
+          932
         </td>
         <td>
           Select

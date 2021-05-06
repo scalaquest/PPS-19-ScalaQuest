@@ -22,59 +22,66 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package io.github.scalaquest.core.parsing.scalog
-</span>2 <span style=''>
-</span>3 <span style=''>/** A Prolog data object. */
-</span>4 <span style=''>sealed trait Term extends CodeGen {
-</span>5 <span style=''>
-</span>6 <span style=''>  /**
-</span>7 <span style=''>   * Template method for all infix operators.
-</span>8 <span style=''>   * @note
-</span>9 <span style=''>   *   All operators that use this method should be right associative.
-</span>10 <span style=''>   */
-</span>11 <span style=''>  protected def infixOp(op: String)(left: Term): Compound = </span><span style='background: #AEF1AE'>Compound(Atom(op), left, List(this))</span><span style=''>
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>/*
+</span>2 <span style=''> * Copyright (c) 2021 ScalaQuest Team.
+</span>3 <span style=''> *
+</span>4 <span style=''> * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+</span>5 <span style=''> * described in the file LICENSE in the ScalaQuest distribution's top directory.
+</span>6 <span style=''> */
+</span>7 <span style=''>
+</span>8 <span style=''>package io.github.scalaquest.core.parsing.scalog
+</span>9 <span style=''>
+</span>10 <span style=''>/** A Prolog data object. */
+</span>11 <span style=''>sealed trait Term extends CodeGen {
 </span>12 <span style=''>
-</span>13 <span style=''>  /** Implementation of the infix `^` Prolog operator. */
-</span>14 <span style=''>  def ^:(left: Term): Compound = </span><span style='background: #AEF1AE'>infixOp(&quot;^&quot;)(left)</span><span style=''>
-</span>15 <span style=''>
-</span>16 <span style=''>  /** Implementation of the infix `/` Prolog operator. */
-</span>17 <span style=''>  def /:(left: Term): Compound = </span><span style='background: #AEF1AE'>infixOp(&quot;/&quot;)(left)</span><span style=''>
-</span>18 <span style=''>}
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   * Template method for all infix operators.
+</span>15 <span style=''>   * @note
+</span>16 <span style=''>   *   All operators that use this method should be right associative.
+</span>17 <span style=''>   */
+</span>18 <span style=''>  protected def infixOp(op: String)(left: Term): Compound = </span><span style='background: #AEF1AE'>Compound(Atom(op), left, List(this))</span><span style=''>
 </span>19 <span style=''>
-</span>20 <span style=''>/** A Prolog atom. */
-</span>21 <span style=''>case class Atom(name: String) extends Term {
-</span>22 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
-</span>23 <span style=''>}
-</span>24 <span style=''>
-</span>25 <span style=''>/** A Prolog number */
-</span>26 <span style=''>case class Number(n: Int) extends Term {
-</span>27 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>n.toString</span><span style=''>
-</span>28 <span style=''>}
-</span>29 <span style=''>
-</span>30 <span style=''>/** A Prolog variable. */
-</span>31 <span style=''>case class Variable(name: String) extends Term {
-</span>32 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
-</span>33 <span style=''>}
-</span>34 <span style=''>
-</span>35 <span style=''>/**
-</span>36 <span style=''> * A Prolog compound term.
-</span>37 <span style=''> * @param functor
-</span>38 <span style=''> *   the atom used as a functor
-</span>39 <span style=''> * @param arg1
-</span>40 <span style=''> *   the first mandatory term
-</span>41 <span style=''> * @param args
-</span>42 <span style=''> *   the other optional terms
-</span>43 <span style=''> */
-</span>44 <span style=''>case class Compound(functor: Atom, arg1: Term, args: List[Term] = List()) extends Term {
-</span>45 <span style=''>
-</span>46 <span style=''>  override def generate: String =
-</span>47 <span style=''>    s&quot;${functor.generate}(${(arg1 +: args).map(_.generate).mkString(&quot;,&quot;)})&quot;
-</span>48 <span style=''>}
-</span>49 <span style=''>
-</span>50 <span style=''>/** A Prolog list. */
-</span>51 <span style=''>case class ListP(terms: Term*) extends Term {
-</span>52 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>terms.map(_.generate).mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)</span><span style=''>
-</span>53 <span style=''>}
+</span>20 <span style=''>  /** Implementation of the infix `^` Prolog operator. */
+</span>21 <span style=''>  def ^:(left: Term): Compound = </span><span style='background: #AEF1AE'>infixOp(&quot;^&quot;)(left)</span><span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>  /** Implementation of the infix `/` Prolog operator. */
+</span>24 <span style=''>  def /:(left: Term): Compound = </span><span style='background: #AEF1AE'>infixOp(&quot;/&quot;)(left)</span><span style=''>
+</span>25 <span style=''>}
+</span>26 <span style=''>
+</span>27 <span style=''>/** A Prolog atom. */
+</span>28 <span style=''>case class Atom(name: String) extends Term {
+</span>29 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
+</span>30 <span style=''>}
+</span>31 <span style=''>
+</span>32 <span style=''>/** A Prolog number */
+</span>33 <span style=''>case class Number(n: Int) extends Term {
+</span>34 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>n.toString</span><span style=''>
+</span>35 <span style=''>}
+</span>36 <span style=''>
+</span>37 <span style=''>/** A Prolog variable. */
+</span>38 <span style=''>case class Variable(name: String) extends Term {
+</span>39 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>name</span><span style=''>
+</span>40 <span style=''>}
+</span>41 <span style=''>
+</span>42 <span style=''>/**
+</span>43 <span style=''> * A Prolog compound term.
+</span>44 <span style=''> * @param functor
+</span>45 <span style=''> *   the atom used as a functor
+</span>46 <span style=''> * @param arg1
+</span>47 <span style=''> *   the first mandatory term
+</span>48 <span style=''> * @param args
+</span>49 <span style=''> *   the other optional terms
+</span>50 <span style=''> */
+</span>51 <span style=''>case class Compound(functor: Atom, arg1: Term, args: List[Term] = List()) extends Term {
+</span>52 <span style=''>
+</span>53 <span style=''>  override def generate: String =
+</span>54 <span style=''>    s&quot;${functor.generate}(${(arg1 +: args).map(_.generate).mkString(&quot;,&quot;)})&quot;
+</span>55 <span style=''>}
+</span>56 <span style=''>
+</span>57 <span style=''>/** A Prolog list. */
+</span>58 <span style=''>case class ListP(terms: Term*) extends Term {
+</span>59 <span style=''>  override def generate: String = </span><span style='background: #AEF1AE'>terms.map(_.generate).mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)</span><span style=''>
+</span>60 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -89,15 +96,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           748
         </td>
         <td>
-          325
+          549
           -
-          333
+          557
         </td>
         <td>
           Apply
@@ -113,15 +120,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           749
         </td>
         <td>
-          341
+          565
           -
-          351
+          575
         </td>
         <td>
           Apply
@@ -137,15 +144,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          18
         </td>
         <td>
           750
         </td>
         <td>
-          316
+          540
           -
-          352
+          576
         </td>
         <td>
           Apply
@@ -161,15 +168,15 @@
         </td>
       </tr><tr>
         <td>
-          14
+          21
         </td>
         <td>
           751
         </td>
         <td>
-          445
+          669
           -
-          463
+          687
         </td>
         <td>
           Apply
@@ -185,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          24
         </td>
         <td>
           752
         </td>
         <td>
-          556
+          780
           -
-          574
+          798
         </td>
         <td>
           Apply
@@ -209,15 +216,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          29
         </td>
         <td>
           753
         </td>
         <td>
-          679
+          903
           -
-          683
+          907
         </td>
         <td>
           Select
@@ -233,15 +240,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          34
         </td>
         <td>
           754
         </td>
         <td>
-          785
+          1009
           -
-          795
+          1019
         </td>
         <td>
           Apply
@@ -257,15 +264,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          39
         </td>
         <td>
           755
         </td>
         <td>
-          908
+          1132
           -
-          912
+          1136
         </td>
         <td>
           Select
@@ -281,15 +288,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          59
         </td>
         <td>
           756
         </td>
         <td>
-          1396
+          1620
           -
-          1441
+          1665
         </td>
         <td>
           Apply
