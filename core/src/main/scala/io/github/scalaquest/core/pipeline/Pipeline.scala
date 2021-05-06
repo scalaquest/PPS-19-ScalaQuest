@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021 ScalaQuest Team.
+ *
+ * This file is part of ScalaQuest, and is distributed under the terms of the MIT License as
+ * described in the file LICENSE in the ScalaQuest distribution's top directory.
+ */
+
 package io.github.scalaquest.core.pipeline
 
 import io.github.scalaquest.core.model.{Message, Model}
@@ -7,10 +14,17 @@ import io.github.scalaquest.core.pipeline.parser.Parser
 import io.github.scalaquest.core.pipeline.reducer.Reducer
 import io.github.scalaquest.core.pipeline.resolver.Resolver
 
+/**
+ * A basic game iteration, from a command to a modified state. The concept of Pipeline implicitly
+ * comprehends the initial State.
+ */
 abstract class Pipeline[M <: Model](val model: M) {
   def run(rawSentence: String): Either[String, (model.S, Seq[Message])]
 }
 
+/**
+ * Contains a default builder for [[Pipeline]], splitting it into its components.
+ */
 object Pipeline {
 
   type PartialBuilder[S <: Model#State, M <: Model] = S => Pipeline[M]
